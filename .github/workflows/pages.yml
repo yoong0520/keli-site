@@ -28,6 +28,8 @@ jobs:
         run: python3 scripts/fetch_events.py
       - name: Fetch KELI press releases from hallym.ac.kr
         run: python3 scripts/fetch_press.py
+      - name: Fetch KELI videos from YouTube @HALLYMNEWS
+        run: python3 scripts/fetch_videos.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

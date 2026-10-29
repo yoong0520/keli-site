@@ -1,0 +1,101 @@
+{
+  "source": "https://www.youtube.com/@HALLYMNEWS",
+  "filter": "채널 내 검색: 제목·설명에 KELI 또는 켈리 (관련: HAI Ecosystems · 에듀테크 소프트랩)",
+  "fetched_at": "2026. 10. 29.",
+  "fetched_iso": "2026-10-29T16:37+09:00",
+  "count": 7,
+  "items": [
+    {
+      "id": "89r5tccN3Eo",
+      "title": "2026 KELI 국제 심포지엄 및 데모데이(LIVE)",
+      "published_text": "8일 전",
+      "length": "7:27:22",
+      "views": "조회수 1,539회",
+      "group": "keli",
+      "url": "https://www.youtube.com/watch?v=89r5tccN3Eo",
+      "embed": "https://www.youtube-nocookie.com/embed/89r5tccN3Eo?autoplay=1&rel=0",
+      "is_live_recording": true,
+      "published": "2026.10.20",
+      "age_days": 8,
+      "thumb": "media/youtube/89r5tccN3Eo.jpg"
+    },
+    {
+      "id": "ZM-sy8WK4H8",
+      "title": "KELI 국제 심포지엄(KELI International Symposium)",
+      "published_text": "11개월 전",
+      "length": "7:20:36",
+      "views": "조회수 861회",
+      "group": "keli",
+      "url": "https://www.youtube.com/watch?v=ZM-sy8WK4H8",
+      "embed": "https://www.youtube-nocookie.com/embed/ZM-sy8WK4H8?autoplay=1&rel=0",
+      "is_live_recording": true,
+      "age_days": 330,
+      "thumb": "media/youtube/ZM-sy8WK4H8.jpg"
+    },
+    {
+      "id": "7Vg-kGNUU58",
+      "title": "[HAI 참교육] 에코시스템 편 💎",
+      "published_text": "2개월 전",
+      "length": "0:54",
+      "views": "조회수 936,096회",
+      "group": "related",
+      "url": "https://www.youtube.com/watch?v=7Vg-kGNUU58",
+      "embed": "https://www.youtube-nocookie.com/embed/7Vg-kGNUU58?autoplay=1&rel=0",
+      "is_live_recording": false,
+      "age_days": 60,
+      "thumb": "media/youtube/7Vg-kGNUU58.jpg"
+    },
+    {
+      "id": "uTt06VKwX9E",
+      "title": "[HAI 참교육] HAI-Tutor 편 👨🏻‍🏫👩🏻‍🏫",
+      "published_text": "2개월 전",
+      "length": "0:45",
+      "views": "조회수 605,228회",
+      "group": "related",
+      "url": "https://www.youtube.com/watch?v=uTt06VKwX9E",
+      "embed": "https://www.youtube-nocookie.com/embed/uTt06VKwX9E?autoplay=1&rel=0",
+      "is_live_recording": false,
+      "age_days": 60,
+      "thumb": "media/youtube/uTt06VKwX9E.jpg"
+    },
+    {
+      "id": "3XIEdiiP9JQ",
+      "title": "🐈 한림대 냥터뷰로 알아보는 HAI-GPT 🐈",
+      "published_text": "6개월 전",
+      "length": "0:43",
+      "views": "조회수 387회",
+      "group": "related",
+      "url": "https://www.youtube.com/watch?v=3XIEdiiP9JQ",
+      "embed": "https://www.youtube-nocookie.com/embed/3XIEdiiP9JQ?autoplay=1&rel=0",
+      "is_live_recording": false,
+      "age_days": 180,
+      "thumb": "media/youtube/3XIEdiiP9JQ.jpg"
+    },
+    {
+      "id": "G5EeLDfvqx0",
+      "title": "2024년 고등교육 에듀테크 소프트랩 성과포럼",
+      "published_text": "1년 전",
+      "length": "3:54:33",
+      "views": "조회수 400회",
+      "group": "related",
+      "url": "https://www.youtube.com/watch?v=G5EeLDfvqx0",
+      "embed": "https://www.youtube-nocookie.com/embed/G5EeLDfvqx0?autoplay=1&rel=0",
+      "is_live_recording": true,
+      "age_days": 365,
+      "thumb": "media/youtube/G5EeLDfvqx0.jpg"
+    },
+    {
+      "id": "LHCBxj31PTQ",
+      "title": "2024년 고등교육 에듀테크 소프트랩 성과포럼 2일차",
+      "published_text": "1년 전",
+      "length": "2:08:56",
+      "views": "조회수 195회",
+      "group": "related",
+      "url": "https://www.youtube.com/watch?v=LHCBxj31PTQ",
+      "embed": "https://www.youtube-nocookie.com/embed/LHCBxj31PTQ?autoplay=1&rel=0",
+      "is_live_recording": true,
+      "age_days": 365,
+      "thumb": "media/youtube/LHCBxj31PTQ.jpg"
+    }
+  ]
+}
