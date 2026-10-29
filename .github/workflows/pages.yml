@@ -22,6 +22,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Fetch live course count from ai.hallym.ac.kr
         run: python3 scripts/fetch_stats.py
+      - name: Fetch [KELI] stories from aiadvcenter.csedu4all.com
+        run: python3 scripts/fetch_events.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

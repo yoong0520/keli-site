@@ -166,6 +166,9 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .chk input { width: 18px; height: 18px; margin-top: 4px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chipgrps { display: flex; flex-direction: column; gap: 14px; }
+.post { margin-top: 28px; font-size: 17px; line-height: 1.85; } .post p { margin: 0 0 14px; } .post ul, .post ol { margin: 0 0 14px; padding-left: 22px; } .post li { margin: 4px 0; } .post h3 { margin: 24px 0 8px; } .post img { max-width: 100%; border-radius: 16px; margin: 8px 0; } .post table { border-collapse: collapse; width: 100%; } .post td, .post th { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left; }
+.kv { display: grid; grid-template-columns: 96px 1fr; gap: 10px 16px; margin: 0; } .kv dt { color: var(--muted); font-size: 15px; } .kv dd { margin: 0; }
+[data-ev-empty][hidden] { display: none; }
 .chipgrp { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
 .chipgrp:first-child { border-top: 0; padding-top: 0; }
 .chipgrp .gk { font-size: 13px; font-weight: 600; color: var(--muted); }
