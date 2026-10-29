@@ -1,0 +1,9 @@
+{
+  "courses": 1275,
+  "teachers": 758,
+  "students": 45989,
+  "fetched_at": "2026. 10. 29.",
+  "source": "https://ai.hallym.ac.kr/",
+  "bundle": "/assets/index-CEOUW01S.js",
+  "note": "포털 홈 \"한눈에 보는 한림 AI\" 집계값(연도별 AI 강좌 수 합계). 포털 측 공식 API가 생기면 그쪽으로 교체."
+}

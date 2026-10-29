@@ -2,6 +2,8 @@ name: Deploy KELI site to GitHub Pages
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '17 18 * * *'   # 매일 03:17 KST — 포털 AI 강좌 수 재수집 후 재배포
   workflow_dispatch:
 permissions:
   contents: read
@@ -18,9 +20,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Fetch live course count from ai.hallym.ac.kr
+        run: python3 scripts/fetch_stats.py
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .

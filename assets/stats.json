@@ -1,0 +1,8 @@
+{
+  "_안내": "KELI 사무국이 직접 고치는 파일입니다. 숫자만 바꾸고 저장하면 1~2분 뒤 홈 화면에 반영됩니다. courses를 null로 두면 한림 AI 교육 포털의 AI 강좌 수를 자동으로 씁니다.",
+  "services": 19,
+  "universities": 23,
+  "companies": 31,
+  "courses": null,
+  "basis": "2026. 10. KELI 리플렛 · 포털 파트너 목록"
+}
