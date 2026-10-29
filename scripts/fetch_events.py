@@ -25,7 +25,8 @@ def text(s):
     return re.sub(r'\s+', ' ', html.unescape(s)).strip()
 
 ALLOWED = {'p', 'br', 'ul', 'ol', 'li', 'strong', 'b', 'em', 'i', 'u', 'a', 'h3', 'h4', 'blockquote', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img'}
-def clean_html(s):
+def clean_html(s, base=None):
+    base = base or BASE
     """본문 HTML 정리: 허용 태그만 남기고 속성은 a[href]·img[src,alt]만 유지. 제목 태그는 h3으로."""
     s = re.sub(r'<!--.*?-->', '', s, flags=re.S)
     s = re.sub(r'<(/?)h[12]\b', r'<\1h3', s)
@@ -40,8 +41,10 @@ def clean_html(s):
             h = re.search(r'href="([^"]*)"', attrs)
             if h:
                 href = html.unescape(h.group(1))
+                if href.lower().startswith('javascript:'):
+                    return ''
                 if href.startswith('/'):
-                    href = BASE + href
+                    href = base + href
                 keep = f' href="{html.escape(href, quote=True)}" target="_blank" rel="noopener"'
         elif name == 'img':
             sm = re.search(r'src="([^"]*)"', attrs)
@@ -49,7 +52,7 @@ def clean_html(s):
                 return ''
             srcv = sm.group(1)
             if srcv.startswith('/'):
-                srcv = BASE + srcv
+                srcv = base + srcv
             keep = f' src="{html.escape(srcv, quote=True)}" alt="" loading="lazy"'
         return f'<{name}{keep}>'
     s = re.sub(r'<(/?)([A-Za-z0-9]+)([^>]*)>', tag, s)

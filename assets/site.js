@@ -98,6 +98,22 @@
       qsa('[data-ev-status]').forEach(function(el){ var id=(el.closest('[data-ev]')||{}).getAttribute? el.closest('[data-ev]').getAttribute('data-ev'):null; var it=items.filter(function(x){ return String(x.id)===id; })[0]; if(it){ var s=status(it); el.textContent=s[1]; el.className='badge '+(s[0]==='upcoming'?'live':''); } });
     }).catch(function(){});
   })();
+  // press feed: 한림대 보도자료 KELI·켈리 글 (assets/press.live.json) → [data-press] 다시 그리기
+  (function(){
+    var boxes=qsa('[data-press]'); if(!boxes.length||location.protocol==='file:') return;
+    function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    function href(it,p){ return p.indexOf(String(it.id))>-1 ? 'press-'+it.id+'.html' : it.url; }
+    function ext(it,p){ return p.indexOf(String(it.id))>-1 ? '' : ' target="_blank" rel="noopener"'; }
+    function row(it,p,sum){ return '<a class="li" href="'+href(it,p)+'"'+ext(it,p)+'><span><span class="m">보도자료'+(it.category?' · '+esc(it.category):'')+'</span><br><span class="t">'+esc(it.title)+'</span>'+(sum&&it.summary?'<br><span class="m">'+esc(it.summary.slice(0,90))+'</span>':'')+'</span><span class="d">'+esc(it.date)+'</span></a>'; }
+    fetch('assets/press.live.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(f){
+      var items=f.items||[]; if(!items.length) return;
+      boxes.forEach(function(b){ var p=(b.getAttribute('data-pages')||'').split(','); var kind=b.getAttribute('data-press');
+        if(kind==='rows') b.innerHTML=items.slice(0,3).map(function(it){ return row(it,p,false); }).join('');
+        else if(kind==='list') b.innerHTML=items.map(function(it){ return row(it,p,true); }).join('');
+      });
+      var fd=qs('[data-press-date]'); if(fd&&f.fetched_at) fd.textContent=f.fetched_at;
+    }).catch(function(){});
+  })();
   // search
   var si=qs('#q'); if(si){ var rows=qsa('#results [data-q]'), rc=qs('#rc'); function run(){ var v=si.value.trim().toLowerCase(), n=0; rows.forEach(function(r){ var on=!v||r.getAttribute('data-q').indexOf(v)>-1; r.hidden=!on; if(on)n++; }); if(rc) rc.textContent=n+'건'; } si.addEventListener('input',run); var q0=p.get('q'); if(q0){ si.value=q0; } run(); }
 })();
