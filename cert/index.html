@@ -75,8 +75,8 @@ body{font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1
 .cert-table td{padding:7px 0 7px 10px;color:var(--ink);border-bottom:1px dotted #c9d4e0}
 .cert-body{text-align:center;font-size:16.5px;line-height:2.05;color:var(--ink);margin:0 0 auto}
 .cert-date{text-align:center;font-size:16px;margin:14mm 0 10mm;color:var(--ink)}
-.cert-issuer{text-align:center;font-size:19px;font-weight:700;color:var(--navy);letter-spacing:.06em;margin:0}
-.cert-issuer small{display:inline-block;margin-left:10px;font-size:13px;font-weight:400;color:#777;letter-spacing:0}
+.cert-issuer{text-align:center;font-size:17.5px;font-weight:700;color:var(--navy);letter-spacing:.03em;margin:0;white-space:nowrap}
+.cert-issuer small{display:block;margin:6px 0 0;font-size:12.5px;font-weight:400;color:#777;letter-spacing:0}
 .cert-foot{margin-top:10mm;padding-top:6px;border-top:1px solid var(--line);font-size:10.5px;line-height:16px;color:#888;display:flex;justify-content:space-between;align-items:baseline;gap:16px;white-space:nowrap}
 .cert-foot .l{min-width:0}
 
@@ -93,6 +93,7 @@ body{font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1
   .cert-title{font-size:26px;margin:10mm 0 8mm}
   .cert-table{font-size:14px}.cert-table th{width:70px;letter-spacing:.15em}
   .cert-body{font-size:14.5px}
+  .cert-issuer{font-size:14px;white-space:normal}
   .cert-foot{white-space:normal;display:block}
 }
 @media print{
@@ -110,7 +111,7 @@ body{font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1
 
   <header class="top">
     <div>
-      <p class="from">한림대학교 AI교육혁신원 · KELI 사무국</p>
+      <p class="from">한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)</p>
       <h1>2026 KELI 국제 심포지엄 및 데모데이<br>참가확인증 발급</h1>
       <p class="lede">성명·소속·이메일을 입력하시면 발급번호가 붙은 참가확인증이 만들어지고, PDF 파일로 바로 내려받으실 수 있습니다.</p>
       <div class="dots"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -154,7 +155,7 @@ body{font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1
       · 발급번호는 입력하신 성명·소속·이메일로부터 만들어지므로, 같은 정보를 다시 입력하면 언제나 같은 번호가 나옵니다. 사무국은 이 방법으로 확인증의 진위를 확인합니다.<br>
       · 성명·소속을 잘못 입력하셨다면 「다른 사람 발급하기」로 돌아가 다시 만드시면 됩니다.<br>
       · PDF가 내려받아지지 않으면 「인쇄」 버튼을 눌러 「PDF로 저장」을 선택해 주세요.<br>
-      · 문의: KELI 사무국 033-248-3246 / contact@keliedu.org
+      · 문의: 한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터) contact@keliedu.org
     </div>
   </section>
 
@@ -187,7 +188,7 @@ body{font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1
         <p class="cert-body">위 사람은 한림대학교 KELI 사무국에서 주최하는<br>2026 KELI 국제 심포지엄 및 데모데이<br>행사에 참여하였기에 이 증서를 드립니다.</p>
 
         <p class="cert-date">2026년 10월 20일</p>
-        <p class="cert-issuer">한림대학교 KELI 사무국(AI교육혁신원)장 <small>(직인생략)</small></p>
+        <p class="cert-issuer">한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)장<small>(직인생략)</small></p>
 
         <div class="cert-foot">
           <span class="l">KELI Secretariat · Hallym University · keliedu.org</span>
@@ -248,7 +249,7 @@ var APPS_SCRIPT_URL = "";
     root.querySelector('[data-f="no"]').textContent = 'KELI 사무국 ' + data.number + '호';
     root.querySelector('[data-f="name"]').textContent = data.name;
     root.querySelector('[data-f="org"]').textContent = data.org;
-    root.querySelector('[data-f="foot"]').textContent = '발급 ' + data.issuedAt + ' · 문의 033-248-3246';
+    root.querySelector('[data-f="foot"]').textContent = '발급 ' + data.issuedAt + ' · 문의 contact@keliedu.org';
   }
   function render(data){
     current = data;
@@ -281,7 +282,7 @@ var APPS_SCRIPT_URL = "";
       render({ number: res.number, name: res.name, org: res.org, issuedAt: (res.issuedAt || today()).slice(0, 13) });
       say('ok', (res.resent ? '이미 발급된 정보입니다. 처음 발급된 ' : '발급이 완료되었습니다. 발급번호는 ') + '<b>KELI 사무국 ' + esc(res.number) + '호</b>입니다. 아래 「PDF 내려받기」 버튼을 눌러 저장해 주세요.');
     })
-    .catch(function(err){ say('err', '처리 중 문제가 발생했습니다: ' + esc(err.message || err) + '<br>잠시 후 다시 시도하시거나 사무국(033-248-3246)으로 연락해 주세요.'); })
+    .catch(function(err){ say('err', '처리 중 문제가 발생했습니다: ' + esc(err.message || err) + '<br>잠시 후 다시 시도하시거나 사무국(contact@keliedu.org)으로 연락해 주세요.'); })
     .finally(function(){ btn.disabled = false; });
   });
 
@@ -300,7 +301,7 @@ var APPS_SCRIPT_URL = "";
     }).then(function(canvas){
       var pdf = new window.jspdf.jsPDF({ orientation:'portrait', unit:'mm', format:'a4', compress:true });
       pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 210, 297);
-      pdf.setProperties({ title: '참가확인증 KELI 사무국 ' + current.number + '호', author: '한림대학교 KELI 사무국' });
+      pdf.setProperties({ title: '참가확인증 KELI 사무국 ' + current.number + '호', author: '한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)' });
       pdf.save('참가확인증_KELI사무국_' + current.number + '호_' + current.name + '.pdf');
       busy.textContent = '';
     }).catch(function(e){
