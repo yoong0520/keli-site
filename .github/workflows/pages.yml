@@ -20,6 +20,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Install Pillow (image resizing for imported photos)
+        run: pip install --quiet pillow
       - name: Fetch live course count from ai.hallym.ac.kr
         run: python3 scripts/fetch_stats.py
       - name: Fetch [KELI] stories from aiadvcenter.csedu4all.com

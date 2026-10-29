@@ -7,6 +7,7 @@ assets/events.live.json 에 기록한다. KELI 사이트의 '행사'는 이 파�
 - 실패하면 기존 파일을 그대로 둔다(배포는 계속 진행).
 """
 import json, re, sys, os, html, datetime, urllib.request, urllib.parse
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 BASE = 'https://aiadvcenter.csedu4all.com'
 LIST = BASE + '/news/stories'
@@ -146,7 +147,11 @@ def main():
                 break
         if not items:
             raise RuntimeError('no [KELI] stories found')
+        from media import localize
         for it in items:
+            if it.get('thumb'):
+                it['thumb_remote'] = it['thumb']
+                it['thumb'] = localize(it['thumb'], 'events', str(it['id']), referer=it['url']) or it['thumb']
             try:
                 parse_detail(get(it['url']), it)
             except Exception as e:  # 상세 실패는 목록 정보만으로 진행

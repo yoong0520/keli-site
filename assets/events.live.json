@@ -2,7 +2,7 @@
   "source": "https://aiadvcenter.csedu4all.com/news/stories",
   "filter": "제목이 [KELI]로 시작하는 글",
   "fetched_at": "2026. 10. 29.",
-  "fetched_iso": "2026-10-29T11:48+09:00",
+  "fetched_iso": "2026-10-29T15:15+09:00",
   "count": 4,
   "items": [
     {
@@ -15,17 +15,12 @@
       ],
       "when": "2026.10.21(수) 16:00 ~ 2026.10.24(토) 03:08",
       "place": "Tashkent State University of Economics(TSUE, 타슈켄트 국립경제대학교)",
-      "thumb": "https://aiadvcenter.csedu4all.com/api/files/cmvrr47kc000lqr0763ka1dff",
+      "thumb": "media/events/10.jpg",
+      "thumb_remote": "https://aiadvcenter.csedu4all.com/api/files/cmvrr47kc000lqr0763ka1dff",
       "posted": "2026.10.27",
       "body_html": "<p>\n    한림대학교 KELI 사무국 및 AI에듀테크센터 관계자들이\n    고등교육 AI 교육 서비스의 국제 교류 및 협력 확대를 위해\n    우즈베키스탄 타슈켄트 국립경제대학교(TSUE)를 방문하였습니다.\n  </p>\n  <p><strong>■ 방문 개요</strong></p>\n  <ul>\n    <li><strong>기간:</strong> 2026. 10. 21.(수)~10. 24.(토)</li>\n    <li><strong>현지 방문:</strong> 2026. 10. 22.(목)</li>\n    <li><strong>방문 기관:</strong> 타슈켄트 국립경제대학교(TSUE)</li>\n    <li><strong>방문 인원:</strong> 총 3명(KELI 사무국 2명, AI에듀테크센터 1명)</li>\n  </ul>\n  <p><strong>■ 주요 내용</strong></p>\n  <ul>\n    <li>KELI 사업 및 국제 컨소시엄 참여 체계 소개</li>\n    <li>HAI Ecosystems AI 교육 서비스 19종 소개 및 시연</li>\n    <li>AI 교육 솔루션의 대학 수업 적용 및 활용 방안 논의</li>\n    <li>국제 공동연구 및 업무협약(MOU) 추진 방안 협의</li>\n  </ul>\n  <p><strong>■ 주요 협의 결과</strong></p>\n  <ul>\n    <li>HAI-Korean, HAI-Security, HAI-Coder 등 AI 교육 서비스에 대한 관심 확인</li>\n    <li>KELI 국제 협력 및 공동연구 추진 가능성 논의</li>\n    <li>업무협약(MOU) 체결을 위한 후속 검토 진행</li>\n  </ul>",
       "summary": "한림대학교 KELI 사무국 및 AI에듀테크센터 관계자들이 고등교육 AI 교육 서비스의 국제 교류 및 협력 확대를 위해 우즈베키스탄 타슈켄트 국립경제대학교(TSUE)를 방문하였습니다. ■ 방문 개요 기간: 2026. 10. 21.(수)~10. 24.(토) 현지 방문: 2026. 10. 2…",
-      "files": [
-        {
-          "id": "cmvqanheq000jqr076xnfxxjl",
-          "name": "2026 타슈켄트 국립경제대학교(TSUE) 방문 결과 보고-20261027.pdf",
-          "url": "https://aiadvcenter.csedu4all.com/api/files/cmvqanheq000jqr076xnfxxjl"
-        }
-      ],
+      "files": [],
       "start": "2026-10-21T16:00",
       "end": "2026-10-24T03:08"
     },
@@ -39,7 +34,8 @@
       ],
       "when": "2026.10.20(화) 10:00~17:00",
       "place": "서울드래곤시티 3층 그랜드볼룸 한라홀",
-      "thumb": "https://aiadvcenter.csedu4all.com/api/files/cmvqa9vzw000gqr07iszkxo7e",
+      "thumb": "media/events/9.jpg",
+      "thumb_remote": "https://aiadvcenter.csedu4all.com/api/files/cmvqa9vzw000gqr07iszkxo7e",
       "posted": "2026.10.20",
       "body_html": "<p>\n    2026 KELI 국제 심포지엄 및 데모데이가\n    'AI로 연결하는 고등교육 혁신 생태계'를 주제로\n    서울드래곤시티에서 개최되었습니다.\n  </p>\n  <p><strong>■ 행사 개요</strong></p>\n  <ul>\n    <li><strong>일시:</strong> 2026. 10. 20.(화) 09:30~17:00</li>\n    <li><strong>장소:</strong> 서울드래곤시티 3층 그랜드볼룸</li>\n    <li><strong>주최:</strong> 한림대학교</li>\n    <li><strong>주관:</strong> 한림대학교 AI교육혁신원</li>\n    <li><strong>주제:</strong> AI로 연결하는 고등교육 혁신 생태계</li>\n  </ul>\n  <p><strong>■ 주요 내용</strong></p>\n  <ul>\n    <li>KELI 비전 발표 및 KELI Alliance 발대식</li>\n    <li>고등교육 AI 혁신을 위한 기조연설</li>\n    <li>HAI Ecosystems 및 AI 교육 혁신 사례 발표</li>\n    <li>국내외 고등교육 AI 및 글로벌 에듀테크 혁신 사례 공유</li>\n    <li>HAI Ecosystems AI 교육 솔루션 시연 및 체험</li>\n  </ul>\n  <p><strong>■ 관련 홈페이지</strong></p>\n  <p>\n    <a href=\"https://keliedu.org/keli\" target=\"_blank\" rel=\"noopener\">\n      KELI 공식 홈페이지 바로가기\n    </a>\n  </p>",
       "summary": "2026 KELI 국제 심포지엄 및 데모데이가 'AI로 연결하는 고등교육 혁신 생태계'를 주제로 서울드래곤시티에서 개최되었습니다. ■ 행사 개요 일시: 2026. 10. 20.(화) 09:30~17:00 장소: 서울드래곤시티 3층 그랜드볼룸 주최: 한림대학교 주관: 한림대학교 AI교육혁…",
@@ -69,16 +65,12 @@
       ],
       "when": "2026.09.15(화) 15:00~17:00",
       "place": "한림대학교 일송도서관 5층 G-Square",
-      "thumb": "https://aiadvcenter.csedu4all.com/api/files/cmvqb59ep000kqr07rnbilool",
+      "thumb": "media/events/8.jpg",
+      "thumb_remote": "https://aiadvcenter.csedu4all.com/api/files/cmvqb59ep000kqr07rnbilool",
       "posted": "2026.10.27",
       "body_html": "<p><strong>■ 방문 개요</strong></p>\n  <ul>\n    <li><strong>일시:</strong> 2026. 9. 15.(화) 15:00~17:00</li>\n    <li><strong>장소:</strong> 한림대학교 도서관 5층</li>\n    <li><strong>방문 기관:</strong> 주한덴마크대사관 및 덴마크 에듀테크 기업 5개사</li>\n    <li><strong>참석 인원:</strong> 총 8명(기업 관계자 5명, 대사관 관계자 3명)</li>\n  </ul>\n  <p><strong>■ 주요 내용</strong></p>\n  <ul>\n    <li>한림대학교 고등교육 에듀테크 소프트랩 및 KELI 사업 소개</li>\n    <li>한림대학교 자체 개발 AI 교육 솔루션(HAI-ECOSYSTEMS) 소개 및 활용 사례 공유</li>\n    <li>한·덴마크 에듀테크 분야 공동 실증 및 산학협력 가능성 논의</li>\n  </ul>",
       "summary": "■ 방문 개요 일시: 2026. 9. 15.(화) 15:00~17:00 장소: 한림대학교 도서관 5층 방문 기관: 주한덴마크대사관 및 덴마크 에듀테크 기업 5개사 참석 인원: 총 8명(기업 관계자 5명, 대사관 관계자 3명) ■ 주요 내용 한림대학교 고등교육 에듀테크 소프트랩 및 KEL…",
       "files": [
-        {
-          "id": "cmvqa0cpm000eqr07s7j1myab",
-          "name": "(주한덴마크대사관) 덴마크 에듀테크 기업 방한단 방문 협조 요청_한림대학교.pdf",
-          "url": "https://aiadvcenter.csedu4all.com/api/files/cmvqa0cpm000eqr07s7j1myab"
-        },
         {
           "id": "cmvqa0df9000fqr07uv23hkar",
           "name": "[KELI 사무국] 주한덴마크대사관 방한단 KELI 소개 수정 자료(eng ver).pdf",
@@ -98,22 +90,12 @@
       ],
       "when": "2026.09.02(수) 13:00~15:00",
       "place": "한림대학교 일송도서관 5층 G-Square",
-      "thumb": "https://aiadvcenter.csedu4all.com/api/files/cmvq972kl000dqr07am55t9as",
+      "thumb": "media/events/7.jpg",
+      "thumb_remote": "https://aiadvcenter.csedu4all.com/api/files/cmvq972kl000dqr07am55t9as",
       "posted": "2026.09.02",
       "body_html": "<p><strong>■ 방문 기관</strong></p>\n  <p>중원대학교 AI혁신원, 안양대학교 교육혁신원</p>\n  <p><strong>■ 방문 인원</strong></p>\n  <p>총 8명(중원대학교 2명, 안양대학교 6명)</p>\n  <p><strong>■ 주요 내용</strong></p>\n  <ul>\n    <li>한림대학교 AI 교육 솔루션 주요 기능 소개</li>\n    <li>AI 교육지원시스템 현황 및 운영 사례 공유</li>\n    <li>대학 내 AI 교육 서비스 활용 방안 논의</li>\n  </ul>",
       "summary": "■ 방문 기관 중원대학교 AI혁신원, 안양대학교 교육혁신원 ■ 방문 인원 총 8명(중원대학교 2명, 안양대학교 6명) ■ 주요 내용 한림대학교 AI 교육 솔루션 주요 기능 소개 AI 교육지원시스템 현황 및 운영 사례 공유 대학 내 AI 교육 서비스 활용 방안 논의",
-      "files": [
-        {
-          "id": "cmvq94nag000bqr07c6a7tlo8",
-          "name": "[중원대] AI 교육 솔루션 도입을 위한 한림대학교 방문 협조 요청.pdf",
-          "url": "https://aiadvcenter.csedu4all.com/api/files/cmvq94nag000bqr07c6a7tlo8"
-        },
-        {
-          "id": "cmvq94nps000cqr07itir3izv",
-          "name": "[안양대] 교육지원시스템 공유 요청.pdf",
-          "url": "https://aiadvcenter.csedu4all.com/api/files/cmvq94nps000cqr07itir3izv"
-        }
-      ],
+      "files": [],
       "start": "2026-09-02T13:00",
       "end": "2026-09-02T15:00"
     }

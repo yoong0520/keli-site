@@ -9,6 +9,7 @@ assets/press.live.json 에 기록한다. KELI 사이트의 '뉴스레터 › 보
 import json, re, sys, os, html, datetime, urllib.request, urllib.parse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_events import clean_html, text
+from media import localize
 
 BASE = 'https://www.hallym.ac.kr'
 BOARD = '/bbs/pr/876'
@@ -66,6 +67,12 @@ def parse_detail(h, it):
         first = re.match(r'\s*<p>(.*?)</p>', bh, flags=re.S)
         if first and norm(text(first.group(1))) and norm(text(first.group(1))) == norm(it['title']):
             bh = bh[first.end():].lstrip()                                         # 제목을 반복한 첫 문단 제거
+        n = [0]
+        def loc(m):
+            n[0] += 1
+            rel = localize(m.group(1), 'press', f'{it["id"]}-{n[0]}', referer=it['url'])
+            return f'<img src="{rel or m.group(1)}"'
+        bh = re.sub(r'<img src="([^"]+)"', loc, bh)
         it['body_html'] = bh
         imgs = re.findall(r'<img src="([^"]+)"', bh)
         if imgs:
