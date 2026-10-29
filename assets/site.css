@@ -99,6 +99,7 @@ a.card:hover { background: color-mix(in srgb, var(--bg2) 85%, var(--fg) 6%); }
 .hero { padding-block: clamp(72px, 10vw, 128px); text-align: center; }
 .hero .wrap { display: flex; flex-direction: column; align-items: center; gap: 20px; }
 .hero h1 { max-width: 900px; }
+.hero h1.en { max-width: 1000px; font-size: clamp(32px, 4.6vw, 52px); }
 .hero .lead { max-width: 760px; }
 .hero .acts { display: flex; gap: 12px 24px; flex-wrap: wrap; justify-content: center; align-items: center; margin-top: 8px; }
 .crumb { font-size: 13px; color: var(--muted); display: flex; gap: 8px; padding-top: 16px; flex-wrap: wrap; }
@@ -164,6 +165,10 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .chk { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; }
 .chk input { width: 18px; height: 18px; margin-top: 4px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chipgrps { display: flex; flex-direction: column; gap: 14px; }
+.chipgrp { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+.chipgrp:first-child { border-top: 0; padding-top: 0; }
+.chipgrp .gk { font-size: 13px; font-weight: 600; color: var(--muted); }
 .chip { display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 999px; background: var(--bg2); font-size: 14px; color: var(--fg); }
 .sec.alt .chip { background: var(--bg); }
 .chip.sel { display: inline-flex; gap: 8px; cursor: pointer; }
