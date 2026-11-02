@@ -961,12 +961,10 @@ def demo_card(d):
     st = '<span class="badge live">운영 중</span>' if d.get('status') == 'live' else '<span class="badge soon">준비 중</span>'
     name = E(d['name']) + (f' <span class="muted" style="font-weight:500">· {E(d["audience"])}</span>' if d.get('audience') else '')
     media = f'<img src="{d["thumb"]}" alt="" loading="lazy">' if d.get('thumb') else f'<span class="vid-ph"><span>{E(d["name"])}</span></span>'
-    kind = {'drive': 'Google Drive', 'youtube': 'YouTube', 'playlist': 'YouTube 재생목록'}.get(d.get('kind'), '원본')
     return (f'<div class="vid" id="demo-{d["id"]}" data-embed="{E(d["embed"])}">'
             f'<button type="button" class="vid-play" aria-label="{E(d["name"])} 데모 영상 재생">{media}<span class="play"></span></button>'
             f'<div class="vid-body"><span class="m">{E(d.get("category", ""))} {st}</span><strong class="t">{name}</strong>'
-            f'<span class="small muted">{E(d.get("summary", ""))}</span>'
-            f'<a class="more" href="{E(d["url"])}" target="_blank" rel="noopener">{kind}에서 보기</a></div></div>')
+            f'<span class="small muted">{E(d.get("summary", ""))}</span></div></div>')
 
 DEMO_NOTE = f'한림 AI 교육 포털의 「한림 AI」 화면(ai.hallym.ac.kr/hallym-ai)에 등록된 서비스별 데모 영상을 자동으로 가져옵니다. <span data-demo-date>{E(DEMOS.get("fetched_at", ""))}</span> 기준 {len({d["service_id"] for d in DEMO_ITEMS})}개 서비스 · 영상 {len(DEMO_ITEMS)}건.'
 
