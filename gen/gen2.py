@@ -356,6 +356,8 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .vid iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 18px; display: block; background: #000; }
 .vid-body { display: flex; flex-direction: column; gap: 6px; } .vid-body .m { font-size: 13px; color: var(--muted); } .vid-body .t { font-size: 17px; font-weight: 600; line-height: 1.5; } .vid-body .more { font-size: 14px; }
 .vids { gap: 28px 24px; }
+.vid-ph { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: linear-gradient(135deg, #0b3473, #0079b2 60%, #00b6ad); color: #fff; font-weight: 700; font-size: 22px; letter-spacing: .02em; }
+.g3.vids .vid-play .play { width: 52px; height: 52px; margin: -26px 0 0 -26px; } .g3.vids .vid-play .play::after { left: 20px; top: 15px; border-width: 11px 0 11px 18px; }
 .art-files { margin: 24px 0; padding: 18px 22px; border-radius: 16px; background: var(--bg2); }
 .art-files strong { display: block; font-size: 14px; margin-bottom: 6px; } .art-files ul { margin: 0; padding-left: 18px; } .art-files li { margin: 4px 0; }
 /* 관리자 */
@@ -947,6 +949,27 @@ def vid_card(v):
 
 VIDEO_NOTE = f'한림대학교 유튜브 채널(youtube.com/@HALLYMNEWS)에서 제목이나 설명에 KELI 또는 켈리가 들어간 영상을 자동으로 가져옵니다. <span data-video-date>{E(VIDEOS.get("fetched_at", ""))}</span> 기준 KELI 영상 {len(VIDEOS_KELI)}건, 관련 영상 {len(VIDEOS_REL)}건.'
 
+# ------------------------------------------------------------------ 데모 영상: 한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai) 서비스별 영상 연동
+PORTAL_DEMOS = 'https://ai.hallym.ac.kr/hallym-ai'
+DEMOS = _load_json(os.path.join(OUT, 'assets', 'demos.live.json'), {"source": PORTAL_DEMOS, "fetched_at": "", "items": []})
+DEMO_ITEMS = DEMOS.get('items', [])
+DEMO_CATS = []
+for _d in DEMO_ITEMS:
+    if _d.get('category') not in DEMO_CATS: DEMO_CATS.append(_d.get('category'))
+
+def demo_card(d):
+    st = '<span class="badge live">운영 중</span>' if d.get('status') == 'live' else '<span class="badge soon">준비 중</span>'
+    name = E(d['name']) + (f' <span class="muted" style="font-weight:500">· {E(d["audience"])}</span>' if d.get('audience') else '')
+    media = f'<img src="{d["thumb"]}" alt="" loading="lazy">' if d.get('thumb') else f'<span class="vid-ph"><span>{E(d["name"])}</span></span>'
+    kind = {'drive': 'Google Drive', 'youtube': 'YouTube', 'playlist': 'YouTube 재생목록'}.get(d.get('kind'), '원본')
+    return (f'<div class="vid" id="demo-{d["id"]}" data-embed="{E(d["embed"])}">'
+            f'<button type="button" class="vid-play" aria-label="{E(d["name"])} 데모 영상 재생">{media}<span class="play"></span></button>'
+            f'<div class="vid-body"><span class="m">{E(d.get("category", ""))} {st}</span><strong class="t">{name}</strong>'
+            f'<span class="small muted">{E(d.get("summary", ""))}</span>'
+            f'<a class="more" href="{E(d["url"])}" target="_blank" rel="noopener">{kind}에서 보기</a></div></div>')
+
+DEMO_NOTE = f'한림 AI 교육 포털의 「한림 AI」 화면(ai.hallym.ac.kr/hallym-ai)에 등록된 서비스별 데모 영상을 자동으로 가져옵니다. <span data-demo-date>{E(DEMOS.get("fetched_at", ""))}</span> 기준 {len({d["service_id"] for d in DEMO_ITEMS})}개 서비스 · 영상 {len(DEMO_ITEMS)}건.'
+
 # ------------------------------------------------------------------ 홈 숫자 3 (관리자 입력 + 포털 자동 수집)
 STATS = _load_json(os.path.join(OUT, 'assets', 'stats.json'), {
     "_안내": "KELI 사무국이 관리자 화면(admin.html)에서 고치는 파일입니다. 숫자만 바꾸고 저장하면 1~2분 뒤 홈 화면에 반영됩니다. courses를 null로 두면 한림 AI 교육 포털의 AI 강좌 수를 자동으로 씁니다.",
@@ -962,6 +985,7 @@ def write_stats_files():
     json.dump(FEED, open(os.path.join(OUT, 'assets', 'events.live.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
     json.dump(PRESS, open(os.path.join(OUT, 'assets', 'press.live.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
     json.dump(VIDEOS, open(os.path.join(OUT, 'assets', 'videos.live.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+    json.dump(DEMOS, open(os.path.join(OUT, 'assets', 'demos.live.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
 
 def html_body(b):
     """게시물 본문: HTML이면 그대로, 평문이면 <p>로 감쌈"""
@@ -1040,7 +1064,7 @@ def page_index():
 <div class="head"><span class="eyebrow">HAI Ecosystems</span><h2>수업 설계부터 평가·분석까지, 19개 서비스.</h2><p class="lead">한림대학교가 직접 개발해 수업에서 검증한 뒤 KELI Marketplace에 먼저 올린 서비스입니다. 다른 대학과 기관도 도입할 수 있습니다.</p></div>
 {tabs('home-svc', [(a[0], a[1]) for a in AREAS])}
 <div class="grid g4" data-items="home-svc" style="margin-top:24px">{cards}</div>
-<div class="cta" style="margin-top:40px"><div class="acts"><a class="btn ghost" href="{DEMO_ALL}" target="_blank" rel="noopener">전체 데모 영상</a><a class="btn ghost" href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a></div></div>
+<div class="cta" style="margin-top:40px"><div class="acts"><a class="btn ghost" href="demos.html">전체 데모 영상</a><a class="btn ghost" href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a></div></div>
 </div></section>
 
 <section class="sec alt"><div class="wrap">
@@ -1136,7 +1160,7 @@ def page_services():
 <span class="eyebrow">HAI Ecosystems · Hallym AI</span>
 <h1>한림대학교가 수업에서 써 온<br>AI 교육 서비스.</h1>
 <p class="lead">직접 개발해 수업에서 검증한 뒤 KELI Marketplace에 먼저 올린 서비스입니다. 다른 대학과 기관도 도입할 수 있습니다.</p>
-<div class="acts"><a class="btn ghost" href="{DEMO_ALL}" target="_blank" rel="noopener">전체 데모 영상</a><a class="btn ghost" href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a><a class="more" href="curriculum.html">수업에 결합하는 방법</a></div>
+<div class="acts"><a class="btn ghost" href="demos.html">전체 데모 영상</a><a class="btn ghost" href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a><a class="more" href="curriculum.html">수업에 결합하는 방법</a></div>
 </div></section>
 <section class="sec" style="padding-top:0"><div class="wrap">
 <div class="row" style="margin-bottom:20px">{tabs('svc', [(a[0], a[1]) for a in AREAS])}<span class="muted small"><span data-count="svc">19개</span> 서비스</span></div>
@@ -1504,6 +1528,22 @@ def page_press(it):
 '''
     write(pr_href(it), f'{it["title"]} · KELI', body)
 
+def page_demos():
+    secs = ''
+    for cat in DEMO_CATS:
+        items = [d for d in DEMO_ITEMS if d.get('category') == cat]
+        secs += f'''
+<section class="sec" style="padding-top:0"><div class="wrap">
+<div class="row" style="margin-bottom:16px"><h2 style="font-size:26px">{E(cat)}</h2><span class="muted small">{len(items)}건</span></div>
+<div class="grid g3 vids">{''.join(demo_card(d) for d in items)}</div>
+</div></section>'''
+    body = crumb(('services.html', '서비스'), (None, '전체 데모 영상')) + f'''
+<section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap"><span class="eyebrow">HAI Ecosystems · 데모 영상</span><h1>서비스를 먼저<br>영상으로 봅니다.</h1><p class="lead">한림 AI 교육 포털에 등록된 서비스별 데모 영상을 한곳에 모았습니다. 썸네일을 누르면 이 자리에서 바로 재생됩니다.</p>
+<div class="acts"><a class="btn ghost" href="services.html">서비스 목록</a><a class="btn ghost" href="{PORTAL_DEMOS}" target="_blank" rel="noopener">한림 AI 교육 포털</a><a class="more" href="join.html#inquiry">도입 문의</a></div></div></section>{secs}
+<section class="sec" style="padding-top:0"><div class="wrap"><p class="note">{DEMO_NOTE} 영상 저작권은 한림대학교에 있습니다.</p></div></section>
+'''
+    write('demos.html', '전체 데모 영상 · KELI', body)
+
 def page_videos():
     keli = ''.join(vid_card(v) for v in VIDEOS_KELI) or '<div class="empty">아직 KELI 영상이 없습니다.</div>'
     rel = ''.join(vid_card(v) for v in VIDEOS_REL)
@@ -1527,6 +1567,7 @@ def page_search():
     idx += [(ev_href(it), it['title'], '행사 · ' + (it.get('when') or '')) for it in FEED_ITEMS]
     idx += [(pr_href(it), it['title'], '보도자료 · ' + (it.get('date') or '')) for it in PRESS_ITEMS]
     idx += [('videos.html', v['title'], '영상 · ' + (v.get('published') or v.get('published_text') or '')) for v in VIDEO_ITEMS]
+    idx += [(f'demos.html#demo-{d["id"]}', d['name'] + ' 데모 영상' + (' (' + d['audience'] + ')' if d.get('audience') else ''), '데모 영상 · ' + d.get('category', '')) for d in DEMO_ITEMS]
     idx += [(a['url'], a['title'], '아카이브 · ' + dict(ARCH_CATS)[a['cat']]) for a in ARCHIVE]
     idx += [(f'notice-{n["id"]}.html', n['title'], '공지사항 · ' + n['cat'] + ' · ' + n.get('date', '')) for n in NOTICES]
     rows = ''.join(f'<a class="li" href="{h}" data-q="{E((t + " " + d).lower())}"><span class="t">{E(t)}</span><span class="d">{E(d)}</span></a>' for h, t, d in idx)
@@ -1596,7 +1637,7 @@ def main():
     page_curriculum(); page_join(); page_archive(); page_news_hub(); page_notice(); page_events()
     for it in FEED_ITEMS: page_feed_event(it)
     for it in PRESS_ITEMS: page_press(it)
-    page_videos()
+    page_videos(); page_demos()
     page_newsletter(); page_search(); page_en()
     page_policy('privacy.html', '개인정보처리방침', 'Privacy'); page_policy('terms.html', '이용약관', 'Terms')
     page_admin()

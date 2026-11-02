@@ -3,6 +3,7 @@
 (function () {
   'use strict';
   var CFG = window.KELI_ADMIN || { repo: 'yoong0520/keli-site', branch: 'main', site: './', workflow: 'pages.yml' };
+  if (location.protocol !== 'file:') CFG.site = new URL('./', location.href).href;   // 주소(도메인)가 바뀌어도 그대로 동작
   var API = 'https://api.github.com';
   var qs = function (s, r) { return (r || document).querySelector(s); };
   var qsa = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
