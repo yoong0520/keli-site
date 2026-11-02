@@ -2,6 +2,7 @@ name: Deploy KELI site to GitHub Pages
 on:
   push:
     branches: [main]
+    paths-ignore: ['cert/**']   # 수료증 폴더만 바뀐 커밋은 재배포하지 않음
   schedule:
     - cron: '17 18 * * *'   # 매일 03:17 KST — 포털 AI 강좌 수 재수집 후 재배포
   workflow_dispatch:
@@ -30,6 +31,8 @@ jobs:
         run: python3 scripts/fetch_press.py
       - name: Fetch KELI videos from YouTube @HALLYMNEWS
         run: python3 scripts/fetch_videos.py
+      - name: Build site from content/*.json and live feeds (gen/gen2.py)
+        run: python3 gen/gen2.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

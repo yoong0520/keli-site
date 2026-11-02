@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>홈 숫자 입력 ⁠·⁠ KELI 관리자</title>
+<title>KELI 관리자</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="KELI는 한림대학교가 개발하고 수업에서 검증한 AI 교육 서비스를 국내외 대학·기관에 제공하고 함께 확산하는 고등교육 AI 공유 플랫폼입니다.">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
@@ -23,34 +23,48 @@
 </header>
 <main id="main">
 
-<section class="hero" style="padding-top:48px;padding-bottom:32px"><div class="wrap"><span class="eyebrow">관리자 ⁠·⁠ 시연</span><h1>홈 숫자 입력.</h1><p class="lead">AI 교육 서비스 수와 참여 기관 수는 사무국이 여기서 정합니다.<br>AI 결합 강좌 수는 한림 AI 교육 포털에서 매일 자동으로 가져옵니다.</p></div></section>
-<section class="sec" style="padding-top:0"><div class="wrap narrow" style="max-width:900px">
-<div class="grid g2" style="gap:48px;align-items:start">
-<form class="form" id="stats-form" novalidate>
-<div class="grid g2" style="gap:16px">
-<div class="field"><label for="s-services">AI 교육 서비스 수</label><input id="s-services" name="services" type="number" min="0" value="19"></div>
-<div class="field"><label for="s-univ">참여 대학 수</label><input id="s-univ" name="universities" type="number" min="0" value="23"></div>
-<div class="field"><label for="s-comp">참여 에듀테크 기업 수</label><input id="s-comp" name="companies" type="number" min="0" value="31"></div>
-<div class="field"><label for="s-courses">AI 결합 강좌 수</label><input id="s-courses" name="courses" type="number" min="0" placeholder="비워 두면 포털 값 자동"><span class="hint">현재 포털 값: <strong data-stat="courses_live">1,275</strong> (<span data-stat="courses_date">2026. 10. 29.</span> 수집)</span></div>
-</div>
-<div class="field"><label for="s-basis">기준 설명</label><input id="s-basis" name="basis" type="text" value="2026. 10. KELI 리플렛 · 포털 파트너 목록"></div>
-<div class="acts"><button class="btn" type="button" id="s-copy">설정 JSON 복사</button><a class="btn ghost" href="https://github.com/yoong0520/keli-site/edit/main/assets/stats.json" target="_blank" rel="noopener">GitHub⁠에서 저장하기</a></div>
-<div class="done" id="s-done"><span>복사되었습니다.<br>GitHub 편집 화면에 붙여 넣고 "Commit changes"⁠를 누르면 1⁠~⁠2⁠분 뒤 홈에 반영됩니다.</span></div>
+<section class="sec" style="padding-top:40px;padding-bottom:80px"><div class="wrap">
+<div class="row" style="margin-bottom:28px;align-items:center"><div><span class="eyebrow">KELI 관리자</span><h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 0">글을 올리고, 고치고, 지웁니다.</h1></div><div class="acts" style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn ghost sm" href="index.html" target="_blank" rel="noopener">사이트 보기</a><button class="btn ghost sm" type="button" id="adm-logout" hidden>로그아웃</button></div></div>
+
+<div id="adm-login" class="login" hidden>
+<form class="form" id="login-form" novalidate>
+<p class="lead" style="margin:0 0 4px;text-align:left">GitHub 토큰으로 들어갑니다.</p>
+<p class="small muted" style="margin:0">이 사이트의 글은 GitHub 저장소⁠(yoong0520/keli⁠-⁠site)⁠의 파일에 저장되고, 저장하면 1⁠~⁠2⁠분 뒤 자동으로 배포됩니다.<br>그래서 저장소에 쓸 수 있는 토큰이 필요합니다.<br>토큰은 이 브라우저에만 저장되고 어디에도 전송되지 않습니다⁠(GitHub 호출 제외).</p>
+<div class="field"><label for="tok">GitHub 토큰 (Fine⁠-⁠grained personal access token)</label><input id="tok" type="password" autocomplete="off" placeholder="github_pat_…"><span class="msg" id="tok-msg"></span></div>
+<label class="chk"><input type="checkbox" id="tok-keep" checked><span>이 브라우저에 기억하기⁠(공용 PC⁠에서는 끄세요)</span></label>
+<div class="acts"><button class="btn" type="submit" id="tok-go">들어가기</button><a class="more" href="#help" id="tok-help">토큰 만드는 방법</a></div>
 </form>
-<div>
-<div class="card"><span class="k">미리보기</span><div class="grid g3" style="gap:12px;margin-top:8px">
-<div><span class="num" id="p-services" style="font-size:32px">19</span><p class="small muted">AI 교육 서비스</p></div>
-<div><span class="num" id="p-partners" style="font-size:32px">54</span><p class="small muted">참여 기관</p></div>
-<div><span class="num" id="p-courses" style="font-size:32px">1,275</span><p class="small muted">AI 결합 강좌</p></div>
-</div></div>
-<div class="card" style="margin-top:16px"><span class="k">동작 방식</span>
-<p>이 화면은 시연용입니다.<br>실제 구축에서는 CMS 관리자 화면의 숫자 입력 필드 2⁠개⁠(서비스⁠·⁠기관)⁠와 포털 연동 1⁠개⁠(강좌)⁠로 대체합니다.</p>
-<p>지금은 assets/stats.json 파일이 설정값이고, GitHub⁠에서 저장하면 자동 배포됩니다.<br>강좌 수는 배포 때마다⁠(매일 1⁠회 + 수정 시) ai.hallym.ac.kr⁠에서 다시 읽어 assets/stats.live.json⁠에 기록합니다.</p>
+<div class="card" style="margin-top:20px" id="help-card">
+<span class="k">토큰 만드는 방법 (한 번만)</span>
+<ol style="padding-left:20px;margin:8px 0 0;font-size:15px">
+<li>GitHub 로그인 → 오른쪽 위 프로필 → Settings → 왼쪽 맨 아래 Developer settings → Personal access tokens → Fine⁠-⁠grained tokens → Generate new token</li>
+<li>Token name: KELI 관리자 / Expiration: 1⁠년⁠(또는 원하는 기간)</li>
+<li>Repository access: Only select repositories → <strong>yoong0520/keli⁠-⁠site</strong> 선택</li>
+<li>Permissions → Repository permissions: <strong>Contents: Read and write</strong>, <strong>Actions: Read and write</strong> (나머지는 그대로)</li>
+<li>Generate token → 나온 문자열⁠(github_pat_⁠…⁠)⁠을 위 칸에 붙여 넣기</li>
+</ol>
+<p class="small muted" style="margin:10px 0 0">저장소가 다른 사람 소유이면 그 사람이 유은님 계정을 저장소 Collaborator⁠(Write)⁠로 먼저 초대해야 합니다.<br>토큰을 잃어버리면 같은 방법으로 새로 만들면 됩니다.</p>
 </div>
+</div>
+
+<div id="adm-app" class="adm" hidden>
+<nav class="adm-nav" aria-label="관리자 메뉴">
+<a href="#home" data-view="home">대시보드</a>
+<a href="#notices" data-view="notices">공지사항 <span class="cnt" data-cnt="notices"></span></a>
+<a href="#archive" data-view="archive">아카이브 <span class="cnt" data-cnt="archive"></span></a>
+<a href="#stats" data-view="stats">홈 숫자</a>
+<a href="#feeds" data-view="feeds">자동 연동 글</a>
+<a href="#help" data-view="help">도움말</a>
+</nav>
+<div class="adm-main">
+<div class="deploy" id="deploy" data-state="idle"><span class="dot"></span><span id="deploy-text">배포 상태를 확인하는 중⁠…⁠</span><a id="deploy-link" class="more" href="https://github.com/yoong0520/keli-site/actions" target="_blank" rel="noopener" style="margin-left:auto">배포 기록</a></div>
+<div id="view" style="margin-top:20px"></div>
 </div>
 </div>
 </div></section>
-<textarea id="s-json" hidden></textarea>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true"><div class="box" id="modal-box"></div></div>
+<script>window.KELI_ADMIN={repo:"yoong0520/keli-site",branch:"main",site:"https://yoong0520.github.io/keli-site/",workflow:"pages.yml"};</script>
 
 </main>
 <footer class="ftr"><div class="wrap">
@@ -62,8 +76,9 @@
 <div class="col"><strong>바로가기</strong><a href="services.html">서비스</a><a href="join.html#inquiry">도입 문의</a><a href="archive.html">아카이브</a><a href="newsletter.html">뉴스레터 구독</a></div>
 <div class="col"><strong>관련 사이트</strong><a href="https://www.hallym.ac.kr" target="_blank" rel="noopener">한림대학교</a><a href="https://aiadvcenter.csedu4all.com" target="_blank" rel="noopener">AI⁠교육확산센터</a><a href="https://ai.hallym.ac.kr" target="_blank" rel="noopener">한림 AI 교육 포털</a><a href="https://haimanual.csedu4all.com" target="_blank" rel="noopener">HAI 활용 매뉴얼</a></div>
 </div>
-<div class="bot"><span>주관 한림대학교 ⁠·⁠ 후원 교육부 글로컬대학30 ⁠·⁠ © Hallym University</span><span><a href="privacy.html">개인정보처리방침</a> ⁠·⁠ <a href="terms.html">이용약관</a> ⁠·⁠ <a href="en.html">English</a></span></div>
+<div class="bot"><span>주관 한림대학교 ⁠·⁠ 후원 교육부 글로컬대학30 ⁠·⁠ © Hallym University</span><span><a href="privacy.html">개인정보처리방침</a> ⁠·⁠ <a href="terms.html">이용약관</a> ⁠·⁠ <a href="en.html">English</a> ⁠·⁠ <a href="admin.html">관리자</a></span></div>
 </div></footer>
-<script src="assets/site.js"></script>
+<script>window.KELI_HIDDEN={"events": [], "press": [], "videos": []};</script>
+<script src="assets/site.js"></script><script src="assets/admin.js"></script>
 </body>
 </html>

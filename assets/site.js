@@ -56,24 +56,12 @@
       if(s.companies!=null) setStat('companies',s.companies);
       if(s.universities!=null&&s.companies!=null) setStat('partners',Number(s.universities)+Number(s.companies));
       if(s.courses!=null&&s.courses!==''){ setStat('courses',s.courses); setStat('courses_note','사무국 입력값'); }
-      var f=qs('#stats-form'); if(f){ ['services','universities','companies','courses','basis'].forEach(function(k){ var i=qs('[name="'+k+'"]',f); if(i&&s[k]!=null) i.value=s[k]; }); }
     }).catch(function(){}).then(function(){ return load('assets/stats.live.json'); }).then(function(l){
       if(l&&l.courses){ setStat('courses_live',l.courses); setStat('courses_date',l.fetched_at||''); if(!(manual&&manual.courses!=null&&manual.courses!=='')){ setStat('courses',l.courses); setStat('courses_note','한림 AI 교육 포털 '+(l.fetched_at||'')+' 기준'); } }
     }).catch(function(){}).then(countUp);
-    // admin demo page
-    var f=qs('#stats-form');
-    if(f){
-      function num(k){ var v=qs('[name="'+k+'"]',f).value.trim(); return v===''?null:Number(v); }
-      function preview(){ var s=num('services'), u=num('universities')||0, c=num('companies')||0, k=num('courses'); qs('#p-services').textContent=fmt(s||0); qs('#p-partners').textContent=fmt(u+c); var live=qs('[data-stat="courses_live"]'); qs('#p-courses').textContent=k!=null?fmt(k):(live?live.textContent:'—'); }
-      f.addEventListener('input',preview);
-      qs('#s-copy').addEventListener('click',function(){
-        var out={ "_안내": "KELI 사무국이 직접 고치는 파일입니다. 숫자만 바꾸고 저장하면 1~2분 뒤 홈 화면에 반영됩니다. courses를 null로 두면 한림 AI 교육 포털의 AI 강좌 수를 자동으로 씁니다.", services:num('services'), universities:num('universities'), companies:num('companies'), courses:num('courses'), basis:qs('[name="basis"]',f).value };
-        var t=JSON.stringify(out,null,2); var d=qs('#s-done');
-        function ok(){ if(d) d.setAttribute('data-show','1'); }
-        if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok,function(){ var ta=qs('#s-json'); ta.hidden=false; ta.value=t; ta.select(); }); } else { var ta=qs('#s-json'); ta.hidden=false; ta.value=t; ta.select(); }
-      });
-    }
   })();
+  // 관리자가 숨긴 자동 연동 글(content/hidden.json → window.KELI_HIDDEN)은 다시 그릴 때도 뺀다
+  function hid(kind, items){ var h=((window.KELI_HIDDEN||{})[kind])||[]; return items.filter(function(it){ return h.indexOf(String(it.id))<0; }); }
   // events feed: AI교육확산센터 [KELI] 글 (assets/events.live.json) → [data-events] 다시 그리기
   (function(){
     var boxes=qsa('[data-events]'); if(!boxes.length||location.protocol==='file:') return;
@@ -88,7 +76,7 @@
     function row(it,p){ return '<a class="li li-ev" href="'+href(it,p)+'"'+ext(it,p)+'>'+th(it,'li-thumb')+'<span><span class="m">'+esc((it.badges||['행사'])[0])+' · '+esc(it.place)+'</span><br><span class="t">'+esc(it.title)+'</span><br><span class="m">'+esc(it.when)+'</span></span><span class="d">'+d(it)+' '+badge(it)+'</span></a>'; }
     function short(it,p){ return '<a class="li" href="'+href(it,p)+'"'+ext(it,p)+'><span><span class="m">'+esc((it.badges||['행사'])[0])+'</span><br><span class="t">'+esc(it.title)+'</span></span><span class="d">'+d(it)+'</span></a>'; }
     fetch('assets/events.live.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(f){
-      var items=f.items||[]; if(!items.length) return;
+      var items=hid('events', f.items||[]); if(!items.length) return;
       boxes.forEach(function(b){ var p=(b.getAttribute('data-pages')||'').split(','); var kind=b.getAttribute('data-events');
         if(kind==='home') b.innerHTML=card(items[0],p);
         else if(kind==='rows') b.innerHTML=items.slice(0,3).map(function(it){ return short(it,p); }).join('');
@@ -107,7 +95,7 @@
     function ext(it,p){ return p.indexOf(String(it.id))>-1 ? '' : ' target="_blank" rel="noopener"'; }
     function row(it,p,sum){ return '<a class="li" href="'+href(it,p)+'"'+ext(it,p)+'><span><span class="m">보도자료'+(it.category?' · '+esc(it.category):'')+'</span><br><span class="t">'+esc(it.title)+'</span>'+(sum&&it.summary?'<br><span class="m">'+esc(it.summary.slice(0,90))+'</span>':'')+'</span><span class="d">'+esc(it.date)+'</span></a>'; }
     fetch('assets/press.live.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(f){
-      var items=f.items||[]; if(!items.length) return;
+      var items=hid('press', f.items||[]); if(!items.length) return;
       boxes.forEach(function(b){ var p=(b.getAttribute('data-pages')||'').split(','); var kind=b.getAttribute('data-press');
         if(kind==='rows') b.innerHTML=items.slice(0,3).map(function(it){ return row(it,p,false); }).join('');
         else if(kind==='list') b.innerHTML=items.map(function(it){ return row(it,p,true); }).join('');
@@ -124,7 +112,7 @@
     function card(v){ var meta=[(v.group==='keli'?'KELI 영상':'HAI · 소프트랩'), v.published||v.published_text||'', v.views||''].filter(Boolean).join(' · ');
       return '<div class="vid" data-vid="'+esc(v.id)+'" data-embed="'+esc(v.embed)+'"><button type="button" class="vid-play" aria-label="'+esc(v.title)+' 재생"><img src="'+esc(v.thumb)+'" alt="" loading="lazy"><span class="play"></span>'+(v.length?'<span class="len">'+esc(v.length)+'</span>':'')+'</button><div class="vid-body"><span class="m">'+esc(meta)+'</span>'+(v.is_live_recording?'<span class="badge" style="margin-left:6px">실시간 녹화</span>':'')+'<strong class="t">'+esc(v.title)+'</strong><a class="more" href="'+esc(v.url)+'" target="_blank" rel="noopener">YouTube에서 보기</a></div></div>'; }
     fetch('assets/videos.live.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(f){
-      var items=f.items||[]; if(!items.length) return; var keli=items.filter(function(v){ return v.group==='keli'; }), rel=items.filter(function(v){ return v.group!=='keli'; });
+      var items=hid('videos', f.items||[]); if(!items.length) return; var keli=items.filter(function(v){ return v.group==='keli'; }), rel=items.filter(function(v){ return v.group!=='keli'; });
       boxes.forEach(function(b){ var k=b.getAttribute('data-videos');
         if(k==='hub') b.innerHTML=keli.concat(rel).slice(0,2).map(card).join('');
         else if(k==='keli') b.innerHTML=keli.map(card).join('')||'<div class="empty">아직 KELI 영상이 없습니다.</div>';

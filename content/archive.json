@@ -1,0 +1,105 @@
+{
+  "_안내": "아카이브 자료 목록. 관리자 화면(admin.html)에서 고칩니다. cat: case(실증 사례집)·trend(기술 동향·연구)·manual(매뉴얼·소개자료), type: pdf·video·link·image",
+  "items": [
+    {
+      "id": "a1",
+      "cat": "case",
+      "type": "pdf",
+      "title": "수업적용·설계·운영 사례",
+      "org": "KELI 사무국",
+      "date": "2026.07.24",
+      "url": "https://keliedu.org/keli/contents/archive/business",
+      "published": true
+    },
+    {
+      "id": "a2",
+      "cat": "case",
+      "type": "pdf",
+      "title": "AI 활용 수업 사례집 — C 프로그래밍 (한림대학교)",
+      "org": "한림대학교",
+      "date": "2026.06.16",
+      "url": "https://keliedu.org/keli/contents/archive/business",
+      "published": true
+    },
+    {
+      "id": "a3",
+      "cat": "case",
+      "type": "pdf",
+      "title": "AI 활용 수업 사례집 — 원가관리회계 (한림대학교)",
+      "org": "한림대학교",
+      "date": "2026.06.16",
+      "url": "https://keliedu.org/keli/contents/archive/business",
+      "published": true
+    },
+    {
+      "id": "a4",
+      "cat": "trend",
+      "type": "pdf",
+      "title": "에듀테크 솔루션 분석 보고서",
+      "org": "KELI 사무국",
+      "date": "2026.07.23",
+      "url": "https://keliedu.org/keli/contents/archive/technic",
+      "published": true
+    },
+    {
+      "id": "a5",
+      "cat": "manual",
+      "type": "link",
+      "title": "HAI 활용 매뉴얼 사이트",
+      "org": "한림대학교 AI교육확산센터",
+      "date": "2026",
+      "url": "https://haimanual.csedu4all.com",
+      "published": true
+    },
+    {
+      "id": "a6",
+      "cat": "manual",
+      "type": "pdf",
+      "title": "한림대학교 교수자를 위한 AI 활용 가이드라인",
+      "org": "교육혁신센터",
+      "date": "2026",
+      "url": "https://ai.hallym.ac.kr/media/uploads/guides/29aa9e48e59f49b695c81b09c000caa6.pdf",
+      "published": true
+    },
+    {
+      "id": "a7",
+      "cat": "manual",
+      "type": "pdf",
+      "title": "HTHT 기반 생성형 AI 결합 교과목 수업 가이드북 ver 1.5",
+      "org": "교육혁신센터",
+      "date": "2026",
+      "url": "https://ai.hallym.ac.kr/media/uploads/guides/7a53ea4f0683488c8d74b873e62de7fd.pdf",
+      "published": true
+    },
+    {
+      "id": "a8",
+      "cat": "manual",
+      "type": "pdf",
+      "title": "AI 융합교육 활성화를 위한 교육과정 운영 계획",
+      "org": "한림대학교",
+      "date": "2026",
+      "url": "https://ai.hallym.ac.kr/media/uploads/guides/d4ce49e79df9428abbe587634ce096ba.pdf",
+      "published": true
+    },
+    {
+      "id": "a9",
+      "cat": "manual",
+      "type": "image",
+      "title": "KELI 소개 리플렛 (국문)",
+      "org": "KELI 사무국",
+      "date": "2026.10",
+      "url": "assets/img/keli-leaflet.jpg",
+      "published": true
+    },
+    {
+      "id": "a10",
+      "cat": "manual",
+      "type": "video",
+      "title": "HAI Ecosystems 전체 데모 영상",
+      "org": "KELI 사무국",
+      "date": "2026",
+      "url": "https://keliedu.org/keli/partners/video",
+      "published": true
+    }
+  ]
+}
