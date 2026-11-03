@@ -428,9 +428,23 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .login { max-width: 560px; margin: 0 auto; }
 .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font-size: 14px; } .kv dt { color: var(--muted); } .kv dd { margin: 0; }
 @media (max-width: 860px) { .adm { grid-template-columns: 1fr; gap: 20px; } .adm-nav { position: static; flex-direction: row; overflow-x: auto; padding-bottom: 4px; } .adm-nav a { white-space: nowrap; } .adm .li { grid-template-columns: 1fr; } .adm .li .acts { justify-content: flex-start; } }
+.mega { position: absolute; left: 0; right: 0; top: 100%; background: var(--bg); border-bottom: 1px solid var(--line); box-shadow: 0 24px 48px rgba(0,0,0,.10); z-index: 40; }
+.mega-inner { display: grid; grid-template-columns: 220px 1fr; gap: 40px; padding: 28px 16px 34px; }
+.mega-intro { background: linear-gradient(135deg, #0b3473, #0079b2); color: #fff; border-radius: 20px; padding: 24px 22px; display: flex; flex-direction: column; gap: 10px; align-self: start; }
+.mega-intro strong { font-size: 22px; letter-spacing: .04em; } .mega-intro p { margin: 0; font-size: 14px; line-height: 1.6; opacity: .92; } .mega-intro .btn { align-self: flex-start; margin-top: 6px; background: #fff; color: #0b3473; }
+.mega-cols { display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; }
+.mega-col-title { display: block; font-size: 16px; font-weight: 700; color: var(--fg); padding-bottom: 10px; margin-bottom: 8px; border-bottom: 2px solid var(--fg); }
+.mega-col-title:hover { text-decoration: none; color: var(--accent); border-color: var(--accent); }
+.mega-col ul { list-style: none; margin: 0; padding: 0; } .mega-col li a { display: block; padding: 6px 0; font-size: 15px; color: var(--muted); line-height: 1.5; } .mega-col li a:hover { color: var(--fg); text-decoration: none; }
+.mega-col.hot .mega-col-title { color: var(--accent); border-color: var(--accent); }
+.hdr { position: sticky; }
+.mnav .mgrp { padding: 6px 0; border-bottom: 1px solid var(--line); } .mnav .mtop { font-weight: 700; } .mnav .msub { display: flex; flex-wrap: wrap; gap: 0 18px; padding: 0 0 6px 12px; } .mnav .msub a { font-size: 15px; color: var(--muted); padding: 4px 0; }
+@media (max-width: 1024px) { .mega-inner { grid-template-columns: 1fr; gap: 20px; } .mega-intro { display: none; } .mega-cols { gap: 20px; } }
+@media (max-width: 860px) { .mega { display: none !important; } }
 .cover { margin: 0 0 28px; } .cover img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 20px; display: block; background: var(--bg2); }
 .li-thumb { display: block; width: 128px; aspect-ratio: 16 / 10; border-radius: 12px; overflow: hidden; background: var(--bg2); flex: 0 0 auto; } .li-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .li.li-ev { grid-template-columns: auto 1fr auto; }
+.li-thumb-ph { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0b3473, #0079b2); color: #fff; font-size: 12px; font-weight: 700; text-align: center; padding: 6px; }
 @media (max-width: 640px) { .li.li-ev { grid-template-columns: 1fr; } .li-thumb { width: 100%; } }
 .card-thumb { display: block; margin: -32px -28px 4px; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 20px 20px 0 0; background: var(--bg2); } .card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .art { margin-top: 32px; font-size: 17px; line-height: 1.85; }
@@ -607,21 +621,25 @@ JS = r"""
       qsa('[data-ev-status]').forEach(function(el){ var id=(el.closest('[data-ev]')||{}).getAttribute? el.closest('[data-ev]').getAttribute('data-ev'):null; var it=items.filter(function(x){ return String(x.id)===id; })[0]; if(it){ var s=status(it); el.textContent=s[1]; el.className='badge '+(s[0]==='upcoming'?'live':''); } });
     }).catch(function(){});
   })();
-  // press feed: 한림대 보도자료 KELI·켈리 글 (assets/press.live.json) → [data-press] 다시 그리기
+  // press feed: 한림대 보도자료(press.live.json) + 한국대학신문 기사(unn.live.json) 병합 → [data-press] 다시 그리기
   (function(){
     var boxes=qsa('[data-press]'); if(!boxes.length||location.protocol==='file:') return;
     function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-    function href(it,p){ return p.indexOf(String(it.id))>-1 ? 'press-'+it.id+'.html' : it.url; }
-    function ext(it,p){ return p.indexOf(String(it.id))>-1 ? '' : ' target="_blank" rel="noopener"'; }
-    function row(it,p,sum){ return '<a class="li" href="'+href(it,p)+'"'+ext(it,p)+'><span><span class="m">보도자료'+(it.category?' · '+esc(it.category):'')+'</span><br><span class="t">'+esc(it.title)+'</span>'+(sum&&it.summary?'<br><span class="m">'+esc(it.summary.slice(0,90))+'</span>':'')+'</span><span class="d">'+esc(it.date)+'</span></a>'; }
-    fetch('assets/press.live.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(f){
-      var items=hid('press', f.items||[]); if(!items.length) return;
-      boxes.forEach(function(b){ var p=(b.getAttribute('data-pages')||'').split(','); var kind=b.getAttribute('data-press');
-        if(kind==='rows') b.innerHTML=items.slice(0,3).map(function(it){ return row(it,p,false); }).join('');
-        else if(kind==='list') b.innerHTML=items.map(function(it){ return row(it,p,true); }).join('');
+    function href(it,p){ return it.src==='unn' ? it.url : (p.indexOf(String(it.id))>-1 ? 'press-'+it.id+'.html' : it.url); }
+    function ext(it,p){ return (it.src==='unn' || p.indexOf(String(it.id))<0) ? ' target="_blank" rel="noopener"' : ''; }
+    function th(it){ return it.thumb ? '<span class="li-thumb"><img src="'+esc(it.thumb)+'" alt="" loading="lazy"></span>' : '<span class="li-thumb li-thumb-ph"><span>'+(it.src==='unn'?'한국대학신문':'한림대학교')+'</span></span>'; }
+    function meta(it){ return it.src==='unn' ? '언론 보도 · 한국대학신문'+(it.reporter?' · '+esc(it.reporter):'') : '보도자료 · 한림대학교'+(it.category?' · '+esc(it.category):''); }
+    function row(it,p,sum){ return '<a class="li li-ev" href="'+href(it,p)+'"'+ext(it,p)+'>'+th(it)+'<span><span class="m">'+meta(it)+'</span><br><span class="t">'+esc(it.title)+'</span>'+(sum&&it.summary?'<br><span class="m">'+esc(it.summary.slice(0,90))+'</span>':'')+'</span><span class="d">'+esc(it.date||'')+'</span></a>'; }
+    function load(u){ return fetch(u,{cache:'no-store'}).then(function(r){ return r.ok ? r.json() : {items:[]}; }).catch(function(){ return {items:[]}; }); }
+    Promise.all([load('assets/press.live.json'), load('assets/unn.live.json')]).then(function(fs){
+      var a=hid('press', fs[0].items||[]), b=hid('unn', (fs[1].items||[]).map(function(x){ x.src='unn'; return x; }));
+      var items=a.concat(b).sort(function(x,y){ return (y.date||'').localeCompare(x.date||''); }); if(!items.length) return;
+      boxes.forEach(function(bx){ var p=(bx.getAttribute('data-pages')||'').split(','); var kind=bx.getAttribute('data-press');
+        if(kind==='rows') bx.innerHTML=items.slice(0,3).map(function(it){ return row(it,p,false); }).join('');
+        else if(kind==='list') bx.innerHTML=items.map(function(it){ return row(it,p,true); }).join('');
       });
-      var fd=qs('[data-press-date]'); if(fd&&f.fetched_at) fd.textContent=f.fetched_at;
-    }).catch(function(){});
+      var fd=qs('[data-press-date]'); if(fd&&fs[0].fetched_at) fd.textContent=fs[0].fetched_at;
+    });
   })();
   // videos: 클릭하면 그 자리에서 YouTube 재생 (처음엔 썸네일만 → 데이터 절약)
   function wirePlay(root){ qsa('.vid-play', root||document).forEach(function(b){ if(b._wired) return; b._wired=true; b.addEventListener('click',function(){ var v=b.closest('.vid'); var f=document.createElement('iframe'); f.src=v.getAttribute('data-embed'); f.title=b.getAttribute('aria-label')||'영상'; f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'; f.setAttribute('allowfullscreen',''); b.replaceWith(f); }); }); }
@@ -642,6 +660,23 @@ JS = r"""
       wirePlay();
     }).catch(function(){});
   })();
+  // mega menu: 상단 메뉴에 올리거나(마우스) 누르면(터치) 전체 메뉴 펼침
+  (function(){
+    var mega=qs('#mega'), hdr=qs('.hdr'); if(!mega||!hdr) return;
+    var navLinks=qsa('.nav a[data-menu]'), timer=null, coarse=window.matchMedia&&window.matchMedia('(pointer: coarse)').matches;
+    function open(key){ clearTimeout(timer); mega.hidden=false; qsa('.mega-col',mega).forEach(function(c){ c.classList.toggle('hot', c.getAttribute('data-menu')===key); }); navLinks.forEach(function(a){ a.setAttribute('aria-expanded', a.getAttribute('data-menu')===key?'true':'false'); }); }
+    function close(){ clearTimeout(timer); timer=setTimeout(function(){ mega.hidden=true; navLinks.forEach(function(a){ a.setAttribute('aria-expanded','false'); }); },160); }
+    navLinks.forEach(function(a){
+      a.setAttribute('aria-haspopup','true'); a.setAttribute('aria-expanded','false');
+      a.addEventListener('mouseenter',function(){ if(!coarse) open(a.getAttribute('data-menu')); });
+      a.addEventListener('focus',function(){ open(a.getAttribute('data-menu')); });
+      a.addEventListener('click',function(e){ if(window.innerWidth<=860) return; var k=a.getAttribute('data-menu'); var hot=qs('.mega-col.hot',mega); if(mega.hidden||!hot||hot.getAttribute('data-menu')!==k){ e.preventDefault(); open(k); } });
+    });
+    qs('.nav').addEventListener('mouseleave', close); mega.addEventListener('mouseenter', function(){ clearTimeout(timer); }); mega.addEventListener('mouseleave', close);
+    hdr.addEventListener('focusout', function(e){ if(!hdr.contains(e.relatedTarget)) close(); });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ mega.hidden=true; } });
+    document.addEventListener('click', function(e){ if(!hdr.contains(e.target)) mega.hidden=true; });
+  })();
   // search
   var si=qs('#q'); if(si){ var rows=qsa('#results [data-q]'), rc=qs('#rc'); function run(){ var v=si.value.trim().toLowerCase(), n=0; rows.forEach(function(r){ var on=!v||r.getAttribute('data-q').indexOf(v)>-1; r.hidden=!on; if(on)n++; }); if(rc) rc.textContent=n+'건'; } si.addEventListener('input',run); var q0=p.get('q'); if(q0){ si.value=q0; } run(); }
 })();
@@ -649,15 +684,28 @@ JS = r"""
 
 # ------------------------------------------------------------------ 공통 조각
 NAV = [('about.html', 'KELI 소개'), ('services.html', '서비스'), ('join.html', '참여·도입'), ('archive.html', '아카이브'), ('news.html', '소식')]
-NEWS_PAGES = {'news.html', 'notice.html', 'events.html', 'newsletter.html'}
+NEWS_PAGES = {'news.html', 'notice.html', 'events.html', 'newsletter.html', 'videos.html'}
+# 상단 메뉴를 누르거나 올리면 펼쳐지는 전체 메뉴(메가 메뉴). 각 메뉴 아래 게시판·섹션 바로가기
+MEGA = [
+    ('about.html', 'KELI 소개', [('about.html#offer', '무엇을 제공하나'), ('about.html#why', '왜 KELI인가'), ('about.html#vision', '비전'), ('about.html#structure', '구조 · 참여 기관'), ('about.html#office', '사무국 · 연락처'), ('en.html', 'English')]),
+    ('services.html', '서비스', [('services.html', 'HAI Ecosystems 19'), ('services.html#platform', '통합 플랫폼'), ('services.html#career', '진로 · 연구'), ('services.html#courseware', '전공 코스웨어'), ('services.html#teaching', '학습 · 수업 지원'), ('services.html#analytics', '분석 · 데이터'), ('services.html#admin', '행정 · 평가'), ('demos.html', '전체 데모 영상'), ('curriculum.html', '수업 6단계와 서비스')]),
+    ('join.html', '참여 · 도입', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의'), ('newsletter.html', '뉴스레터 구독')]),
+    ('archive.html', '아카이브', [('archive.html#case', '실증 사례집'), ('archive.html#trend', '기술 동향 · 연구'), ('archive.html#manual', '매뉴얼 · 소개자료')]),
+    ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료'), ('search.html', '검색')]),
+]
 
 def header(current):
     def on(h):
         if h == 'news.html' and current in NEWS_PAGES: return ' class="on"'
         if h == 'services.html' and (current.startswith('service') or current == 'curriculum.html'): return ' class="on"'
         return ' class="on"' if h == current else ''
-    links = ''.join(f'<a href="{h}"{on(h)}>{t}</a>' for h, t in NAV)
-    mlinks = ''.join(f'<a href="{h}">{t}</a>' for h, t in NAV) + '<a href="search.html">검색</a><a href="en.html">English</a>'
+    links = ''.join(f'<a href="{h}"{on(h)} data-menu="{h}">{t}</a>' for h, t in NAV)
+    mlinks = ''.join(f'<div class="mgrp"><a class="mtop" href="{h}">{t}</a><div class="msub">' + ''.join(f'<a href="{sh}">{st}</a>' for sh, st in subs) + '</div></div>' for h, t, subs in MEGA) + '<div class="mgrp"><div class="msub"><a href="search.html">검색</a><a href="en.html">English</a><a href="join.html#inquiry">도입 문의</a></div></div>'
+    cols = ''.join(f'<div class="mega-col" data-menu="{h}"><a class="mega-col-title" href="{h}">{t}</a><ul>' + ''.join(f'<li><a href="{sh}">{st}</a></li>' for sh, st in subs) + '</ul></div>' for h, t, subs in MEGA)
+    mega = f'''<div class="mega" id="mega" hidden><div class="wrap mega-inner">
+<div class="mega-intro"><strong>KELI</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="btn sm" href="join.html#inquiry">도입 문의</a></div>
+<div class="mega-cols">{cols}</div>
+</div></div>'''
     return f'''<header class="hdr"><div class="wrap bar">
 <a class="brand" href="index.html" aria-label="KELI 홈">KELI</a>
 <nav class="nav" aria-label="주요 메뉴">{links}</nav>
@@ -668,6 +716,7 @@ def header(current):
 <button class="burger" aria-label="메뉴 열기" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
 </div></div>
 <nav class="mnav wrap" data-open="0" aria-label="모바일 메뉴">{mlinks}</nav>
+{mega}
 </header>'''
 
 FOOTER = f'''<footer class="ftr"><div class="wrap">
@@ -694,7 +743,7 @@ def doc(fname, title, body, desc='KELI는 한림대학교가 개발하고 수업
 {body}
 </main>
 {FOOTER}
-<script>window.KELI_HIDDEN={json.dumps({k: [str(x) for x in HIDDEN.get(k, [])] for k in ('events', 'press', 'videos')}, ensure_ascii=False)};</script>
+<script>window.KELI_HIDDEN={json.dumps({k: [str(x) for x in HIDDEN.get(k, [])] for k in ('events', 'press', 'videos', 'unn')}, ensure_ascii=False)};</script>
 <script src="assets/site.js"></script>{'<script src="assets/admin.js"></script>' if fname == 'admin.html' else ''}'''
     if fname == 'admin.html':
         head_bits = head_bits.replace('<meta name="description"', '<meta name="robots" content="noindex, nofollow">\n<meta name="description"', 1)
@@ -955,15 +1004,28 @@ def _load_press():
 PRESS = _load_press()
 PRESS_ITEMS = _not_hidden('press', PRESS.get('items', []))
 PRESS_IDS = ','.join(str(i['id']) for i in PRESS_ITEMS)
+UNN = _load_json(os.path.join(OUT, 'assets', 'unn.live.json'), {"source": "https://news.unn.net", "fetched_at": "", "items": []})
+UNN_ITEMS = _not_hidden('unn', UNN.get('items', []))
+for _u in UNN_ITEMS:
+    _u['src'] = 'unn'
+PRESS_ALL = sorted(PRESS_ITEMS + UNN_ITEMS, key=lambda x: x.get('date') or '', reverse=True)   # 한림대 보도자료 + 한국대학신문, 최신순
 
 def pr_href(it):
-    return f'press-{it["id"]}.html'
+    return it['url'] if it.get('src') == 'unn' else f'press-{it["id"]}.html'
+def pr_ext(it):
+    return ' target="_blank" rel="noopener"' if it.get('src') == 'unn' else ''
+def pr_thumb(it, cls='li-thumb'):
+    return f'<span class="{cls}"><img src="{E(it["thumb"])}" alt="" loading="lazy"></span>' if it.get('thumb') else f'<span class="{cls} li-thumb-ph"><span>{"한국대학신문" if it.get("src") == "unn" else "한림대학교"}</span></span>'
+def pr_meta(it):
+    if it.get('src') == 'unn':
+        return '언론 보도 · 한국대학신문' + ((' · ' + E(it['reporter'])) if it.get('reporter') else '')
+    return '보도자료 · 한림대학교' + ((' · ' + E(it['category'])) if it.get('category') else '')
 
 def pr_row(it, summary=True):
     s = f'<br><span class="m">{E((it.get("summary") or "")[:90])}</span>' if summary and it.get('summary') else ''
-    return f'<a class="li" href="{pr_href(it)}" data-pr="{it["id"]}"><span><span class="m">보도자료{(" · " + E(it["category"])) if it.get("category") else ""}</span><br><span class="t">{E(it["title"])}</span>{s}</span><span class="d">{E(it.get("date") or "")}</span></a>'
+    return f'<a class="li li-ev" href="{pr_href(it)}"{pr_ext(it)} data-pr="{it["id"]}">{pr_thumb(it)}<span><span class="m">{pr_meta(it)}</span><br><span class="t">{E(it["title"])}</span>{s}</span><span class="d">{E(it.get("date") or "")}</span></a>'
 
-PRESS_NOTE = f'한림대학교 보도자료(hallym.ac.kr › 홍보 › 보도자료) 중 제목에 KELI 또는 켈리가 들어간 글을 자동으로 가져옵니다. <span data-press-date>{E(PRESS.get("fetched_at", ""))}</span> 기준 {len(PRESS_ITEMS)}건.'
+PRESS_NOTE = f'한림대학교 보도자료(hallym.ac.kr › 홍보 › 보도자료) 중 제목에 KELI 또는 켈리가 들어간 글 {len(PRESS_ITEMS)}건과, 한국대학신문(news.unn.net)에서 「한림대 KELI」·「한림대 켈리」로 검색한 기사 {len(UNN_ITEMS)}건을 자동으로 가져옵니다. 신문 기사는 제목·요약·사진만 보여 주고 원문으로 연결합니다. <span data-press-date>{E(PRESS.get("fetched_at", ""))}</span> 기준.'
 
 # ------------------------------------------------------------------ 영상: 한림대학교 유튜브(@HALLYMNEWS)의 KELI 영상 연동
 def _load_videos():
@@ -1018,6 +1080,7 @@ def write_stats_files():
     json.dump(FEED, open(os.path.join(OUT, 'assets', 'events.live.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
     json.dump(PRESS, open(os.path.join(OUT, 'assets', 'press.live.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
     json.dump(VIDEOS, open(os.path.join(OUT, 'assets', 'videos.live.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+    json.dump(UNN, open(os.path.join(OUT, 'assets', 'unn.live.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
     json.dump(DEMOS, open(os.path.join(OUT, 'assets', 'demos.live.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
 
 def html_body(b):
@@ -1478,7 +1541,7 @@ def page_archive_detail(a):
     write(f'archive-{a["id"]}.html', f'{a["title"]} · KELI 아카이브', body, desc=(_inner_text(html_body(a['body']))[:150] if a.get('body') else f'{cat} · {a.get("org", "")}'))
 
 def page_news_hub():
-    pr = ''.join(pr_row(it, summary=False) for it in PRESS_ITEMS[:3])
+    pr = ''.join(pr_row(it, summary=False) for it in PRESS_ALL[:3])
     ev = ''.join(f'<a class="li" href="{ev_href(it)}" data-ev="{it["id"]}"><span><span class="m">{E((it.get("badges") or ["행사"])[0])}</span><br><span class="t">{E(it["title"])}</span></span><span class="d">{E((it.get("start") or "")[:10].replace("-", "."))}</span></a>' for it in FEED_ITEMS[:3])
     nt = ''.join(f'<a class="li" href="notice-{n["id"]}.html"><span><span class="m">{n["cat"]}</span><br><span class="t">{E(n["title"])}</span></span><span class="d">{n["date"]}</span></a>' for n in NOTICES[:3])
     body = crumb((None, '소식')) + f'''
@@ -1602,7 +1665,7 @@ def page_feed_event(it):
     write(ev_href(it), f'{it["title"]} · KELI', body)
 
 def page_newsletter():
-    rows = ''.join(pr_row(it) for it in PRESS_ITEMS)
+    rows = ''.join(pr_row(it) for it in PRESS_ALL)
     body = crumb(('news.html', '소식'), (None, '뉴스레터')) + f'''
 <section class="hero" style="padding-top:48px"><div class="wrap"><span class="eyebrow">뉴스레터</span><h1>KELI 소식을<br>이메일로 받아 보세요.</h1><p class="lead">새 서비스, 행사, 보도자료를 발행호마다 정리해 보냅니다. 언제든 해지할 수 있습니다.</p></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap narrow" style="max-width:900px">
@@ -1617,7 +1680,7 @@ def page_newsletter():
 </form>
 </div></section>
 <section class="sec alt" id="press"><div class="wrap narrow" style="max-width:900px">
-<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">보도자료</h2><span class="muted small">{len(PRESS_ITEMS)}건</span></div>
+<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">보도자료</h2><span class="muted small">{len(PRESS_ALL)}건</span></div>
 <div class="list" data-press="list" data-pages="{PRESS_IDS}">{rows}</div>
 <p class="note" style="margin-top:16px">{PRESS_NOTE}</p>
 </div></section>
@@ -1681,7 +1744,7 @@ def page_search():
     idx = [(f'service-{s["slug"]}.html', s['name'], s['one'] + ' · ' + AREA_LABEL[s['area']]) for s in SERVICES]
     idx += [('about.html', 'KELI 소개', '정의 · 비전 · 구조 · 사무국'), ('services.html', '서비스', 'HAI Ecosystems 19'), ('curriculum.html', 'AI 융합교육과정', '수업 6단계와 서비스'), ('join.html', '참여·도입', '도입 절차 · 이용 방식 · 참여 기관 · 문의'), ('archive.html', '아카이브', '사례집 · 기술 동향 · 매뉴얼'), ('notice.html', '공지사항', '소식'), ('events.html', '행사', '심포지엄 · 데모데이 · 매칭데이'), ('newsletter.html', '뉴스레터', '구독')]
     idx += [(ev_href(it), it['title'], '행사 · ' + (it.get('when') or '')) for it in FEED_ITEMS]
-    idx += [(pr_href(it), it['title'], '보도자료 · ' + (it.get('date') or '')) for it in PRESS_ITEMS]
+    idx += [(pr_href(it), it['title'], ('언론 보도 · ' if it.get('src') == 'unn' else '보도자료 · ') + (it.get('date') or '')) for it in PRESS_ALL]
     idx += [('videos.html', v['title'], '영상 · ' + (v.get('published') or v.get('published_text') or '')) for v in VIDEO_ITEMS]
     idx += [(f'demos.html#demo-{d["id"]}', d['name'] + ' 데모 영상' + (' (' + d['audience'] + ')' if d.get('audience') else ''), '데모 영상 · ' + d.get('category', '')) for d in DEMO_ITEMS]
     idx += [(arch_href(a)[0], a['title'], '아카이브 · ' + dict(ARCH_CATS).get(a.get('cat'), '')) for a in ARCHIVE]

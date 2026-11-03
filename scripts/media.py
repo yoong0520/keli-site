@@ -25,8 +25,16 @@ def localize(url, folder, name, referer=None):
         if referer:
             headers['Referer'] = referer
         req = urllib.request.Request(url, headers=headers)
-        with urllib.request.urlopen(req, timeout=60) as r:
-            data = r.read(30_000_000)
+        data = None
+        for attempt in range(3):   # 연결이 끊기는 CDN이 있어 세 번까지 다시 시도
+            try:
+                with urllib.request.urlopen(req, timeout=60) as r:
+                    data = r.read(30_000_000)
+                break
+            except Exception as e:
+                if attempt == 2:
+                    raise
+                import time; time.sleep(2 + 3 * attempt)
         im = Image.open(io.BytesIO(data))
         im.load()
         if im.mode in ('RGBA', 'LA', 'P'):

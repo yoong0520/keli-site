@@ -94,7 +94,7 @@
   function ensure(kind) {
     if (kind === 'notices' && !state.notices) return loadJson('content/notices.json', { items: [] }).then(function (j) { state.notices = j; });
     if (kind === 'archive' && !state.archive) return loadJson('content/archive.json', { items: [] }).then(function (j) { state.archive = j; });
-    if (kind === 'hidden' && !state.hidden) return loadJson('content/hidden.json', { events: [], press: [], videos: [] }).then(function (j) { state.hidden = j; });
+    if (kind === 'hidden' && !state.hidden) return loadJson('content/hidden.json', { events: [], press: [], videos: [], unn: [] }).then(function (j) { state.hidden = j; });
     if (kind === 'stats' && !state.stats) return loadJson('assets/stats.json', { services: 19, universities: 23, companies: 31, courses: null, basis: '' }).then(function (j) { state.stats = j; });
     return Promise.resolve();
   }
@@ -118,7 +118,7 @@
   function vHome() {
     return Promise.all([ensure('notices'), ensure('archive'), ensure('hidden')]).then(function () {
       counts();
-      var n = state.notices.items || [], a = state.archive.items || [], hcount = (state.hidden.events || []).length + (state.hidden.press || []).length + (state.hidden.videos || []).length;
+      var n = state.notices.items || [], a = state.archive.items || [], hcount = (state.hidden.events || []).length + (state.hidden.press || []).length + (state.hidden.unn || []).length + (state.hidden.videos || []).length;
       view.innerHTML =
         '<div class="adm-head"><h2>대시보드</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn sm" href="#notices/new">새 공지 쓰기</a><button class="btn ghost sm" type="button" id="h-dispatch">지금 다시 수집·배포</button></div></div>' +
         '<div class="grid g3" style="gap:16px">' +
@@ -303,9 +303,9 @@
   // ---------------------------------------------------------------- 자동 연동 글 숨기기
   function vFeeds() {
     return ensure('hidden').then(function () {
-      var H = state.hidden; ['events', 'press', 'videos'].forEach(function (k) { H[k] = (H[k] || []).map(String); });
-      return Promise.all(['events', 'press', 'videos'].map(function (k) { return fetch('assets/' + k + '.live.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : { items: [] }; }).catch(function () { return { items: [] }; }); })).then(function (feeds) {
-        var secs = [['events', '행사', 'AI교육확산센터 소식의 [KELI] 글'], ['press', '보도자료', '한림대 보도자료 중 KELI·켈리'], ['videos', '영상', '한림대 유튜브 KELI·켈리 + 관련 영상']];
+      var H = state.hidden; ['events', 'press', 'videos', 'unn'].forEach(function (k) { H[k] = (H[k] || []).map(String); });
+      return Promise.all(['events', 'press', 'unn', 'videos'].map(function (k) { return fetch('assets/' + k + '.live.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : { items: [] }; }).catch(function () { return { items: [] }; }); })).then(function (feeds) {
+        var secs = [['events', '행사', 'AI교육확산센터 소식의 [KELI] 글'], ['press', '보도자료', '한림대 보도자료 중 KELI·켈리'], ['unn', '언론 보도', '한국대학신문에서 「한림대 KELI」·「한림대 켈리」 검색(제목·요약·사진만 표시, 원문 연결)'], ['videos', '영상', '한림대 유튜브 KELI·켈리 + 관련 영상']];
         view.innerHTML = '<div class="adm-head"><h2>자동 연동 글</h2><button class="btn ghost sm" type="button" id="f-dispatch">지금 다시 수집</button></div><p class="muted small" style="margin:0 0 8px">자동으로 가져온 글은 여기서 쓰거나 고칠 수 없고, 원하지 않는 글만 숨길 수 있습니다. 숨김/보이기는 저장 즉시 커밋됩니다.</p>' +
           secs.map(function (sct, i) { var items = feeds[i].items || []; return '<h3 style="margin:24px 0 4px;font-size:18px">' + sct[1] + ' <span class="muted" style="font-weight:500;font-size:14px">' + items.length + '건 · ' + esc(feeds[i].fetched_at || '') + ' 수집</span></h3><p class="small muted" style="margin:0 0 8px">' + sct[2] + '</p>' + (items.length ? '<div class="list">' + items.map(function (it) { var id = String(it.id), off = H[sct[0]].indexOf(id) > -1; return '<div class="li' + (off ? ' off' : '') + '"><span>' + (off ? '<span class="badge soon" style="margin-right:8px">숨김</span>' : '') + '<span class="t">' + esc(it.title) + '</span><br><span class="m">' + esc(it.when || it.date || it.published || it.published_text || '') + '</span></span><span class="acts"><a class="btn ghost xs" href="' + esc(it.url) + '" target="_blank" rel="noopener">원문</a><button class="btn ghost xs" type="button" data-k="' + sct[0] + '" data-id="' + esc(id) + '">' + (off ? '보이기' : '숨기기') + '</button></span></div>'; }).join('') + '</div>' : '<p class="small muted">수집된 글이 없습니다</p>'); }).join('');
         qsa('[data-k]', view).forEach(function (b) { b.addEventListener('click', function () { var k = b.getAttribute('data-k'), id = b.getAttribute('data-id'); var i = H[k].indexOf(id); if (i > -1) H[k].splice(i, 1); else H[k].push(id); b.disabled = true; saveJson('content/hidden.json', H, (i > -1 ? '자동 연동 글 보이기: ' : '자동 연동 글 숨기기: ') + k + ' ' + id).then(function () { afterSave(i > -1 ? '다시 보이게 했습니다' : '숨겼습니다'); route(); }).catch(function (e) { fail(e); b.disabled = false; }); }); });

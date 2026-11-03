@@ -18,14 +18,28 @@ UA = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.3
 TERMS = ['한림대 KELI', '한림대 켈리']
 KEEP = re.compile(r'KELI|켈리', re.I)
 
+import time
+def _retry(fn, tries=4):
+    for i in range(tries):
+        try:
+            return fn()
+        except Exception as e:
+            if i == tries - 1:
+                raise
+            time.sleep(2 + 3 * i)
+
 def post(url, data):
-    req = urllib.request.Request(url, data=urllib.parse.urlencode(data).encode(), headers=dict(UA, **{'Content-Type': 'application/x-www-form-urlencoded'}))
-    with urllib.request.urlopen(req, timeout=40) as r:
-        return r.read().decode('utf-8', 'ignore')
+    def go():
+        req = urllib.request.Request(url, data=urllib.parse.urlencode(data).encode(), headers=dict(UA, **{'Content-Type': 'application/x-www-form-urlencoded'}))
+        with urllib.request.urlopen(req, timeout=40) as r:
+            return r.read().decode('utf-8', 'ignore')
+    return _retry(go)
 
 def get(url):
-    with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=40) as r:
-        return r.read().decode('utf-8', 'ignore')
+    def go():
+        with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=40) as r:
+            return r.read().decode('utf-8', 'ignore')
+    return _retry(go)
 
 def text(s):
     return re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', s))).strip()
@@ -88,6 +102,8 @@ def main():
                 print('article fetch failed', it['url'], e, file=sys.stderr)
             it['photo_remote'] = photo or it['thumb_small']
             it['thumb'] = (localize(it['photo_remote'], 'unn', it['id'], referer=BASE + '/') if it['photo_remote'] else None) or ''
+            if not it['thumb'] and it['thumb_small'] and it['thumb_small'] != it['photo_remote']:   # 큰 사진이 안 되면 목록 썸네일
+                it['thumb'] = localize(it['thumb_small'], 'unn', it['id'], referer=BASE + '/') or ''
             it['summary'] = (it['summary'][:180] + '…') if len(it['summary']) > 180 else it['summary']
             it['source'] = '한국대학신문'
         items.sort(key=lambda x: x['date'], reverse=True)

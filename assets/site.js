@@ -87,21 +87,25 @@
       qsa('[data-ev-status]').forEach(function(el){ var id=(el.closest('[data-ev]')||{}).getAttribute? el.closest('[data-ev]').getAttribute('data-ev'):null; var it=items.filter(function(x){ return String(x.id)===id; })[0]; if(it){ var s=status(it); el.textContent=s[1]; el.className='badge '+(s[0]==='upcoming'?'live':''); } });
     }).catch(function(){});
   })();
-  // press feed: 한림대 보도자료 KELI·켈리 글 (assets/press.live.json) → [data-press] 다시 그리기
+  // press feed: 한림대 보도자료(press.live.json) + 한국대학신문 기사(unn.live.json) 병합 → [data-press] 다시 그리기
   (function(){
     var boxes=qsa('[data-press]'); if(!boxes.length||location.protocol==='file:') return;
     function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-    function href(it,p){ return p.indexOf(String(it.id))>-1 ? 'press-'+it.id+'.html' : it.url; }
-    function ext(it,p){ return p.indexOf(String(it.id))>-1 ? '' : ' target="_blank" rel="noopener"'; }
-    function row(it,p,sum){ return '<a class="li" href="'+href(it,p)+'"'+ext(it,p)+'><span><span class="m">보도자료'+(it.category?' · '+esc(it.category):'')+'</span><br><span class="t">'+esc(it.title)+'</span>'+(sum&&it.summary?'<br><span class="m">'+esc(it.summary.slice(0,90))+'</span>':'')+'</span><span class="d">'+esc(it.date)+'</span></a>'; }
-    fetch('assets/press.live.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(f){
-      var items=hid('press', f.items||[]); if(!items.length) return;
-      boxes.forEach(function(b){ var p=(b.getAttribute('data-pages')||'').split(','); var kind=b.getAttribute('data-press');
-        if(kind==='rows') b.innerHTML=items.slice(0,3).map(function(it){ return row(it,p,false); }).join('');
-        else if(kind==='list') b.innerHTML=items.map(function(it){ return row(it,p,true); }).join('');
+    function href(it,p){ return it.src==='unn' ? it.url : (p.indexOf(String(it.id))>-1 ? 'press-'+it.id+'.html' : it.url); }
+    function ext(it,p){ return (it.src==='unn' || p.indexOf(String(it.id))<0) ? ' target="_blank" rel="noopener"' : ''; }
+    function th(it){ return it.thumb ? '<span class="li-thumb"><img src="'+esc(it.thumb)+'" alt="" loading="lazy"></span>' : '<span class="li-thumb li-thumb-ph"><span>'+(it.src==='unn'?'한국대학신문':'한림대학교')+'</span></span>'; }
+    function meta(it){ return it.src==='unn' ? '언론 보도 · 한국대학신문'+(it.reporter?' · '+esc(it.reporter):'') : '보도자료 · 한림대학교'+(it.category?' · '+esc(it.category):''); }
+    function row(it,p,sum){ return '<a class="li li-ev" href="'+href(it,p)+'"'+ext(it,p)+'>'+th(it)+'<span><span class="m">'+meta(it)+'</span><br><span class="t">'+esc(it.title)+'</span>'+(sum&&it.summary?'<br><span class="m">'+esc(it.summary.slice(0,90))+'</span>':'')+'</span><span class="d">'+esc(it.date||'')+'</span></a>'; }
+    function load(u){ return fetch(u,{cache:'no-store'}).then(function(r){ return r.ok ? r.json() : {items:[]}; }).catch(function(){ return {items:[]}; }); }
+    Promise.all([load('assets/press.live.json'), load('assets/unn.live.json')]).then(function(fs){
+      var a=hid('press', fs[0].items||[]), b=hid('unn', (fs[1].items||[]).map(function(x){ x.src='unn'; return x; }));
+      var items=a.concat(b).sort(function(x,y){ return (y.date||'').localeCompare(x.date||''); }); if(!items.length) return;
+      boxes.forEach(function(bx){ var p=(bx.getAttribute('data-pages')||'').split(','); var kind=bx.getAttribute('data-press');
+        if(kind==='rows') bx.innerHTML=items.slice(0,3).map(function(it){ return row(it,p,false); }).join('');
+        else if(kind==='list') bx.innerHTML=items.map(function(it){ return row(it,p,true); }).join('');
       });
-      var fd=qs('[data-press-date]'); if(fd&&f.fetched_at) fd.textContent=f.fetched_at;
-    }).catch(function(){});
+      var fd=qs('[data-press-date]'); if(fd&&fs[0].fetched_at) fd.textContent=fs[0].fetched_at;
+    });
   })();
   // videos: 클릭하면 그 자리에서 YouTube 재생 (처음엔 썸네일만 → 데이터 절약)
   function wirePlay(root){ qsa('.vid-play', root||document).forEach(function(b){ if(b._wired) return; b._wired=true; b.addEventListener('click',function(){ var v=b.closest('.vid'); var f=document.createElement('iframe'); f.src=v.getAttribute('data-embed'); f.title=b.getAttribute('aria-label')||'영상'; f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'; f.setAttribute('allowfullscreen',''); b.replaceWith(f); }); }); }
@@ -121,6 +125,23 @@
       var fd=qs('[data-video-date]'); if(fd&&f.fetched_at) fd.textContent=f.fetched_at;
       wirePlay();
     }).catch(function(){});
+  })();
+  // mega menu: 상단 메뉴에 올리거나(마우스) 누르면(터치) 전체 메뉴 펼침
+  (function(){
+    var mega=qs('#mega'), hdr=qs('.hdr'); if(!mega||!hdr) return;
+    var navLinks=qsa('.nav a[data-menu]'), timer=null, coarse=window.matchMedia&&window.matchMedia('(pointer: coarse)').matches;
+    function open(key){ clearTimeout(timer); mega.hidden=false; qsa('.mega-col',mega).forEach(function(c){ c.classList.toggle('hot', c.getAttribute('data-menu')===key); }); navLinks.forEach(function(a){ a.setAttribute('aria-expanded', a.getAttribute('data-menu')===key?'true':'false'); }); }
+    function close(){ clearTimeout(timer); timer=setTimeout(function(){ mega.hidden=true; navLinks.forEach(function(a){ a.setAttribute('aria-expanded','false'); }); },160); }
+    navLinks.forEach(function(a){
+      a.setAttribute('aria-haspopup','true'); a.setAttribute('aria-expanded','false');
+      a.addEventListener('mouseenter',function(){ if(!coarse) open(a.getAttribute('data-menu')); });
+      a.addEventListener('focus',function(){ open(a.getAttribute('data-menu')); });
+      a.addEventListener('click',function(e){ if(window.innerWidth<=860) return; var k=a.getAttribute('data-menu'); var hot=qs('.mega-col.hot',mega); if(mega.hidden||!hot||hot.getAttribute('data-menu')!==k){ e.preventDefault(); open(k); } });
+    });
+    qs('.nav').addEventListener('mouseleave', close); mega.addEventListener('mouseenter', function(){ clearTimeout(timer); }); mega.addEventListener('mouseleave', close);
+    hdr.addEventListener('focusout', function(e){ if(!hdr.contains(e.relatedTarget)) close(); });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ mega.hidden=true; } });
+    document.addEventListener('click', function(e){ if(!hdr.contains(e.target)) mega.hidden=true; });
   })();
   // search
   var si=qs('#q'); if(si){ var rows=qsa('#results [data-q]'), rc=qs('#rc'); function run(){ var v=si.value.trim().toLowerCase(), n=0; rows.forEach(function(r){ var on=!v||r.getAttribute('data-q').indexOf(v)>-1; r.hidden=!on; if(on)n++; }); if(rc) rc.textContent=n+'건'; } si.addEventListener('input',run); var q0=p.get('q'); if(q0){ si.value=q0; } run(); }
