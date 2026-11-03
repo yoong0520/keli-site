@@ -205,7 +205,8 @@ CSS = r"""
   --s1: #0b57a4; --s1-bg: #e4eefb; --s2: #0e6b55; --s2-bg: #e1f4ee; --s3: #a14a00; --s3-bg: #fff0dc; --s4: #4b2fbf; --s4-bg: #ece8ff; --s5: #b02457; --s5-bg: #fde6ee; --s6: #3b6b10; --s6-bg: #ebf5df;
   --font: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #000000; --bg2: #1d1d1f; --fg: #f5f5f7; --muted: #a1a1a6; --line: #424245; --accent: #2997ff; --accent-fg: #ffffff; --ok: #7ad48f; --ok-bg: #0f2a16; --soon: #f5c35a; --soon-bg: #2e2306; --s1: #8fc0ff; --s1-bg: #10264a; --s2: #7fd9bf; --s2-bg: #0d2f27; --s3: #ffb36b; --s3-bg: #3a2208; --s4: #c2b3ff; --s4-bg: #221a4d; --s5: #ff9bbd; --s5-bg: #3d1424; --s6: #b8e08a; --s6-bg: #1e3010; color-scheme: dark; } }
+/* 기기 다크 모드와 무관하게 항상 흰 바탕(사무국 결정 2026-11-03). 다크는 html[data-theme="dark"]를 직접 넣을 때만 */
+:root { color-scheme: light; }
 :root[data-theme="dark"] { --bg: #000000; --bg2: #1d1d1f; --fg: #f5f5f7; --muted: #a1a1a6; --line: #424245; --accent: #2997ff; --accent-fg: #ffffff; --ok: #7ad48f; --ok-bg: #0f2a16; --soon: #f5c35a; --soon-bg: #2e2306; --s1: #8fc0ff; --s1-bg: #10264a; --s2: #7fd9bf; --s2-bg: #0d2f27; --s3: #ffb36b; --s3-bg: #3a2208; --s4: #c2b3ff; --s4-bg: #221a4d; --s5: #ff9bbd; --s5-bg: #3d1424; --s6: #b8e08a; --s6-bg: #1e3010; color-scheme: dark; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -734,6 +735,7 @@ FOOTER = f'''<footer class="ftr"><div class="wrap">
 def doc(fname, title, body, desc='KELI는 한림대학교가 개발하고 수업에서 검증한 AI 교육 서비스를 국내외 대학·기관에 제공하고 함께 확산하는 고등교육 AI 공유 플랫폼입니다.', skeleton=True):
     head_bits = f'''<title>{E(title)}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<meta name="color-scheme" content="light">
 <meta name="description" content="{E(desc)}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="assets/site.css">'''
