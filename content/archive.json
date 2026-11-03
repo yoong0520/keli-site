@@ -463,8 +463,19 @@
       "date": "2026.10",
       "url": "",
       "published": true,
-      "body": "<figure class=\"art-fig\"><img src=\"content/files/2026/11/mw0mrlxc_0._[KELI_사무국]_KELI_홍보_3단_리플렛(국문)_최종.png\" alt=\"0. [KELI 사무국] KELI 홍보 3단 리플렛(국문)_최종\"><figure class=\"art-fig\"><img src=\"content/files/2026/11/mw0ncpie_0._[KELI_사무국]_KELI_홍보_3단_리플렛(영문)_최종.png\" alt=\"0. [KELI 사무국] KELI 홍보 3단 리플렛(영문)_최종\"><figcaption></figcaption></figure><p></p><figcaption></figcaption></figure><p></p>",
-      "files": []
+      "body": "<p class=\"art-lead\">KELI를 한 장으로 소개하는 3단 리플렛입니다. 국문과 영문 두 가지이며, 그림을 누르면 크게 볼 수 있습니다.</p><figure class=\"art-fig\"><img src=\"content/files/2026/11/mw0mrlxc_0._[KELI_사무국]_KELI_홍보_3단_리플렛(국문)_최종.png\" alt=\"KELI 홍보 3단 리플렛(국문)\"><figcaption>KELI 홍보 3단 리플렛 · 국문</figcaption></figure><figure class=\"art-fig\"><img src=\"content/files/2026/11/mw0ncpie_0._[KELI_사무국]_KELI_홍보_3단_리플렛(영문)_최종.png\" alt=\"KELI 홍보 3단 리플렛(영문)\"><figcaption>KELI 홍보 3단 리플렛 · 영문 (English)</figcaption></figure>",
+      "files": [
+        {
+          "name": "[KELI 사무국] KELI 홍보 3단 리플렛(국문).png",
+          "url": "content/files/2026/11/mw0mrlxc_0._[KELI_사무국]_KELI_홍보_3단_리플렛(국문)_최종.png",
+          "size": "1.6 MB"
+        },
+        {
+          "name": "[KELI 사무국] KELI 홍보 3단 리플렛(영문).png",
+          "url": "content/files/2026/11/mw0ncpie_0._[KELI_사무국]_KELI_홍보_3단_리플렛(영문)_최종.png",
+          "size": "1.7 MB"
+        }
+      ]
     }
   ]
 }

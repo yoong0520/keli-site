@@ -154,15 +154,25 @@
   // ---------------------------------------------------------------- 라우터
   var view = qs('#view');
   var TITLES = { home: '대시보드', site: '홈 화면', notices: '소식·공지', archive: '아카이브', services: '서비스', events: '행사', press: '보도·언론', videos: '영상', history: '게시 기록', settings: '사이트 설정' };
+  function buildSubnav() {   // 메뉴 아래에 분류를 세로로: 소식·공지(분류) · 아카이브(분류) · 서비스(포털 분류) · 보도·언론(출처)
+    function sub(view, items) { var a = qs('.cms-nav a[data-view="' + view + '"]'); if (!a) return; var old = a.nextElementSibling; if (old && old.classList.contains('sub')) old.remove(); if (!items.length) return; var d = document.createElement('div'); d.className = 'sub'; d.innerHTML = items.map(function (it) { return '<a href="#' + view + '/c/' + encodeURIComponent(it[0]) + '" data-sub="' + esc(it[0]) + '">' + esc(it[1]) + (it[2] != null ? '<span class="cnt">' + it[2] + '</span>' : '') + '</a>'; }).join(''); a.insertAdjacentElement('afterend', d); }
+    var nc = {}, ac = {}; ((state.notices || {}).items || []).forEach(function (n) { nc[n.cat] = (nc[n.cat] || 0) + 1; }); ((state.archive || {}).items || []).forEach(function (x) { ac[x.cat] = (ac[x.cat] || 0) + 1; });
+    sub('notices', cats('notices').map(function (c) { return [c.label, c.label, nc[c.label] || 0]; }));
+    sub('archive', cats('archive').map(function (c) { return [c.key, c.label, ac[c.key] || 0]; }));
+    var sv = state.feeds.services; if (sv) sub('services', (sv.categories || []).map(function (c) { return [c, c, (sv.items || []).filter(function (i) { return i.category === c; }).length]; }));
+    var pr = state.feeds.press, un = state.feeds.unn; if (pr || un) sub('press', [['press', '한림대 보도자료', pr ? (pr.items || []).length : 0], ['unn', '한국대학신문', un ? (un.items || []).length : 0]]);
+  }
+  function markSub(view, key) { qsa('.cms-nav .sub a').forEach(function (a) { a.classList.toggle('on', !!key && a.getAttribute('data-sub') === key && a.getAttribute('href').indexOf('#' + view + '/') === 0); }); }
   function route() {
     var h = (location.hash || '#home').slice(1).split('/'); var v = h[0] || 'home';
     if (dirty && !confirm('저장하지 않은 변경이 있습니다. 그래도 이동할까요?')) { return; }
     dirty = false;
-    qsa('.cms-nav a').forEach(function (a) { a.classList.toggle('on', a.getAttribute('data-view') === v); });
+    qsa('.cms-nav > a').forEach(function (a) { a.classList.toggle('on', a.getAttribute('data-view') === v); });
+    var subKey = (h[1] === 'c' && h[2]) ? decodeURIComponent(h[2]) : ''; markSub(v, subKey);
     qs('#top-title').textContent = TITLES[v] || '대시보드'; qs('#top-actions').innerHTML = '';
     view.innerHTML = '<p class="muted">불러오는 중…</p>';
     var fn = { home: vHome, site: vSite, notices: vNotices, archive: vArchive, services: vServices, events: vEvents, press: vPress, videos: vVideos, history: vHistory, settings: vSettings }[v] || vHome;
-    Promise.resolve(fn(h.slice(1))).then(counts).catch(function (e) { view.innerHTML = '<div class="panel"><p>불러오지 못했습니다: ' + esc(e.message) + '</p><p class="small muted">토큰 권한(Contents: Read and write)과 저장소 이름을 확인해 주세요.</p></div>'; });
+    Promise.resolve(fn(h.slice(1))).then(function () { counts(); buildSubnav(); }).catch(function (e) { view.innerHTML = '<div class="panel"><p>불러오지 못했습니다: ' + esc(e.message) + '</p><p class="small muted">토큰 권한(Contents: Read and write)과 저장소 이름을 확인해 주세요.</p></div>'; });
   }
   window.addEventListener('hashchange', route);
 
@@ -258,7 +268,13 @@
         fire();
       });
     });
-    qs('#' + id + '-img').addEventListener('change', function () { var f = this.files[0]; if (!f) return; var inp = this; var range = window.getSelection().rangeCount ? window.getSelection().getRangeAt(0) : null; toast('이미지 올리는 중…'); uploadFile(f).then(function (r) { ed.focus(); if (range) { window.getSelection().removeAllRanges(); window.getSelection().addRange(range); } var local = ''; try { local = URL.createObjectURL(f); } catch (e3) {} document.execCommand('insertHTML', false, '<figure class="art-fig"><img src="' + esc(local || r.url) + '"' + (local ? ' data-src="' + esc(r.url) + '"' : '') + ' alt="' + esc(f.name.replace(/\.[^.]+$/, '')) + '"><figcaption></figcaption></figure><p></p>'); toast('이미지를 넣었습니다. 사이트에는 게시 후 1~2분 뒤 보입니다'); fire(); }).catch(function (e) { toast('이미지 실패: ' + e.message, 6000); }).then(function () { inp.value = ''; }); });
+    function safeRange() {   // 현재 커서 위치. 그림(figure) 안이면 그 그림 바로 뒤로 옮긴다
+      var sel = window.getSelection(); var range = sel && sel.rangeCount ? sel.getRangeAt(0) : null; if (!range || !ed.contains(range.startContainer)) return null;
+      var node = range.startContainer.nodeType === 1 ? range.startContainer : range.startContainer.parentNode; var fig = node && node.closest ? node.closest('figure') : null;
+      if (fig && ed.contains(fig)) { var r2 = document.createRange(); r2.setStartAfter(fig); r2.collapse(true); return r2; }
+      return range;
+    }
+    qs('#' + id + '-img').addEventListener('change', function () { var f = this.files[0]; if (!f) return; var inp = this; var range = safeRange(); toast('이미지 올리는 중…'); uploadFile(f).then(function (r) { ed.focus(); if (range) { window.getSelection().removeAllRanges(); window.getSelection().addRange(range); } else { var r3 = document.createRange(); r3.selectNodeContents(ed); r3.collapse(false); window.getSelection().removeAllRanges(); window.getSelection().addRange(r3); } var local = ''; try { local = URL.createObjectURL(f); } catch (e3) {} document.execCommand('insertHTML', false, '<figure class="art-fig"><img src="' + esc(local || r.url) + '"' + (local ? ' data-src="' + esc(r.url) + '"' : '') + ' alt="' + esc(f.name.replace(/\.[^.]+$/, '')) + '"><figcaption></figcaption></figure><p></p>'); toast('이미지를 넣었습니다. 사이트에는 게시 후 1~2분 뒤 보입니다'); fire(); }).catch(function (e) { toast('이미지 실패: ' + e.message, 6000); }).then(function () { inp.value = ''; }); });
     ed.addEventListener('input', fire); src.addEventListener('input', fire);
     return { body: body, onInput: function (f) { listeners.push(f); } };
   }
@@ -288,11 +304,12 @@
       '<div class="items" data-items>' + (opt.items.length ? opt.items.map(function (it) { return '<a class="cms-item' + (it.on ? ' on' : '') + (it.off ? ' off' : '') + '" href="' + esc(it.href) + '" data-text="' + esc((it.title + ' ' + (it.cat || '') + ' ' + (it.date || '')).toLowerCase()) + '" data-chip-val="' + esc(it.chip || '') + '"><span class="row1"><span>' + esc(it.cat || '') + '</span><span class="st ' + (it.off ? 'off' : 'pub') + '">' + (it.off ? '비공개' : (it.pinned ? '고정 · 표시' : '표시')) + '</span></span><span class="t">' + esc(it.title) + '</span><span class="d">' + esc(it.date || '') + (it.extra ? ' · ' + esc(it.extra) : '') + '</span></a>'; }).join('') : '<p class="small muted" style="padding:20px">아직 없습니다.</p>') + '</div>' +
       '<a class="add" href="' + esc(opt.addHref) + '">＋ ' + esc(opt.addLabel) + '</a></div>';
   }
-  function wireList() {
+  function wireList(initChip) {
     var box = qs('.cms-list', view); if (!box) return;
     var s = qs('[data-search]', box), chip = 'all';
+    if (initChip && initChip !== 'all') { var cb = qs('[data-chip="' + initChip.replace(/"/g, '\\"') + '"]', box); if (cb) { chip = initChip; qsa('[data-chip]', box).forEach(function (x) { x.classList.toggle('on', x === cb); }); } }
     function apply() { var q = (s.value || '').trim().toLowerCase(); qsa('.cms-item', box).forEach(function (a) { var ok = (!q || a.getAttribute('data-text').indexOf(q) > -1) && (chip === 'all' || a.getAttribute('data-chip-val') === chip); a.style.display = ok ? '' : 'none'; }); }
-    s.addEventListener('input', apply);
+    s.addEventListener('input', apply); apply();
     qsa('[data-chip]', box).forEach(function (b) { b.addEventListener('click', function () { chip = b.getAttribute('data-chip'); qsa('[data-chip]', box).forEach(function (x) { x.classList.toggle('on', x === b); }); apply(); }); });
     var on = qs('.cms-item.on', box); if (on && on.scrollIntoView) { try { on.scrollIntoView({ block: 'nearest' }); } catch (e) {} }
   }
@@ -334,17 +351,19 @@
   function vNotices(args) {
     return Promise.all([ensure('notices'), ensure('cats')]).then(function () {
       CATS = cats('notices').map(function (c) { return c.label; });
-      var items = sortNotices(state.notices.items || []); var cur = null, isNew = false;
+      var items = sortNotices(state.notices.items || []); var cur = null, isNew = false, chip = 'all';
       if (args[0] === 'new') isNew = true;
+      else if (args[0] === 'c' && args[1]) { chip = decodeURIComponent(args[1]); var inCat = items.filter(function (x) { return x.cat === chip; }); cur = inCat[0] || null; if (!cur) isNew = false; }
       else if (args[0]) cur = items.filter(function (x) { return x.id === args[0]; })[0];
-      if (!cur && !isNew && items.length) { location.replace('#notices/' + items[0].id); return; }
+      if (!cur && !isNew && chip === 'all' && items.length) { location.replace('#notices/' + items[0].id); return; }
       var list = listPanel({ title: '전체 소식', count: items.length, addHref: '#notices/new', addLabel: '새 소식 작성', searchPh: '소식 검색', chips: [['all', '전체']].concat(CATS.map(function (c) { return [c, c]; })),
         items: items.map(function (n) { return { id: n.id, href: '#notices/' + n.id, on: cur && cur.id === n.id, off: n.published === false, pinned: n.pinned, cat: n.cat, chip: n.cat, title: n.title, date: n.date, extra: n.files && n.files.length ? '첨부 ' + n.files.length : '' }; }) });
       view.innerHTML = head('Hallym University / Website CMS', '소식·공지', '새로운 소식을 작성하고 홈페이지에 보여줄 항목을 선택합니다.', '<button class="btn ghost xs" type="button" id="cats-manage">분류 관리</button><br><span>마지막 저장 <strong>' + esc(items[0] && items[0].updated ? items[0].updated : '—') + '</strong></span>') +
         '<div class="cms-split">' + list + '<div class="panel cms-editor" id="editor"></div></div>';
-      wireList();
+      wireList(chip);
       qs('#cats-manage').addEventListener('click', function () { var used = {}; items.forEach(function (n) { used[n.cat] = (used[n.cat] || 0) + 1; }); manageCats('notices', used, route); });
-      if (isNew || cur) editNotice(cur); else qs('#editor').innerHTML = '<div class="empty">아직 소식이 없습니다. "새 소식 작성"을 눌러 첫 글을 올려 보세요.</div>';
+      if (isNew || cur) editNotice(cur); else qs('#editor').innerHTML = '<div class="empty">' + (chip !== 'all' ? '"' + esc(chip) + '" 분류에는 아직 글이 없습니다. "새 소식 작성"을 눌러 올려 보세요.' : '아직 소식이 없습니다. "새 소식 작성"을 눌러 첫 글을 올려 보세요.') + '</div>';
+      if (isNew && chip !== 'all') { var sel = qs('#n-cat'); if (sel) sel.value = chip; }
     });
   }
   function editNotice(it) {
@@ -390,16 +409,19 @@
   function vArchive(args) {
     return Promise.all([ensure('archive'), ensure('cats')]).then(function () {
       ACATS = cats('archive').map(function (c) { return [c.key, c.label]; });
-      var items = state.archive.items || []; var cur = null, isNew = false;
-      if (args[0] === 'new') isNew = true; else if (args[0]) cur = items.filter(function (x) { return x.id === args[0]; })[0];
-      if (!cur && !isNew && items.length) { location.replace('#archive/' + items[0].id); return; }
+      var items = state.archive.items || []; var cur = null, isNew = false, chip = 'all';
+      if (args[0] === 'new') isNew = true;
+      else if (args[0] === 'c' && args[1]) { chip = decodeURIComponent(args[1]); cur = items.filter(function (x) { return x.cat === chip; })[0] || null; }
+      else if (args[0]) cur = items.filter(function (x) { return x.id === args[0]; })[0];
+      if (!cur && !isNew && chip === 'all' && items.length) { location.replace('#archive/' + items[0].id); return; }
       var list = listPanel({ title: '전체 자료', count: items.length, addHref: '#archive/new', addLabel: '자료 추가', searchPh: '자료 검색', chips: [['all', '전체']].concat(ACATS),
         items: items.map(function (a) { return { id: a.id, href: '#archive/' + a.id, on: cur && cur.id === a.id, off: a.published === false, cat: lbl(ACATS, a.cat) + ' · ' + lbl(ATYPES, a.type), chip: a.cat, title: a.title, date: a.date, extra: (a.org || '') + ((a.files || []).length ? ' · 첨부 ' + a.files.length : '') }; }) });
       view.innerHTML = head('Hallym University / Website CMS', '아카이브', '자료를 올립니다. 다른 사이트 주소를 가져오거나, 파일을 직접 올리거나, 설명 글과 함께 올리면 자료 페이지가 생깁니다.', '<button class="btn ghost xs" type="button" id="cats-manage">분류 관리</button>') +
         '<div class="cms-split">' + list + '<div class="panel cms-editor" id="editor"></div></div>';
-      wireList();
+      wireList(chip);
       qs('#cats-manage').addEventListener('click', function () { var used = {}; items.forEach(function (a) { used[a.cat] = (used[a.cat] || 0) + 1; }); manageCats('archive', used, route); });
-      if (isNew || cur) editArchive(cur); else qs('#editor').innerHTML = '<div class="empty">아직 자료가 없습니다.</div>';
+      if (isNew || cur) editArchive(cur); else qs('#editor').innerHTML = '<div class="empty">' + (chip !== 'all' ? '이 분류에는 아직 자료가 없습니다. "자료 추가"를 눌러 올려 보세요.' : '아직 자료가 없습니다.') + '</div>';
+      if (isNew && chip !== 'all') { var sel2 = qs('#a-cat'); if (sel2) sel2.value = chip; }
     });
   }
   function editArchive(it) {
@@ -442,7 +464,8 @@
       var H = state.hidden;
       view.innerHTML = head('Hallym University / Website CMS', opt.title, opt.desc, '<span>자동 수집</span><br><strong>' + esc(feeds[0].fetched_at || '—') + '</strong>') +
         opt.sections.map(function (sc, i) {
-          var items = feeds[i].items || [];
+          if (opt.only && sc.key !== opt.only) return '';
+          var items = (feeds[i].items || []).filter(function (it) { return !opt.filter || opt.filter(it); });
           return '<div class="panel"><div class="ph"><div><h3>' + esc(sc.label) + ' <span class="muted" style="font-weight:500;font-size:14px">' + items.length + '건</span></h3><p>' + sc.note + '</p></div><span class="small muted">' + esc(feeds[i].fetched_at || '') + ' 수집</span></div>' +
             '<div class="search" style="margin-bottom:8px"><input type="search" placeholder="검색" data-fsearch="' + i + '" style="width:100%;max-width:360px;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px"></div>' +
             (items.length ? '<div data-flist="' + i + '">' + items.map(function (it) { var id = String(it.id), off = H[sc.key].indexOf(id) > -1; var th = sc.thumb ? sc.thumb(it) : ''; return '<div class="feed-row' + (off ? ' off' : '') + '" data-text="' + esc(String(it.title || it.name || '').toLowerCase()) + '">' + (th ? '<img class="th" src="' + esc(th) + '" alt="" loading="lazy">' : '<span class="th ph">—</span>') + '<div><div class="t">' + esc(it.title || it.name) + '</div><div class="m">' + esc(sc.meta ? sc.meta(it) : (it.when || it.date || it.published || '')) + (off ? ' · 숨김' : '') + '</div></div><span class="acts">' + (it.url ? '<a class="btn ghost xs" href="' + esc(it.url) + '" target="_blank" rel="noopener">원문</a>' : '') + '<button class="btn ' + (off ? '' : 'ghost ') + 'xs" type="button" data-k="' + sc.key + '" data-id="' + esc(id) + '">' + (off ? '보이기' : '숨기기') + '</button></span></div>'; }).join('') + '</div>' : '<p class="small muted">수집된 글이 없습니다</p>') + '</div>';
@@ -453,11 +476,11 @@
       qs('#f-dispatch').addEventListener('click', function () { dispatch().then(function () { afterSave('다시 수집을 시작했습니다'); }).catch(function (e) { toast('실행 실패: ' + e.message, 6000); }); });
     });
   }
-  function vServices() { return feedView({ title: '서비스(Marketplace)', desc: '한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai)에 등록된 서비스를 매일 새로 받아 Marketplace 카드 · 서비스 페이지 · 홈 · 관심 서비스 목록을 만듭니다. 이름·설명·그림·주소는 포털에서 고치고, 여기서는 보일지만 정합니다.',
+  function vServices(args) { var only = (args && args[0] === 'c' && args[1]) ? decodeURIComponent(args[1]) : ''; return feedView({ title: '서비스(Marketplace)' + (only ? ' · ' + only : ''), filter: only ? function (it) { return it.category === only; } : null, desc: '한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai)에 등록된 서비스를 매일 새로 받아 Marketplace 카드 · 서비스 페이지 · 홈 · 관심 서비스 목록을 만듭니다. 이름·설명·그림·주소는 포털에서 고치고, 여기서는 보일지만 정합니다.',
     sections: [{ key: 'services', label: '포털 등록 서비스', note: '숨기면 사이트 전체(Marketplace · 홈 · 도입 문의 폼)에서 빠집니다. 숨긴 서비스도 포털에는 그대로 있습니다.', feed: 'services', thumb: function (it) { return it.icon; }, meta: function (it) { return it.category + ' · ' + (it.status === 'live' ? '운영 중' : '준비 중') + (it.summary ? ' · ' + it.summary : ''); } }] }); }
   function vEvents() { return feedView({ title: '행사', desc: 'AI교육확산센터 사이트(aiadvcenter.csedu4all.com)의 [KELI] 글을 매일 가져와 행사 목록과 글 페이지를 만듭니다. 행사 안내를 직접 쓰려면 소식·공지에서 분류 "행사 안내"로 올리세요.',
     sections: [{ key: 'events', label: '센터 사이트 [KELI] 글', note: '제목 앞에 [KELI]가 붙은 글만 가져옵니다.', feed: 'events', thumb: function (it) { return it.thumb; }, meta: function (it) { return it.when || it.date || ''; } }] }); }
-  function vPress() { return feedView({ title: '보도·언론', desc: '한림대학교 보도자료(KELI·켈리)와 한국대학신문 기사(한림대 KELI·켈리)를 매일 가져와 뉴스레터·보도자료 목록에 보여 줍니다.',
+  function vPress(args) { var only = (args && args[0] === 'c' && args[1]) ? decodeURIComponent(args[1]) : ''; return feedView({ title: '보도·언론', only: only, desc: '한림대학교 보도자료(KELI·켈리)와 한국대학신문 기사(한림대 KELI·켈리)를 매일 가져와 뉴스레터·보도자료 목록에 보여 줍니다.',
     sections: [{ key: 'press', label: '한림대학교 보도자료', note: 'hallym.ac.kr › 홍보 › 보도자료 중 제목에 KELI 또는 켈리가 들어간 글. 사이트 안에 글 페이지가 만들어집니다.', feed: 'press', thumb: function (it) { return it.thumb; }, meta: function (it) { return (it.date || '') + (it.category ? ' · ' + it.category : ''); } },
       { key: 'unn', label: '한국대학신문 기사', note: '제목·요약·사진만 보여 주고 원문(새 창)으로 연결합니다.', feed: 'unn', thumb: function (it) { return it.thumb; }, meta: function (it) { return (it.date || '') + (it.reporter ? ' · ' + it.reporter : ''); } }] }); }
   function vVideos() { return feedView({ title: '영상', desc: '한림대학교 유튜브(@HALLYMNEWS)의 KELI·켈리 영상을 매일 가져옵니다. 서비스 데모 영상은 한림 AI 교육 포털에서 따로 가져옵니다(전체 데모 영상 페이지).',

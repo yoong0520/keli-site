@@ -91,6 +91,11 @@ with sync_playwright() as p:
     pg.click('#cats-manage'); pg.wait_for_selector('#modal[data-open="1"] #cat-add'); pg.fill('#cat-new', '연구 소식'); pg.click('#cat-add'); pg.wait_for_timeout(200); pg.click('#cat-ok'); pg.wait_for_timeout(700)
     cj = json.loads(store['content/categories.json']); assert [c for c in cj['notices'] if c['label'] == '연구 소식'], cj
     pg.wait_for_selector('[data-chip]'); assert '연구 소식' in pg.inner_text('.cms-list .chips')
+    # 왼쪽 메뉴 하위 항목(분류) → 그 분류로 이동
+    pg.wait_for_selector('.cms-nav .sub a[data-sub="연구 소식"]'); pg.click('.cms-nav .sub a[data-sub="연구 소식"]'); pg.wait_for_timeout(500)
+    assert pg.locator('.cms-list .chips button.on').text_content().strip() == '연구 소식' and '아직 글이 없습니다' in pg.inner_text('#editor')
+    pg.goto(U + '#archive/c/trend'); pg.wait_for_selector('#editor #af'); assert pg.locator('.cms-list .chips button.on').text_content().strip() == '기술 동향·연구'
+    pg.goto(U + '#notices'); pg.wait_for_selector('#editor #nf')
     # 목록 검색·분류 칩
     pg.wait_for_selector('[data-search]'); pg.fill('[data-search]', '없는글zzz'); pg.wait_for_timeout(200); assert pg.evaluate("[...document.querySelectorAll('.cms-item')].filter(e=>e.style.display!='none').length") == 0; pg.fill('[data-search]', '')
     # 아카이브 추가(파일 업로드) → 삭제
