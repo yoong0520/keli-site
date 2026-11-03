@@ -345,7 +345,7 @@ details.li .body img, details.li .body iframe { max-width: 100%; border-radius: 
 .step .n { font-size: 14px; font-weight: 700; color: var(--accent); }
 .step strong { font-size: 19px; }
 .step p { font-size: 15px; color: var(--muted); }
-@media (max-width: 900px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 1100px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
 /* tables */
 .tbl-wrap { overflow-x: auto; }
@@ -366,6 +366,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .chk { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; }
 .chk input { width: 18px; height: 18px; margin-top: 4px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.nowrap { white-space: nowrap; letter-spacing: -.02em; font-size: .93em; }
 .chipgrps { display: flex; flex-direction: column; gap: 14px; }
 .vid { display: flex; flex-direction: column; gap: 12px; }
 .vid-play { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; padding: 0; border-radius: 18px; overflow: hidden; background: #000; cursor: pointer; }
@@ -852,7 +853,7 @@ def steps4():
     return '''<div class="steps">
 <div class="step"><span class="n">1</span><strong>문의</strong><p>도입 문의 폼 또는 사무국 이메일로 기관명·관심 서비스·적용 교과목을 알려 주세요.</p></div>
 <div class="step"><span class="n">2</span><strong>상담·시연</strong><p>사무국이 무상으로 서비스를 시연하고 적용 방법을 안내합니다.</p></div>
-<div class="step"><span class="n">3</span><strong>시범 도입</strong><p>1개 교과목 × 1개 서비스 × 1개 학기부터 수업 효과를 확인합니다.</p></div>
+<div class="step"><span class="n">3</span><strong>시범 도입</strong><p><span class="nowrap">1개 교과목 × 1개 서비스 × 1개 학기부터</span><br>수업 효과를 확인합니다.</p></div>
 <div class="step"><span class="n">4</span><strong>정식 도입</strong><p>교과목·범위·기간을 정해 운영하며 이용 조건은 사무국과 협의합니다.</p></div>
 </div>'''
 
@@ -1392,7 +1393,7 @@ def page_join():
 <div class="head"><h2>도입 절차.</h2></div>
 {steps4()}
 <div class="grid g2" style="margin-top:40px">
-<div class="card"><div class="row"><h3>시범 도입 · 실증</h3><span class="badge">무상 또는 협의</span></div><p>1개 교과목 × 1개 서비스 × 1개 학기부터 수업 효과를 확인합니다.</p></div>
+<div class="card"><div class="row"><h3>시범 도입 · 실증</h3><span class="badge">무상 또는 협의</span></div><p><span class="nowrap">1개 교과목 × 1개 서비스 × 1개 학기부터</span><br>수업 효과를 확인합니다.</p></div>
 <div class="card"><div class="row"><h3>정식 도입</h3><span class="badge">유상 · 기관별 협의</span></div><p>교과목·범위·기간을 정해 운영하며 이용 조건은 KELI 사무국과 협의합니다.</p></div>
 </div>
 </div></section>
