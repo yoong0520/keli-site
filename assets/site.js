@@ -26,7 +26,8 @@
   });
   // prefill service from ?service= or #svc=
   var p=new URLSearchParams(location.search); var svc=p.get('service');
-  if(svc){ qsa('input[name="services"]').forEach(function(c){ if(c.value===svc) c.checked=true; }); var sel=qs('#f-type'); }
+  function nrm(t){ return String(t||'').toLowerCase().replace(/[^a-z0-9가-힣]/g,''); }
+  if(svc){ var ns=nrm(svc); qsa('input[name="services"]').forEach(function(c){ if(c.value===svc||nrm(c.value).indexOf(ns)===0) c.checked=true; }); }
   // copy buttons
   qsa('[data-copy]').forEach(function(btn){ btn.addEventListener('click',function(){ var t=btn.getAttribute('data-copy'); function ok(){ btn.textContent='복사됨'; setTimeout(function(){btn.textContent='복사';},1500);} if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok,function(){ fallback(); }); } else fallback(); function fallback(){ var s=document.createElement('textarea'); s.value=t; document.body.appendChild(s); s.select(); try{document.execCommand('copy'); ok();}catch(e){} document.body.removeChild(s);} }); });
   // stats: admin-entered numbers (assets/stats.json) + live course count (assets/stats.live.json) + count-up
