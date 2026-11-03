@@ -647,14 +647,27 @@ body.noscroll { overflow: hidden; }
 .org-tags b { font-weight: 500; font-size: 12.5px; line-height: 1.2; padding: 6px 10px; border-radius: 999px; background: var(--bg2); color: var(--fg); }
 .org-box.top { background: var(--fg); color: var(--bg); } .org-box.top span { color: var(--bg); opacity: .75; } .org-box.top .org-ic { background: rgba(255,255,255,.14); color: #fff; } .org-box.top .org-tags b { background: rgba(255,255,255,.12); color: #fff; }
 .org-box.mid { border: 2px solid var(--accent); }
-.org-box.hot { background: var(--accent); color: #fff; } .org-box.hot span { color: #fff; opacity: .85; } .org-box.hot .org-ic { background: rgba(255,255,255,.18); color: #fff; } .org-box.hot .org-tags b { background: rgba(255,255,255,.16); color: #fff; }
-.org-line { position: relative; width: 2px; height: 46px; background: #c3cad6; display: flex; align-items: center; justify-content: center; }
-.org-line::after { content: ""; position: absolute; left: 50%; bottom: -1px; width: 8px; height: 8px; border-right: 2px solid #c3cad6; border-bottom: 2px solid #c3cad6; transform: translateX(-50%) rotate(45deg); }
+.org-box.hot { background: var(--accent); color: #fff; } .org-box.hot > *:not(.shine) { position: relative; z-index: 1; } .org-box.hot span { color: #fff; opacity: .85; } .org-box.hot .org-ic { background: rgba(255,255,255,.18); color: #fff; } .org-box.hot .org-tags b { background: rgba(255,255,255,.16); color: #fff; }
+.org-line { position: relative; width: 2px; height: 46px; background: linear-gradient(to bottom, var(--accent) 0 55%, transparent 55% 100%) 0 0 / 2px 12px repeat-y; display: flex; align-items: center; justify-content: center; animation: org-flow-y 1.1s linear infinite; }
+.org-line::after { content: ""; position: absolute; left: 50%; bottom: -1px; width: 8px; height: 8px; border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: translateX(-50%) rotate(45deg); animation: org-tip 1.1s ease-in-out infinite; }
 .org-line b { position: absolute; white-space: nowrap; font-size: 12px; font-weight: 600; color: var(--accent); background: var(--bg2); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; }
 .org-row { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; width: 100%; padding-top: 26px; }
-.org-row::before { content: ""; position: absolute; top: 0; left: 16.66%; right: 16.66%; border-top: 2px solid #c3cad6; }
+.org-row::before, .org-row::after { content: ""; position: absolute; top: 0; height: 2px; background: linear-gradient(to right, var(--accent) 0 55%, transparent 55% 100%) 0 0 / 12px 2px repeat-x; }
+.org-row::before { left: calc((100% - 40px) / 6); right: 50%; animation: org-flow-left 1.1s linear infinite; }
+.org-row::after { left: 50%; right: calc((100% - 40px) / 6); animation: org-flow-right 1.1s linear infinite; }
 .org-row .org-box { width: auto; }
-.org-row .org-box::before { content: ""; position: absolute; left: 50%; top: -26px; width: 2px; height: 26px; background: #c3cad6; }
+.org-row .org-box::before { content: ""; position: absolute; left: 50%; top: -26px; width: 2px; height: 26px; margin-left: -1px; background: linear-gradient(to bottom, var(--accent) 0 55%, transparent 55% 100%) 0 0 / 2px 12px repeat-y; animation: org-flow-y 1.1s linear infinite; }
+.org-row .org-box::after { content: ""; position: absolute; left: 50%; top: -5px; width: 7px; height: 7px; border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: translateX(-50%) rotate(45deg); }
+@keyframes org-flow-y { to { background-position-y: 12px; } }
+@keyframes org-flow-right { to { background-position-x: 12px; } }
+@keyframes org-flow-left { to { background-position-x: -12px; } }
+@keyframes org-tip { 0%, 100% { transform: translateX(-50%) translateY(0) rotate(45deg); opacity: 1; } 50% { transform: translateX(-50%) translateY(3px) rotate(45deg); opacity: .6; } }
+.org-box.hot { animation: org-hot 3.2s ease-in-out infinite; }
+.org-box.hot .shine { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; }
+.org-box.hot .shine::before { content: ""; position: absolute; top: -40%; bottom: -40%; left: -60%; width: 40%; background: linear-gradient(100deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.28) 50%, rgba(255,255,255,0) 100%); transform: skewX(-18deg); animation: org-shine 4.5s ease-in-out infinite; }
+@keyframes org-hot { 0%, 100% { transform: translateY(0); box-shadow: 0 10px 26px rgba(11, 92, 255, .22); } 50% { transform: translateY(-4px); box-shadow: 0 20px 44px rgba(11, 92, 255, .45); } }
+@keyframes org-shine { 0% { left: -60%; } 35%, 100% { left: 140%; } }
+@media (prefers-reduced-motion: reduce) { .org-line, .org-line::after, .org-row::before, .org-row::after, .org-row .org-box::before, .org-box.hot, .org-box.hot .shine::before { animation: none; } }
 .org-base { width: 100%; background: var(--bg); border: 2px dashed #c3cad6; border-radius: 18px; padding: 16px 22px; display: flex; gap: 10px 22px; justify-content: center; flex-wrap: wrap; align-items: center; }
 .org-base strong { font-size: 16px; margin-right: 6px; }
 .org-m { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; } .org-m .org-ic { width: 36px; height: 36px; margin: 0; } .org-m .org-ic svg { width: 20px; height: 20px; }
@@ -1692,7 +1705,7 @@ def page_about():
 <div class="org-row">
 <div class="org-box"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg></i><strong>기술·표준위원회</strong><span>대학 교원 · 기업 기술책임자 · 표준 전문가</span><div class="org-tags"><b>연동 규격</b><b>학습데이터 표준</b><b>오픈 API</b><b>상호운용성</b></div></div>
 <div class="org-box"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10v-6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></i><strong>품질·윤리위원회</strong><span>교육공학·평가 · 법률·개인정보 전문가</span><div class="org-tags"><b>Marketplace 등재 심사</b><b>실증 품질 기준</b><b>AI 윤리</b><b>개인정보 영향평가</b></div></div>
-<div class="org-box hot"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2M10 21v-3h4v3"/></svg></i><strong>KELI 사무국</strong><span>주관기관 한림대학교 AI교육혁신원 AI교육확산센터</span><div class="org-tags"><b>회원 관리</b><b>수요 발굴</b><b>매칭</b><b>실증 운영</b><b>품질·보안</b><b>교육·연수</b><b>사업화·기술이전</b><b>글로벌 확산</b><b>성과 확산·홍보</b></div></div>
+<div class="org-box hot"><i class="shine" aria-hidden="true"></i><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2M10 21v-3h4v3"/></svg></i><strong>KELI 사무국</strong><span>주관기관 한림대학교 AI교육혁신원 AI교육확산센터</span><div class="org-tags"><b>회원 관리</b><b>수요 발굴</b><b>매칭</b><b>실증 운영</b><b>품질·보안</b><b>교육·연수</b><b>사업화·기술이전</b><b>글로벌 확산</b><b>성과 확산·홍보</b></div></div>
 </div>
 <div class="org-line"><b>집행 · 지원</b></div>
 <div class="org-base"><strong>참여기관</strong><span class="org-m"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9l9.5-4.5L21.5 9 12 13.5 2.5 9z"/><path d="M6.5 11v4.5c0 1.5 2.5 3 5.5 3s5.5-1.5 5.5-3V11M21.5 9v5"/></svg></i>국내외 대학</span><span class="org-m"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V4.5h6V7M3 12h18"/></svg></i>에듀테크 기업</span><span class="org-m"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-5 9 5H3zM5 9v8M9.5 9v8M14.5 9v8M19 9v8M3 20h18"/></svg></i>유관기관</span></div>
