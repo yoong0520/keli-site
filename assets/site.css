@@ -53,7 +53,7 @@ a.btn.ghost, .util a.btn.ghost { color: var(--fg); }
 .hdr { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--line); }
 .hdr .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 56px; }
 .brand { font-weight: 800; font-size: 20px; letter-spacing: .06em; color: var(--fg); }
-.brand:hover { text-decoration: none; }
+.brand:hover { text-decoration: none; } .brand img { display: block; height: 28px; width: auto; }
 .nav { display: flex; align-items: center; gap: 28px; }
 .nav a { color: var(--fg); font-size: 15px; }
 .nav a.on { color: var(--accent); font-weight: 600; }

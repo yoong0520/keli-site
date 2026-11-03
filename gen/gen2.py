@@ -43,7 +43,7 @@ SERVICES = [
          desc='대학·기업·기관이 교육 과제와 기술을 연결하고 실제 교육환경에서 적용 가능성을 함께 검증하는 고등교육 특화 협력 플랫폼입니다.',
          features=['대학 수요와 교육 과제 발굴', '기술 파트너 및 솔루션 연결', '실제 수업 기반 PoC 실증'],
          usage='대학별 회원과 권한을 관리하고 자료·서비스·협업 정보를 한 곳에서 공유합니다.',
-         status='live', url='https://keliedu.org/keli', img=None, video=None, manual=None, stage=[]),
+         status='live', url='https://keliedu.org/keli', img='keli-logo.png', video=None, manual=None, stage=[]),
     dict(slug='hai-ai', name='HAI-AI', area='platform', one='AI 서비스 통합 포털',
          head='한림 AI 교육 서비스와 활용 정보를 연결하는 통합 포털.',
          desc='대학 구성원이 여러 AI 서비스를 한 번에 탐색하고 자신의 역할에 맞는 기능으로 빠르게 연결되도록 설계된 통합 접근 플랫폼입니다.',
@@ -252,7 +252,7 @@ a.btn.ghost, .util a.btn.ghost { color: var(--fg); }
 .hdr { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--line); }
 .hdr .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 56px; }
 .brand { font-weight: 800; font-size: 20px; letter-spacing: .06em; color: var(--fg); }
-.brand:hover { text-decoration: none; }
+.brand:hover { text-decoration: none; } .brand img { display: block; height: 28px; width: auto; }
 .nav { display: flex; align-items: center; gap: 28px; }
 .nav a { color: var(--fg); font-size: 15px; }
 .nav a.on { color: var(--accent); font-weight: 600; }
@@ -711,7 +711,7 @@ def header(current):
 <div class="mega-cols">{cols}</div>
 </div></div>'''
     return f'''<header class="hdr"><div class="wrap bar">
-<a class="brand" href="index.html" aria-label="KELI 홈">KELI</a>
+<a class="brand" href="index.html" aria-label="KELI 홈"><img src="assets/img/keli-logo.png" alt="KELI" width="62" height="28"></a>
 <nav class="nav" aria-label="주요 메뉴">{links}</nav>
 <div class="util">
 <a class="ico txt" href="search.html" aria-label="검색"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></a>
