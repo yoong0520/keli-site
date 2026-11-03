@@ -171,6 +171,12 @@ def _slug(name):
     base = re.sub(r'[^a-z0-9]+', '-', base).strip('-')
     return base or 'service'
 
+def _area_key(cat):
+    en = PORTAL_AREA_EN.get(cat)
+    if en:
+        return en.lower()
+    return 'c' + hashlib.md5(str(cat).encode('utf-8')).hexdigest()[:6]
+
 def _portal_to_service(p, cur):
     """포털 서비스 1건 + (있으면) 사무국 보강 정보 → 사이트 서비스 dict"""
     name = re.sub(r'\s*\(.*?\)\s*$', '', p['name']).strip() or p['name']
@@ -179,7 +185,7 @@ def _portal_to_service(p, cur):
     url = (p.get('url') or '').strip() or (cur or {}).get('url') or None
     summary = (p.get('summary') or '').strip()
     desc = (p.get('description') or '').strip() or summary
-    d = dict(slug=(cur or {}).get('slug') or _slug(name), name=name, note=note, area=p.get('category') or '기타',
+    d = dict(slug=(cur or {}).get('slug') or _slug(name), name=name, note=note, area=_area_key(p.get('category') or '기타'), area_name=p.get('category') or '기타',
              one=(cur or {}).get('one') or (summary if len(summary) <= 28 else summary[:27].rstrip(' ,·') + '…'),
              head=(cur or {}).get('head') or (summary if summary.endswith('.') else summary + '.' if summary else ''),
              desc=desc if len(desc) >= len((cur or {}).get('desc') or '') * 0.6 else (cur or {}).get('desc') or desc,
@@ -203,8 +209,13 @@ def build_services():
         while d['slug'] in seen:
             d['slug'] += '-2'
         seen.add(d['slug']); out.append(d)
-    cats = [c for c in (SVC_LIVE.get('categories') or []) if any(x['area'] == c for x in out)]
-    areas = [('platform', '통합 플랫폼', 'Platforms')] + [(c, c, PORTAL_AREA_EN.get(c, c)) for c in cats]
+    cats = [c for c in (SVC_LIVE.get('categories') or []) if any(x['area'] == _area_key(c) for x in out)]
+    if 'AI 플랫폼' in cats:   # 포털에 "AI 플랫폼" 분류가 있으면 KELI·HAI-AI 도 그 분류로 묶는다(탭 중복 방지)
+        for x in out:
+            if x['slug'] in PINNED: x['area'] = _area_key('AI 플랫폼'); x['area_name'] = 'AI 플랫폼'
+        areas = [(_area_key(c), c, PORTAL_AREA_EN.get(c, c)) for c in cats]
+    else:
+        areas = [('platform', '통합 플랫폼', 'Platforms')] + [(_area_key(c), c, PORTAL_AREA_EN.get(c, c)) for c in cats]
     return out, areas, True
 
 UNIV = ['건양대학교', '계명대학교', '대전과학기술대학교', '대전대학교', '동서대학교', '동의대학교', '배재대학교', '백석문화대학교', '부산대학교', '서울시립대학교', '서울신학대학교', '아주대학교', '안산대학교', '우송대학교', '원광대학교', '위덕대학교', '인하대학교', '제주대학교', '충남대학교', '포항공과대학교', '한림대학교', '한성대학교', '호서대학교']
@@ -1000,9 +1011,38 @@ JS = r"""
 NAV = [('about.html', 'KELI 소개'), ('services.html', 'Marketplace'), ('join.html', 'KELI 협의체 참여'), ('archive.html', '아카이브'), ('news.html', '소식')]
 NEWS_PAGES = {'news.html', 'notice.html', 'events.html', 'newsletter.html', 'videos.html'}
 # 상단 메뉴를 누르거나 올리면 펼쳐지는 전체 메뉴(메가 메뉴). 각 메뉴 아래 게시판·섹션 바로가기
+# ---- 서비스 목록(포털 피드 기준)과 수업 6단계 배치: 메뉴(MEGA)보다 먼저 계산
+MANUAL_STAGES_FIXED = {   # 매뉴얼 data.js steps 항목 → 이 사이트 slug (2026. 10. 21. 판, 매뉴얼 사이트를 못 읽을 때의 예비값)
+    'hai-pbl': ['design', 'class'],
+    'hai-fist': ['content', 'assess', 'analysis'],
+    'hai-medlearn-x': ['content', 'practice', 'analysis'],
+    'hai-mathtutor': ['content', 'practice', 'assess'],
+    'hai-forum': ['class', 'assess', 'analysis'],
+    'hai-lrs': ['analysis'],
+    'hai-epilearn': ['content', 'practice', 'analysis'],
+    'hai-tutor': ['content'],
+    'smartlead': ['class', 'assess', 'analysis'],
+}
+SVC_LIVE = _load_json(os.path.join(OUT, 'assets', 'services.live.json'), None)   # 포털 서비스 목록(배포 때마다 scripts/fetch_services.py 가 새로 받음)
+SERVICES, AREAS, SERVICES_FROM_PORTAL = build_services()
+AREA_LABEL = {a[0]: a[1] for a in AREAS}
+AREA_EN = {a[0]: a[2] for a in AREAS}
+_manual_live = (SVC_LIVE or {}).get('manual_stages') or {}
+MANUAL_STAGES = dict(MANUAL_STAGES_FIXED)
+_by_norm = {_norm(x['name']): x['slug'] for x in SERVICES}
+for _mname, _stages in _manual_live.items():   # 매뉴얼 이름(HAI-Math, HAI-MedLearnX …) → 사이트 slug
+    if _norm(_mname) in _by_norm:
+        MANUAL_STAGES[_by_norm[_norm(_mname)]] = _stages
+MANUAL_NOT_IN_KELI = [m for m in _manual_live if _norm(m) not in _by_norm]
+for _s in SERVICES:
+    if _s['slug'] in MANUAL_STAGES:
+        _s['stage'] = MANUAL_STAGES[_s['slug']]; _s['stage_src'] = 'manual'
+    else:
+        _s['stage_src'] = 'office' if _s['stage'] else 'none'
+
 MEGA = [
     ('about.html', 'KELI 소개', [('about.html#vision', '비전'), ('about.html#consortium', 'KELI 협의체'), ('about.html#org', '조직도')]),
-    ('services.html', 'Marketplace', [('services.html', 'HAI Ecosystems', [('services.html#platform', '통합 플랫폼'), ('services.html#career', '진로 · 연구'), ('services.html#courseware', '전공 코스웨어'), ('services.html#teaching', '학습 · 수업 지원'), ('services.html#analytics', '분석 · 데이터'), ('services.html#admin', '행정 · 평가'), ('demos.html', '전체 데모 영상')])]),
+    ('services.html', 'Marketplace', [('services.html', 'HAI Ecosystems', [(f'services.html#{k}', lb) for k, lb, _ in AREAS] + [('demos.html', '전체 데모 영상')])]),
     ('join.html', 'KELI 협의체 참여', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의')]),
     ('archive.html', '아카이브', [('archive-manual.html', '매뉴얼 · 소개자료'), ('archive-trend.html', '기술 동향 · 연구'), ('archive-case.html', '실증 사례집')]),
     ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료')]),
@@ -1184,33 +1224,6 @@ def steps4():
 </div>'''
 
 # ------------------------------------------------------------------ 수업 6단계 배치: HAI 활용 매뉴얼(haimanual.csedu4all.com) 기준
-MANUAL_STAGES_FIXED = {   # 매뉴얼 data.js steps 항목 → 이 사이트 slug (2026. 10. 21. 판, 매뉴얼 사이트를 못 읽을 때의 예비값)
-    'hai-pbl': ['design', 'class'],
-    'hai-fist': ['content', 'assess', 'analysis'],
-    'hai-medlearn-x': ['content', 'practice', 'analysis'],
-    'hai-mathtutor': ['content', 'practice', 'assess'],
-    'hai-forum': ['class', 'assess', 'analysis'],
-    'hai-lrs': ['analysis'],
-    'hai-epilearn': ['content', 'practice', 'analysis'],
-    'hai-tutor': ['content'],
-    'smartlead': ['class', 'assess', 'analysis'],
-}
-SVC_LIVE = _load_json(os.path.join(OUT, 'assets', 'services.live.json'), None)   # 포털 서비스 목록(배포 때마다 scripts/fetch_services.py 가 새로 받음)
-SERVICES, AREAS, SERVICES_FROM_PORTAL = build_services()
-AREA_LABEL = {a[0]: a[1] for a in AREAS}
-AREA_EN = {a[0]: a[2] for a in AREAS}
-_manual_live = (SVC_LIVE or {}).get('manual_stages') or {}
-MANUAL_STAGES = dict(MANUAL_STAGES_FIXED)
-_by_norm = {_norm(x['name']): x['slug'] for x in SERVICES}
-for _mname, _stages in _manual_live.items():   # 매뉴얼 이름(HAI-Math, HAI-MedLearnX …) → 사이트 slug
-    if _norm(_mname) in _by_norm:
-        MANUAL_STAGES[_by_norm[_norm(_mname)]] = _stages
-MANUAL_NOT_IN_KELI = [m for m in _manual_live if _norm(m) not in _by_norm]
-for _s in SERVICES:
-    if _s['slug'] in MANUAL_STAGES:
-        _s['stage'] = MANUAL_STAGES[_s['slug']]; _s['stage_src'] = 'manual'
-    else:
-        _s['stage_src'] = 'office' if _s['stage'] else 'none'
 STAGE_NO = {k: f'{i+1:02d}' for i, (k, _) in enumerate(STAGES)}
 STAGE_CLS = {k: f's{i+1}' for i, (k, _) in enumerate(STAGES)}
 
