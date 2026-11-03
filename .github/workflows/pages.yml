@@ -37,7 +37,7 @@ jobs:
         run: python3 scripts/fetch_videos.py
       - name: Fetch service demo videos from ai.hallym.ac.kr/hallym-ai
         run: python3 scripts/fetch_demos.py
-      - name: Fetch service list from ai.hallym.ac.kr/hallym-ai (for the interest checklist)
+      - name: Fetch service list + screenshots + manual stage map from ai.hallym.ac.kr/hallym-ai (Marketplace cards, service pages, home, interest checklist)
         run: python3 scripts/fetch_services.py
       - name: Build site from content/*.json and live feeds (gen/gen2.py)
         run: python3 gen/gen2.py

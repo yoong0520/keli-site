@@ -22,7 +22,7 @@ PHONE = '033-248-3044'
 STAFF = '전형준'
 
 # ------------------------------------------------------------------ 데이터
-AREAS = [
+AREAS_FIXED = [   # 포털 피드가 없을 때만 쓰는 예비 분류
     ('platform', '통합 플랫폼', 'Platforms'),
     ('career', '진로·연구', 'Career'),
     ('courseware', '전공 코스웨어', 'Courseware'),
@@ -30,14 +30,17 @@ AREAS = [
     ('analytics', '분석·데이터', 'Analytics'),
     ('admin', '행정·평가', 'Admin'),
 ]
+AREAS = AREAS_FIXED   # build_services() 뒤에 포털 분류로 바뀐다
 AREA_LABEL = {a[0]: a[1] for a in AREAS}
 DRIVE = 'https://drive.google.com/file/d/%s/view'
 GUIDE = 'https://ai.hallym.ac.kr/media/uploads/guides/%s.pdf'
 DEMO_ALL = 'https://keliedu.org/keli/partners/video'
 MANUAL_SITE = 'https://haimanual.csedu4all.com'
 
+# 사무국 보강 정보: 포털 피드(assets/services.live.json)의 서비스와 이름으로 맞춰 화면 그림·머리글·핵심 기능·활용 방식을 덧붙인다.
+# 목록 자체(어떤 서비스가 있고, 분류·상태·한 줄 설명·주소·아이콘·영상·매뉴얼이 무엇인지)는 포털이 기준이며 배포 때마다 새로 받는다.
 # (slug, name, area, one-liner(리플렛), headline, desc, features, usage, status, url, img, video, manual, stage)
-SERVICES = [
+CURATED = [
     dict(slug='keli', name='KELI', area='platform', one='고등교육 AI 공유 플랫폼',
          head='고등교육 AI를 함께 설계·검증·확산하는 공유 플랫폼.',
          desc='대학·기업·기관이 교육 과제와 기술을 연결하고 실제 교육환경에서 적용 가능성을 함께 검증하는 고등교육 특화 협력 플랫폼입니다.',
@@ -152,6 +155,57 @@ SERVICES = [
 ]
 STAGES = [('design', '설계'), ('content', '콘텐츠 생성'), ('class', '수업·상호작용'), ('practice', '실습·학습'), ('assess', '평가'), ('analysis', '분석·개선')]
 STATUS = {'live': ('운영 중', 'live'), 'soon': ('오픈 예정', 'soon')}
+PORTAL_STATUS = {'live': 'live', 'coming_soon': 'soon', 'beta': 'live', 'pilot': 'live'}   # 포털 status → 사이트 status(모르는 값은 '오픈 예정')
+PORTAL_AREA_EN = {'AI 학습 지원': 'Learning', 'AI 교수 지원': 'Teaching', 'AI 연구 지원': 'Research', 'AI 진로·취업': 'Career', 'AI 플랫폼': 'Platforms',
+                  'AI 의료교육': 'Medical', 'AI 행정 지원': 'Admin', 'AI 운영 지원': 'Operations'}
+ROLE_KO = {'student': '학생', 'faculty': '교수', 'staff': '직원', 'all': '전체 구성원'}
+PINNED = ['keli', 'hai-ai']   # 포털 목록에 없는 플랫폼 자체(KELI · 통합 포털)는 사무국 보강 정보로 맨 앞에 둔다
+
+def _norm(name):
+    n = re.sub(r'\(.*?\)', '', str(name or '')).lower()
+    n = re.sub(r'[^a-z0-9가-힣]', '', n)
+    return {'haimath': 'haimathtutor', 'haimedlearnx': 'haimedlearnx', 'haiaiprof': 'haiaiprof'}.get(n, n)
+
+def _slug(name):
+    base = re.sub(r'\(.*?\)', '', str(name or '')).strip().lower()
+    base = re.sub(r'[^a-z0-9]+', '-', base).strip('-')
+    return base or 'service'
+
+def _portal_to_service(p, cur):
+    """포털 서비스 1건 + (있으면) 사무국 보강 정보 → 사이트 서비스 dict"""
+    name = re.sub(r'\s*\(.*?\)\s*$', '', p['name']).strip() or p['name']
+    note = (re.search(r'\((.*?)\)\s*$', p['name']) or [None, ''])[1] if '(' in p['name'] else ''
+    status = PORTAL_STATUS.get(p.get('status') or '', 'soon')
+    url = (p.get('url') or '').strip() or (cur or {}).get('url') or None
+    summary = (p.get('summary') or '').strip()
+    desc = (p.get('description') or '').strip() or summary
+    d = dict(slug=(cur or {}).get('slug') or _slug(name), name=name, note=note, area=p.get('category') or '기타',
+             one=(cur or {}).get('one') or (summary if len(summary) <= 28 else summary[:27].rstrip(' ,·') + '…'),
+             head=(cur or {}).get('head') or (summary if summary.endswith('.') else summary + '.' if summary else ''),
+             desc=desc if len(desc) >= len((cur or {}).get('desc') or '') * 0.6 else (cur or {}).get('desc') or desc,
+             features=list((cur or {}).get('features') or []), usage=(cur or {}).get('usage') or '',
+             status=status, url=url, img=(cur or {}).get('img'), icon=p.get('icon') or '',
+             video=p.get('video') or (cur or {}).get('video'), manual=p.get('manual') or (cur or {}).get('manual'),
+             roles=[ROLE_KO.get(r, r) for r in (p.get('target_roles') or [])], stage=list((cur or {}).get('stage') or []),
+             portal_id=p.get('id'), portal_status=p.get('status') or '', launch_date=p.get('launch_date') or '', curated=bool(cur))
+    return d
+
+def build_services():
+    """포털 피드가 있으면: 고정 플랫폼 카드(KELI · HAI-AI) + 포털 서비스(숨긴 것 제외). 없으면 사무국 보강 목록 그대로."""
+    cur_by = {_norm(c['name']): c for c in CURATED}
+    if not (SVC_LIVE and SVC_LIVE.get('items')):
+        return [dict(c, note='', icon='', roles=[], portal_id=None, portal_status='', launch_date='', curated=True) for c in CURATED], [(a[0], a[1], a[2]) for a in AREAS_FIXED], False
+    live = _not_hidden('services', SVC_LIVE['items'])
+    out = [dict(c, note='', icon='', roles=[], portal_id=None, portal_status='', launch_date='', curated=True, area='platform') for c in CURATED if c['slug'] in PINNED]
+    seen = set(c['slug'] for c in out)
+    for p in live:
+        d = _portal_to_service(p, cur_by.get(_norm(p['name'])))
+        while d['slug'] in seen:
+            d['slug'] += '-2'
+        seen.add(d['slug']); out.append(d)
+    cats = [c for c in (SVC_LIVE.get('categories') or []) if any(x['area'] == c for x in out)]
+    areas = [('platform', '통합 플랫폼', 'Platforms')] + [(c, c, PORTAL_AREA_EN.get(c, c)) for c in cats]
+    return out, areas, True
 
 UNIV = ['건양대학교', '계명대학교', '대전과학기술대학교', '대전대학교', '동서대학교', '동의대학교', '배재대학교', '백석문화대학교', '부산대학교', '서울시립대학교', '서울신학대학교', '아주대학교', '안산대학교', '우송대학교', '원광대학교', '위덕대학교', '인하대학교', '제주대학교', '충남대학교', '포항공과대학교', '한림대학교', '한성대학교', '호서대학교']
 CORP = ['HM컴퍼니', '가르침에듀', '나이테듀', '니어네트웍스', '더캣코리아', '데이디', '디큐', '디피니션', '마인드로직', '문제G', '미라크소프트', '소풍앤컴퍼니', '수퍼코딩', '슈퍼러닝', '씨즈소프트', '아이스크림 arts', '아이오테드', '언택트에듀', '엘렉시', '온율티', '유비온', '인텔리시스', '인튜브', '지키다', '청운정보', '캐모릭스', '클라썸', '택스캔바스', '프리윌린', '플랭', '하이브시스템']
@@ -987,13 +1041,19 @@ def status_badge(s):
     t, c = STATUS[s['status']]
     return f'<span class="badge {c}">{t}</span>'
 
-def svc_card(s):
-    if s['img']:
+def svc_thumb(s, lazy=True):
+    """서비스 그림: 포털에 등록된 화면 캡처 → 없으면 사무국 그림(로고 PNG는 여백 두고 표시) → 없으면 글자"""
+    lz = ' loading="lazy"' if lazy else ''
+    if s.get('icon'):
+        return f'<div class="thumb"><img src="{E(s["icon"])}" alt="{E(s["name"])} 화면"{lz}></div>'
+    if s.get('img'):
         logo = ' logo' if s['img'].endswith('.png') else ''
-        thumb = f'<div class="thumb{logo}"><img src="assets/img/services/{s["img"]}" alt="{E(s["name"])} 화면" loading="lazy"></div>'
-    else:
-        thumb = f'<div class="thumb"><span class="word">{E(s["name"])}</span></div>'
-    return f'''<a class="svc" href="service-{s['slug']}.html" data-key="{s['area']}">{thumb}<div class="body"><strong>{E(s['name'])}</strong><p>{E(s['one'])}</p><div class="meta"><span class="k">{AREA_LABEL[s['area']]}</span>{status_badge(s)}</div>{stage_bar(s)}</div></a>'''
+        return f'<div class="thumb{logo}"><img src="assets/img/services/{s["img"]}" alt="{E(s["name"])} 화면"{lz}></div>'
+    return f'<div class="thumb"><span class="word">{E(s["name"])}</span></div>'
+
+def svc_card(s):
+    note = f' <small class="muted">{E(s["note"])}</small>' if s.get('note') else ''
+    return f'''<a class="svc" href="service-{s['slug']}.html" data-key="{E(s['area'])}">{svc_thumb(s)}<div class="body"><strong>{E(s['name'])}{note}</strong><p>{E(s['one'])}</p><div class="meta"><span class="k">{E(AREA_LABEL.get(s['area'], s['area']))}</span>{status_badge(s)}</div>{stage_bar(s)}</div></a>'''
 
 def tabs(name, items, all_label='전체'):
     btns = f'<button type="button" class="tab" data-val="all" aria-pressed="true">{all_label}</button>' + ''.join(f'<button type="button" class="tab" data-val="{k}" aria-pressed="false">{v}</button>' for k, v in items)
@@ -1014,14 +1074,28 @@ def steps4():
 </div>'''
 
 # ------------------------------------------------------------------ 수업 6단계 배치: HAI 활용 매뉴얼(haimanual.csedu4all.com) 기준
-MANUAL_STAGES = {   # 매뉴얼 data.js steps 항목 → 이 사이트 slug (2026. 10. 21. 판)
+MANUAL_STAGES_FIXED = {   # 매뉴얼 data.js steps 항목 → 이 사이트 slug (2026. 10. 21. 판, 매뉴얼 사이트를 못 읽을 때의 예비값)
     'hai-pbl': ['design', 'class'],
     'hai-fist': ['content', 'assess', 'analysis'],
     'hai-medlearn-x': ['content', 'practice', 'analysis'],
     'hai-mathtutor': ['content', 'practice', 'assess'],
     'hai-forum': ['class', 'assess', 'analysis'],
     'hai-lrs': ['analysis'],
+    'hai-epilearn': ['content', 'practice', 'analysis'],
+    'hai-tutor': ['content'],
+    'smartlead': ['class', 'assess', 'analysis'],
 }
+SVC_LIVE = _load_json(os.path.join(OUT, 'assets', 'services.live.json'), None)   # 포털 서비스 목록(배포 때마다 scripts/fetch_services.py 가 새로 받음)
+SERVICES, AREAS, SERVICES_FROM_PORTAL = build_services()
+AREA_LABEL = {a[0]: a[1] for a in AREAS}
+AREA_EN = {a[0]: a[2] for a in AREAS}
+_manual_live = (SVC_LIVE or {}).get('manual_stages') or {}
+MANUAL_STAGES = dict(MANUAL_STAGES_FIXED)
+_by_norm = {_norm(x['name']): x['slug'] for x in SERVICES}
+for _mname, _stages in _manual_live.items():   # 매뉴얼 이름(HAI-Math, HAI-MedLearnX …) → 사이트 slug
+    if _norm(_mname) in _by_norm:
+        MANUAL_STAGES[_by_norm[_norm(_mname)]] = _stages
+MANUAL_NOT_IN_KELI = [m for m in _manual_live if _norm(m) not in _by_norm]
 for _s in SERVICES:
     if _s['slug'] in MANUAL_STAGES:
         _s['stage'] = MANUAL_STAGES[_s['slug']]; _s['stage_src'] = 'manual'
@@ -1210,7 +1284,6 @@ VIDEO_NOTE = f'한림대학교 유튜브 채널(youtube.com/@HALLYMNEWS)에서 �
 # ------------------------------------------------------------------ 데모 영상: 한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai) 서비스별 영상 연동
 PORTAL_DEMOS = 'https://ai.hallym.ac.kr/hallym-ai'
 DEMOS = _load_json(os.path.join(OUT, 'assets', 'demos.live.json'), {"source": PORTAL_DEMOS, "fetched_at": "", "items": []})
-SVC_LIVE = _load_json(os.path.join(OUT, 'assets', 'services.live.json'), None)  # 포털 서비스 목록(관심 서비스 체크 목록용)
 
 def svc_groups():
     """도입 문의 폼의 관심 서비스 묶음: 포털 피드(분류별) → 없으면 사이트 목록(통합 플랫폼 제외)"""
@@ -1468,6 +1541,14 @@ def page_about():
 '''
     write('about.html', 'KELI 소개', body)
 
+def svc_source_note():
+    if SERVICES_FROM_PORTAL:
+        n = len([x for x in SERVICES if x.get('portal_id')])
+        return (f'서비스 목록·분류·운영 상태·한 줄 설명·주소·로고·데모 영상·매뉴얼은 <a href="{PORTAL_DEMOS}" target="_blank" rel="noopener">한림 AI 교육 포털</a>에 등록된 정보를 '
+                f'그대로 가져옵니다(매일 새벽 자동 갱신, <span data-svc-date>{E((SVC_LIVE or {}).get("fetched_at", ""))}</span> 기준 {n}개). '
+                f'KELI와 통합 포털(HAI-AI)은 플랫폼 자체라 사무국이 직접 관리합니다.')
+    return 'KELI Marketplace 등재 기준 목록입니다.'
+
 def page_services():
     cards = ''.join(svc_card(s) for s in SERVICES)
     body = crumb((None, 'Marketplace')) + f'''
@@ -1478,8 +1559,9 @@ def page_services():
 <div class="acts"><a class="btn ghost" href="demos.html">전체 데모 영상</a><a class="btn ghost" href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a><a class="more" href="curriculum.html">수업에 결합하는 방법</a></div>
 </div></section>
 <section class="sec glass" style="padding-top:48px"><div class="wrap">
-<div class="row" style="margin-bottom:20px">{tabs('svc', [(a[0], a[1]) for a in AREAS])}<span class="muted small"><span data-count="svc">19개</span> 서비스</span></div>
+<div class="row" style="margin-bottom:20px">{tabs('svc', [(a[0], a[1]) for a in AREAS])}<span class="muted small"><span data-count="svc">{len(SERVICES)}개</span> 서비스</span></div>
 <div class="grid g3" data-items="svc">{cards}</div>
+<p class="note" style="margin-top:20px">{svc_source_note()}</p>
 </div></section>
 <section class="sec alt"><div class="wrap">
 <div class="grid g2" style="align-items:center;gap:48px">
@@ -1491,30 +1573,33 @@ def page_services():
     write('services.html', 'KELI Marketplace', body)
 
 def page_service(s):
-    area = AREA_LABEL[s['area']]
-    if s['img']:
-        logo = ' logo' if s['img'].endswith('.png') else ''
-        shot = f'<div class="svc" style="background:var(--bg2)"><div class="thumb{logo}"><img src="assets/img/services/{s["img"]}" alt="{E(s["name"])} 서비스 화면"></div></div>'
+    area = AREA_LABEL.get(s['area'], s['area'])
+    if s.get('img') or s.get('icon'):
+        shot = f'<div class="svc" style="background:var(--bg2)">{svc_thumb(s, lazy=False)}</div>'
     else:
         shot = f'<div class="svc"><div class="thumb"><span class="word">{E(s["name"])}</span></div></div><p class="note" style="margin-top:8px">서비스 화면은 등록 예정입니다.</p>'
     links = ''
     if s['url']: links += f'<a class="more" href="{s["url"]}" target="_blank" rel="noopener">서비스 바로가기</a>'
     links += f'<a class="more" href="{s["video"] or DEMO_ALL}" target="_blank" rel="noopener">데모 영상</a>'
     links += f'<a class="more" href="{s["manual"] or MANUAL_SITE}" target="_blank" rel="noopener">매뉴얼</a>'
-    feats = ''.join(f'<div class="card"><h3>{E(f)}</h3></div>' for f in s['features']) if s['features'] else '<div class="card"><h3>핵심 기능</h3><p>사무국 확정 후 반영됩니다.</p></div>'
+    feats = ''.join(f'<div class="card"><h3>{E(f)}</h3></div>' for f in s['features']) if s['features'] else ('' if s.get('portal_id') else '<div class="card"><h3>핵심 기능</h3><p>사무국 확정 후 반영됩니다.</p></div>')
     usage = f'<p class="lead" style="max-width:760px">{E(s["usage"])}</p>' if s['usage'] else ''
     stages = ''.join(f'<div class="stage {STAGE_CLS[k]}{" on" if k in s["stage"] else ""}"><span class="no">{STAGE_NO[k]}</span>{v}</div>' for k, v in STAGES)
     stage_note = {'manual': f'색이 칠해진 단계가 이 서비스가 맡는 단계입니다. 출처: <a href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a>(수업의 순간마다 HAI ECOSYSTEM이 함께합니다).',
                   'office': '색이 칠해진 단계가 이 서비스가 맡는 단계입니다. HAI 활용 매뉴얼에 아직 배치되지 않은 서비스라 사무국 배치(확정 전)입니다.',
                   'none': '통합 플랫폼·진로 서비스는 특정 수업 단계에 매이지 않습니다.'}[s['stage_src']]
     status = STATUS[s['status']][0] if s['status'] else '확인 중'
+    if s.get('launch_date') and s['status'] == 'soon':
+        status += f' · {E(str(s["launch_date"]))} 예정'
     provider = '한림대학교 (HAI Ecosystems)'
+    roles = f'<dt>대상</dt><dd>{E(" · ".join(s["roles"]))}</dd>' if s.get('roles') else ''
+    src = f'<dt>등록 정보</dt><dd><a href="{PORTAL_DEMOS}" target="_blank" rel="noopener">한림 AI 교육 포털</a>에 등록된 정보를 자동으로 가져옵니다{(" (" + E((SVC_LIVE or {}).get("fetched_at", "")) + " 기준)") if SVC_LIVE else ""}.</dd>' if s.get('portal_id') else ''
     siblings = [x for x in SERVICES if x['area'] == s['area'] and x['slug'] != s['slug']]
     sib = ''.join(svc_card(x) for x in siblings[:3])
     body = crumb(('services.html', 'Marketplace'), (None, s['name'])) + f'''
 <section class="hero" style="padding-top:40px;padding-bottom:40px"><div class="wrap">
-<span class="eyebrow">{area}</span>
-<h1>{E(s['name'])}</h1>
+<span class="eyebrow">{E(area)}</span>
+<h1>{E(s['name'])}{(' <small style="font-size:.5em;font-weight:500;color:var(--muted)">' + E(s['note']) + '</small>') if s.get('note') else ''}</h1>
 <p class="lead">{E(s['head'])}</p>
 <div class="acts"><a class="btn" href="join.html?service={s['slug']}#inquiry">도입 문의</a>{links}</div>
 </div></section>
@@ -1522,21 +1607,18 @@ def page_service(s):
 <div class="grid g2" style="gap:48px;align-items:start">
 <div>{shot}</div>
 <div style="display:flex;flex-direction:column;gap:24px">
-<p style="font-size:19px;line-height:1.8">{E(s['desc'])}</p>
-<dl class="kv"><dt>제공</dt><dd>{provider}</dd><dt>운영 상태</dt><dd>{status}</dd><dt>이용 방식</dt><dd>시범 도입(무상 또는 협의) → 정식 도입(유상·기관별 협의)</dd><dt>매뉴얼</dt><dd><a href="{s['manual'] or MANUAL_SITE}" target="_blank" rel="noopener">{'PDF 열기' if s['manual'] else 'HAI 활용 매뉴얼 사이트'}</a></dd></dl>
+{('<p style="font-size:19px;line-height:1.8">' + E(s['desc']) + '</p>') if s['desc'].rstrip('.') != s['head'].rstrip('.') else ''}
+<dl class="kv"><dt>제공</dt><dd>{provider}</dd><dt>운영 상태</dt><dd>{status}</dd>{roles}<dt>이용 방식</dt><dd>시범 도입(무상 또는 협의) → 정식 도입(유상·기관별 협의)</dd><dt>매뉴얼</dt><dd><a href="{s['manual'] or MANUAL_SITE}" target="_blank" rel="noopener">{'PDF 열기' if s['manual'] else 'HAI 활용 매뉴얼 사이트'}</a></dd>{src}</dl>
 </div>
 </div>
 </div></section>
-<section class="sec alt"><div class="wrap">
-<div class="head"><h2>핵심 기능.</h2>{usage}</div>
-<div class="grid g3">{feats}</div>
-</div></section>
+{('<section class="sec alt"><div class="wrap"><div class="head"><h2>핵심 기능.</h2>' + usage + '</div><div class="grid g3">' + feats + '</div></div></section>') if feats else ''}
 <section class="sec"><div class="wrap">
 <div class="head"><h2>수업의 어느 단계에서 쓰나요.</h2><p class="lead">설계부터 분석·개선까지 수업 6단계 중 이 서비스가 맡는 단계입니다.</p></div>
 <div class="stages">{stages}</div>
 <p class="note" style="margin-top:12px">{stage_note} <a href="curriculum.html">AI 융합교육과정 보기</a></p>
 </div></section>
-{'<section class="sec glass"><div class="wrap"><div class="row" style="margin-bottom:20px"><h2 style="font-size:28px">같은 영역의 서비스</h2><a class="more" href="services.html#' + s['area'] + '">' + area + ' 전체</a></div><div class="grid g3">' + sib + '</div></div></section>' if sib else ''}
+{'<section class="sec glass"><div class="wrap"><div class="row" style="margin-bottom:20px"><h2 style="font-size:28px">같은 영역의 서비스</h2><a class="more" href="services.html#' + E(s['area']) + '">' + E(area) + ' 전체</a></div><div class="grid g3">' + sib + '</div></div></section>' if sib else ''}
 <section class="sec"><div class="wrap"><div class="cta"><h2>내 교과목에 적용하려면.</h2><p class="lead">첫걸음은 1개 교과목 × 1개 서비스 × 1개 학기입니다.</p><div class="acts"><a class="btn" href="join.html?service={s['slug']}#inquiry">도입 문의</a><a class="more" href="archive.html#case">실증 사례 보기</a></div></div></div></section>
 '''
     write(f'service-{s["slug"]}.html', f'{s["name"]} · KELI', body, desc=s['head'])
@@ -1556,7 +1638,7 @@ def page_curriculum():
 <section class="sec alt"><div class="wrap">
 <div class="head"><h2>수업 6단계와 서비스.</h2><p class="lead">수업의 순간마다 어떤 HAI 서비스가 함께하는지, 단계별로 보여줍니다. 하나의 플랫폼이 전 과정을 대체하기보다 수업 목적과 단계에 따라 여러 서비스를 골라 조합하는 구조입니다.</p></div>
 <div class="flow">{cols}</div>
-<p class="note" style="margin-top:16px"><span class="chip src-manual" style="height:26px;font-size:12px;margin-right:6px">진한 글씨</span>는 <a href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a>의 "수업의 순간마다, HAI ECOSYSTEM이 함께합니다" 배치를 그대로 옮긴 것이고, 나머지는 매뉴얼에 아직 없는 서비스를 사무국이 배치한 것(확정 전)입니다. 매뉴얼의 풀리캠퍼스, SmartLEAD, CLASSUM, HAI-EpiLearn, HAI-WebP, HAI-Tutor는 KELI 제공 목록(19종)에 없어 제외했습니다.</p>
+<p class="note" style="margin-top:16px"><span class="chip src-manual" style="height:26px;font-size:12px;margin-right:6px">진한 글씨</span>는 <a href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a>의 "수업의 순간마다, HAI ECOSYSTEM이 함께합니다" 배치를 그대로 옮긴 것이고, 나머지는 매뉴얼에 아직 없는 서비스를 사무국이 배치한 것(확정 전)입니다. {('매뉴얼의 ' + E(', '.join(MANUAL_NOT_IN_KELI)) + '은(는) 한림 AI 교육 포털의 KELI 서비스 목록에 없어 제외했습니다.') if MANUAL_NOT_IN_KELI else ''}</p>
 </div></section>
 <section class="sec"><div class="wrap">
 <div class="head"><h2>AI 결합 수업 모델.</h2><p class="lead">AI 교수·조교·튜터의 활용 정도에 따라 교과목 유형을 단계로 나누고, 수업은 사전지식 → 진단 → 처방의 3단계(HTHT)로 운영합니다.</p></div>
@@ -1972,7 +2054,7 @@ def page_videos():
     write('videos.html', '영상 · KELI', body)
 
 def search_index():
-    idx = [(f'service-{s["slug"]}.html', s['name'], s['one'] + ' · ' + AREA_LABEL[s['area']]) for s in SERVICES]
+    idx = [(f'service-{s["slug"]}.html', s['name'], s['one'] + ' · ' + AREA_LABEL.get(s['area'], s['area'])) for s in SERVICES]
     idx += [('about.html', 'KELI 소개', '정의 · 비전 · 구조 · 사무국'), ('services.html', 'Marketplace', 'HAI Ecosystems 19'), ('curriculum.html', 'AI 융합교육과정', '수업 6단계와 서비스'), ('join.html', 'KELI 협의체 참여', '도입 절차 · 이용 방식 · 참여 기관 · 문의'), ('archive.html', '아카이브', '사례집 · 기술 동향 · 매뉴얼'), ('notice.html', '공지사항', '소식'), ('events.html', '행사', '심포지엄 · 데모데이 · 매칭데이'), ('newsletter.html', '뉴스레터', '구독')]
     idx += [(ev_href(it), it['title'], '행사 · ' + (it.get('when') or '')) for it in FEED_ITEMS]
     idx += [(pr_href(it), it['title'], ('언론 보도 · ' if it.get('src') == 'unn' else '보도자료 · ') + (it.get('date') or '')) for it in PRESS_ALL]
@@ -1996,7 +2078,7 @@ def page_search():
     write('search.html', '검색 · KELI', body)
 
 def page_en():
-    svc = ''.join(f'<a class="svc" href="service-{s["slug"]}.html"><div class="body"><span class="k">{dict((a[0],a[2]) for a in AREAS)[s["area"]]}</span><strong>{E(s["name"])}</strong><p>{E(s["one"])}</p></div></a>' for s in SERVICES)
+    svc = ''.join(f'<a class="svc" href="service-{s["slug"]}.html"><div class="body"><span class="k">{E(AREA_EN.get(s["area"], s["area"]))}</span><strong>{E(s["name"])}</strong><p>{E(s["one"])}</p></div></a>' for s in SERVICES)
     body = f'''
 <section class="hero"><div class="wrap"><span class="eyebrow">K-University AI EdTech and Learning Initiative</span><h1 class="en">A higher-education AI ecosystem,<br>built together by universities.</h1><p class="lead">KELI is a national-level shared platform. Hallym University develops and classroom-tests AI education services (HAI Ecosystems) and provides them to universities and institutions in Korea and abroad.</p><div class="acts"><a class="btn" href="#contact">Contact us</a><a class="more" href="index.html">한국어</a></div></div></section>
 <section class="sec alt"><div class="wrap"><div class="head"><h2>What KELI offers.</h2></div><div class="grid g3">
