@@ -1340,7 +1340,7 @@ def page_index():
 <div class="head" style="margin:0">
 <span class="eyebrow">KELI란</span>
 <h2>K-University<br>AI EdTech &amp; Learning Initiative.</h2>
-<p class="lead"><b class="hl">한림대학교</b>가 자체 개발해 수업에서 검증한 AI 교육 서비스 <b class="hl">HAI Ecosystems</b>를 <b class="hl">국내외 대학·기관·기업</b>에 제공하고, 함께 <b class="hl">실증하고 확산</b>하는 <b class="hl">고등교육 AI 공유 플랫폼</b>입니다. 대학마다 따로 만들던 것을 <b class="hl">한 번 만들어 함께 씁니다.</b></p>
+<p class="lead"><b class="hl">한림대학교</b>가 <b class="hl">자체 개발</b>해 수업에서 검증한 AI 교육 서비스 <b class="hl">HAI Ecosystems</b>를 <b class="hl">국내외 대학·기관·기업</b>에 제공하고, 함께 <b class="hl">실증하고 확산</b>하는 <b class="hl">고등교육 AI 공유 플랫폼</b>입니다. 대학마다 따로 만들던 것을 <b class="hl">한 번 만들어 함께 씁니다.</b></p>
 <div class="chips"><span class="chip">주관 · 한림대학교 KELI 사무국</span><span class="chip">대상 · 국내외 대학·기관·기업</span><span class="chip">무상 시범 도입 → 유상 정식 도입</span></div>
 <div class="acts" style="margin-top:6px"><a class="btn ghost" href="about.html">KELI 소개 더 보기</a><a class="more" href="join.html">참여 방법</a></div>
 </div>
