@@ -201,7 +201,7 @@
       var list = Array.prototype.slice.call(this.files); if (!list.length) return; var inp = this; inp.disabled = true; toast('올리는 중… ' + list.length + '개');
       list.reduce(function (p, f) { return p.then(function () { return uploadFile(f).then(function (r) { files.push(r); render(); if (onChange) onChange(files, f); }); }); }, Promise.resolve()).then(function () { toast('첨부 ' + list.length + '개를 올렸습니다'); }).catch(function (e) { toast('첨부 실패: ' + e.message, 6000); }).then(function () { inp.disabled = false; inp.value = ''; });
     });
-    return { files: files };
+    return { files: files, render: render };
   }
 
   function editNotice(it) {
@@ -261,18 +261,23 @@
       '</div>' +
       '<div class="card" style="padding:20px 22px"><span class="k">방법 1 · 다른 사이트의 주소 가져오기</span><div class="field" style="margin-top:8px"><label for="a-url">외부 주소 (선택)</label><input id="a-url" value="' + esc(it.url || '') + '" placeholder="https://… (한림 AI 교육 포털, 구글 드라이브, 유튜브 등)"><span class="hint">주소만 넣으면 목록에서 그 주소가 새 창으로 열립니다</span></div></div>' +
       '<div class="card" style="padding:20px 22px"><span class="k">방법 2 · 파일 직접 올리기</span><div class="field" style="margin-top:8px"><label>첨부파일 (선택, 여러 개 가능)</label>' + filesHtml('a-files', 'PDF·HWP·PPT·이미지·영상 등. 파일이 하나면 목록에서 바로 열리고, 여러 개면 자료 페이지가 생깁니다') + '</div></div>' +
+      '<div class="card" style="padding:20px 22px"><span class="k">표지 이미지 (선택)</span><div class="field" style="margin-top:8px"><div id="a-cover-box" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px"><input type="file" id="a-cover" accept="image/*,.pdf"><span class="small muted">그림을 올리면 아카이브 목록에 표지 카드로 보입니다(세로형 권장). PDF를 고르면 첫 장을 표지로 씁니다(저장 후 1~2분)</span></div></div></div>' +
       '<div class="card" style="padding:20px 22px"><span class="k">방법 3 · 설명 글과 함께 올리기</span><div class="field" style="margin-top:8px"><label>설명 (선택)</label>' + editorHtml('a-ed') + '<span class="hint">설명을 쓰면 공지처럼 자료 페이지(제목 · 설명 · 첨부 · 외부 주소)가 만들어집니다</span></div></div>' +
       '<span class="msg" id="a-need-msg">외부 주소, 파일, 설명 가운데 하나는 있어야 합니다</span>' +
       '<label class="chk"><input type="checkbox" id="a-pub"' + (it.published !== false ? ' checked' : '') + '><span>게시(끄면 비공개 저장)</span></label>' +
       '<div class="acts" style="display:flex;gap:8px"><button class="btn" type="submit" id="a-save">저장</button><a class="btn ghost" href="#archive">취소</a></div></form>';
     var editor = mountEditor('a-ed', it.body || '');
+    var cover = it.cover || '';
+    function renderCover() { qs('#a-cover-box').innerHTML = cover ? '<img src="' + esc(cover) + '" alt="" style="width:90px;aspect-ratio:3/4;object-fit:cover;object-position:top;border-radius:10px;border:1px solid var(--line)"><button class="btn ghost xs" type="button" id="a-cover-rm">표지 빼기</button>' : '<span class="small muted">표지 없음</span>'; var rm = qs('#a-cover-rm'); if (rm) rm.addEventListener('click', function () { cover = ''; renderCover(); }); }
+    renderCover();
     var fb = mountFiles('a-files', it.files ? it.files.slice() : [], function (files, added) { if (added && files.length === 1) qs('#a-type').value = typeOf(added.name); }), files = fb.files;
+    qs('#a-cover').addEventListener('change', function () { var f = this.files[0]; if (!f) return; var inp = this; inp.disabled = true; toast('표지 올리는 중…'); uploadFile(f).then(function (r) { if (/\.pdf$/i.test(f.name)) { fb.files.push(r); fb.render(); toast('PDF를 첨부에 넣었습니다. 저장하면 첫 장이 표지가 됩니다', 5000); } else { cover = r.url; renderCover(); toast('표지를 올렸습니다'); } }).catch(function (e) { toast('표지 실패: ' + e.message, 6000); }).then(function () { inp.disabled = false; inp.value = ''; }); });
     qs('#a-url').addEventListener('change', function () { var u = this.value.trim(); if (!u) return; if (/youtu\.?be|vimeo|\/video/i.test(u)) qs('#a-type').value = 'video'; else if (/\.pdf(\?|$)/i.test(u)) qs('#a-type').value = 'pdf'; else if (!files.length) qs('#a-type').value = 'link'; });
     qs('#af').addEventListener('submit', function (e) {
       e.preventDefault(); var t = qs('#a-title').value.trim(), u = qs('#a-url').value.trim(), body = editor.body();
       qs('#a-title-msg').style.display = t ? 'none' : 'block'; var need = !u && !files.length && !body; qs('#a-need-msg').style.display = need ? 'block' : 'none'; if (!t || need) return;
       var btn = qs('#a-save'); btn.disabled = true; btn.textContent = '저장 중…';
-      it.title = t; it.cat = qs('#a-cat').value; it.type = qs('#a-type').value; it.org = qs('#a-org').value.trim(); it.date = qs('#a-date').value.trim(); it.url = u; it.body = body; it.files = files; it.published = qs('#a-pub').checked;
+      it.title = t; it.cat = qs('#a-cat').value; it.type = qs('#a-type').value; it.org = qs('#a-org').value.trim(); it.date = qs('#a-date').value.trim(); it.url = u; it.body = body; it.files = files; it.cover = cover; it.published = qs('#a-pub').checked;
       if (isNew) state.archive.items = (state.archive.items || []).concat([it]);
       saveJson('content/archive.json', state.archive, (isNew ? '아카이브 추가: ' : '아카이브 수정: ') + t).then(function () { afterSave(isNew ? '자료를 추가했습니다' : '자료를 고쳤습니다'); location.hash = '#archive'; }).catch(function (e2) { fail(e2); btn.disabled = false; btn.textContent = '저장'; });
     });

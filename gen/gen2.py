@@ -170,6 +170,26 @@ def _load_archive():
     items = _load_json(os.path.join(CONTENT, 'archive.json'), {}).get('items', [])
     return [a for a in items if a.get('published', True) and a.get('title')]
 ARCHIVE = _load_archive()
+def _auto_covers():
+    """표지가 없고 PDF 첨부가 있으면 첫 장을 표지로 만든다(pdftoppm, 있을 때만)"""
+    import subprocess, shutil as _sh
+    if not _sh.which('pdftoppm'):
+        return
+    os.makedirs(os.path.join(BASE, 'media', 'archive'), exist_ok=True)
+    for a in ARCHIVE:
+        if a.get('cover'):
+            continue
+        pdfs = [f for f in (a.get('files') or []) if str(f.get('url', '')).lower().endswith('.pdf') and os.path.exists(os.path.join(BASE, f['url']))]
+        if not pdfs:
+            continue
+        out = os.path.join(BASE, 'media', 'archive', 'auto-' + a['id'])
+        if not os.path.exists(out + '.jpg'):
+            try:
+                subprocess.run(['pdftoppm', '-f', '1', '-l', '1', '-r', '110', '-jpeg', '-singlefile', os.path.join(BASE, pdfs[0]['url']), out], check=True, capture_output=True, timeout=120)
+            except Exception as e:
+                print('auto cover failed', a['id'], e); continue
+        a['cover'] = f'media/archive/auto-{a["id"]}.jpg'
+_auto_covers()
 HIDDEN = _load_json(os.path.join(CONTENT, 'hidden.json'), {})
 def _not_hidden(kind, items):
     h = set(str(x) for x in HIDDEN.get(kind, []))
@@ -358,7 +378,22 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .vids { gap: 28px 24px; }
 .vid-ph { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: linear-gradient(135deg, #0b3473, #0079b2 60%, #00b6ad); color: #fff; font-weight: 700; font-size: 22px; letter-spacing: .02em; }
 .g3.vids .vid-play .play { width: 52px; height: 52px; margin: -26px 0 0 -26px; } .g3.vids .vid-play .play::after { left: 20px; top: 15px; border-width: 11px 0 11px 18px; }
+.arch-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 24px; }
+@media (max-width: 1199px) { .arch-grid { grid-template-columns: repeat(3, 1fr); } } @media (max-width: 899px) { .arch-grid { grid-template-columns: repeat(2, 1fr); gap: 20px 14px; } }
+@media (max-width: 480px) { .arch-grid { grid-template-columns: 1fr; gap: 14px; } .acard { flex-direction: row; align-items: flex-start; gap: 14px; } .acard .acover { width: 96px; flex: 0 0 auto; } .acard .abody { padding-top: 4px; } }
+.acard { display: flex; flex-direction: column; gap: 12px; color: inherit; } .acard:hover { text-decoration: none; } .acard:hover .acover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(0,0,0,.18); }
+.acover { display: block; aspect-ratio: 3 / 4; border-radius: 14px; overflow: hidden; background: var(--bg2); box-shadow: 0 6px 20px rgba(0,0,0,.10); transition: transform .25s, box-shadow .25s; border: 1px solid var(--line); }
+.acover img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.acover-ph { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; padding: 16px; text-align: center; background: linear-gradient(160deg, #0b3473, #0079b2 70%, #00b6ad); color: #fff; font-weight: 700; font-size: 16px; line-height: 1.45; }
+.abody { display: flex; flex-direction: column; gap: 4px; } .abody .t { font-size: 15px; font-weight: 600; line-height: 1.5; } .abody .m { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.arch-hero { display: grid; grid-template-columns: 300px 1fr; gap: 40px; align-items: start; text-align: left; max-width: 1000px; margin: 0 auto; }
+.arch-hero .acts { justify-content: flex-start; margin-top: 16px; } .arch-hero .eyebrow { display: inline-block; }
+.arch-cover { border-radius: 16px; overflow: hidden; box-shadow: 0 18px 44px rgba(0,0,0,.18); border: 1px solid var(--line); background: var(--bg2); } .arch-cover img { display: block; width: 100%; }
+@media (max-width: 760px) { .arch-hero { grid-template-columns: 1fr; gap: 24px; } .arch-cover { max-width: 260px; } }
+.pdf-frame { width: 100%; height: min(78vh, 980px); min-height: 480px; border: 1px solid var(--line); border-radius: 16px; background: var(--bg2); }
+.art-ol { padding-left: 22px; } .art-ol li { margin: 6px 0; }
 .art-files { margin: 24px 0; padding: 18px 22px; border-radius: 16px; background: var(--bg2); }
+.art-files a { word-break: break-all; overflow-wrap: anywhere; }
 .art-files strong { display: block; font-size: 14px; margin-bottom: 6px; } .art-files ul { margin: 0; padding-left: 18px; } .art-files li { margin: 4px 0; }
 /* 관리자 */
 .adm { display: grid; grid-template-columns: 220px 1fr; gap: 40px; align-items: start; }
@@ -1338,7 +1373,15 @@ def page_join():
 ARCH_ICON = {'pdf': 'PDF', 'doc': '문서', 'video': '영상', 'link': '링크', 'image': '이미지'}
 def arch_has_page(a):
     fs = a.get('files') or []
-    return bool(a.get('body')) or len(fs) > 1 or (fs and a.get('url'))
+    return bool(a.get('body')) or len(fs) > 1 or (fs and a.get('url')) or bool(a.get('cover'))
+def arch_meta(a):
+    bits = [a.get('org') or '', a.get('author') or '', a.get('period') or a.get('date') or '']
+    return ' · '.join(E(b) for b in bits if b)
+def arch_card(a):
+    href, ext = arch_href(a)
+    cover = f'<img src="{E(a["cover"])}" alt="" loading="lazy">' if a.get('cover') else f'<span class="acover-ph"><span>{E(a["title"])}</span></span>'
+    return (f'<a class="acard" href="{E(href)}"{ext}><span class="acover">{cover}</span>'
+            f'<span class="abody"><span class="m"><span class="badge">{ARCH_ICON.get(a.get("type"), "자료")}</span></span><strong class="t">{E(a["title"])}</strong><span class="m">{arch_meta(a)}</span></span></a>')
 def arch_href(a):
     """목록에서 누르면: 설명 글·첨부 여러 개 → 자료 페이지 / 외부 주소 → 새 창 / 파일 하나 → 그 파일"""
     if arch_has_page(a):
@@ -1361,10 +1404,15 @@ def page_archive():
     secs = ''
     for key, label in ARCH_CATS:
         items = [a for a in ARCHIVE if a['cat'] == key]
-        rows = ''.join(row(a) for a in items) if items else '<p class="muted" style="padding:20px 4px;border-bottom:1px solid var(--line)">아직 등록된 자료가 없습니다.</p>'
+        cards = [a for a in items if a.get('cover')]
+        plain = [a for a in items if not a.get('cover')]
+        grid = f'<div class="arch-grid">{"".join(arch_card(a) for a in cards)}</div>' if cards else ''
+        rows = ('<div class="list"' + (' style="margin-top:28px"' if cards else '') + '>' + ''.join(row(a) for a in plain) + '</div>') if plain else ''
+        if not items:
+            rows = '<p class="muted" style="padding:20px 4px;border-bottom:1px solid var(--line)">아직 등록된 자료가 없습니다.</p>'
         secs += f'''
-<section class="sec" id="{key}" style="padding-top:0"><div class="wrap narrow" style="max-width:900px">
-<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">{label}</h2><span class="muted small">{len(items)}개 자료</span></div><div class="list">{rows}</div>
+<section class="sec" id="{key}" style="padding-top:0"><div class="wrap">
+<div class="row" style="margin-bottom:20px"><h2 style="font-size:28px">{label}</h2><span class="muted small">{len(items)}개 자료</span></div>{grid}{rows}
 </div></section>'''
     body = crumb((None, '아카이브')) + f'''
 <section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap">
@@ -1381,21 +1429,57 @@ def page_archive():
 def page_archive_detail(a):
     cat = dict(ARCH_CATS).get(a.get('cat'), '아카이브')
     files = a.get('files') or []
-    fl = ('<div class="art-files"><strong>자료 파일</strong><ul>' + ''.join(f'<li><a href="{E(f["url"])}" target="_blank" rel="noopener" download>{E(f["name"])}</a>{(" <span class=\"muted small\">(" + E(f["size"]) + ")</span>") if f.get("size") else ""}</li>' for f in files) + '</ul></div>') if files else ''
-    link = f'<p><a class="btn ghost sm" href="{E(a["url"])}" target="_blank" rel="noopener">원문 · 외부 주소 열기</a></p>' if a.get('url') else ''
-    others = ''.join((lambda h: f'<a class="li" href="{E(h[0])}"{h[1]}><span><span class="m">{dict(ARCH_CATS).get(o.get("cat"), "")}</span><br><span class="t">{E(o["title"])}</span></span><span class="d">{E(o.get("date", ""))}</span></a>')(arch_href(o)) for o in ARCHIVE if o['id'] != a['id'] and o.get('cat') == a.get('cat'))[:3000]
-    body = crumb(('archive.html', '아카이브'), (None, a['title'])) + f'''
-<section class="hero" style="padding-top:48px;padding-bottom:32px"><div class="wrap narrow" style="max-width:900px;text-align:left">
-<span class="eyebrow">아카이브 · {E(cat)}</span><h1 style="font-size:clamp(28px,4vw,40px)">{E(a["title"])}</h1>
-<p class="muted">{E(a.get("org", ""))}{(" · " + E(a["date"])) if a.get("date") else ""} · <span class="badge">{ARCH_ICON.get(a.get("type"), "자료")}</span></p>
-</div></section>
+    pdfs = [f for f in files if str(f.get('url', '')).lower().endswith('.pdf')]
+    fl = ''
+    if files:
+        rows = ''
+        for f in files:
+            size = f' <span class="muted small">({E(f["size"])})</span>' if f.get('size') else ''
+            rows += f'<li><a href="{E(f["url"])}" target="_blank" rel="noopener" download>{E(f["name"])}</a>{size}</li>'
+        fl = f'<div class="art-files"><strong>자료 파일</strong><ul>{rows}</ul></div>'
+    acts = ''
+    if pdfs:
+        size = f' ({E(pdfs[0]["size"])})' if pdfs[0].get('size') else ''
+        acts += f'<a class="btn" href="#viewer">PDF 바로 보기</a><a class="btn ghost" href="{E(pdfs[0]["url"])}" download>내려받기{size}</a>'
+    elif files:
+        acts += f'<a class="btn" href="{E(files[0]["url"])}" target="_blank" rel="noopener" download>내려받기</a>'
+    if a.get('url'):
+        acts += f'<a class="btn ghost" href="{E(a["url"])}" target="_blank" rel="noopener">원문 · 외부 주소</a>'
+    cover = f'<div class="arch-cover"><img src="{E(a["cover"])}" alt="{E(a["title"])} 표지"></div>' if a.get('cover') else ''
+    viewer = ''
+    if pdfs:
+        f = pdfs[0]
+        viewer = (f'<section class="sec" id="viewer" style="padding-top:0"><div class="wrap"><div class="row" style="margin-bottom:12px"><h2 style="font-size:24px">본문 보기</h2>'
+                  f'<a class="more" href="{E(f["url"])}" target="_blank" rel="noopener">새 창에서 열기</a></div>'
+                  f'<iframe class="pdf-frame" src="{E(f["url"])}#view=FitH" title="{E(a["title"])} PDF" loading="lazy"></iframe>'
+                  f'<p class="note" style="margin-top:10px">휴대전화에서는 첫 장만 보일 수 있습니다. 그럴 때는 내려받기를 눌러 주세요.</p></div></section>')
+    others = [o for o in ARCHIVE if o['id'] != a['id'] and o.get('cat') == a.get('cat')]
+    ocards = [o for o in others if o.get('cover')][:4]
+    orows = [o for o in others if not o.get('cover')][:4]
+    others_html = f'<div class="arch-grid">{"".join(arch_card(o) for o in ocards)}</div>' if ocards else ''
+    if orows:
+        rr = ''
+        for o in orows:
+            h, ext = arch_href(o)
+            rr += f'<a class="li" href="{E(h)}"{ext}><span><span class="m">{E(o.get("org", ""))}</span><br><span class="t">{E(o["title"])}</span></span><span class="d">{E(o.get("date", ""))}</span></a>'
+        others_html += f'<div class="list" style="margin-top:20px">{rr}</div>'
+    meta = arch_meta(a) + ((' · ' + E(a['date'])) if a.get('period') and a.get('date') else '')
+    article = f'<article class="art">{html_body(a["body"])}</article>' if a.get('body') else ''
+    body = crumb(('archive.html', '아카이브'), (f'archive.html#{a.get("cat", "")}', cat), (None, a['title'])) + f'''
+<section class="hero" style="padding-top:40px;padding-bottom:40px"><div class="wrap"><div class="arch-hero">
+{cover}
+<div class="arch-info"><span class="eyebrow">아카이브 · {E(cat)}</span><h1 style="font-size:clamp(26px,3.6vw,38px)">{E(a["title"])}</h1>
+<p class="muted">{meta}</p>
+<div class="acts">{acts}</div></div>
+</div></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap narrow" style="max-width:900px">
-{('<article class="art">' + html_body(a["body"]) + '</article>') if a.get('body') else ''}
-{fl}{link}
+{article}
+{fl}
 </div></section>
-<section class="sec alt"><div class="wrap narrow" style="max-width:900px">
-<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">같은 분류의 다른 자료</h2><a class="more" href="archive.html#{E(a.get("cat", ""))}">전체 보기</a></div>
-<div class="list">{others or '<p class="muted small">다른 자료가 없습니다.</p>'}</div>
+{viewer}
+<section class="sec alt"><div class="wrap">
+<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">{E(cat)}의 다른 자료</h2><a class="more" href="archive.html#{E(a.get("cat", ""))}">전체 보기</a></div>
+{others_html or '<p class="muted small">다른 자료가 없습니다.</p>'}
 </div></section>
 '''
     write(f'archive-{a["id"]}.html', f'{a["title"]} · KELI 아카이브', body, desc=(_inner_text(html_body(a['body']))[:150] if a.get('body') else f'{cat} · {a.get("org", "")}'))
