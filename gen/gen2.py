@@ -268,12 +268,9 @@ a.btn.ghost, .util a.btn.ghost { color: var(--fg); }
 /* sections */
 .sec { padding-block: clamp(64px, 9vw, 120px); }
 .sec.alt { background: var(--bg2); }
-.sec.glass { position: relative; isolation: isolate; overflow: hidden; background: radial-gradient(640px 640px at 8% 6%, rgba(11, 92, 255, .20), transparent 70%), radial-gradient(760px 760px at 94% 30%, rgba(23, 196, 170, .22), transparent 70%), radial-gradient(640px 640px at 16% 62%, rgba(124, 92, 255, .16), transparent 70%), radial-gradient(760px 760px at 88% 92%, rgba(11, 92, 255, .16), transparent 70%), linear-gradient(180deg, #f6f8fd 0%, #edf2fa 100%); }
-.sec.glass::before, .sec.glass::after { content: ""; position: absolute; z-index: -1; border-radius: 50%; pointer-events: none; filter: blur(2px); }
-.sec.glass::before { width: 420px; height: 420px; left: 30%; top: 18%; background: radial-gradient(circle, rgba(255,255,255,.9), rgba(255,255,255,0) 70%); }
-.sec.glass::after { width: 520px; height: 520px; right: 12%; bottom: 10%; background: radial-gradient(circle, rgba(11, 92, 255, .14), rgba(11, 92, 255, 0) 70%); }
-.sec.glass .tab { background: rgba(255,255,255,.55); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.8); } .sec.glass .tab[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-.sec.glass .card { background: rgba(255,255,255,.6); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,.8); }
+.sec.glass { background: var(--bg2); }
+.sec.glass .tab { background: rgba(255,255,255,.7); border: 1px solid rgba(255,255,255,.9); } .sec.glass .tab[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.sec.glass .card { background: rgba(255,255,255,.7); border: 1px solid rgba(255,255,255,.9); }
 .sec.dark { background: #1d1d1f; color: #f5f5f7; }
 .sec.dark .muted, .sec.dark .lead { color: #a1a1a6; }
 .sec.dark .btn.ghost { background: #2c2c2e; color: #f5f5f7; }
@@ -318,10 +315,10 @@ a.card:hover { background: color-mix(in srgb, var(--bg2) 85%, var(--fg) 6%); }
 .tab[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
 @media (max-width: 640px) { .tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; } .tab { flex: 0 0 auto; } }
 /* service cards */
-.svc { display: flex; flex-direction: column; border-radius: 22px; background: rgba(255,255,255,.55); -webkit-backdrop-filter: blur(24px) saturate(170%); backdrop-filter: blur(24px) saturate(170%); border: 1px solid rgba(255,255,255,.8); box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 8px 28px rgba(20, 40, 80, .07); color: inherit; padding: 10px 10px 0; transition: transform .25s ease, box-shadow .25s ease, background .25s ease; }
-.svc:hover { text-decoration: none; transform: translateY(-4px); background: rgba(255,255,255,.78); box-shadow: inset 0 1px 0 #fff, 0 18px 44px rgba(20, 40, 80, .13); }
+.svc { display: flex; flex-direction: column; border-radius: 22px; background: rgba(255,255,255,.72); -webkit-backdrop-filter: blur(24px) saturate(170%); backdrop-filter: blur(24px) saturate(170%); border: 1px solid rgba(255,255,255,.8); box-shadow: inset 0 1px 0 #fff, 0 8px 28px rgba(20, 40, 80, .06); color: inherit; padding: 10px 10px 0; transition: transform .25s ease, box-shadow .25s ease, background .25s ease; }
+.svc:hover { text-decoration: none; transform: translateY(-4px); background: rgba(255,255,255,.95); box-shadow: inset 0 1px 0 #fff, 0 18px 44px rgba(20, 40, 80, .12); }
 
-.svc .thumb { aspect-ratio: 16 / 11; max-width: 100%; background: rgba(255,255,255,.6); overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0,0,0,.05); border-radius: 14px; }
+.svc .thumb { aspect-ratio: 16 / 11; max-width: 100%; background: #f5f6f8; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0,0,0,.05); border-radius: 14px; }
 .svc .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 .svc .thumb.logo img { object-fit: contain; padding: 28px; }
 .svc .thumb .word { font-size: 26px; font-weight: 800; color: #b8c0cc; letter-spacing: .02em; }
