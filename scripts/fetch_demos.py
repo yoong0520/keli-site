@@ -15,7 +15,7 @@ PORTAL = 'https://ai.hallym.ac.kr'
 PAGE = PORTAL + '/hallym-ai'
 API = PORTAL + '/api/v1/hallym-services'
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'assets', 'demos.live.json')
-UA = {'User-Agent': 'KELI-site demo fetcher (+https://yoong0520.github.io/keli-site/)', 'Accept': 'application/json'}
+UA = {'User-Agent': 'KELI-site demo fetcher (+https://keli-aied.org/)', 'Accept': 'application/json'}
 AUD = {'common': '', 'student': '학생용', 'faculty': '교수자용'}
 
 def get_json(url):

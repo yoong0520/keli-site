@@ -7,7 +7,7 @@ OUT = BASE
 CONTENT = os.path.join(BASE, 'content')                                  # 관리자가 고치는 글 데이터
 IMG_SRC = '/mnt/user-data/outputs/keli-portal-html/assets/img'           # 있을 때만 서비스 화면 이미지를 복사
 REPO = 'yoong0520/keli-site'
-SITE_URL = 'https://yoong0520.github.io/keli-site/'
+SITE_URL = 'https://keli-aied.org/'
 
 def _load_json(path, default):
     try:

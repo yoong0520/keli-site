@@ -15,7 +15,7 @@ BASE = 'https://www.hallym.ac.kr'
 BOARD = '/bbs/pr/876'
 PUBLIC = BASE + '/pr/5865/subview.do'
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'assets', 'press.live.json')
-UA = {'User-Agent': 'KELI-site press fetcher (+https://yoong0520.github.io/keli-site/)'}
+UA = {'User-Agent': 'KELI-site press fetcher (+https://keli-aied.org/)'}
 KEYWORDS = ['KELI', '켈리']
 
 def get(url):

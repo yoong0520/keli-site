@@ -9,7 +9,7 @@ import json, re, sys, os, datetime, urllib.request
 
 BASE = 'https://ai.hallym.ac.kr'
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'assets', 'stats.live.json')
-UA = {'User-Agent': 'KELI-site stats fetcher (+https://yoong0520.github.io/keli-site/)'}
+UA = {'User-Agent': 'KELI-site stats fetcher (+https://keli-aied.org/)'}
 
 def get(url, limit=5_000_000):
     req = urllib.request.Request(url, headers=UA)

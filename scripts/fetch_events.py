@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 BASE = 'https://aiadvcenter.csedu4all.com'
 LIST = BASE + '/news/stories'
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'assets', 'events.live.json')
-UA = {'User-Agent': 'KELI-site events fetcher (+https://yoong0520.github.io/keli-site/)'}
+UA = {'User-Agent': 'KELI-site events fetcher (+https://keli-aied.org/)'}
 PREFIX = '[KELI]'
 
 def get(url):

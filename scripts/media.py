@@ -6,7 +6,7 @@
 import os, io, re, sys, hashlib, urllib.request
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
-UA = {'User-Agent': 'KELI-site media fetcher (+https://yoong0520.github.io/keli-site/)'}
+UA = {'User-Agent': 'KELI-site media fetcher (+https://keli-aied.org/)'}
 
 def localize(url, folder, name, referer=None):
     """url → 'media/<folder>/<name>.jpg' (상대 경로). 실패하면 None"""
