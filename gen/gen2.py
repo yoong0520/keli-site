@@ -499,36 +499,29 @@ body.noscroll { overflow: hidden; }
 .org-base strong { font-size: 16px; margin-right: 6px; }
 .org-m { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; } .org-m .org-ic { width: 36px; height: 36px; margin: 0; } .org-m .org-ic svg { width: 20px; height: 20px; }
 @media (max-width: 760px) { .org-row { grid-template-columns: 1fr; gap: 0; padding-top: 0; } .org-row::before { display: none; } .org-row .org-box { margin-top: 26px; } .org-row .org-box:first-child { margin-top: 0; } .org-row .org-box:first-child::before { display: none; } .org-base { flex-direction: column; align-items: flex-start; } }
-/* 홈 KELI 소개 도형 */
-.intro-grid { grid-template-columns: 5fr 7fr; align-items: center; gap: 56px; }
-.intro-grid .acts { display: flex; gap: 12px 28px; flex-wrap: wrap; align-items: center; }
-.kdiag { display: grid; grid-template-columns: auto auto auto auto 1fr; align-items: center; column-gap: 0; position: relative; padding-bottom: 44px; }
-.kd-node { background: var(--bg2); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.kd-node strong { font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
-.kd-node span { font-size: 12px; color: var(--muted); line-height: 1.45; }
-.kd-src { width: 142px; }
-.kd-core { width: 128px; height: 128px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; box-shadow: 0 12px 28px rgba(11, 92, 255, .25); }
-.kd-core strong { font-size: 26px; font-weight: 800; letter-spacing: .02em; line-height: 1; }
-.kd-core span { font-size: 11px; line-height: 1.35; opacity: .9; }
-.kd-arrow { width: 84px; height: 2px; background: #c9d0db; position: relative; margin: 0 6px; }
-.kd-arrow::after { content: ""; position: absolute; right: -1px; top: -4px; border: 5px solid transparent; border-left: 7px solid #c9d0db; border-right: 0; }
-.kd-arrow span { position: absolute; left: 0; width: 100%; bottom: 8px; text-align: center; font-size: 11px; line-height: 1.3; color: var(--muted); }
-.kd-targets { display: flex; flex-direction: column; gap: 8px; padding-left: 18px; border-left: 2px solid #c9d0db; position: relative; }
-.kd-targets .kd-node { position: relative; padding: 10px 14px; border-radius: 12px; }
-.kd-targets .kd-node::before { content: ""; position: absolute; left: -18px; top: 50%; width: 14px; height: 2px; background: #c9d0db; }
-.kd-targets .kd-node strong { font-size: 14px; } .kd-targets .kd-node span { font-size: 11.5px; }
-.kd-cycle { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.kd-cycle .k { font-weight: 600; color: var(--fg); margin-right: 4px; } .kd-cycle i { font-style: normal; color: var(--accent); font-weight: 700; }
-@media (max-width: 1000px) { .intro-grid { grid-template-columns: 1fr; gap: 40px; } .intro-grid > .head { max-width: 760px; } }
-@media (max-width: 640px) {
-  .kdiag { grid-template-columns: 1fr; justify-items: center; row-gap: 0; padding-bottom: 40px; }
-  .kd-src { width: min(100%, 260px); text-align: center; align-items: center; }
-  .kd-arrow { width: 2px; height: 44px; margin: 4px 0; }
-  .kd-arrow::after { right: -4px; top: auto; bottom: -1px; border: 5px solid transparent; border-top: 7px solid #c9d0db; border-bottom: 0; }
-  .kd-arrow span { left: 14px; width: auto; bottom: auto; top: 50%; transform: translateY(-50%); white-space: nowrap; text-align: left; }
-  .kd-targets { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-left: 0; border-left: 0; }
-  .kd-targets .kd-node::before { display: none; }
-}
+/* 홈 KELI 소개 도형: 위→아래 흐름 */
+.hl { color: var(--accent); font-weight: 700; }
+.intro-grid { grid-template-columns: 6fr 6fr; align-items: center; gap: 56px; }
+.kdiag { display: flex; flex-direction: column; align-items: center; }
+.kd-src, .kd-node { display: flex; align-items: center; gap: 14px; background: var(--bg2); border-radius: 16px; padding: 14px 18px; min-width: 0; }
+.kd-src { width: min(100%, 420px); } .kd-src .org-ic, .kd-node .org-ic { margin: 0; flex: 0 0 auto; }
+.kd-src strong, .kd-node strong { display: block; font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
+.kd-src span, .kd-node span { display: block; font-size: 13px; color: var(--muted); line-height: 1.45; }
+.kd-line { height: 40px; } .kd-line b { left: 50%; margin-left: 14px; }
+.kd-core { width: 100%; display: flex; align-items: center; gap: 22px; padding: 22px 28px; border-radius: 20px; background: linear-gradient(120deg, #0B5CFF, #3a84ff); color: #fff; box-shadow: 0 16px 36px rgba(11, 92, 255, .28); }
+.kd-core strong { font-size: 38px; font-weight: 800; letter-spacing: .02em; line-height: 1; }
+.kd-core div { display: flex; flex-direction: column; gap: 3px; border-left: 1px solid rgba(255,255,255,.35); padding-left: 22px; min-width: 0; }
+.kd-core .t { font-size: 17px; font-weight: 700; } .kd-core .s { font-size: 13px; opacity: .88; }
+.kd-targets { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.kd-node .org-ic { width: 40px; height: 40px; } .kd-node .org-ic svg { width: 20px; height: 20px; } .kd-node strong { font-size: 15px; } .kd-node span { font-size: 12.5px; }
+.kd-cycle { width: 100%; margin-top: 22px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.kd-cycle .k { font-size: 13px; font-weight: 700; color: var(--muted); }
+.kd-cycle ol { list-style: none; margin: 0; padding: 0; display: flex; flex: 1; align-items: center; counter-reset: c; min-width: 0; }
+.kd-cycle li { counter-increment: c; position: relative; flex: 1; text-align: center; font-size: 14px; font-weight: 600; padding: 8px 4px; border-radius: 999px; background: var(--bg2); }
+.kd-cycle li::before { content: counter(c, decimal-leading-zero); display: block; font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: .04em; }
+.kd-cycle li + li { margin-left: 18px; } .kd-cycle li + li::after { content: ""; position: absolute; left: -18px; top: 50%; width: 18px; border-top: 2px solid #c3cad6; }
+@media (max-width: 1000px) { .intro-grid { grid-template-columns: 1fr; gap: 40px; } .intro-grid > .head { max-width: 760px; } .kdiag { max-width: 640px; margin: 0 auto; } }
+@media (max-width: 480px) { .kd-targets { grid-template-columns: 1fr; } .kd-core { flex-direction: column; align-items: flex-start; gap: 10px; } .kd-core div { border-left: 0; padding-left: 0; } .kd-cycle li + li { margin-left: 10px; } .kd-cycle li + li::after { left: -10px; width: 10px; } }
 /* 상호작용: 과하지 않은 움직임 */
 .btn { transition: transform .15s ease, box-shadow .15s ease, background .15s ease, filter .15s ease; }
 .btn:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(11, 92, 255, .22); } .btn.ghost:hover { box-shadow: 0 6px 16px rgba(0,0,0,.08); } .btn:active { transform: translateY(0); box-shadow: none; }
@@ -1345,23 +1338,22 @@ def page_index():
 <div class="head" style="margin:0">
 <span class="eyebrow">KELI란</span>
 <h2>K-University<br>AI EdTech &amp; Learning Initiative.</h2>
-<p class="lead">한림대학교가 자체 개발해 수업에서 검증한 AI 교육 서비스 HAI Ecosystems를 국내외 대학·기관·기업에 제공하고, 함께 실증하고 확산하는 고등교육 AI 공유 플랫폼입니다. 대학마다 따로 만들던 것을 한 번 만들어 함께 씁니다.</p>
+<p class="lead"><b class="hl">한림대학교</b>가 자체 개발해 수업에서 검증한 AI 교육 서비스 <b class="hl">HAI Ecosystems</b>를 <b class="hl">국내외 대학·기관·기업</b>에 제공하고, 함께 <b class="hl">실증하고 확산</b>하는 <b class="hl">고등교육 AI 공유 플랫폼</b>입니다. 대학마다 따로 만들던 것을 <b class="hl">한 번 만들어 함께 씁니다.</b></p>
 <div class="chips"><span class="chip">주관 · 한림대학교 KELI 사무국</span><span class="chip">대상 · 국내외 대학·기관·기업</span><span class="chip">무상 시범 도입 → 유상 정식 도입</span></div>
 <div class="acts" style="margin-top:6px"><a class="btn ghost" href="about.html">KELI 소개 더 보기</a><a class="more" href="join.html">참여 방법</a></div>
 </div>
-<div class="kdiag" role="img" aria-label="KELI 구조: 한림대학교가 개발·검증한 HAI Ecosystems를 KELI가 국내 대학, 해외 대학·기관, 에듀테크 기업, 유관기관에 제공하고 함께 실증·확산합니다">
-<div class="kd-node kd-src"><strong>한림대학교</strong><span>HAI Ecosystems<br>개발 · 수업 검증</span></div>
-<div class="kd-arrow"><span>무상 · 유상 제공</span></div>
-<div class="kd-core"><strong>KELI</strong><span>고등교육<br>AI 공유 플랫폼</span></div>
-<div class="kd-arrow"><span>도입 · 공동 실증 · 확산</span></div>
+<div class="kdiag" role="img" aria-label="KELI 구조: 한림대학교가 개발·검증한 HAI Ecosystems를 KELI가 국내 대학, 해외 대학·기관, 에듀테크 기업, 유관기관에 제공하고 함께 실증·확산합니다. 운영 사이클은 발견, 연결, 실증, 확산입니다">
+<div class="kd-src"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5.5 9a2 2 0 001.7 3h11.6a2 2 0 001.7-3L14 9V3"/><path d="M7.5 15h9"/></svg></i><div><strong>한림대학교</strong><span>HAI Ecosystems 개발 · 수업에서 검증</span></div></div>
+<div class="org-line kd-line"><b>무상 · 유상 제공</b></div>
+<div class="kd-core"><strong>KELI</strong><div><span class="t">고등교육 AI 공유 플랫폼</span><span class="s">검증된 AI 교육 서비스를 대학·기관이 함께 씁니다</span></div></div>
+<div class="org-line kd-line"><b>도입 · 공동 실증 · 확산</b></div>
 <div class="kd-targets">
-<div class="kd-node"><strong>국내 대학</strong><span>수업 도입 · 시범 운영</span></div>
-<div class="kd-node"><strong>해외 대학 · 기관</strong><span>현지화 · 국제 프로그램</span></div>
-<div class="kd-node"><strong>에듀테크 기업</strong><span>Marketplace 등재 · 공동 개발</span></div>
-<div class="kd-node"><strong>유관기관</strong><span>공동 연구 · 정책 근거</span></div>
+<div class="kd-node"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9l9.5-4.5L21.5 9 12 13.5 2.5 9z"/><path d="M6.5 11v4.5c0 1.5 2.5 3 5.5 3s5.5-1.5 5.5-3V11M21.5 9v5"/></svg></i><div><strong>국내 대학</strong><span>수업 도입 · 시범 운영</span></div></div>
+<div class="kd-node"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg></i><div><strong>해외 대학 · 기관</strong><span>현지화 · 국제 프로그램</span></div></div>
+<div class="kd-node"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V4.5h6V7M3 12h18"/></svg></i><div><strong>에듀테크 기업</strong><span>Marketplace 등재 · 공동 개발</span></div></div>
+<div class="kd-node"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-5 9 5H3zM5 9v8M9.5 9v8M14.5 9v8M19 9v8M3 20h18"/></svg></i><div><strong>유관기관</strong><span>공동 연구 · 정책 근거</span></div></div>
 </div>
-<p class="kd-cycle"><span class="k">운영 사이클</span> 발견 <i>›</i> 연결 <i>›</i> 실증 <i>›</i> 확산</p>
-</div>
+<div class="kd-cycle"><span class="k">운영 사이클</span><ol><li>발견</li><li>연결</li><li>실증</li><li>확산</li></ol></div>
 </div>
 </div></section>
 
