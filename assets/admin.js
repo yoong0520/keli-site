@@ -7,6 +7,9 @@
   var CFG = window.KELI_ADMIN || { repo: 'yoong0520/keli-site', branch: 'main', site: './', workflow: 'pages.yml' };
   if (location.protocol !== 'file:') CFG.site = new URL('./', location.href).href;   // 주소(도메인)가 바뀌어도 그대로 동작
   var API = 'https://api.github.com';
+  // 관리자 서버(Cloudflare Worker)가 있으면: 아이디·비밀번호 로그인 + GitHub 대리 호출 + 큰 파일 창고(R2)
+  function apiBase() { var a = ''; try { a = localStorage.getItem('keli_api') || ''; } catch (e) {} return String(CFG.api || a || '').replace(/\/+$/, ''); }
+  var SERVER = apiBase();
   var qs = function (s, r) { return (r || document).querySelector(s); };
   var qsa = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
@@ -29,21 +32,29 @@
   window.addEventListener('beforeunload', function (e) { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
 
   // ---------------------------------------------------------------- 토큰
-  function loadToken() { try { return localStorage.getItem('keli_admin_token') || sessionStorage.getItem('keli_admin_token'); } catch (e) { return null; } }
-  function saveToken(t, keep) { try { (keep ? localStorage : sessionStorage).setItem('keli_admin_token', t); (keep ? sessionStorage : localStorage).removeItem('keli_admin_token'); } catch (e) {} }
-  function clearToken() { try { localStorage.removeItem('keli_admin_token'); sessionStorage.removeItem('keli_admin_token'); } catch (e) {} }
+  function tokKey() { return SERVER ? 'keli_admin_session' : 'keli_admin_token'; }
+  function loadToken() { try { return localStorage.getItem(tokKey()) || sessionStorage.getItem(tokKey()); } catch (e) { return null; } }
+  function saveToken(t, keep) { try { (keep ? localStorage : sessionStorage).setItem(tokKey(), t); (keep ? sessionStorage : localStorage).removeItem(tokKey()); } catch (e) {} }
+  function clearToken() { try { localStorage.removeItem(tokKey()); sessionStorage.removeItem(tokKey()); } catch (e) {} }
 
   // ---------------------------------------------------------------- GitHub API
   function gh(path, opt) {
     opt = opt || {};
     var h = { 'Accept': 'application/vnd.github+json', 'Authorization': 'Bearer ' + token, 'X-GitHub-Api-Version': '2022-11-28' };
     if (opt.body) h['Content-Type'] = 'application/json';
-    return fetch(API + path, { method: opt.method || 'GET', headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined, cache: 'no-store' }).then(function (r) {
+    var base = SERVER ? SERVER + '/gh' : API;
+    return fetch(base + path, { method: opt.method || 'GET', headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined, cache: 'no-store' }).then(function (r) {
       if (r.status === 204) return null;
       return r.text().then(function (t) { var j = {}; try { j = t ? JSON.parse(t) : {}; } catch (e) {} if (!r.ok) { var err = new Error(j.message || ('HTTP ' + r.status)); err.status = r.status; throw err; } return j; });
     });
   }
   function encPath(p) { return p.split('/').map(encodeURIComponent).join('/'); }
+  function srv(path, opt) {   // 관리자 서버 /api/* · /files/*
+    opt = opt || {}; var h = {}; if (token) h['Authorization'] = 'Bearer ' + token; if (opt.body) h['Content-Type'] = 'application/json'; if (opt.headers) for (var k in opt.headers) h[k] = opt.headers[k];
+    return fetch(SERVER + path, { method: opt.method || 'GET', headers: h, body: opt.raw != null ? opt.raw : (opt.body ? JSON.stringify(opt.body) : undefined), cache: 'no-store' }).then(function (r) {
+      return r.text().then(function (t) { var j = {}; try { j = t ? JSON.parse(t) : {}; } catch (e) {} if (!r.ok) { var err = new Error(j.error || j.message || ('HTTP ' + r.status)); err.status = r.status; throw err; } return j; });
+    });
+  }
   function b64enc(str) { var bytes = new TextEncoder().encode(str), bin = ''; for (var i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(bin); }
   function b64dec(b64) { var bin = atob(b64.replace(/\n/g, '')), bytes = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i); return new TextDecoder().decode(bytes); }
   function getFile(path) {
@@ -68,11 +79,33 @@
   function readFileB64(file) { return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(String(r.result).split(',')[1]); }; r.onerror = rej; r.readAsDataURL(file); }); }
   function safeName(n) { return n.normalize('NFC').replace(/[\\\/:*?"<>|#%&+\s]+/g, '_').replace(/_+/g, '_'); }
   function fmtSize(b) { return b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; }
-  function uploadFile(file) {
-    if (file.size > 100 * 1048576) return Promise.reject(new Error('100MB 를 넘는 파일은 올릴 수 없습니다'));
+  var PART = CFG.part || 50 * 1048576, SINGLE = CFG.single || 90 * 1048576;   // 조각 크기 · 한 번에 올리는 한도(Cloudflare 요청 한도 100MB 아래)
+  function uploadFile(file, onProgress) {
     var d = new Date(), ym = d.getFullYear() + '/' + String(d.getMonth() + 1).padStart(2, '0');
     var path = 'content/files/' + ym + '/' + Date.now().toString(36) + '_' + safeName(file.name);
-    return readFileB64(file).then(function (b64) { return putFile(path, b64, '첨부 올림: ' + file.name); }).then(function () { return { name: file.name, url: path, size: fmtSize(file.size) }; });
+    if (!SERVER) {
+      if (file.size > 100 * 1048576) return Promise.reject(new Error('100MB 를 넘는 파일은 올릴 수 없습니다(관리자 서버를 연결하면 제한이 없어집니다)'));
+      return readFileB64(file).then(function (b64) { return putFile(path, b64, '첨부 올림: ' + file.name); }).then(function () { return { name: file.name, url: path, size: fmtSize(file.size) }; });
+    }
+    var key = path; var ct = file.type || 'application/octet-stream';
+    if (file.size <= SINGLE) {
+      return srv('/files/' + encPath(key), { method: 'PUT', raw: file, headers: { 'Content-Type': ct } }).then(function (r) { return { name: file.name, url: SERVER + r.url, size: fmtSize(file.size), store: 'r2' }; });
+    }
+    var parts = [], up = null, total = Math.ceil(file.size / PART);
+    return srv('/files/mpu/create', { method: 'POST', body: { key: key, contentType: ct } }).then(function (r) {
+      up = r;
+      var chain = Promise.resolve();
+      for (var i = 0; i < total; i++) (function (n) {
+        chain = chain.then(function () {
+          var blob = file.slice(n * PART, Math.min(file.size, (n + 1) * PART));
+          return srv('/files/mpu/part?key=' + encodeURIComponent(key) + '&uploadId=' + encodeURIComponent(up.uploadId) + '&part=' + (n + 1), { method: 'PUT', raw: blob, headers: { 'Content-Type': 'application/octet-stream' } })
+            .then(function (pr) { parts.push({ partNumber: pr.partNumber, etag: pr.etag }); if (onProgress) onProgress(n + 1, total); else toast('올리는 중… ' + (n + 1) + '/' + total + ' 조각 (' + file.name + ')', 4000); });
+        });
+      })(i);
+      return chain;
+    }).then(function () { return srv('/files/mpu/complete', { method: 'POST', body: { key: key, uploadId: up.uploadId, parts: parts } }); })
+      .then(function (r) { return { name: file.name, url: SERVER + r.url, size: fmtSize(file.size), store: 'r2' }; })
+      .catch(function (e) { if (up) srv('/files/mpu/abort', { method: 'POST', body: { key: key, uploadId: up.uploadId } }).catch(function () {}); throw e; });
   }
   function dispatch() { return gh('/repos/' + CFG.repo + '/actions/workflows/' + CFG.workflow + '/dispatches', { method: 'POST', body: { ref: CFG.branch } }); }
   function liveFeed(k) { if (state.feeds[k]) return Promise.resolve(state.feeds[k]); return fetch('assets/' + k + '.live.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : { items: [] }; }).catch(function () { return { items: [] }; }).then(function (j) { state.feeds[k] = j; return j; }); }
@@ -226,7 +259,7 @@
     ed.addEventListener('input', fire); src.addEventListener('input', fire);
     return { body: body, onInput: function (f) { listeners.push(f); } };
   }
-  function filesHtml(id, hint) { return '<div class="files-box" id="' + id + '"></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px"><input type="file" id="' + id + '-in" multiple><span class="small muted">' + (hint || 'PDF·HWP·이미지 등 여러 개 가능. 올리는 즉시 저장소에 들어갑니다(파일당 100MB까지)') + '</span></div>'; }
+  function filesHtml(id, hint) { return '<div class="files-box" id="' + id + '"></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px"><input type="file" id="' + id + '-in" multiple><span class="small muted">' + (hint || 'PDF·HWP·이미지 등 여러 개 가능. 올리는 즉시 저장소에 들어갑니다' + (SERVER ? '(용량 제한 없음)' : '(파일당 100MB까지)')) + '</span></div>'; }
   function mountFiles(id, files, onChange) {
     files = files || [];
     function render() { qs('#' + id).innerHTML = files.length ? files.map(function (f, i) { return '<div class="f"><span>' + esc(f.name) + (f.size ? ' <span class="muted">(' + esc(f.size) + ')</span>' : '') + '</span><button class="btn ghost xs" type="button" data-rm="' + i + '">빼기</button></div>'; }).join('') : '<span class="small muted">첨부 없음</span>'; qsa('[data-rm]', qs('#' + id)).forEach(function (b) { b.addEventListener('click', function () { files.splice(Number(b.getAttribute('data-rm')), 1); render(); if (onChange) onChange(files); }); }); }
@@ -334,7 +367,7 @@
       '<div class="field"><label for="a-org">기관·저자</label><input id="a-org" value="' + esc(it.org || '') + '"></div>' +
       '<div class="field"><label for="a-date">날짜</label><input id="a-date" value="' + esc(it.date || '') + '" placeholder="2026.11"></div></div>' +
       '<div class="field"><label for="a-url">방법 1 · 다른 사이트의 주소 가져오기(선택)</label><input id="a-url" value="' + esc(it.url || '') + '" placeholder="https://… (한림 AI 교육 포털, 구글 드라이브, 유튜브 등)"><span class="hint">주소만 넣으면 목록에서 그 주소가 새 창으로 열립니다</span></div>' +
-      '<div class="field"><label>방법 2 · 파일 직접 올리기(선택, 여러 개 가능)</label>' + filesHtml('a-files', 'PDF·HWP·PPT·이미지·영상 등. 파일이 하나면 목록에서 바로 열리고, 여러 개면 자료 페이지가 생깁니다(파일당 100MB까지)') + '</div>' +
+      '<div class="field"><label>방법 2 · 파일 직접 올리기(선택, 여러 개 가능)</label>' + filesHtml('a-files', 'PDF·HWP·PPT·이미지·영상 등. 파일이 하나면 목록에서 바로 열리고, 여러 개면 자료 페이지가 생깁니다' + (SERVER ? '(용량 제한 없음)' : '(파일당 100MB까지)')) + '</div>' +
       '<div class="field"><label>방법 3 · 설명 글(선택)</label>' + editorHtml('a-ed') + '<span class="hint">설명을 쓰면 자료 페이지(제목 · 설명 · 첨부 · 외부 주소)가 만들어집니다</span></div>' +
       '<span class="msg" id="a-need-msg">외부 주소, 파일, 설명 가운데 하나는 있어야 합니다</span>' +
       '<div class="status-row"><label class="chk"><input type="checkbox" id="a-pub"' + (it.published !== false ? ' checked' : '') + '><span>홈페이지에 표시(끄면 비공개로 저장)</span></label></div></form>';
@@ -397,19 +430,45 @@
 
   // ---------------------------------------------------------------- 사이트 설정 · 도움말
   function vSettings() {
-    view.innerHTML = head('Hallym University / Website CMS', '사이트 설정', '로그인 · 배포 · 문제 해결.') +
-      '<div class="panel"><div class="ph"><div><h3>로그인 정보</h3></div></div><p style="margin:0 0 12px">' + (user ? 'GitHub 계정 <strong>' + esc(user.login) + '</strong> 으로 들어와 있습니다.' : '') + ' 토큰은 이 브라우저에만 저장됩니다. 공용 PC에서는 로그아웃 하세요.</p><button class="btn ghost sm" type="button" id="hp-logout">로그아웃</button></div>' +
+    var usersPanel = SERVER ? '<div class="panel" id="users-panel"><div class="ph"><div><h3>사용자(직원 계정)</h3><p>아이디·비밀번호로 들어오는 사람들입니다. 관리자는 사용자를 추가·삭제하고 비밀번호를 다시 정할 수 있습니다.</p></div></div><div id="users-list" class="small muted">불러오는 중…</div>' +
+      '<form id="user-add" class="form" style="margin-top:16px;gap:12px"><div class="grid g2" style="gap:12px"><div class="field"><label>아이디</label><input id="ua-id" placeholder="영문·숫자 2~32자" autocomplete="off"></div><div class="field"><label>이름</label><input id="ua-name" placeholder="홍길동"></div><div class="field"><label>비밀번호</label><input id="ua-pass" type="password" placeholder="8자 이상" autocomplete="new-password"></div><div class="field"><label>권한</label><select id="ua-role"><option value="editor">편집자(글 쓰기·고치기)</option><option value="admin">관리자(사용자 관리까지)</option></select></div></div><span class="msg" id="ua-msg"></span><div><button class="btn sm" type="submit" id="ua-go">사용자 추가</button></div></form></div>' +
+      '<div class="panel"><div class="ph"><div><h3>내 비밀번호 바꾸기</h3></div></div><form id="pw-form" class="form" style="gap:12px"><div class="grid g2" style="gap:12px"><div class="field"><label>현재 비밀번호</label><input id="pw-old" type="password" autocomplete="current-password"></div><div class="field"><label>새 비밀번호</label><input id="pw-new" type="password" autocomplete="new-password" placeholder="8자 이상"></div></div><span class="msg" id="pw-msg"></span><div><button class="btn sm" type="submit" id="pw-go">바꾸기</button></div></form><p class="small muted" style="margin:10px 0 0">바꾸면 다른 기기의 로그인은 모두 풀립니다.</p></div>' : '';
+    view.innerHTML = head('Hallym University / Website CMS', '사이트 설정', '로그인 · 사용자 · 배포 · 문제 해결.') + usersPanel +
+      '<div class="panel"><div class="ph"><div><h3>로그인 정보</h3></div></div><p style="margin:0 0 12px">' + (user ? (SERVER ? '관리자 서버 계정 <strong>' + esc(user.login) + '</strong>(' + esc(user.role === 'admin' ? '관리자' : '편집자') + ')' : 'GitHub 계정 <strong>' + esc(user.login) + '</strong>') + ' 으로 들어와 있습니다.' : '') + ' 로그인 정보는 이 브라우저에만 저장됩니다. 공용 PC에서는 로그아웃 하세요.</p><button class="btn ghost sm" type="button" id="hp-logout">로그아웃</button></div>' +
+      '<div class="panel"><div class="ph"><div><h3>관리자 서버 주소</h3><p>Cloudflare 에 올린 관리자 서버(아이디·비밀번호 로그인 · 용량 제한 없는 첨부)의 주소입니다. 여기에 저장하면 모든 사람의 관리자 화면에 적용됩니다.</p></div></div><form id="api-form" class="form" style="gap:12px"><div class="field"><label>서버 주소</label><input id="api-url" value="' + esc(CFG.api || '') + '" placeholder="https://keli-admin.<계정>.workers.dev"></div><div style="display:flex;gap:8px"><button class="btn sm" type="submit" id="api-go">저장하고 게시</button></div></form><p class="small muted" style="margin:10px 0 0">현재 이 브라우저가 쓰는 주소: ' + esc(SERVER || '(없음 — GitHub 토큰 로그인)') + '</p></div>' +
       '<div class="panel"><div class="ph"><div><h3>배포</h3><p>저장 → GitHub 저장소(' + esc(CFG.repo) + ')에 커밋 → GitHub Actions 가 사이트를 다시 만들어 배포(1~2분). 서비스·행사·보도자료·영상은 배포할 때마다 다시 수집되고, 매일 새벽 3시 17분에도 자동으로 돌아갑니다.</p></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" type="button" id="s-dispatch">지금 다시 수집·배포</button><a class="btn ghost sm" href="https://github.com/' + esc(CFG.repo) + '/actions" target="_blank" rel="noopener">배포 기록(GitHub)</a><a class="btn ghost sm" href="' + esc(CFG.site) + '" target="_blank" rel="noopener">사이트 열기</a></div></div>' +
       '<div class="panel"><div class="ph"><div><h3>글쓰기 요령</h3></div></div><ul style="padding-left:20px;margin:0"><li>편집기에서 Enter 는 문단, Shift+Enter 는 줄바꿈입니다. 긴 글도 됩니다(길이 제한 없음).</li><li>다른 곳에서 만든 HTML 이 있으면 "HTML" 을 눌러 소스를 통째로 붙여 넣으세요(표·iframe 가능).</li><li>이미지는 "이미지" 버튼으로 올리면 글 안에 들어갑니다. 첨부파일은 글 아래 목록으로 나옵니다.</li><li>"비공개로 저장"은 홈페이지에 보이지 않게 저장(초안)하고, "게시하기"는 바로 보이게 합니다.</li><li>사이트의 모든 문장은 저장 후 자동으로 "단어·어절·마침표" 줄바꿈 규칙이 적용됩니다.</li></ul></div>' +
       '<div class="panel"><div class="ph"><div><h3>문제가 생기면</h3></div></div><dl class="kv" style="margin:0"><dt>저장 실패 401/403</dt><dd>토큰이 만료되었거나 권한이 부족합니다. 로그아웃 후 새 토큰(Contents: Read and write, Actions: Read and write)으로 다시 들어오세요.</dd><dt>저장 실패 409</dt><dd>다른 사람이 같은 파일을 먼저 저장했습니다. 한 번 더 저장하면 됩니다.</dd><dt>배포 실패</dt><dd>배포 기록 링크에서 빨간 단계를 열어 보고 사무국(033-248-3246)에 알려 주세요. 이전 버전은 그대로 서비스됩니다.</dd><dt>되돌리기</dt><dd>"게시 기록"에서 이전 버전을 볼 수 있습니다.</dd></dl></div>';
     qs('#hp-logout').addEventListener('click', logout);
     qs('#s-dispatch').addEventListener('click', function () { dispatch().then(function () { afterSave('다시 수집·배포를 시작했습니다'); }).catch(function (e) { toast('실행 실패: ' + e.message, 6000); }); });
+    qs('#api-form').addEventListener('submit', function (e) {
+      e.preventDefault(); var v = qs('#api-url').value.trim().replace(/\/+$/, ''); var b = qs('#api-go'); b.disabled = true;
+      ensure('site').then(function () { state.site.admin = state.site.admin || {}; state.site.admin.api = v; return saveJson('content/site.json', state.site, '관리자 서버 주소 ' + (v ? '설정' : '해제')); }).then(function () { try { if (v) localStorage.setItem('keli_api', v); else localStorage.removeItem('keli_api'); } catch (e2) {} afterSave('서버 주소를 저장했습니다. 다음 배포부터 모두에게 적용됩니다'); }).catch(fail).then(function () { b.disabled = false; });
+    });
+    if (SERVER) {
+      function renderUsers() {
+        srv('/api/users').then(function (j) {
+          qs('#users-list').innerHTML = '<div class="hist">' + j.users.map(function (u) { return '<div class="h"><div><div><strong>' + esc(u.name) + '</strong> <span class="muted">@' + esc(u.username) + '</span> · ' + (u.role === 'admin' ? '관리자' : '편집자') + '</div><div class="m">' + esc((u.created || '').slice(0, 10)) + ' 만듦</div></div><span style="display:flex;gap:6px"><button class="btn ghost xs" type="button" data-pw="' + esc(u.username) + '">비밀번호 재설정</button>' + (user && u.username === user.login ? '' : '<button class="btn ghost xs danger" type="button" data-rm="' + esc(u.username) + '">삭제</button>') + '</span></div>'; }).join('') + '</div>';
+          qsa('[data-rm]', view).forEach(function (b) { b.addEventListener('click', function () { var u = b.getAttribute('data-rm'); confirmBox('이 사용자를 삭제할까요?', '@' + u + ' 은(는) 더 이상 로그인할 수 없습니다.', '삭제', true).then(function (ok) { if (!ok) return; srv('/api/users/' + u, { method: 'DELETE' }).then(function () { toast('삭제했습니다'); renderUsers(); }).catch(fail); }); }); });
+          qsa('[data-pw]', view).forEach(function (b) { b.addEventListener('click', function () { var u = b.getAttribute('data-pw'); var bx = modal('<h3 style="margin:0 0 12px;font-size:20px">@' + esc(u) + ' 비밀번호 재설정</h3><div class="field"><label>새 비밀번호</label><input id="rp-pass" type="password" placeholder="8자 이상"></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px"><button class="btn ghost" type="button" id="rp-x">취소</button><button class="btn" type="button" id="rp-ok">바꾸기</button></div>'); qs('#rp-x', bx).addEventListener('click', closeModal); qs('#rp-ok', bx).addEventListener('click', function () { var p = qs('#rp-pass', bx).value; srv('/api/users/' + u + '/password', { method: 'POST', body: { password: p } }).then(function () { closeModal(); toast('비밀번호를 바꿨습니다. 본인에게 알려 주세요'); }).catch(function (e) { toast(e.message, 5000); }); }); }); });
+        }).catch(function (e) { qs('#users-list').innerHTML = '<span class="muted">' + esc(e.status === 403 ? '사용자 목록은 관리자만 볼 수 있습니다' : e.message) + '</span>'; qs('#user-add').hidden = true; });
+      }
+      renderUsers();
+      qs('#user-add').addEventListener('submit', function (e) { e.preventDefault(); var m = qs('#ua-msg'); m.style.display = 'none'; var b = qs('#ua-go'); b.disabled = true; srv('/api/users', { method: 'POST', body: { username: qs('#ua-id').value.trim(), password: qs('#ua-pass').value, name: qs('#ua-name').value.trim(), role: qs('#ua-role').value } }).then(function () { toast('사용자를 추가했습니다'); qs('#ua-id').value = ''; qs('#ua-name').value = ''; qs('#ua-pass').value = ''; renderUsers(); }).catch(function (err) { m.textContent = err.message; m.style.display = 'block'; }).then(function () { b.disabled = false; }); });
+      qs('#pw-form').addEventListener('submit', function (e) { e.preventDefault(); var m = qs('#pw-msg'); m.style.display = 'none'; var b = qs('#pw-go'); b.disabled = true; srv('/api/me/password', { method: 'POST', body: { old: qs('#pw-old').value, password: qs('#pw-new').value } }).then(function (j) { token = j.token; saveToken(token, !!loadToken() && !!localStorage.getItem(tokKey())); qs('#pw-old').value = ''; qs('#pw-new').value = ''; toast('비밀번호를 바꿨습니다'); }).catch(function (err) { m.textContent = err.message; m.style.display = 'block'; }).then(function () { b.disabled = false; }); });
+    }
   }
 
   // ---------------------------------------------------------------- 로그인 흐름
-  function showLogin(msg) { qs('#adm-login').hidden = false; qs('#adm-app').hidden = true; if (msg) { var m = qs('#tok-msg'); m.textContent = msg; m.style.display = 'block'; } }
+  function showLogin(msg) {
+    qs('#adm-login').hidden = false; qs('#adm-app').hidden = true;
+    var pw = qs('#login-pw'), tk = qs('#login-tok'); if (pw && tk) { pw.hidden = !SERVER; tk.hidden = !!SERVER; }
+    var sv = qs('#srv-cur'); if (sv) sv.textContent = SERVER ? SERVER : '(없음 — GitHub 토큰으로 로그인)';
+    if (SERVER) srv('/api/ping').then(function (j) { if (j.setup) { var st = qs('#setup-card'); if (st) st.hidden = false; } }).catch(function () { var m2 = qs('#tok-msg'); m2.textContent = '관리자 서버(' + SERVER + ')에 연결하지 못했습니다. 주소를 확인하세요'; m2.style.display = 'block'; });
+    if (msg) { var m = qs('#tok-msg'); m.textContent = msg; m.style.display = 'block'; }
+  }
   function enter() {
-    return gh('/user').then(function (u) { user = u; return gh('/repos/' + CFG.repo); }).then(function (r) {
+    return gh('/user').then(function (u) { user = u; if (SERVER) user.login = u.login; return gh('/repos/' + CFG.repo); }).then(function (r) {
       if (!(r.permissions && (r.permissions.push || r.permissions.admin || r.permissions.maintain))) throw new Error('이 토큰으로는 ' + CFG.repo + ' 저장소에 쓸 수 없습니다. 토큰의 Repository access 와 Contents 권한을 확인하세요');
       qs('#adm-login').hidden = true; qs('#adm-app').hidden = false; qs('#adm-logout').hidden = false;
       qs('#u-name').textContent = user.name || user.login; qs('#u-avatar').textContent = String(user.name || user.login).slice(0, 1).toUpperCase();
@@ -420,9 +479,27 @@
   function logout() { clearToken(); token = null; user = null; state = { notices: null, archive: null, hidden: null, stats: null, site: null, feeds: {}, sha: {} }; showLogin(''); location.hash = ''; }
   qs('#adm-logout').addEventListener('click', logout);
   qs('#login-form').addEventListener('submit', function (e) {
-    e.preventDefault(); var t = qs('#tok').value.trim(); var m = qs('#tok-msg'); m.style.display = 'none'; if (!t) { m.textContent = '토큰을 붙여 넣어 주세요'; m.style.display = 'block'; return; }
-    var btn = qs('#tok-go'); btn.disabled = true; btn.textContent = '확인 중…'; token = t;
-    enter().then(function () { saveToken(t, qs('#tok-keep').checked); qs('#tok').value = ''; toast((user.name || user.login) + ' 님, 어서 오세요'); }).catch(function (err) { token = null; showLogin(err.status === 401 ? '토큰이 올바르지 않거나 만료되었습니다' : err.message); }).then(function () { btn.disabled = false; btn.textContent = '들어가기'; });
+    e.preventDefault(); var m = qs('#tok-msg'); m.style.display = 'none'; var btn = qs('#tok-go'); var keep = qs('#tok-keep').checked;
+    if (SERVER) {   // 아이디·비밀번호 → 서버가 세션 토큰을 준다
+      var id = qs('#login-id').value.trim(), pw = qs('#login-pass').value; if (!id || !pw) { m.textContent = '아이디와 비밀번호를 입력해 주세요'; m.style.display = 'block'; return; }
+      btn.disabled = true; btn.textContent = '확인 중…';
+      srv('/api/login', { method: 'POST', body: { username: id, password: pw } }).then(function (j) { token = j.token; return enter().then(function () { saveToken(token, keep); qs('#login-pass').value = ''; toast((user.name || user.login) + ' 님, 어서 오세요'); }); })
+        .catch(function (err) { token = null; showLogin(err.message); }).then(function () { btn.disabled = false; btn.textContent = '들어가기'; });
+      return;
+    }
+    var t = qs('#tok').value.trim(); if (!t) { m.textContent = '토큰을 붙여 넣어 주세요'; m.style.display = 'block'; return; }
+    btn.disabled = true; btn.textContent = '확인 중…'; token = t;
+    enter().then(function () { saveToken(t, keep); qs('#tok').value = ''; toast((user.name || user.login) + ' 님, 어서 오세요'); }).catch(function (err) { token = null; showLogin(err.status === 401 ? '토큰이 올바르지 않거나 만료되었습니다' : err.message); }).then(function () { btn.disabled = false; btn.textContent = '들어가기'; });
+  });
+  // 서버 주소 바꾸기(이 브라우저에만 저장) · 첫 관리자 만들기
+  var srvForm = qs('#srv-form');
+  if (srvForm) srvForm.addEventListener('submit', function (e) { e.preventDefault(); var v = qs('#srv-url').value.trim().replace(/\/+$/, ''); try { if (v) localStorage.setItem('keli_api', v); else localStorage.removeItem('keli_api'); } catch (e2) {} location.reload(); });
+  var setupForm = qs('#setup-form');
+  if (setupForm) setupForm.addEventListener('submit', function (e) {
+    e.preventDefault(); var b = qs('#setup-go'); b.disabled = true;
+    srv('/api/setup', { method: 'POST', body: { setup_key: qs('#setup-key').value.trim(), username: qs('#setup-id').value.trim(), password: qs('#setup-pass').value, name: qs('#setup-name').value.trim() } })
+      .then(function (j) { token = j.token; return enter().then(function () { saveToken(token, true); toast('첫 관리자 계정을 만들었습니다'); }); })
+      .catch(function (err) { var m = qs('#setup-msg'); m.textContent = err.message; m.style.display = 'block'; }).then(function () { b.disabled = false; });
   });
   qs('#tok-help').addEventListener('click', function (e) { e.preventDefault(); qs('#help-card').scrollIntoView({ behavior: 'smooth' }); });
 

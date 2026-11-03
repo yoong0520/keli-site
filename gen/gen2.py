@@ -643,7 +643,25 @@ body.noscroll { overflow: hidden; }
 .org-base strong { font-size: 16px; margin-right: 6px; }
 .org-m { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; } .org-m .org-ic { width: 36px; height: 36px; margin: 0; } .org-m .org-ic svg { width: 20px; height: 20px; }
 @media (max-width: 760px) { .org-row { grid-template-columns: 1fr; gap: 0; padding-top: 0; } .org-row::before { display: none; } .org-row .org-box { margin-top: 26px; } .org-row .org-box:first-child { margin-top: 0; } .org-row .org-box:first-child::before { display: none; } .org-base { flex-direction: column; align-items: flex-start; } }
-/* 홈 KELI 소개 도형: 위→아래 흐름 */
+/* 홈 KELI 소개 도형: 궤도형(가운데 KELI, 둘레에 참여 주체) */
+.orbit { position: relative; width: min(100%, 560px); aspect-ratio: 1 / 1; margin: 0 auto; }
+.orbit-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.orbit-svg .ring { fill: none; stroke: #c3cad6; stroke-width: .45; stroke-dasharray: 1.6 1.6; transform-origin: 50px 50px; animation: orbit-spin 90s linear infinite; }
+.orbit-svg .spokes line { stroke: #d6dbe4; stroke-width: .45; }
+@media (prefers-reduced-motion: reduce) { .orbit-svg .ring { animation: none; } }
+@keyframes orbit-spin { to { transform: rotate(360deg); } }
+.ob-core { position: absolute; left: 50%; top: 50%; width: 36%; aspect-ratio: 1 / 1; transform: translate(-50%, -50%); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; color: #fff; background: radial-gradient(circle at 35% 30%, #4a8bff 0%, #0B5CFF 55%, #0847c4 100%); box-shadow: 0 18px 44px rgba(11, 92, 255, .32), inset 0 0 0 6px rgba(255,255,255,.12); }
+.ob-core strong { font-size: clamp(26px, 6.4vw, 40px); font-weight: 800; letter-spacing: .03em; line-height: 1; }
+.ob-core span { font-size: clamp(11px, 2.3vw, 14px); line-height: 1.35; opacity: .92; font-weight: 600; }
+.ob-node { position: absolute; width: 26%; height: 26%; overflow: hidden; transform: translate(-50%, -50%); border-radius: 50%; background: #fff; border: 1px solid var(--line); box-shadow: 0 10px 26px rgba(0,0,0,.07); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-align: center; padding: 6%; }
+.ob-node .org-ic { width: 28%; height: 28%; margin: 0 0 3px; flex: none; } .ob-node .org-ic svg { width: 55%; height: 55%; }
+.ob-node strong { font-size: clamp(11px, 2.5vw, 14px); font-weight: 700; letter-spacing: -.01em; line-height: 1.25; }
+.ob-node span { font-size: clamp(9px, 1.9vw, 11.5px); color: var(--muted); line-height: 1.3; max-width: 92%; }
+.ob-node.src { background: #151b2b; color: #fff; border-color: #151b2b; box-shadow: 0 14px 30px rgba(21, 27, 43, .3); } .ob-node.src .org-ic { background: rgba(255,255,255,.14); color: #fff; } .ob-node.src span { color: rgba(255,255,255,.75); }
+.ob-tag { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; font-size: clamp(10px, 2.1vw, 12.5px); font-weight: 700; color: var(--accent); background: var(--s1-bg); border: 1px solid #cfe0ff; border-radius: 999px; padding: 4px 11px; }
+.kd-cycle ol { gap: 0; }
+.kd-cycle li { flex: 1; aspect-ratio: auto; }
+/* 홈 KELI 소개 도형: 위→아래 흐름(이전 판 공용 규칙) */
 .hl { color: var(--accent); font-weight: 700; }
 .intro-grid .acts { display: flex; gap: 12px 28px; flex-wrap: wrap; align-items: center; }
 .intro-grid { grid-template-columns: 6fr 6fr; align-items: center; gap: 56px; }
@@ -659,13 +677,14 @@ body.noscroll { overflow: hidden; }
 .kd-core .t { font-size: 17px; font-weight: 700; } .kd-core .s { font-size: 13px; opacity: .88; }
 .kd-targets { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .kd-node .org-ic { width: 40px; height: 40px; } .kd-node .org-ic svg { width: 20px; height: 20px; } .kd-node strong { font-size: 15px; } .kd-node span { font-size: 12.5px; }
-.kd-cycle { width: 100%; margin-top: 22px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.kd-cycle { width: min(100%, 560px); margin: 26px auto 0; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .kd-cycle .k { font-size: 13px; font-weight: 700; color: var(--muted); }
 .kd-cycle ol { list-style: none; margin: 0; padding: 0; display: flex; flex: 1; align-items: center; counter-reset: c; min-width: 0; }
 .kd-cycle li { counter-increment: c; position: relative; flex: 1; text-align: center; font-size: 14px; font-weight: 600; padding: 8px 4px; border-radius: 999px; background: var(--bg2); }
 .kd-cycle li::before { content: counter(c, decimal-leading-zero); display: block; font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: .04em; }
 .kd-cycle li + li { margin-left: 18px; } .kd-cycle li + li::after { content: ""; position: absolute; left: -18px; top: 50%; width: 18px; border-top: 2px solid #c3cad6; }
-@media (max-width: 1000px) { .intro-grid { grid-template-columns: 1fr; gap: 40px; } .intro-grid > .head { max-width: 760px; } .kdiag { max-width: 640px; margin: 0 auto; } }
+@media (max-width: 1000px) { .intro-grid { grid-template-columns: 1fr; gap: 40px; } .intro-grid > .head { max-width: 760px; } .kdiag { width: 100%; max-width: 640px; margin: 0 auto; } }
+@media (max-width: 480px) { .ob-node span { display: none; } .ob-node .org-ic { width: 34%; height: 34%; } .ob-tag { padding: 3px 8px; } }
 @media (max-width: 480px) { .kd-targets { grid-template-columns: 1fr; } .kd-core { flex-direction: column; align-items: flex-start; gap: 10px; } .kd-core div { border-left: 0; padding-left: 0; } .kd-cycle li + li { margin-left: 10px; } .kd-cycle li + li::after { left: -10px; width: 10px; } }
 /* 상호작용: 과하지 않은 움직임 */
 .btn { transition: transform .15s ease, box-shadow .15s ease, background .15s ease, filter .15s ease; }
@@ -1439,12 +1458,29 @@ def page_admin():
 <div class="login">
 <div class="login-brand"><span class="mark">K</span><div><strong>KELI 콘텐츠 스튜디오</strong><span>한림대학교 KELI 사무국 · 사이트 관리</span></div></div>
 <form class="form" id="login-form" novalidate>
+<div id="login-pw" hidden>
+<p class="lead" style="margin:0 0 4px;text-align:left;font-size:18px">아이디와 비밀번호로 들어갑니다.</p>
+<p class="small muted" style="margin:0 0 12px">계정은 사무국 관리자가 만들어 드립니다. 비밀번호를 잊으면 관리자에게 재설정을 요청하세요.</p>
+<div class="field"><label for="login-id">아이디</label><input id="login-id" autocomplete="username" placeholder="keli"></div>
+<div class="field" style="margin-top:10px"><label for="login-pass">비밀번호</label><input id="login-pass" type="password" autocomplete="current-password"></div>
+</div>
+<div id="login-tok">
 <p class="lead" style="margin:0 0 4px;text-align:left;font-size:18px">GitHub 토큰으로 들어갑니다.</p>
-<p class="small muted" style="margin:0">이 사이트의 글은 GitHub 저장소({REPO})의 파일에 저장되고, 저장하면 1~2분 뒤 자동으로 배포됩니다. 토큰은 이 브라우저에만 저장되고 GitHub 외에는 어디에도 전송되지 않습니다.</p>
-<div class="field"><label for="tok">GitHub 토큰 (Fine-grained personal access token)</label><input id="tok" type="password" autocomplete="off" placeholder="github_pat_…"><span class="msg" id="tok-msg"></span></div>
+<p class="small muted" style="margin:0 0 12px">이 사이트의 글은 GitHub 저장소({REPO})의 파일에 저장되고, 저장하면 1~2분 뒤 자동으로 배포됩니다. 토큰은 이 브라우저에만 저장되고 GitHub 외에는 어디에도 전송되지 않습니다.</p>
+<div class="field"><label for="tok">GitHub 토큰 (Fine-grained personal access token)</label><input id="tok" type="password" autocomplete="off" placeholder="github_pat_…"></div>
+</div>
+<span class="msg" id="tok-msg"></span>
 <label class="chk"><input type="checkbox" id="tok-keep" checked><span>이 브라우저에 기억하기(공용 PC에서는 끄세요)</span></label>
 <div class="acts"><button class="btn" type="submit" id="tok-go">들어가기</button><a class="more" href="#help" id="tok-help">토큰 만드는 방법</a></div>
 </form>
+<div class="card" id="setup-card" style="margin-top:20px" hidden>
+<span class="k">첫 관리자 계정 만들기 (서버를 처음 연결했을 때 한 번)</span>
+<form id="setup-form" class="form" style="background:transparent;padding:0;margin-top:8px;gap:12px" novalidate>
+<div class="grid g2" style="gap:12px"><div class="field"><label for="setup-id">아이디</label><input id="setup-id" placeholder="keli"></div><div class="field"><label for="setup-name">이름</label><input id="setup-name" placeholder="KELI 사무국"></div><div class="field"><label for="setup-pass">비밀번호</label><input id="setup-pass" type="password" placeholder="8자 이상"></div><div class="field"><label for="setup-key">설정 열쇠(SETUP_KEY)</label><input id="setup-key" type="password" placeholder="Cloudflare 에 넣은 값"></div></div>
+<span class="msg" id="setup-msg"></span><div><button class="btn sm" type="submit" id="setup-go">관리자 만들기</button></div>
+</form></div>
+<details style="margin-top:20px"><summary class="small muted" style="cursor:pointer">관리자 서버 주소 바꾸기(이 브라우저에만)</summary>
+<form id="srv-form" class="form" style="margin-top:10px;gap:10px" novalidate><div class="field"><label for="srv-url">서버 주소</label><input id="srv-url" placeholder="https://keli-admin.<계정>.workers.dev (비우면 GitHub 토큰 로그인)"><span class="hint">현재: <span id="srv-cur">—</span></span></div><div><button class="btn ghost sm" type="submit">적용</button></div></form></details>
 <div class="card" style="margin-top:20px" id="help-card">
 <span class="k">토큰 만드는 방법 (한 번만)</span>
 <ol style="padding-left:20px;margin:8px 0 0;font-size:15px">
@@ -1495,7 +1531,7 @@ def page_admin():
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="box" id="modal-box"></div></div>
-<script>window.KELI_ADMIN={{repo:"{REPO}",branch:"main",site:"{SITE_URL}",workflow:"pages.yml"}};</script>
+<script>window.KELI_ADMIN={{repo:"{REPO}",branch:"main",site:"{SITE_URL}",workflow:"pages.yml",api:{json.dumps(((SITE_CFG.get('admin') or {}).get('api') or '').strip())}}};</script>
 """
     write('admin.html', 'KELI 콘텐츠 스튜디오', body)
 
@@ -1538,16 +1574,17 @@ def page_index():
 <div class="chips"><span class="chip">주관 · 한림대학교 KELI 사무국</span><span class="chip">대상 · 국내외 대학·기관·기업</span><span class="chip">무상 시범 도입 → 유상 정식 도입</span></div>
 <div class="acts" style="margin-top:6px"><a class="btn ghost" href="about.html">KELI 소개 더 보기</a><a class="more" href="join.html">참여 방법</a></div>
 </div>
-<div class="kdiag" role="img" aria-label="KELI 구조: 한림대학교가 개발·검증한 HAI Ecosystems를 KELI가 국내 대학, 해외 대학·기관, 에듀테크 기업, 유관기관에 제공하고 함께 실증·확산합니다. 운영 사이클은 발견, 연결, 실증, 확산입니다">
-<div class="kd-src"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5.5 9a2 2 0 001.7 3h11.6a2 2 0 001.7-3L14 9V3"/><path d="M7.5 15h9"/></svg></i><div><strong>한림대학교</strong><span>HAI Ecosystems 개발 · 수업에서 검증</span></div></div>
-<div class="org-line kd-line"><b>무상 · 유상 제공</b></div>
-<div class="kd-core"><strong>KELI</strong><div><span class="t">고등교육 AI 공유 플랫폼</span><span class="s">검증된 AI 교육 서비스를 대학·기관이 함께 씁니다</span></div></div>
-<div class="org-line kd-line"><b>도입 · 공동 실증 · 확산</b></div>
-<div class="kd-targets">
-<div class="kd-node"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9l9.5-4.5L21.5 9 12 13.5 2.5 9z"/><path d="M6.5 11v4.5c0 1.5 2.5 3 5.5 3s5.5-1.5 5.5-3V11M21.5 9v5"/></svg></i><div><strong>국내 대학</strong><span>수업 도입 · 시범 운영</span></div></div>
-<div class="kd-node"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg></i><div><strong>해외 대학 · 기관</strong><span>현지화 · 국제 프로그램</span></div></div>
-<div class="kd-node"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V4.5h6V7M3 12h18"/></svg></i><div><strong>에듀테크 기업</strong><span>Marketplace 등재 · 공동 개발</span></div></div>
-<div class="kd-node"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-5 9 5H3zM5 9v8M9.5 9v8M14.5 9v8M19 9v8M3 20h18"/></svg></i><div><strong>유관기관</strong><span>공동 연구 · 정책 근거</span></div></div>
+<div class="kdiag" role="img" aria-label="KELI 구조: 가운데 KELI 고등교육 AI 공유 플랫폼을 중심으로 한림대학교(HAI Ecosystems 개발·검증)가 서비스를 제공하고, 국내 대학, 해외 대학·기관, 에듀테크 기업, 유관기관이 둘레에서 도입·공동 실증·확산에 참여합니다. 운영 사이클은 발견, 연결, 실증, 확산입니다">
+<div class="orbit">
+<svg class="orbit-svg" viewBox="0 0 100 100" aria-hidden="true"><circle class="ring" cx="50" cy="50" r="36"/><g class="spokes"><line x1="50" y1="50" x2="50" y2="14"/><line x1="50" y1="50" x2="84.2" y2="38.9"/><line x1="50" y1="50" x2="71.2" y2="79.1"/><line x1="50" y1="50" x2="28.8" y2="79.1"/><line x1="50" y1="50" x2="15.8" y2="38.9"/></g></svg>
+<div class="ob-core"><strong>KELI</strong><span>고등교육 AI<br>공유 플랫폼</span></div>
+<div class="ob-node src" style="left:50%;top:14%"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5.5 9a2 2 0 001.7 3h11.6a2 2 0 001.7-3L14 9V3"/><path d="M7.5 15h9"/></svg></i><strong>한림대학교</strong><span>HAI Ecosystems<br>개발 · 검증</span></div>
+<div class="ob-node" style="left:84.2%;top:38.9%"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9l9.5-4.5L21.5 9 12 13.5 2.5 9z"/><path d="M6.5 11v4.5c0 1.5 2.5 3 5.5 3s5.5-1.5 5.5-3V11M21.5 9v5"/></svg></i><strong>국내 대학</strong><span>수업 도입 · 시범 운영</span></div>
+<div class="ob-node" style="left:71.2%;top:79.1%"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg></i><strong>해외 대학 · 기관</strong><span>현지화 · 국제 프로그램</span></div>
+<div class="ob-node" style="left:28.8%;top:79.1%"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V4.5h6V7M3 12h18"/></svg></i><strong>에듀테크 기업</strong><span>등재 · 공동 개발</span></div>
+<div class="ob-node" style="left:15.8%;top:38.9%"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-5 9 5H3zM5 9v8M9.5 9v8M14.5 9v8M19 9v8M3 20h18"/></svg></i><strong>유관기관</strong><span>공동 연구 · 정책 근거</span></div>
+<span class="ob-tag" style="left:50%;top:31.5%">무상 · 유상 제공</span>
+<span class="ob-tag" style="left:50%;top:90%">도입 · 공동 실증 · 확산</span>
 </div>
 <div class="kd-cycle"><span class="k">운영 사이클</span><ol><li>발견</li><li>연결</li><li>실증</li><li>확산</li></ol></div>
 </div>
