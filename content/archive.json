@@ -470,11 +470,24 @@
       "id": "a9",
       "cat": "manual",
       "type": "image",
-      "title": "KELI 소개 리플렛 (국문)",
+      "title": "What is KELI? (국/영문 홍보 리플렛)",
       "org": "KELI 사무국",
       "date": "2026.10",
-      "url": "assets/img/keli-leaflet.jpg",
-      "published": true
+      "url": "",
+      "published": true,
+      "body": "",
+      "files": [
+        {
+          "name": "0. [KELI 사무국] KELI 홍보 3단 리플렛(국문)_최종.png",
+          "url": "content/files/2026/11/mw0h1cik_0._[KELI_사무국]_KELI_홍보_3단_리플렛(국문)_최종.png",
+          "size": "1.6 MB"
+        },
+        {
+          "name": "0. [KELI 사무국] KELI 홍보 3단 리플렛(영문)_최종.png",
+          "url": "content/files/2026/11/mw0h1uu7_0._[KELI_사무국]_KELI_홍보_3단_리플렛(영문)_최종.png",
+          "size": "1.7 MB"
+        }
+      ]
     }
   ]
 }
