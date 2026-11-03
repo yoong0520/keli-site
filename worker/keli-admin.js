@@ -14,7 +14,7 @@
    - Variables (Plain text):
        REPO             yoong0520/keli-site
        ALLOW_ORIGINS    https://keli-aied.org,https://www.keli-aied.org   (쉼표로 여러 개)
-   사용자 목록은 R2 안의 _auth/users.json 에 저장된다(비밀번호는 PBKDF2-SHA256 해시).
+   사용자 목록은 R2 안의 _auth/users.json 에 저장된다(비밀번호는 PBKDF2-SHA256 10만 회 해시 · Cloudflare 한도).
 */
 
 const ENC = new TextEncoder();
@@ -70,7 +70,7 @@ function randomHex(n) { const a = new Uint8Array(n); crypto.getRandomValues(a); 
 async function hashPassword(password, saltHex) {
   const salt = saltHex ? b64urlDecode(saltHex) : crypto.getRandomValues(new Uint8Array(16));
   const key = await crypto.subtle.importKey('raw', ENC.encode(password), 'PBKDF2', false, ['deriveBits']);
-  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: 120000 }, key, 256);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: 100000 }, key, 256);
   return { salt: b64url(salt), hash: b64url(bits) };
 }
 async function verifyPassword(password, rec) { const h = await hashPassword(password, rec.salt); return h.hash === rec.hash; }
