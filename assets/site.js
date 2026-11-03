@@ -147,6 +147,28 @@
     document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeNow(); });
     document.addEventListener('click', function(e){ if(!hdr.contains(e.target)) closeNow(); });
   })();
+  // home hero: 점 파도 (prefers-reduced-motion이면 정지 화면 한 장만)
+  (function(){
+    var cv=qs('#hero-wave'); if(!cv||!cv.getContext) return;
+    var ctx=cv.getContext('2d'), w, h, t=0, cols=72, rows=24, mx=0, sx=0, on=true;
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function resize(){ var dpr=Math.min(2, window.devicePixelRatio||1); w=cv.clientWidth; h=cv.clientHeight; cv.width=w*dpr; cv.height=h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); if(w<700){ cols=44; rows=18; } else { cols=72; rows=24; } }
+    function frame(){
+      sx+=(mx-sx)*.03; t+=.016; ctx.clearRect(0,0,w,h);
+      var i,j,cx=w/2;
+      var depth=w<700?.42:.60; for(j=0;j<rows;j++){ var zr=j/(rows-1), spread=1.25-.62*zr, baseY=h*.98-zr*h*depth;
+        for(i=0;i<cols;i++){ var x=(i/(cols-1)-.5)*2; var yv=Math.sin(x*3.1+t*1.1+sx)*Math.cos(zr*5.2-t*.9)*.5+Math.sin(x*7-t*.7)*.18; var amp=h*.11*(1-.55*zr);
+          var X=cx+x*w*.5*spread, Y=baseY-yv*amp, r=.9+1.5*(1-zr), k=Math.max(0,Math.min(1,(yv+.7)/1.4));
+          ctx.fillStyle='rgba('+Math.round(205-194*k)+','+Math.round(222-130*k)+',255,'+((.25+.75*k)*(1-.55*zr)).toFixed(3)+')'; ctx.beginPath(); ctx.arc(X,Y,r,0,6.283); ctx.fill(); } }
+    }
+    resize(); frame();
+    window.addEventListener('resize', function(){ resize(); frame(); });
+    if(reduce) return;
+    window.addEventListener('mousemove', function(e){ mx=(e.clientX/window.innerWidth-.5)*2; }, {passive:true});
+    if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ on=es[0].isIntersecting; },{threshold:.02}).observe(cv); }
+    document.addEventListener('visibilitychange', function(){ if(!document.hidden) on=true; });
+    (function loop(){ if(on&&!document.hidden) frame(); requestAnimationFrame(loop); })();
+  })();
   // search overlay: 검색 아이콘을 누르면 페이지를 떠나지 않고 팝업으로 검색 (assets/search.json)
   (function(){
     var triggers=qsa('a[href="search.html"]'); if(!triggers.length||location.protocol==='file:') return;
