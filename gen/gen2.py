@@ -500,6 +500,11 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 @media (max-width: 760px) { .arch-hero { grid-template-columns: 1fr; gap: 24px; } .arch-cover { max-width: 260px; } }
 .pdf-frame { width: 100%; height: min(78vh, 980px); min-height: 480px; border: 1px solid var(--line); border-radius: 16px; background: var(--bg2); }
 .art-ol { padding-left: 22px; } .art-ol li { margin: 6px 0; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 8px 0 24px; }
+.gallery.one { grid-template-columns: 1fr; }
+.gallery .gal-item { margin: 0; } .gallery .gal-item a { display: block; border-radius: 16px; overflow: hidden; background: var(--bg2); border: 1px solid var(--line); }
+.gallery .gal-item img { display: block; width: 100%; height: auto; }
+.gallery .gal-item figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; text-align: center; }
 .art-files { margin: 24px 0; padding: 18px 22px; border-radius: 16px; background: var(--bg2); }
 .art-files a { word-break: break-all; overflow-wrap: anywhere; }
 .art-files strong { display: block; font-size: 14px; margin-bottom: 6px; } .art-files ul { margin: 0; padding-left: 18px; } .art-files li { margin: 4px 0; }
@@ -1138,7 +1143,7 @@ def doc(fname, title, body, desc='KELI는 한림대학교가 개발하고 수업
 #           - 날짜 표기(2026. 10. 20.)는 줄바꿈 없는 공백으로 묶는다
 #       (3) 1개 교과목 × 1개 서비스 × 1개 학기 같은 수량 표현은 숫자와 단위명사를 묶는다
 WJ = '⁠'
-_SKIP = re.compile(r'(<title>.*?</title>|<script\b.*?</script>|<style\b.*?</style>|<textarea\b.*?</textarea>|<select\b.*?</select>)', re.S)
+_SKIP = re.compile(r'(<title>.*?</title>|<script\b.*?</script>|<style\b.*?</style>|<textarea\b.*?</textarea>|<select\b.*?</select>|<div class="crumb">.*?</div>)', re.S)
 _TXT = re.compile(r'>([^<]+)<')
 _ABBR = {'dr', 'mr', 'mrs', 'ms', 'prof', 'e.g', 'i.e', 'vs', 'etc', 'no', 'inc', 'ltd', 'co', 'univ', 'st', 'jr', 'sr', 'fig', 'vol', 'pp', 'cf', 'al'}
 _SENT = re.compile(r'(?<=[가-힣A-Za-z\)\]」』”’"\'])([.!?])\s+(?=\S)')
@@ -1973,7 +1978,7 @@ def page_archive_detail(a):
         for f in files:
             size = f' <span class="muted small">({E(f["size"])})</span>' if f.get('size') else ''
             rows += f'<li><a href="{E(f["url"])}" target="_blank" rel="noopener" download>{E(f["name"])}</a>{size}</li>'
-        fl = f'<div class="art-files"><strong>자료 파일</strong><ul>{rows}</ul></div>'
+        fl = file_gallery(files) + f'<div class="art-files"><strong>자료 파일</strong><ul>{rows}</ul></div>'
     acts = ''
     if pdfs:
         size = f' ({E(pdfs[0]["size"])})' if pdfs[0].get('size') else ''
@@ -2048,11 +2053,23 @@ def page_news_hub():
 '''
     write('news.html', '소식 · KELI', body)
 
+_IMG_RE = re.compile(r'\.(png|jpe?g|gif|webp|svg|avif)(\?.*)?$', re.I)
+def is_image_file(f):
+    return bool(_IMG_RE.search(str(f.get('url', '')) or '')) or bool(_IMG_RE.search(str(f.get('name', '')) or ''))
+
+def file_gallery(files, label='그림'):
+    """첨부 가운데 그림 파일(png · jpg · gif · webp · svg)은 목록 위에 바로 보여 준다. 누르면 원본이 새 창에서 열린다."""
+    imgs = [f for f in (files or []) if is_image_file(f)]
+    if not imgs:
+        return ''
+    figs = ''.join(f'<figure class="art-fig gal-item"><a href="{E(f["url"])}" target="_blank" rel="noopener"><img src="{E(f["url"])}" alt="{E(f["name"])}" loading="lazy"></a><figcaption>{E(re.sub(r"\.[^.]+$", "", f["name"]))}</figcaption></figure>' for f in imgs)
+    return f'<div class="gallery{" one" if len(imgs) == 1 else ""}">{figs}</div>'
+
 def notice_files(n):
     fs = n.get('files') or []
     if not fs:
         return ''
-    return '<div class="art-files"><strong>첨부파일</strong><ul>' + ''.join(f'<li><a href="{E(f["url"])}" target="_blank" rel="noopener" download>{E(f["name"])}</a>{(" <span class=\"muted small\">(" + E(f["size"]) + ")</span>") if f.get("size") else ""}</li>' for f in fs) + '</ul></div>'
+    return file_gallery(fs) + '<div class="art-files"><strong>첨부파일</strong><ul>' + ''.join(f'<li><a href="{E(f["url"])}" target="_blank" rel="noopener" download>{E(f["name"])}</a>{(" <span class=\"muted small\">(" + E(f["size"]) + ")</span>") if f.get("size") else ""}</li>' for f in fs) + '</ul></div>'
 
 def page_notice():
     rows = ''
