@@ -467,6 +467,35 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .srch-foot { padding: 10px 18px 14px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); }
 body.noscroll { overflow: hidden; }
 @keyframes fadein { from { opacity: 0; } to { opacity: 1; } } @keyframes popin { from { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(.98); } to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } }
+/* 홈 KELI 소개 도형 */
+.intro-grid { grid-template-columns: 5fr 7fr; align-items: center; gap: 56px; }
+.kdiag { display: grid; grid-template-columns: auto auto auto auto 1fr; align-items: center; column-gap: 0; position: relative; padding-bottom: 44px; }
+.kd-node { background: var(--bg2); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.kd-node strong { font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+.kd-node span { font-size: 12px; color: var(--muted); line-height: 1.45; }
+.kd-src { width: 142px; }
+.kd-core { width: 128px; height: 128px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; box-shadow: 0 12px 28px rgba(11, 92, 255, .25); }
+.kd-core strong { font-size: 26px; font-weight: 800; letter-spacing: .02em; line-height: 1; }
+.kd-core span { font-size: 11px; line-height: 1.35; opacity: .9; }
+.kd-arrow { width: 84px; height: 2px; background: #c9d0db; position: relative; margin: 0 6px; }
+.kd-arrow::after { content: ""; position: absolute; right: -1px; top: -4px; border: 5px solid transparent; border-left: 7px solid #c9d0db; border-right: 0; }
+.kd-arrow span { position: absolute; left: 0; width: 100%; bottom: 8px; text-align: center; font-size: 11px; line-height: 1.3; color: var(--muted); }
+.kd-targets { display: flex; flex-direction: column; gap: 8px; padding-left: 18px; border-left: 2px solid #c9d0db; position: relative; }
+.kd-targets .kd-node { position: relative; padding: 10px 14px; border-radius: 12px; }
+.kd-targets .kd-node::before { content: ""; position: absolute; left: -18px; top: 50%; width: 14px; height: 2px; background: #c9d0db; }
+.kd-targets .kd-node strong { font-size: 14px; } .kd-targets .kd-node span { font-size: 11.5px; }
+.kd-cycle { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.kd-cycle .k { font-weight: 600; color: var(--fg); margin-right: 4px; } .kd-cycle i { font-style: normal; color: var(--accent); font-weight: 700; }
+@media (max-width: 1000px) { .intro-grid { grid-template-columns: 1fr; gap: 40px; } .intro-grid > .head { max-width: 760px; } }
+@media (max-width: 640px) {
+  .kdiag { grid-template-columns: 1fr; justify-items: center; row-gap: 0; padding-bottom: 40px; }
+  .kd-src { width: min(100%, 260px); text-align: center; align-items: center; }
+  .kd-arrow { width: 2px; height: 44px; margin: 4px 0; }
+  .kd-arrow::after { right: -4px; top: auto; bottom: -1px; border: 5px solid transparent; border-top: 7px solid #c9d0db; border-bottom: 0; }
+  .kd-arrow span { left: 14px; width: auto; bottom: auto; top: 50%; transform: translateY(-50%); white-space: nowrap; text-align: left; }
+  .kd-targets { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-left: 0; border-left: 0; }
+  .kd-targets .kd-node::before { display: none; }
+}
 /* 상호작용: 과하지 않은 움직임 */
 .btn { transition: transform .15s ease, box-shadow .15s ease, background .15s ease, filter .15s ease; }
 .btn:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(11, 92, 255, .22); } .btn.ghost:hover { box-shadow: 0 6px 16px rgba(0,0,0,.08); } .btn:active { transform: translateY(0); box-shadow: none; }
@@ -1213,6 +1242,31 @@ def page_index():
 <div class="card"><span class="num" data-stat="courses" data-count="{LIVE['courses']}">{LIVE['courses']:,}</span><h3>AI 결합 강좌</h3><p>한림대학교 누적 운영 강좌 · <span data-stat="courses_note">한림 AI 교육 포털 {LIVE['fetched_at']} 기준</span></p></div>
 </div>
 <p class="note" style="margin-top:16px">기준: 서비스·참여 기관 수는 사무국이 직접 입력합니다(2026. 10. KELI 리플렛·포털 파트너 목록). AI 결합 강좌 수는 한림 AI 교육 포털(ai.hallym.ac.kr)의 "AI 강좌 수"를 매일 자동으로 가져옵니다.</p>
+</div></section>
+
+<section class="sec" id="intro"><div class="wrap">
+<div class="grid g2 intro-grid">
+<div class="head" style="margin:0">
+<span class="eyebrow">KELI란</span>
+<h2>K-University<br>AI EdTech &amp; Learning Initiative.</h2>
+<p class="lead">한림대학교가 자체 개발해 수업에서 검증한 AI 교육 서비스 HAI Ecosystems를 국내외 대학·기관·기업에 제공하고, 함께 실증하고 확산하는 고등교육 AI 공유 플랫폼입니다. 대학마다 따로 만들던 것을 한 번 만들어 함께 씁니다.</p>
+<div class="chips"><span class="chip">주관 · 한림대학교 KELI 사무국</span><span class="chip">대상 · 국내외 대학·기관·기업</span><span class="chip">무상 시범 도입 → 유상 정식 도입</span></div>
+<div class="acts" style="margin-top:6px"><a class="btn ghost" href="about.html">KELI 소개 더 보기</a><a class="more" href="join.html">참여 방법</a></div>
+</div>
+<div class="kdiag" role="img" aria-label="KELI 구조: 한림대학교가 개발·검증한 HAI Ecosystems를 KELI가 국내 대학, 해외 대학·기관, 에듀테크 기업, 유관기관에 제공하고 함께 실증·확산합니다">
+<div class="kd-node kd-src"><strong>한림대학교</strong><span>HAI Ecosystems<br>개발 · 수업 검증</span></div>
+<div class="kd-arrow"><span>무상 · 유상 제공</span></div>
+<div class="kd-core"><strong>KELI</strong><span>고등교육<br>AI 공유 플랫폼</span></div>
+<div class="kd-arrow"><span>도입 · 공동 실증 · 확산</span></div>
+<div class="kd-targets">
+<div class="kd-node"><strong>국내 대학</strong><span>수업 도입 · 시범 운영</span></div>
+<div class="kd-node"><strong>해외 대학 · 기관</strong><span>현지화 · 국제 프로그램</span></div>
+<div class="kd-node"><strong>에듀테크 기업</strong><span>Marketplace 등재 · 공동 개발</span></div>
+<div class="kd-node"><strong>유관기관</strong><span>공동 연구 · 정책 근거</span></div>
+</div>
+<p class="kd-cycle"><span class="k">운영 사이클</span> 발견 <i>›</i> 연결 <i>›</i> 실증 <i>›</i> 확산</p>
+</div>
+</div>
 </div></section>
 
 <section class="sec glass" id="services"><div class="wrap">
