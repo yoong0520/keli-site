@@ -475,16 +475,6 @@
       "date": "2026.10",
       "url": "assets/img/keli-leaflet.jpg",
       "published": true
-    },
-    {
-      "id": "a10",
-      "cat": "manual",
-      "type": "video",
-      "title": "HAI Ecosystems 전체 데모 영상",
-      "org": "KELI 사무국",
-      "date": "2026",
-      "url": "https://keliedu.org/keli/partners/video",
-      "published": true
     }
   ]
 }
