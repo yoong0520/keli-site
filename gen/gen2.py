@@ -799,13 +799,13 @@ JS = r"""
 """
 
 # ------------------------------------------------------------------ 공통 조각
-NAV = [('about.html', 'KELI 소개'), ('services.html', '마켓플레이스'), ('join.html', '참여·도입'), ('archive.html', '아카이브'), ('news.html', '소식')]
+NAV = [('about.html', 'KELI 소개'), ('services.html', '마켓플레이스'), ('join.html', 'KELI 협의체 참여'), ('archive.html', '아카이브'), ('news.html', '소식')]
 NEWS_PAGES = {'news.html', 'notice.html', 'events.html', 'newsletter.html', 'videos.html'}
 # 상단 메뉴를 누르거나 올리면 펼쳐지는 전체 메뉴(메가 메뉴). 각 메뉴 아래 게시판·섹션 바로가기
 MEGA = [
     ('about.html', 'KELI 소개', [('about.html#offer', '무엇을 제공하나'), ('about.html#why', '왜 KELI인가'), ('about.html#vision', '비전'), ('about.html#structure', '구조 · 참여 기관'), ('about.html#office', '사무국 · 연락처'), ('en.html', 'English')]),
     ('services.html', '마켓플레이스', [('services.html', 'HAI Ecosystems 19'), ('services.html#platform', '통합 플랫폼'), ('services.html#career', '진로 · 연구'), ('services.html#courseware', '전공 코스웨어'), ('services.html#teaching', '학습 · 수업 지원'), ('services.html#analytics', '분석 · 데이터'), ('services.html#admin', '행정 · 평가'), ('demos.html', '전체 데모 영상'), ('curriculum.html', '수업 6단계와 서비스')]),
-    ('join.html', '참여 · 도입', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의'), ('newsletter.html', '뉴스레터 구독')]),
+    ('join.html', 'KELI 협의체 참여', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의'), ('newsletter.html', '뉴스레터 구독')]),
     ('archive.html', '아카이브', [('archive-case.html', '실증 사례집'), ('archive-trend.html', '기술 동향 · 연구'), ('archive-manual.html', '매뉴얼 · 소개자료')]),
     ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료'), ('search.html', '검색')]),
 ]
@@ -1509,9 +1509,9 @@ def page_join():
         svc_opts += f'<div class="chipgrp"><span class="gk">{label}</span><div class="chips">{chips}</div></div>'
     univ = ''.join(f'<span class="chip">{E(u)}</span>' for u in UNIV)
     corp = ''.join(f'<span class="chip">{E(c)}</span>' for c in CORP)
-    body = crumb((None, '참여·도입')) + f'''
+    body = crumb((None, 'KELI 협의체 참여')) + f'''
 <section class="hero" style="padding-top:48px"><div class="wrap">
-<span class="eyebrow">참여 방법</span>
+<span class="eyebrow">KELI 협의체 참여</span>
 <h1>모든 참여는<br>KELI 사무국을 통해 시작합니다.</h1>
 <p class="lead">대학은 수업 도입으로, 기업은 서비스 등재로, 기관은 공동 과제 제안으로. 첫걸음은 작게 시작합니다.</p>
 <div class="acts"><a class="btn" href="#inquiry">도입 문의</a></div>
@@ -1573,7 +1573,7 @@ def page_join():
 </div>
 </div></section>
 '''
-    write('join.html', '참여·도입 · KELI', body)
+    write('join.html', 'KELI 협의체 참여 · KELI', body)
 
 ARCH_ICON = {'pdf': 'PDF', 'doc': '문서', 'video': '영상', 'link': '링크', 'image': '이미지'}
 def arch_has_page(a):
@@ -1899,7 +1899,7 @@ def page_videos():
 
 def search_index():
     idx = [(f'service-{s["slug"]}.html', s['name'], s['one'] + ' · ' + AREA_LABEL[s['area']]) for s in SERVICES]
-    idx += [('about.html', 'KELI 소개', '정의 · 비전 · 구조 · 사무국'), ('services.html', '마켓플레이스', 'HAI Ecosystems 19'), ('curriculum.html', 'AI 융합교육과정', '수업 6단계와 서비스'), ('join.html', '참여·도입', '도입 절차 · 이용 방식 · 참여 기관 · 문의'), ('archive.html', '아카이브', '사례집 · 기술 동향 · 매뉴얼'), ('notice.html', '공지사항', '소식'), ('events.html', '행사', '심포지엄 · 데모데이 · 매칭데이'), ('newsletter.html', '뉴스레터', '구독')]
+    idx += [('about.html', 'KELI 소개', '정의 · 비전 · 구조 · 사무국'), ('services.html', '마켓플레이스', 'HAI Ecosystems 19'), ('curriculum.html', 'AI 융합교육과정', '수업 6단계와 서비스'), ('join.html', 'KELI 협의체 참여', '도입 절차 · 이용 방식 · 참여 기관 · 문의'), ('archive.html', '아카이브', '사례집 · 기술 동향 · 매뉴얼'), ('notice.html', '공지사항', '소식'), ('events.html', '행사', '심포지엄 · 데모데이 · 매칭데이'), ('newsletter.html', '뉴스레터', '구독')]
     idx += [(ev_href(it), it['title'], '행사 · ' + (it.get('when') or '')) for it in FEED_ITEMS]
     idx += [(pr_href(it), it['title'], ('언론 보도 · ' if it.get('src') == 'unn' else '보도자료 · ') + (it.get('date') or '')) for it in PRESS_ALL]
     idx += [('videos.html', v['title'], '영상 · ' + (v.get('published') or v.get('published_text') or '')) for v in VIDEO_ITEMS]
