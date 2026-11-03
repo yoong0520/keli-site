@@ -11,6 +11,7 @@
 :root[data-theme="dark"] { --bg: #000000; --bg2: #1d1d1f; --fg: #f5f5f7; --muted: #a1a1a6; --line: #424245; --accent: #2997ff; --accent-fg: #ffffff; --ok: #7ad48f; --ok-bg: #0f2a16; --soon: #f5c35a; --soon-bg: #2e2306; --s1: #8fc0ff; --s1-bg: #10264a; --s2: #7fd9bf; --s2-bg: #0d2f27; --s3: #ffb36b; --s3-bg: #3a2208; --s4: #c2b3ff; --s4-bg: #221a4d; --s5: #ff9bbd; --s5-bg: #3d1424; --s6: #b8e08a; --s6-bg: #1e3010; color-scheme: dark; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+::selection { background: #d7fd73; color: #111625; } ::-moz-selection { background: #d7fd73; color: #111625; } img::selection { background: rgba(215, 253, 115, .45); }
 body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 17px; line-height: 1.75; -webkit-font-smoothing: antialiased; word-break: keep-all; overflow-wrap: break-word; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
 img { max-width: 100%; height: auto; display: block; }
