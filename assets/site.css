@@ -278,20 +278,27 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 body.noscroll { overflow: hidden; }
 @keyframes fadein { from { opacity: 0; } to { opacity: 1; } } @keyframes popin { from { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(.98); } to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } }
 /* KELI 소개: 조직도 */
-.org { display: flex; flex-direction: column; align-items: center; max-width: 980px; margin: 0 auto; }
+.org { display: flex; flex-direction: column; align-items: center; max-width: 1040px; margin: 0 auto; }
 .org-lv { display: flex; justify-content: center; width: 100%; }
-.org-box { background: var(--bg2); border-radius: 14px; padding: 16px 20px; display: flex; flex-direction: column; gap: 4px; text-align: center; width: min(100%, 360px); }
-.org-box strong { font-size: 17px; font-weight: 700; } .org-box span { font-size: 13px; color: var(--muted); } .org-box em { font-style: normal; font-size: 13px; color: var(--fg); line-height: 1.6; margin-top: 4px; }
-.org-box.top { background: var(--fg); color: var(--bg); } .org-box.top span, .org-box.top em { color: var(--bg); opacity: .85; }
-.org-box.hot { background: var(--accent); color: #fff; } .org-box.hot span, .org-box.hot em { color: #fff; opacity: .9; }
-.org-line { width: 2px; height: 28px; background: #c9d0db; }
-.org-row { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; width: 100%; padding-top: 24px; }
-.org-row::before { content: ""; position: absolute; top: 0; left: 16.66%; right: 16.66%; border-top: 2px solid #c9d0db; }
-.org-row .org-box { position: relative; width: auto; }
-.org-row .org-box::before { content: ""; position: absolute; left: 50%; top: -24px; width: 2px; height: 24px; background: #c9d0db; }
-.org-base { width: 100%; border: 2px dashed #c9d0db; border-radius: 14px; padding: 14px 20px; text-align: center; display: flex; gap: 6px 14px; justify-content: center; flex-wrap: wrap; align-items: baseline; }
-.org-base strong { font-size: 16px; } .org-base span { font-size: 14px; color: var(--muted); }
-@media (max-width: 760px) { .org-row { grid-template-columns: 1fr; gap: 0; padding-top: 0; } .org-row::before { display: none; } .org-row .org-box { margin-top: 24px; } .org-row .org-box:first-child { margin-top: 0; } .org-row .org-box::before { top: -24px; } .org-row .org-box:first-child::before { display: none; } }
+.org-box { position: relative; background: var(--bg); border-radius: 18px; padding: 22px 22px 20px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; width: min(100%, 420px); box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 10px 26px rgba(20, 40, 80, .07); }
+.org-ic { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--s1-bg); color: var(--accent); margin-bottom: 4px; } .org-ic svg { width: 24px; height: 24px; }
+.org-box strong { font-size: 18px; font-weight: 700; letter-spacing: -.01em; } .org-box span { font-size: 13px; color: var(--muted); }
+.org-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; }
+.org-tags b { font-weight: 500; font-size: 12.5px; line-height: 1.2; padding: 6px 10px; border-radius: 999px; background: var(--bg2); color: var(--fg); }
+.org-box.top { background: var(--fg); color: var(--bg); } .org-box.top span { color: var(--bg); opacity: .75; } .org-box.top .org-ic { background: rgba(255,255,255,.14); color: #fff; } .org-box.top .org-tags b { background: rgba(255,255,255,.12); color: #fff; }
+.org-box.mid { border: 2px solid var(--accent); }
+.org-box.hot { background: var(--accent); color: #fff; } .org-box.hot span { color: #fff; opacity: .85; } .org-box.hot .org-ic { background: rgba(255,255,255,.18); color: #fff; } .org-box.hot .org-tags b { background: rgba(255,255,255,.16); color: #fff; }
+.org-line { position: relative; width: 2px; height: 46px; background: #c3cad6; display: flex; align-items: center; justify-content: center; }
+.org-line::after { content: ""; position: absolute; left: 50%; bottom: -1px; width: 8px; height: 8px; border-right: 2px solid #c3cad6; border-bottom: 2px solid #c3cad6; transform: translateX(-50%) rotate(45deg); }
+.org-line b { position: absolute; white-space: nowrap; font-size: 12px; font-weight: 600; color: var(--accent); background: var(--bg2); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; }
+.org-row { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; width: 100%; padding-top: 26px; }
+.org-row::before { content: ""; position: absolute; top: 0; left: 16.66%; right: 16.66%; border-top: 2px solid #c3cad6; }
+.org-row .org-box { width: auto; }
+.org-row .org-box::before { content: ""; position: absolute; left: 50%; top: -26px; width: 2px; height: 26px; background: #c3cad6; }
+.org-base { width: 100%; background: var(--bg); border: 2px dashed #c3cad6; border-radius: 18px; padding: 16px 22px; display: flex; gap: 10px 22px; justify-content: center; flex-wrap: wrap; align-items: center; }
+.org-base strong { font-size: 16px; margin-right: 6px; }
+.org-m { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; } .org-m .org-ic { width: 36px; height: 36px; margin: 0; } .org-m .org-ic svg { width: 20px; height: 20px; }
+@media (max-width: 760px) { .org-row { grid-template-columns: 1fr; gap: 0; padding-top: 0; } .org-row::before { display: none; } .org-row .org-box { margin-top: 26px; } .org-row .org-box:first-child { margin-top: 0; } .org-row .org-box:first-child::before { display: none; } .org-base { flex-direction: column; align-items: flex-start; } }
 /* 홈 KELI 소개 도형 */
 .intro-grid { grid-template-columns: 5fr 7fr; align-items: center; gap: 56px; }
 .intro-grid .acts { display: flex; gap: 12px 28px; flex-wrap: wrap; align-items: center; }
@@ -364,6 +371,7 @@ ol.art-ul { counter-reset: n; } ol.art-ul li::before { content: counter(n); coun
 .sec.alt .chip { background: var(--bg); }
 .chip.sel { display: inline-flex; gap: 8px; cursor: pointer; }
 .chip.sel input { width: 16px; height: 16px; }
+.chip.sel small { font-size: 11px; color: var(--soon); background: var(--soon-bg); border-radius: 999px; padding: 1px 7px; }
 .done { background: var(--ok-bg); color: var(--ok); border-radius: 16px; padding: 20px; font-size: 15px; display: none; }
 .done[data-show="1"] { display: block; }
 .done code { font-weight: 700; }

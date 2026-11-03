@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """KELI 플랫폼 v2 사이트 생성기 — 리플렛 기준 · 메뉴 5 · 페이지 12 · 게시판 6 · Apple/Samsung 톤"""
-import os, html, json, re, shutil
+import hashlib, os, html, json, re, shutil
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # 저장소 루트(gen/의 상위)
 OUT = BASE
@@ -477,20 +477,27 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 body.noscroll { overflow: hidden; }
 @keyframes fadein { from { opacity: 0; } to { opacity: 1; } } @keyframes popin { from { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(.98); } to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } }
 /* KELI 소개: 조직도 */
-.org { display: flex; flex-direction: column; align-items: center; max-width: 980px; margin: 0 auto; }
+.org { display: flex; flex-direction: column; align-items: center; max-width: 1040px; margin: 0 auto; }
 .org-lv { display: flex; justify-content: center; width: 100%; }
-.org-box { background: var(--bg2); border-radius: 14px; padding: 16px 20px; display: flex; flex-direction: column; gap: 4px; text-align: center; width: min(100%, 360px); }
-.org-box strong { font-size: 17px; font-weight: 700; } .org-box span { font-size: 13px; color: var(--muted); } .org-box em { font-style: normal; font-size: 13px; color: var(--fg); line-height: 1.6; margin-top: 4px; }
-.org-box.top { background: var(--fg); color: var(--bg); } .org-box.top span, .org-box.top em { color: var(--bg); opacity: .85; }
-.org-box.hot { background: var(--accent); color: #fff; } .org-box.hot span, .org-box.hot em { color: #fff; opacity: .9; }
-.org-line { width: 2px; height: 28px; background: #c9d0db; }
-.org-row { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; width: 100%; padding-top: 24px; }
-.org-row::before { content: ""; position: absolute; top: 0; left: 16.66%; right: 16.66%; border-top: 2px solid #c9d0db; }
-.org-row .org-box { position: relative; width: auto; }
-.org-row .org-box::before { content: ""; position: absolute; left: 50%; top: -24px; width: 2px; height: 24px; background: #c9d0db; }
-.org-base { width: 100%; border: 2px dashed #c9d0db; border-radius: 14px; padding: 14px 20px; text-align: center; display: flex; gap: 6px 14px; justify-content: center; flex-wrap: wrap; align-items: baseline; }
-.org-base strong { font-size: 16px; } .org-base span { font-size: 14px; color: var(--muted); }
-@media (max-width: 760px) { .org-row { grid-template-columns: 1fr; gap: 0; padding-top: 0; } .org-row::before { display: none; } .org-row .org-box { margin-top: 24px; } .org-row .org-box:first-child { margin-top: 0; } .org-row .org-box::before { top: -24px; } .org-row .org-box:first-child::before { display: none; } }
+.org-box { position: relative; background: var(--bg); border-radius: 18px; padding: 22px 22px 20px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; width: min(100%, 420px); box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 10px 26px rgba(20, 40, 80, .07); }
+.org-ic { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--s1-bg); color: var(--accent); margin-bottom: 4px; } .org-ic svg { width: 24px; height: 24px; }
+.org-box strong { font-size: 18px; font-weight: 700; letter-spacing: -.01em; } .org-box span { font-size: 13px; color: var(--muted); }
+.org-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; }
+.org-tags b { font-weight: 500; font-size: 12.5px; line-height: 1.2; padding: 6px 10px; border-radius: 999px; background: var(--bg2); color: var(--fg); }
+.org-box.top { background: var(--fg); color: var(--bg); } .org-box.top span { color: var(--bg); opacity: .75; } .org-box.top .org-ic { background: rgba(255,255,255,.14); color: #fff; } .org-box.top .org-tags b { background: rgba(255,255,255,.12); color: #fff; }
+.org-box.mid { border: 2px solid var(--accent); }
+.org-box.hot { background: var(--accent); color: #fff; } .org-box.hot span { color: #fff; opacity: .85; } .org-box.hot .org-ic { background: rgba(255,255,255,.18); color: #fff; } .org-box.hot .org-tags b { background: rgba(255,255,255,.16); color: #fff; }
+.org-line { position: relative; width: 2px; height: 46px; background: #c3cad6; display: flex; align-items: center; justify-content: center; }
+.org-line::after { content: ""; position: absolute; left: 50%; bottom: -1px; width: 8px; height: 8px; border-right: 2px solid #c3cad6; border-bottom: 2px solid #c3cad6; transform: translateX(-50%) rotate(45deg); }
+.org-line b { position: absolute; white-space: nowrap; font-size: 12px; font-weight: 600; color: var(--accent); background: var(--bg2); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; }
+.org-row { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; width: 100%; padding-top: 26px; }
+.org-row::before { content: ""; position: absolute; top: 0; left: 16.66%; right: 16.66%; border-top: 2px solid #c3cad6; }
+.org-row .org-box { width: auto; }
+.org-row .org-box::before { content: ""; position: absolute; left: 50%; top: -26px; width: 2px; height: 26px; background: #c3cad6; }
+.org-base { width: 100%; background: var(--bg); border: 2px dashed #c3cad6; border-radius: 18px; padding: 16px 22px; display: flex; gap: 10px 22px; justify-content: center; flex-wrap: wrap; align-items: center; }
+.org-base strong { font-size: 16px; margin-right: 6px; }
+.org-m { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; } .org-m .org-ic { width: 36px; height: 36px; margin: 0; } .org-m .org-ic svg { width: 20px; height: 20px; }
+@media (max-width: 760px) { .org-row { grid-template-columns: 1fr; gap: 0; padding-top: 0; } .org-row::before { display: none; } .org-row .org-box { margin-top: 26px; } .org-row .org-box:first-child { margin-top: 0; } .org-row .org-box:first-child::before { display: none; } .org-base { flex-direction: column; align-items: flex-start; } }
 /* 홈 KELI 소개 도형 */
 .intro-grid { grid-template-columns: 5fr 7fr; align-items: center; gap: 56px; }
 .intro-grid .acts { display: flex; gap: 12px 28px; flex-wrap: wrap; align-items: center; }
@@ -563,6 +570,7 @@ ol.art-ul { counter-reset: n; } ol.art-ul li::before { content: counter(n); coun
 .sec.alt .chip { background: var(--bg); }
 .chip.sel { display: inline-flex; gap: 8px; cursor: pointer; }
 .chip.sel input { width: 16px; height: 16px; }
+.chip.sel small { font-size: 11px; color: var(--soon); background: var(--soon-bg); border-radius: 999px; padding: 1px 7px; }
 .done { background: var(--ok-bg); color: var(--ok); border-radius: 16px; padding: 20px; font-size: 15px; display: none; }
 .done[data-show="1"] { display: block; }
 .done code { font-weight: 700; }
@@ -684,6 +692,17 @@ JS = r"""
   })();
   // 관리자가 숨긴 자동 연동 글(content/hidden.json → window.KELI_HIDDEN)은 다시 그릴 때도 뺀다
   function hid(kind, items){ var h=((window.KELI_HIDDEN||{})[kind])||[]; return items.filter(function(it){ return h.indexOf(String(it.id))<0; }); }
+  // 관심 서비스 체크 목록: 포털 피드(assets/services.live.json)로 다시 그림 (체크 상태 유지)
+  (function(){
+    var box=qs('#svc-opts'); if(!box||location.protocol==='file:') return;
+    fetch('assets/services.live.json',{cache:'no-store'}).then(function(r){ return r.ok?r.json():null; }).then(function(d){
+      if(!d||!d.items||!d.items.length) return; var items=hid('services', d.items); var cats=d.categories||[];
+      var checked={}; qsa('input[name=services]:checked', box).forEach(function(i){ checked[i.value]=1; });
+      var html=''; cats.forEach(function(c){ var its=items.filter(function(i){ return i.category===c; }); if(!its.length) return;
+        html+='<div class="chipgrp"><span class="gk">'+esc(c)+'</span><div class="chips">'+its.map(function(i){ return '<label class="chip sel"><input type="checkbox" name="services" value="'+esc(i.name)+'"'+(checked[i.name]?' checked':'')+'> '+esc(i.name)+(i.status==='coming_soon'?' <small>오픈 예정</small>':'')+'</label>'; }).join('')+'</div></div>'; });
+      if(html){ box.innerHTML=html; var src=qs('#svc-src'); if(src&&d.fetched_at) src.textContent='목록은 한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai)에서 매일 자동으로 가져옵니다 · '+d.fetched_at+' 기준.'; }
+    }).catch(function(){});
+  })();
   // events feed: AI교육확산센터 [KELI] 글 (assets/events.live.json) → [data-events] 다시 그리기
   (function(){
     var boxes=qsa('[data-events]'); if(!boxes.length||location.protocol==='file:') return;
@@ -866,10 +885,13 @@ FOOTER = f'''<footer class="ftr"><div class="wrap">
 <span>(24252) 강원특별자치도 춘천시 한림대학길 1</span>
 <a href="{INSTA}" target="_blank" rel="noopener">Instagram @hallym_keli</a></div>
 <div class="col"><strong>바로가기</strong><a href="services.html">Marketplace</a><a href="join.html#inquiry">도입 문의</a><a href="archive.html">아카이브</a><a href="newsletter.html">뉴스레터 구독</a></div>
-<div class="col"><strong>관련 사이트</strong><a href="https://www.hallym.ac.kr" target="_blank" rel="noopener">한림대학교</a><a href="https://aiadvcenter.csedu4all.com" target="_blank" rel="noopener">AI교육확산센터</a><a href="https://ai.hallym.ac.kr" target="_blank" rel="noopener">한림 AI 교육 포털</a><a href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a></div>
+<div class="col"><strong>관련 사이트</strong><a href="https://www.hallym.ac.kr" target="_blank" rel="noopener">한림대학교</a><a href="https://hallym-ai-next.foamymole15.chatgpt.site/#services" target="_blank" rel="noopener">AI교육혁신원</a><a href="https://aiadvcenter.csedu4all.com" target="_blank" rel="noopener">AI교육확산센터</a><a href="https://ai.hallym.ac.kr" target="_blank" rel="noopener">한림 AI 교육 포털</a><a href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a></div>
 </div>
 <div class="bot"><span>주관 한림대학교 · 후원 교육부 글로컬대학30 · © Hallym University</span><span><a href="privacy.html">개인정보처리방침</a> · <a href="terms.html">이용약관</a> · <a href="en.html">English</a> · <a href="admin.html">관리자</a></span></div>
 </div></footer>'''
+
+CSS_V = hashlib.md5(CSS.encode('utf-8')).hexdigest()[:8]
+JS_V = hashlib.md5(JS.encode('utf-8')).hexdigest()[:8]
 
 def doc(fname, title, body, desc='KELI는 한림대학교가 개발하고 수업에서 검증한 AI 교육 서비스를 국내외 대학·기관에 제공하고 함께 확산하는 고등교육 AI 공유 플랫폼입니다.', skeleton=True):
     head_bits = f'''<title>{E(title)}</title>
@@ -877,15 +899,15 @@ def doc(fname, title, body, desc='KELI는 한림대학교가 개발하고 수업
 <meta name="color-scheme" content="light">
 <meta name="description" content="{E(desc)}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="assets/site.css">'''
+<link rel="stylesheet" href="assets/site.css?v={CSS_V}">'''
     inner = f'''{head_bits}
 {header(fname)}
 <main id="main">
 {body}
 </main>
 {FOOTER}
-<script>window.KELI_HIDDEN={json.dumps({k: [str(x) for x in HIDDEN.get(k, [])] for k in ('events', 'press', 'videos', 'unn')}, ensure_ascii=False)};</script>
-<script src="assets/site.js"></script>{'<script src="assets/admin.js"></script>' if fname == 'admin.html' else ''}'''
+<script>window.KELI_HIDDEN={json.dumps({k: [str(x) for x in HIDDEN.get(k, [])] for k in ('events', 'press', 'videos', 'unn', 'services')}, ensure_ascii=False)};</script>
+<script src="assets/site.js?v={JS_V}"></script>{'<script src="assets/admin.js?v=' + JS_V + '"></script>' if fname == 'admin.html' else ''}'''
     if fname == 'admin.html':
         head_bits = head_bits.replace('<meta name="description"', '<meta name="robots" content="noindex, nofollow">\n<meta name="description"', 1)
     if not skeleton:
@@ -898,7 +920,7 @@ def doc(fname, title, body, desc='KELI는 한림대학교가 개발하고 수업
 {inner}
 </body>
 </html>
-'''.replace('<link rel="stylesheet" href="assets/site.css">', '<link rel="stylesheet" href="assets/site.css">\n</head>\n<body>', 1)
+'''.replace(f'<link rel="stylesheet" href="assets/site.css?v={CSS_V}">', f'<link rel="stylesheet" href="assets/site.css?v={CSS_V}">\n</head>\n<body>', 1)
 
 # ------------------------------------------------------------------ 줄바꿈 정리
 # 규칙: (1) 문장은 마침표(.!?) 뒤에서 줄을 바꾼다 → <br>
@@ -1190,6 +1212,26 @@ VIDEO_NOTE = f'한림대학교 유튜브 채널(youtube.com/@HALLYMNEWS)에서 �
 # ------------------------------------------------------------------ 데모 영상: 한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai) 서비스별 영상 연동
 PORTAL_DEMOS = 'https://ai.hallym.ac.kr/hallym-ai'
 DEMOS = _load_json(os.path.join(OUT, 'assets', 'demos.live.json'), {"source": PORTAL_DEMOS, "fetched_at": "", "items": []})
+SVC_LIVE = _load_json(os.path.join(OUT, 'assets', 'services.live.json'), None)  # 포털 서비스 목록(관심 서비스 체크 목록용)
+
+def svc_groups():
+    """도입 문의 폼의 관심 서비스 묶음: 포털 피드(분류별) → 없으면 사이트 목록(통합 플랫폼 제외)"""
+    if SVC_LIVE and SVC_LIVE.get('items'):
+        items = _not_hidden('services', SVC_LIVE['items'])
+        groups = []
+        for cat in SVC_LIVE.get('categories') or []:
+            its = [i for i in items if i.get('category') == cat]
+            if its: groups.append((cat, [(i['name'], i.get('status', '')) for i in its]))
+        return groups, SVC_LIVE.get('fetched_at', '')
+    return [(label, [(x['name'], x['status']) for x in SERVICES if x['area'] == key]) for key, label, _ in AREAS if key != 'platform' and any(x['area'] == key for x in SERVICES)], ''
+
+def svc_opts_html():
+    groups, when = svc_groups()
+    out = ''
+    for label, its in groups:
+        chips = ''.join(f'<label class="chip sel"><input type="checkbox" name="services" value="{E(n)}"> {E(n)}{" <small>오픈 예정</small>" if st == "coming_soon" else ""}</label>' for n, st in its)
+        out += f'<div class="chipgrp"><span class="gk">{E(label)}</span><div class="chips">{chips}</div></div>'
+    return out, when
 DEMO_ITEMS = DEMOS.get('items', [])
 DEMO_CATS = []
 for _d in DEMO_ITEMS:
@@ -1381,7 +1423,7 @@ def page_about():
 </div>
 </div></section>
 
-<section class="sec alt" id="consortium"><div class="wrap">
+<section class="sec" id="consortium"><div class="wrap">
 <div class="head"><span class="eyebrow">KELI 협의체</span><h2>대학·기업·기관이 함께 만드는 협의체.</h2><p class="lead">KELI 협의체는 주관기관 한림대학교와 참여기관이 「KELI 협의체 참여 협약」을 맺고, AI 교육 서비스를 공동 실증·공동 개발하고 국내외로 확산하는 협력체입니다. 참여는 협약 체결로 시작하고, 개별 과제는 과제 확인서로 정합니다.</p></div>
 <div class="grid g3">
 <div class="card"><span class="k">참여 주체</span><h3>국내외 대학 · 에듀테크 기업 · 유관기관</h3><p>현재 대학 <span data-stat="universities">{STATS['universities']}</span>곳, 에듀테크 기업 <span data-stat="companies">{STATS['companies']}</span>곳이 함께합니다.</p><a class="more" href="join.html#members">참여 기관 보기</a></div>
@@ -1390,25 +1432,25 @@ def page_about():
 </div>
 </div></section>
 
-<section class="sec" id="org"><div class="wrap">
+<section class="sec alt" id="org"><div class="wrap">
 <div class="head"><span class="eyebrow">조직도</span><h2>KELI 협의체의 기구와 사무국.</h2><p class="lead">총회와 운영위원회가 의결하고, 두 전문위원회가 심의하며, 주관기관 안의 KELI 사무국이 실무를 맡습니다.</p></div>
-<div class="org" role="img" aria-label="조직도: 총회 아래 운영위원회, 그 아래 기술·표준위원회, 품질·윤리위원회, KELI 사무국, 맨 아래 참여기관">
-<div class="org-lv"><div class="org-box top"><strong>총회</strong><span>전 참여기관 대표 · 연 1회</span><em>사업계획·결산 승인 · 규정 제·개정 · 임원 선출</em></div></div>
-<div class="org-line"></div>
-<div class="org-lv"><div class="org-box"><strong>운영위원회</strong><span>주관·참여기관 대표 11인 내외 · 반기 1회</span><em>사업 우선순위 · 예산 심의 · 회원 가입과 참여 종료</em></div></div>
-<div class="org-line"></div>
+<div class="org" role="img" aria-label="조직도: 총회가 의결하고, 운영위원회가 사업을 결정하며, 기술·표준위원회와 품질·윤리위원회가 심의하고, KELI 사무국이 집행하여 참여기관(대학·에듀테크 기업·유관기관)을 지원합니다">
+<div class="org-lv"><div class="org-box top"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 19c0-3.3 2.9-5.5 6.5-5.5s6.5 2.2 6.5 5.5"/><circle cx="17" cy="9" r="2.8"/><path d="M15.5 13.6c3 .2 5.5 2.2 5.5 5.4"/></svg></i><strong>총회</strong><span>전 참여기관 대표 · 연 1회</span><div class="org-tags"><b>사업계획·결산 승인</b><b>규정 제·개정</b><b>임원 선출</b></div></div></div>
+<div class="org-line"><b>의결</b></div>
+<div class="org-lv"><div class="org-box mid"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2.5h6V4M8.5 13l2.5 2.5 4.5-5"/></svg></i><strong>운영위원회</strong><span>주관·참여기관 대표 11인 내외 · 반기 1회</span><div class="org-tags"><b>사업 우선순위</b><b>예산 심의</b><b>회원 가입·참여 종료</b></div></div></div>
+<div class="org-line"><b>심의 · 보고</b></div>
 <div class="org-row">
-<div class="org-box"><strong>기술·표준위원회</strong><span>대학 교원 · 기업 기술책임자 · 표준 전문가</span><em>연동 규격 · 학습데이터 표준 · 오픈 API 공개 범위 · 상호운용성</em></div>
-<div class="org-box"><strong>품질·윤리위원회</strong><span>교육공학·평가 · 법률·개인정보 전문가</span><em>Marketplace 등재 심사 · 실증 품질 기준 · AI 윤리 · 개인정보 영향평가</em></div>
-<div class="org-box hot"><strong>KELI 사무국</strong><span>주관기관 한림대학교 AI교육혁신원 AI교육확산센터</span><em>회원 관리 · 수요 발굴 · 매칭 · 실증 운영 · 품질·보안 · 교육·연수 · 사업화·기술이전 · 글로벌 확산 · 성과 확산·홍보</em></div>
+<div class="org-box"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg></i><strong>기술·표준위원회</strong><span>대학 교원 · 기업 기술책임자 · 표준 전문가</span><div class="org-tags"><b>연동 규격</b><b>학습데이터 표준</b><b>오픈 API</b><b>상호운용성</b></div></div>
+<div class="org-box"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10v-6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></i><strong>품질·윤리위원회</strong><span>교육공학·평가 · 법률·개인정보 전문가</span><div class="org-tags"><b>Marketplace 등재 심사</b><b>실증 품질 기준</b><b>AI 윤리</b><b>개인정보 영향평가</b></div></div>
+<div class="org-box hot"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2M10 21v-3h4v3"/></svg></i><strong>KELI 사무국</strong><span>주관기관 한림대학교 AI교육혁신원 AI교육확산센터</span><div class="org-tags"><b>회원 관리</b><b>수요 발굴</b><b>매칭</b><b>실증 운영</b><b>품질·보안</b><b>교육·연수</b><b>사업화·기술이전</b><b>글로벌 확산</b><b>성과 확산·홍보</b></div></div>
 </div>
-<div class="org-line"></div>
-<div class="org-base"><strong>참여기관</strong><span>국내외 대학 · 에듀테크 기업 · 유관기관</span></div>
+<div class="org-line"><b>집행 · 지원</b></div>
+<div class="org-base"><strong>참여기관</strong><span class="org-m"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9l9.5-4.5L21.5 9 12 13.5 2.5 9z"/><path d="M6.5 11v4.5c0 1.5 2.5 3 5.5 3s5.5-1.5 5.5-3V11M21.5 9v5"/></svg></i>국내외 대학</span><span class="org-m"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V4.5h6V7M3 12h18"/></svg></i>에듀테크 기업</span><span class="org-m"><i class="org-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-5 9 5H3zM5 9v8M9.5 9v8M14.5 9v8M19 9v8M3 20h18"/></svg></i>유관기관</span></div>
 </div>
 <p class="note" style="margin-top:16px">근거: KELI 협의체 참여 협약서 제7조(협의체의 기구) · 제8조(KELI 사무국). 각 기구의 세부 구성과 운영은 별도 규정으로 정합니다.</p>
 </div></section>
 
-<section class="sec alt" id="office"><div class="wrap">
+<section class="sec" id="office"><div class="wrap">
 <div class="grid g2" style="align-items:center;gap:48px">
 <div class="head" style="margin:0"><h2>KELI 사무국.</h2><p class="lead">한림대학교 AI교육혁신원 AI교육확산센터가 사무국을 맡고 있습니다. 궁금한 점은 언제든 연락 주세요.</p></div>
 <div class="card">
@@ -1531,11 +1573,8 @@ def page_curriculum():
     write('curriculum.html', 'AI 융합교육과정 · KELI', body)
 
 def page_join():
-    # 관심 서비스: 6영역별로 묶어서 표시
-    svc_opts = ''
-    for key, label, _en in AREAS:
-        chips = ''.join(f'<label class="chip sel"><input type="checkbox" name="services" value="{s["slug"]}"> {E(s["name"])}</label>' for s in SERVICES if s['area'] == key)
-        svc_opts += f'<div class="chipgrp"><span class="gk">{label}</span><div class="chips">{chips}</div></div>'
+    # 관심 서비스: 한림 AI 교육 포털의 서비스 목록(분류별)에서 자동 생성 — 통합 플랫폼(KELI·HAI-AI)은 제외
+    svc_opts, svc_when = svc_opts_html()
     univ = ''.join(f'<span class="chip">{E(u)}</span>' for u in UNIV)
     corp = ''.join(f'<span class="chip">{E(c)}</span>' for c in CORP)
     body = crumb((None, 'KELI 협의체 참여')) + f'''
@@ -1592,7 +1631,7 @@ def page_join():
 <div class="field"><label for="f-email">이메일</label><input id="f-email" name="email" type="email" required placeholder="name@univ.ac.kr"><span class="msg">이메일 주소를 확인해 주세요.</span></div>
 <div class="field"><label for="f-tel">연락처</label><input id="f-tel" name="tel" type="tel" placeholder="선택"></div>
 </div>
-<div class="field"><label>관심 서비스</label><span class="hint">영역별로 골라 주세요. 여러 개를 고를 수 있습니다. 기업은 등재 희망 서비스명을 아래 내용에 적어 주세요.</span><div class="chipgrps">{svc_opts}</div></div>
+<div class="field"><label>관심 서비스</label><span class="hint">영역별로 골라 주세요. 여러 개를 고를 수 있습니다. 기업은 등재 희망 서비스명을 아래 내용에 적어 주세요.</span><div class="chipgrps" id="svc-opts">{svc_opts}</div><span class="hint" id="svc-src">목록은 한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai)에서 매일 자동으로 가져옵니다{(' · ' + svc_when + ' 기준') if svc_when else ''}.</span></div>
 <div class="field"><label for="f-course">적용 교과목</label><input id="f-course" name="course" type="text" placeholder="예) 선형대수학 (2027-1학기, 수강 60명)"></div>
 <div class="field"><label for="f-body">문의 내용</label><textarea id="f-body" name="body" rows="5" placeholder="원하시는 참여 방식, 일정, 궁금한 점을 적어 주세요."></textarea></div>
 <label class="chk"><input type="checkbox" id="f-agree" required><span>개인정보 수집·이용에 동의합니다. 문의 처리 목적으로만 이용하며 처리 후 파기합니다. <a href="privacy.html">개인정보처리방침</a></span></label>

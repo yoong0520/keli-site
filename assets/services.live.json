@@ -1,0 +1,272 @@
+{
+  "source": "https://ai.hallym.ac.kr/hallym-ai",
+  "api": "https://ai.hallym.ac.kr/api/v1/hallym-services",
+  "fetched_at": "2026. 11. 3.",
+  "fetched_iso": "2026-11-03T17:04+09:00",
+  "count": 23,
+  "categories": [
+    "AI 학습 지원",
+    "AI 교수 지원",
+    "AI 연구 지원",
+    "AI 진로·취업",
+    "AI 플랫폼",
+    "AI 의료교육",
+    "AI 행정 지원",
+    "AI 운영 지원"
+  ],
+  "items": [
+    {
+      "id": 18,
+      "name": "HAI-Fist",
+      "category": "AI 학습 지원",
+      "category_order": 1,
+      "status": "live",
+      "summary": "융합수사학과 AI 코스웨어",
+      "url": "https://fist.k-university.ai",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/d984638162654cc9bf823bf15e66b7e5.png",
+      "home_order": 0
+    },
+    {
+      "id": 36,
+      "name": "HAI-Mate",
+      "category": "AI 학습 지원",
+      "category_order": 1,
+      "status": "live",
+      "summary": "교육 교과목 지원시스템",
+      "url": "https://haimate.k-university.ai/v2/login",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/5f7d9b5052984f739aa68870a3c63943.png",
+      "home_order": 0
+    },
+    {
+      "id": 3,
+      "name": "HAI-MathTutor",
+      "category": "AI 학습 지원",
+      "category_order": 1,
+      "status": "live",
+      "summary": "학생의 손글씨로 풀이 과정을 입력 기능, 채점, AI가 단계별로 분석·피드백을 제공하는 선형대수 특화형 인공지능 튜터 서비스",
+      "url": "https://math-ai.k-university.ai/hallym/auth/signin?from=aihub",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/8ceed12beb8045e59904d69cf2b3533d.png",
+      "home_order": 0
+    },
+    {
+      "id": 30,
+      "name": "HAI-Sync",
+      "category": "AI 학습 지원",
+      "category_order": 1,
+      "status": "live",
+      "summary": "강의자료 기반 개인 맞춤 AI 학습 플랫폼",
+      "url": "https://haisync.k-university.ai/sso-check",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/3c6083230bbb424f9b3370d5026e875c.png",
+      "home_order": 0
+    },
+    {
+      "id": 2,
+      "name": "HAI-Tutor",
+      "category": "AI 학습 지원",
+      "category_order": 1,
+      "status": "live",
+      "summary": "한림대학교에서 개발한 RAG 기능을 지원하는 교과목 특화형 지능형 튜터 서비스",
+      "url": "https://tutor.k-university.ai",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/3133ed5356f34e0ca7d3e0d06cfe3799.png",
+      "home_order": 0
+    },
+    {
+      "id": 38,
+      "name": "LXP",
+      "category": "AI 학습 지원",
+      "category_order": 1,
+      "status": "live",
+      "summary": "인공지능(AI) 기반 학습 경험 플랫폼(LXP)",
+      "url": "https://lxp.hallym.ac.kr/login/index.php",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/e7891ce3c2784e8b9716478c55004bbb.png",
+      "home_order": 0
+    },
+    {
+      "id": 27,
+      "name": "HAI-Forum",
+      "category": "AI 학습 지원",
+      "category_order": 1,
+      "status": "live",
+      "summary": "액티브러닝 플랫폼",
+      "url": "https://haiforum.k-university.ai",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/3eb07d5f98ce40438c8095c1b7bfdae9.png",
+      "home_order": 1
+    },
+    {
+      "id": 33,
+      "name": "HAI-BDPI",
+      "category": "AI 학습 지원",
+      "category_order": 1,
+      "status": "live",
+      "summary": "성격검사",
+      "url": "https://haibdpi.k-university.ai/sso/hallym/bdpi/login",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/47bb3e7dbb7a48ab94119dcccc70a050.png",
+      "home_order": 2
+    },
+    {
+      "id": 34,
+      "name": "HAI-Check",
+      "category": "AI 학습 지원",
+      "category_order": 1,
+      "status": "live",
+      "summary": "CAT 평가",
+      "url": "https://haicheck.k-university.ai/admin",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/e07af9126c2e45bf9bb1529a87de458e.png",
+      "home_order": 3
+    },
+    {
+      "id": 28,
+      "name": "HAI-Coder",
+      "category": "AI 학습 지원",
+      "category_order": 1,
+      "status": "coming_soon",
+      "summary": "코딩 코스웨어",
+      "url": "",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/761f7d8710eb449397be553652add1ca.png",
+      "home_order": 0
+    },
+    {
+      "id": 24,
+      "name": "HAI-Security",
+      "category": "AI 학습 지원",
+      "category_order": 1,
+      "status": "coming_soon",
+      "summary": "네트워크 보안 코스웨어",
+      "url": "",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/d34ce7f8823f415fadac7b50f0745210.png",
+      "home_order": 0
+    },
+    {
+      "id": 26,
+      "name": "HAI-Lens",
+      "category": "AI 교수 지원",
+      "category_order": 2,
+      "status": "live",
+      "summary": "AI 기반 오프라인 강의 분석 통합 시스템",
+      "url": "https://hailens.k-university.ai/login",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/0a63415fc7c74d80a29eded82c64b820.png",
+      "home_order": 0
+    },
+    {
+      "id": 29,
+      "name": "HAI-PBL(시범 운영 서비스)",
+      "category": "AI 교수 지원",
+      "category_order": 2,
+      "status": "live",
+      "summary": "화상기반 상호작용 PBL 협업 시스템",
+      "url": "https://haipbl.k-university.ai/hallym/my.desk.html",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/702b897ef0a9411cb079da6717f0faec.png",
+      "home_order": 0
+    },
+    {
+      "id": 5,
+      "name": "HAI-Research",
+      "category": "AI 연구 지원",
+      "category_order": 3,
+      "status": "live",
+      "summary": "자연어로 아이디어나 문서를 입력하면 AI가 학내에서 가장 적합한 협업 전문가를 자동으로 추천해 주는 AI 연구 지원 시스템",
+      "url": "http://hairesearch.k-university.ai/",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/c0d8450ceab24d0fb6bdcbf9e11b0693.png",
+      "home_order": 0
+    },
+    {
+      "id": 6,
+      "name": "HAI-Way",
+      "category": "AI 진로·취업",
+      "category_order": 4,
+      "status": "live",
+      "summary": "AI 기술을 활용하여 학생의 이력을 분석하고, 개인 맞춤형 진로 로드맵 설계, 역량 진단, 포트폴리오 자동 생성 및 채용 정보를 통합 지원하는 정보과학전공을 위한 서비스",
+      "url": "https://cib.k-university.ai",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/16476e5ebc4f4d23862e38f28cbd6f97.png",
+      "home_order": 0
+    },
+    {
+      "id": 1,
+      "name": "HAI-GPT",
+      "category": "AI 플랫폼",
+      "category_order": 5,
+      "status": "live",
+      "summary": "대학 전 구성원이 최첨단 멀티 LLM 챗봇서비스를 제공하는 학습·연구 효율을 극대화하는 한림대학교 전용 생성형 AI 플랫폼입니다.",
+      "url": "https://auth.factchat.bot/hallym/login",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/15e62e7c1c88401dbce3d189b6958eea.png",
+      "home_order": 0
+    },
+    {
+      "id": 35,
+      "name": "HAI-LRS",
+      "category": "AI 플랫폼",
+      "category_order": 5,
+      "status": "live",
+      "summary": "학습데이터 수집 및 분석 시스템",
+      "url": "http://hailrs.k-university.ai",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/79638c45c41a4b90a6c5164789f819fe.png",
+      "home_order": 0
+    },
+    {
+      "id": 8,
+      "name": "SmartLEAD",
+      "category": "AI 플랫폼",
+      "category_order": 5,
+      "status": "live",
+      "summary": "강의 수강부터 출석·과제·시험·공지까지 학교 생활 전반의 학습 활동을 한곳에서 관리할 수 있는 통합 교육 플랫폼",
+      "url": "https://smartlead.hallym.ac.kr/",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/5c79a19f9f0d47e2a0cd9a9a19391481.png",
+      "home_order": 0
+    },
+    {
+      "id": 40,
+      "name": "HAI-LLM",
+      "category": "AI 플랫폼",
+      "category_order": 5,
+      "status": "coming_soon",
+      "summary": "대학을 위한 생성형 AI — 골라 묻고, 비교하고, 문서까지",
+      "url": "https://hai-llm.jhlab.ai.kr/",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/d61bb6fd11ef4e0bac6eff9ea849b088.png",
+      "home_order": 0
+    },
+    {
+      "id": 9,
+      "name": "HAI-EpiLearn",
+      "category": "AI 의료교육",
+      "category_order": 6,
+      "status": "live",
+      "summary": "의과대학 사회의학교실을 위해 구축된 AI 기반 사회의학 전용 코스웨어",
+      "url": "https://epi.k-university.ai/",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/656920e2b82d4948ac49993831e7bfb8.png",
+      "home_order": 0
+    },
+    {
+      "id": 10,
+      "name": "HAI-MedLearnX",
+      "category": "AI 의료교육",
+      "category_order": 6,
+      "status": "live",
+      "summary": "LLM 기반 전주기 맞춤 교육을 실현하는 AI 기반 의료 학습 플랫폼",
+      "url": "https://mlx.k-university.ai/",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/a211a49d18fe4627b6d3c90c3699dd40.png",
+      "home_order": 0
+    },
+    {
+      "id": 31,
+      "name": "HAI-Docs",
+      "category": "AI 행정 지원",
+      "category_order": 7,
+      "status": "coming_soon",
+      "summary": "AI 기반 대학 행정 지원 플랫폼",
+      "url": "",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/c31dc49dda0d487f805d9c758b43aa0d.png",
+      "home_order": 0
+    },
+    {
+      "id": 39,
+      "name": "HAI-Tag",
+      "category": "AI 운영 지원",
+      "category_order": 8,
+      "status": "coming_soon",
+      "summary": "데이터로 읽는 KELI 서비스 이용",
+      "url": "https://hai-tag.k-university.ai/",
+      "icon": "https://ai.hallym.ac.kr/media/uploads/icons/3d65ab6d093c4b6eb924aecf19a9c471.png",
+      "home_order": 0
+    }
+  ]
+}

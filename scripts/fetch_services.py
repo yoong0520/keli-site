@@ -22,7 +22,7 @@ def main():
                 continue
             cat = s.get('category') or {}
             items.append({
-                'id': s.get('id'), 'name': s['name'].strip(), 'category': cat.get('name', '기타'), 'category_order': cat.get('display_order') or 99,
+                'id': s.get('id'), 'name': s['name'].strip(), 'title': s['name'].strip(), 'category': cat.get('name', '기타'), 'category_order': cat.get('display_order') or 99,
                 'status': s.get('status', ''), 'summary': (s.get('summary') or s.get('description') or '').strip(), 'url': (s.get('service_url') or '').strip(),
                 'icon': (PORTAL + s['icon']) if str(s.get('icon', '')).startswith('/') else (s.get('icon') or ''), 'home_order': s.get('home_order') or 0,
             })

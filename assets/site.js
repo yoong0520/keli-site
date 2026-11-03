@@ -62,6 +62,17 @@
   })();
   // 관리자가 숨긴 자동 연동 글(content/hidden.json → window.KELI_HIDDEN)은 다시 그릴 때도 뺀다
   function hid(kind, items){ var h=((window.KELI_HIDDEN||{})[kind])||[]; return items.filter(function(it){ return h.indexOf(String(it.id))<0; }); }
+  // 관심 서비스 체크 목록: 포털 피드(assets/services.live.json)로 다시 그림 (체크 상태 유지)
+  (function(){
+    var box=qs('#svc-opts'); if(!box||location.protocol==='file:') return;
+    fetch('assets/services.live.json',{cache:'no-store'}).then(function(r){ return r.ok?r.json():null; }).then(function(d){
+      if(!d||!d.items||!d.items.length) return; var items=hid('services', d.items); var cats=d.categories||[];
+      var checked={}; qsa('input[name=services]:checked', box).forEach(function(i){ checked[i.value]=1; });
+      var html=''; cats.forEach(function(c){ var its=items.filter(function(i){ return i.category===c; }); if(!its.length) return;
+        html+='<div class="chipgrp"><span class="gk">'+esc(c)+'</span><div class="chips">'+its.map(function(i){ return '<label class="chip sel"><input type="checkbox" name="services" value="'+esc(i.name)+'"'+(checked[i.name]?' checked':'')+'> '+esc(i.name)+(i.status==='coming_soon'?' <small>오픈 예정</small>':'')+'</label>'; }).join('')+'</div></div>'; });
+      if(html){ box.innerHTML=html; var src=qs('#svc-src'); if(src&&d.fetched_at) src.textContent='목록은 한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai)에서 매일 자동으로 가져옵니다 · '+d.fetched_at+' 기준.'; }
+    }).catch(function(){});
+  })();
   // events feed: AI교육확산센터 [KELI] 글 (assets/events.live.json) → [data-events] 다시 그리기
   (function(){
     var boxes=qsa('[data-events]'); if(!boxes.length||location.protocol==='file:') return;
