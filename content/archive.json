@@ -440,11 +440,19 @@
       "id": "a6",
       "cat": "manual",
       "type": "pdf",
-      "title": "한림대학교 교수자를 위한 AI 활용 가이드라인",
+      "title": "한림대학교 교수자를 위한 수업에서의 AI 활용 가이드라인",
       "org": "교육혁신센터",
       "date": "2026",
-      "url": "https://ai.hallym.ac.kr/media/uploads/guides/29aa9e48e59f49b695c81b09c000caa6.pdf",
-      "published": true
+      "url": "",
+      "published": true,
+      "body": "",
+      "files": [
+        {
+          "name": "[붙임] 한림대학교 교수자를 위한 수업에서의 AI 활용 가이드라인.pdf",
+          "url": "content/files/2026/11/mw0neuuf_[붙임]_한림대학교_교수자를_위한_수업에서의_AI_활용_가이드라인.pdf",
+          "size": "768 KB"
+        }
+      ]
     },
     {
       "id": "a9",
