@@ -5,7 +5,8 @@
    3) GitHub 대리 호출        — 글 저장(커밋)·배포 상태는 사무국이 한 번 넣어 둔 GitHub 토큰(비밀 변수)으로 서버가 대신 처리한다
 
    설정(Cloudflare 대시보드 → Workers → 이 워커 → Settings)
-   - Bindings: R2 bucket  변수 이름 FILES  → 버킷 keli-files
+   - Bindings: R2 bucket  변수 이름 FILES  → 버킷 keli-files      (큰 파일 창고. R2 는 결제 수단 등록이 필요하지만 무료 한도(10GB) 안이면 0원)
+               KV namespace 변수 이름 KV → keli-auth            (R2 를 아직 못 쓸 때 사용자 목록만 여기에 둔다. 둘 중 하나는 있어야 함)
    - Variables & Secrets (Secret):
        GITHUB_TOKEN     저장소(yoong0520/keli-site) Contents·Actions 읽고 쓰기 권한의 Fine-grained 토큰
        SESSION_SECRET   아무 긴 무작위 문자열(로그인 유지용 서명 열쇠)
@@ -96,15 +97,21 @@ async function readSession(request, env) {
 }
 async function requireUser(request, env) { const s = await readSession(request, env); if (!s) throw err('로그인이 필요합니다', 401); return s; }
 
-// ---------------------------------------------------------------- 사용자 저장(R2 _auth/users.json)
-async function loadUsers(env) {
-  const o = await env.FILES.get('_auth/users.json');
-  if (!o) return [];
-  try { return (JSON.parse(await o.text()).users) || []; } catch (e) { return []; }
+// ---------------------------------------------------------------- 사용자 저장(R2 _auth/users.json, R2 가 없으면 KV)
+async function storeGet(env, key) {
+  if (env.FILES) { const o = await env.FILES.get(key); return o ? await o.text() : null; }
+  if (env.KV) return await env.KV.get(key);
+  throw err('서버에 저장소 바인딩(FILES 또는 KV)이 없습니다. Cloudflare 설정을 확인하세요', 500);
 }
-async function saveUsers(env, users) { await env.FILES.put('_auth/users.json', JSON.stringify({ users }, null, 2), { httpMetadata: { contentType: 'application/json' } }); }
-async function lockState(env, username) { const o = await env.FILES.get('_auth/lock/' + username + '.json'); if (!o) return { fails: 0, until: 0 }; try { return JSON.parse(await o.text()); } catch (e) { return { fails: 0, until: 0 }; } }
-async function lockSave(env, username, st) { await env.FILES.put('_auth/lock/' + username + '.json', JSON.stringify(st)); }
+async function storePut(env, key, text) {
+  if (env.FILES) return env.FILES.put(key, text, { httpMetadata: { contentType: 'application/json' } });
+  if (env.KV) return env.KV.put(key, text);
+  throw err('서버에 저장소 바인딩(FILES 또는 KV)이 없습니다', 500);
+}
+async function loadUsers(env) { const t = await storeGet(env, '_auth/users.json'); if (!t) return []; try { return (JSON.parse(t).users) || []; } catch (e) { return []; } }
+async function saveUsers(env, users) { await storePut(env, '_auth/users.json', JSON.stringify({ users }, null, 2)); }
+async function lockState(env, username) { const t = await storeGet(env, '_auth/lock/' + username + '.json'); if (!t) return { fails: 0, until: 0 }; try { return JSON.parse(t); } catch (e) { return { fails: 0, until: 0 }; } }
+async function lockSave(env, username, st) { await storePut(env, '_auth/lock/' + username + '.json', JSON.stringify(st)); }
 function cleanUsername(u) { u = String(u || '').trim().toLowerCase(); if (!/^[a-z0-9._-]{2,32}$/.test(u)) throw err('아이디는 영문·숫자·점·밑줄·하이픈 2~32자입니다', 400); return u; }
 function checkPassword(p) { if (typeof p !== 'string' || p.length < 8) throw err('비밀번호는 8자 이상이어야 합니다', 400); }
 function publicUser(u) { return { username: u.username, name: u.name, role: u.role, created: u.created }; }
@@ -113,7 +120,7 @@ function publicUser(u) { return { username: u.username, name: u.name, role: u.ro
 async function api(request, env, url) {
   const p = url.pathname.replace(/^\/api/, '');
   const m = request.method;
-  if (p === '/ping' && m === 'GET') return json({ ok: true, setup: !(await loadUsers(env)).length, repo: env.REPO || '' });
+  if (p === '/ping' && m === 'GET') return json({ ok: true, setup: !(await loadUsers(env)).length, repo: env.REPO || '', files: !!env.FILES });
 
   if (p === '/setup' && m === 'POST') {   // 첫 관리자 만들기(사용자가 하나도 없을 때, SETUP_KEY 필요)
     const b = await readJson(request);
@@ -216,6 +223,7 @@ function guessType(key) {
 }
 async function files(request, env, url, ctx) {
   const m = request.method;
+  if (!env.FILES) throw err('파일 창고(R2 버킷 FILES)가 아직 연결되지 않았습니다. 첨부는 GitHub(100MB 한도)로 올라갑니다', 501);
   // 조각 올리기(multipart): 100MB 요청 제한을 넘는 파일을 위해 브라우저가 50MB씩 나눠 보낸다
   if (url.pathname === '/files/mpu/create' && m === 'POST') {
     await requireUser(request, env); const b = await readJson(request); const key = String(b.key || ''); if (!key || key.startsWith('_auth/') || key.includes('..')) throw err('잘못된 파일 경로입니다', 400);

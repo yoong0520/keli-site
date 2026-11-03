@@ -9,7 +9,7 @@
   var API = 'https://api.github.com';
   // 관리자 서버(Cloudflare Worker)가 있으면: 아이디·비밀번호 로그인 + GitHub 대리 호출 + 큰 파일 창고(R2)
   function apiBase() { var a = ''; try { a = localStorage.getItem('keli_api') || ''; } catch (e) {} return String(CFG.api || a || '').replace(/\/+$/, ''); }
-  var SERVER = apiBase();
+  var SERVER = apiBase(), SERVER_FILES = false;   // SERVER_FILES: 서버에 파일 창고(R2)가 붙어 있는가(ping 으로 확인)
   var qs = function (s, r) { return (r || document).querySelector(s); };
   var qsa = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
@@ -83,8 +83,8 @@
   function uploadFile(file, onProgress) {
     var d = new Date(), ym = d.getFullYear() + '/' + String(d.getMonth() + 1).padStart(2, '0');
     var path = 'content/files/' + ym + '/' + Date.now().toString(36) + '_' + safeName(file.name);
-    if (!SERVER) {
-      if (file.size > 100 * 1048576) return Promise.reject(new Error('100MB 를 넘는 파일은 올릴 수 없습니다(관리자 서버를 연결하면 제한이 없어집니다)'));
+    if (!SERVER || !SERVER_FILES) {
+      if (file.size > 100 * 1048576) return Promise.reject(new Error('100MB 를 넘는 파일은 올릴 수 없습니다(관리자 서버에 파일 창고를 연결하면 제한이 없어집니다)'));
       return readFileB64(file).then(function (b64) { return putFile(path, b64, '첨부 올림: ' + file.name); }).then(function () { return { name: file.name, url: path, size: fmtSize(file.size) }; });
     }
     var key = path; var ct = file.type || 'application/octet-stream';
@@ -259,7 +259,7 @@
     ed.addEventListener('input', fire); src.addEventListener('input', fire);
     return { body: body, onInput: function (f) { listeners.push(f); } };
   }
-  function filesHtml(id, hint) { return '<div class="files-box" id="' + id + '"></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px"><input type="file" id="' + id + '-in" multiple><span class="small muted">' + (hint || 'PDF·HWP·이미지 등 여러 개 가능. 올리는 즉시 저장소에 들어갑니다' + (SERVER ? '(용량 제한 없음)' : '(파일당 100MB까지)')) + '</span></div>'; }
+  function filesHtml(id, hint) { return '<div class="files-box" id="' + id + '"></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px"><input type="file" id="' + id + '-in" multiple><span class="small muted">' + (hint || 'PDF·HWP·이미지 등 여러 개 가능. 올리는 즉시 저장소에 들어갑니다' + (SERVER && SERVER_FILES ? '(용량 제한 없음)' : '(파일당 100MB까지)')) + '</span></div>'; }
   function mountFiles(id, files, onChange) {
     files = files || [];
     function render() { qs('#' + id).innerHTML = files.length ? files.map(function (f, i) { return '<div class="f"><span>' + esc(f.name) + (f.size ? ' <span class="muted">(' + esc(f.size) + ')</span>' : '') + '</span><button class="btn ghost xs" type="button" data-rm="' + i + '">빼기</button></div>'; }).join('') : '<span class="small muted">첨부 없음</span>'; qsa('[data-rm]', qs('#' + id)).forEach(function (b) { b.addEventListener('click', function () { files.splice(Number(b.getAttribute('data-rm')), 1); render(); if (onChange) onChange(files); }); }); }
@@ -367,7 +367,7 @@
       '<div class="field"><label for="a-org">기관·저자</label><input id="a-org" value="' + esc(it.org || '') + '"></div>' +
       '<div class="field"><label for="a-date">날짜</label><input id="a-date" value="' + esc(it.date || '') + '" placeholder="2026.11"></div></div>' +
       '<div class="field"><label for="a-url">방법 1 · 다른 사이트의 주소 가져오기(선택)</label><input id="a-url" value="' + esc(it.url || '') + '" placeholder="https://… (한림 AI 교육 포털, 구글 드라이브, 유튜브 등)"><span class="hint">주소만 넣으면 목록에서 그 주소가 새 창으로 열립니다</span></div>' +
-      '<div class="field"><label>방법 2 · 파일 직접 올리기(선택, 여러 개 가능)</label>' + filesHtml('a-files', 'PDF·HWP·PPT·이미지·영상 등. 파일이 하나면 목록에서 바로 열리고, 여러 개면 자료 페이지가 생깁니다' + (SERVER ? '(용량 제한 없음)' : '(파일당 100MB까지)')) + '</div>' +
+      '<div class="field"><label>방법 2 · 파일 직접 올리기(선택, 여러 개 가능)</label>' + filesHtml('a-files', 'PDF·HWP·PPT·이미지·영상 등. 파일이 하나면 목록에서 바로 열리고, 여러 개면 자료 페이지가 생깁니다' + (SERVER && SERVER_FILES ? '(용량 제한 없음)' : '(파일당 100MB까지)')) + '</div>' +
       '<div class="field"><label>방법 3 · 설명 글(선택)</label>' + editorHtml('a-ed') + '<span class="hint">설명을 쓰면 자료 페이지(제목 · 설명 · 첨부 · 외부 주소)가 만들어집니다</span></div>' +
       '<span class="msg" id="a-need-msg">외부 주소, 파일, 설명 가운데 하나는 있어야 합니다</span>' +
       '<div class="status-row"><label class="chk"><input type="checkbox" id="a-pub"' + (it.published !== false ? ' checked' : '') + '><span>홈페이지에 표시(끄면 비공개로 저장)</span></label></div></form>';
@@ -464,11 +464,11 @@
     qs('#adm-login').hidden = false; qs('#adm-app').hidden = true;
     var pw = qs('#login-pw'), tk = qs('#login-tok'); if (pw && tk) { pw.hidden = !SERVER; tk.hidden = !!SERVER; }
     var sv = qs('#srv-cur'); if (sv) sv.textContent = SERVER ? SERVER : '(없음 — GitHub 토큰으로 로그인)';
-    if (SERVER) srv('/api/ping').then(function (j) { if (j.setup) { var st = qs('#setup-card'); if (st) st.hidden = false; } }).catch(function () { var m2 = qs('#tok-msg'); m2.textContent = '관리자 서버(' + SERVER + ')에 연결하지 못했습니다. 주소를 확인하세요'; m2.style.display = 'block'; });
+    if (SERVER) srv('/api/ping').then(function (j) { SERVER_FILES = !!j.files; var st = qs('#setup-card'); if (st) st.hidden = !j.setup; }).catch(function () { var m2 = qs('#tok-msg'); m2.textContent = '관리자 서버(' + SERVER + ')에 연결하지 못했습니다. 주소를 확인하세요'; m2.style.display = 'block'; });
     if (msg) { var m = qs('#tok-msg'); m.textContent = msg; m.style.display = 'block'; }
   }
   function enter() {
-    return gh('/user').then(function (u) { user = u; if (SERVER) user.login = u.login; return gh('/repos/' + CFG.repo); }).then(function (r) {
+    return (SERVER ? srv('/api/ping').then(function (j) { SERVER_FILES = !!j.files; }).catch(function () {}) : Promise.resolve()).then(function () { return gh('/user'); }).then(function (u) { user = u; return gh('/repos/' + CFG.repo); }).then(function (r) {
       if (!(r.permissions && (r.permissions.push || r.permissions.admin || r.permissions.maintain))) throw new Error('이 토큰으로는 ' + CFG.repo + ' 저장소에 쓸 수 없습니다. 토큰의 Repository access 와 Contents 권한을 확인하세요');
       qs('#adm-login').hidden = true; qs('#adm-app').hidden = false; qs('#adm-logout').hidden = false;
       qs('#u-name').textContent = user.name || user.login; qs('#u-avatar').textContent = String(user.name || user.login).slice(0, 1).toUpperCase();
