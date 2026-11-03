@@ -220,6 +220,32 @@ def _load_notices():
     items.sort(key=lambda n: 0 if n.get('pinned') else 1)
     return items
 NOTICES = _load_notices()
+SITE_DEFAULT = {
+    'hero': {'eyebrow': 'K-University AI EdTech and Learning Initiative', 'title': '대학이 함께 만드는<br>AI 기반 고등교육 혁신 생태계.',
+             'lead': '한림대가 개발하고 수업에서 검증한 AI 교육 서비스를 <br class="d">국내외 대학·기관에 제공하고 함께 확산합니다.',
+             'cta1_label': '서비스 둘러보기', 'cta1_href': 'services.html', 'cta2_label': '도입 문의', 'cta2_href': 'join.html#inquiry'},
+    'banner': {'on': False, 'text': '', 'link': '', 'until': ''},
+}
+SITE_CFG = _load_json(os.path.join(CONTENT, 'site.json'), {})
+def site_get(section, key):
+    v = (SITE_CFG.get(section) or {}).get(key)
+    return v if v not in (None, '') else SITE_DEFAULT[section].get(key, '')
+def banner_html():
+    b = SITE_CFG.get('banner') or {}
+    if not b.get('on') or not (b.get('text') or '').strip():
+        return ''
+    import datetime as _dt
+    until = (b.get('until') or '').strip()
+    if until:
+        try:
+            if _dt.date.today() > _dt.date.fromisoformat(until.replace('.', '-')[:10]):
+                return ''
+        except Exception:
+            pass
+    inner = E(b['text'].strip())
+    if (b.get('link') or '').strip():
+        inner += f' <a href="{E(b["link"].strip())}">자세히 보기 ›</a>'
+    return f'<div class="site-banner" role="status"><div class="wrap">{inner}</div></div>'
 def _load_archive():
     items = _load_json(os.path.join(CONTENT, 'archive.json'), {}).get('items', [])
     return [a for a in items if a.get('published', True) and a.get('title')]
@@ -466,7 +492,71 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .art-files { margin: 24px 0; padding: 18px 22px; border-radius: 16px; background: var(--bg2); }
 .art-files a { word-break: break-all; overflow-wrap: anywhere; }
 .art-files strong { display: block; font-size: 14px; margin-bottom: 6px; } .art-files ul { margin: 0; padding-left: 18px; } .art-files li { margin: 4px 0; }
-/* 관리자 */
+/* 사이트 배너(관리자 "홈 화면"에서 켬) */
+.site-banner { background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; padding: 10px 0; text-align: center; } .site-banner a { color: #fff; text-decoration: underline; margin-left: 8px; }
+/* 관리자(콘텐츠 스튜디오) */
+.cms-root { padding: 0; }
+.login-wrap { min-height: 100vh; background: var(--bg2); padding: 48px 16px; }
+.login-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; } .login-brand div span { font-size: 13px; color: var(--muted); display: block; } .login-brand strong { font-size: 18px; display: block; }
+.mark { display: inline-flex; width: 38px; height: 38px; border-radius: 10px; background: var(--accent); color: #fff; font-weight: 800; font-size: 20px; align-items: center; justify-content: center; flex: none; }
+.cms { display: grid; grid-template-columns: 236px 1fr; min-height: 100vh; background: #f5f6f8; color: #1d1d1f; }
+.cms-side { background: #151b2b; color: #c9d1e3; display: flex; flex-direction: column; padding: 20px 14px; position: sticky; top: 0; height: 100vh; }
+.cms-brand { display: flex; align-items: center; gap: 10px; padding: 6px 8px 18px; color: #fff; } .cms-brand:hover { text-decoration: none; } .cms-brand strong { display: block; font-size: 17px; letter-spacing: .04em; } .cms-brand div span { display: block; font-size: 11px; color: #8d97ad; letter-spacing: .08em; }
+.cms-sec { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #6f7a92; padding: 10px 12px 6px; }
+.cms-nav { display: flex; flex-direction: column; gap: 2px; }
+.cms-nav a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: #c9d1e3; font-size: 14px; font-weight: 500; }
+.cms-nav a i { font-style: normal; width: 18px; text-align: center; color: #8d97ad; font-size: 14px; }
+.cms-nav a:hover { background: rgba(255,255,255,.06); text-decoration: none; color: #fff; } .cms-nav a.on { background: rgba(11,92,255,.22); color: #fff; } .cms-nav a.on i { color: #7fb0ff; }
+.cms-nav .cnt { margin-left: auto; min-width: 22px; height: 20px; padding: 0 7px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: 11px; display: inline-flex; align-items: center; justify-content: center; } .cms-nav .cnt:empty { display: none; }
+.cms-side-foot { margin-top: auto; display: flex; flex-direction: column; gap: 12px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.08); }
+.cms-open { display: flex; justify-content: space-between; padding: 8px 12px; font-size: 13px; color: #c9d1e3; } .cms-open:hover { color: #fff; text-decoration: none; }
+.cms-user { display: flex; align-items: center; gap: 10px; padding: 6px 8px; font-size: 13px; flex-wrap: wrap; } .cms-user strong { display: block; color: #fff; font-size: 13px; } .cms-user span:not(.avatar) { display: block; font-size: 11px; color: #8d97ad; } .cms-user .btn { margin-left: auto; color: #c9d1e3; border-color: rgba(255,255,255,.2); }
+.avatar { width: 32px; height: 32px; border-radius: 50%; background: #2a3550; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex: none; }
+.cms-main { min-width: 0; display: flex; flex-direction: column; }
+.cms-top { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 0 32px; height: 64px; background: #fff; border-bottom: 1px solid var(--line); }
+.crumb-top { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); } .crumb-top strong { color: var(--fg); font-weight: 600; } .crumb-top .sep { color: #c7c7cc; }
+.cms-top-r { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.top-actions { display: inline-flex; gap: 8px; } .top-actions:empty { display: none; }
+.cms-top .deploy { padding: 6px 12px; font-size: 13px; background: var(--bg2); border-radius: 999px; max-width: 420px; }
+.cms-top .deploy #deploy-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.btn.dark { background: #151b2b; color: #fff; } .btn.dark:hover { filter: none; background: #0f1420; }
+.cms-body { padding: 32px 32px 80px; max-width: 1320px; width: 100%; }
+.cms-head { margin-bottom: 24px; display: flex; justify-content: space-between; gap: 16px; align-items: flex-end; flex-wrap: wrap; }
+.cms-head .eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; text-align: left; }
+.cms-head h2 { margin: 0; font-size: 30px; letter-spacing: -.02em; } .cms-head p { margin: 6px 0 0; color: var(--muted); font-size: 15px; }
+.cms-head .meta { text-align: right; font-size: 12px; color: var(--muted); line-height: 1.6; } .cms-head .meta strong { color: var(--fg); font-size: 13px; }
+.panel { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 24px; } .panel + .panel { margin-top: 20px; }
+.panel h3 { margin: 0; font-size: 18px; } .panel .ph { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+.panel .ph p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+.cms-split { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
+.cms-list { position: sticky; top: 88px; padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: calc(100vh - 112px); }
+.cms-list .lh { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px 12px; } .cms-list .lh strong { font-size: 15px; } .cms-list .lh .n { color: var(--muted); font-weight: 500; margin-left: 6px; }
+.cms-list .search { padding: 0 20px 12px; } .cms-list .search input { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px 9px 34px; font-size: 14px; background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%236e6e73" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>') 12px center no-repeat; }
+.cms-list .chips { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 20px 12px; } .cms-list .chips button { height: 26px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--line); background: #fff; font-size: 12px; font-weight: 600; } .cms-list .chips button.on { background: var(--fg); color: #fff; border-color: var(--fg); }
+.cms-list .items { overflow: auto; border-top: 1px solid var(--line); }
+.cms-item { display: block; padding: 14px 20px; border-bottom: 1px solid var(--line); color: var(--fg); border-left: 3px solid transparent; }
+.cms-item:hover { background: #fafafa; text-decoration: none; } .cms-item.on { background: #f0f5ff; border-left-color: var(--accent); }
+.cms-item .row1 { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; color: var(--muted); margin-bottom: 4px; } .cms-item .row1 .st { font-weight: 600; } .cms-item .row1 .st.pub { color: #1a6b30; } .cms-item .row1 .st.off { color: #7a5200; }
+.cms-item .t { display: block; font-size: 14px; font-weight: 600; line-height: 1.45; } .cms-item .d { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.cms-item.off .t { color: var(--muted); }
+.cms-list .add { display: block; text-align: center; padding: 14px; font-size: 14px; font-weight: 600; color: var(--accent); border-top: 1px solid var(--line); background: #fff; } .cms-list .add:hover { background: #f0f5ff; text-decoration: none; }
+.cms-editor .form { background: transparent; padding: 0; border-radius: 0; gap: 20px; }
+.cms-editor .field label { font-size: 13px; } .cms-editor .field label .req { color: #c0392b; margin-left: 2px; }
+.cms-editor .field input, .cms-editor .field select, .cms-editor .field textarea { padding: 11px 13px; border-radius: 10px; font-size: 15px; }
+.cms-editor textarea { min-height: 88px; resize: vertical; font: inherit; line-height: 1.6; }
+.cms-editor .ed { min-height: 320px; }
+.cms-editor .status-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; padding: 14px 16px; border-radius: 12px; background: var(--bg2); font-size: 14px; }
+.cms-editor .danger-link { color: #c0392b; font-size: 13px; font-weight: 600; background: none; border: 0; padding: 0; cursor: pointer; }
+.dirty { color: #b26a00; font-weight: 600; } .saved { color: #1a6b30; font-weight: 600; }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.stat { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; color: var(--fg); } .stat:hover { text-decoration: none; border-color: #c7c7cc; }
+.stat .k { font-size: 12px; color: var(--muted); font-weight: 600; } .stat .num { display: block; font-size: 34px; font-weight: 800; letter-spacing: -.02em; margin: 6px 0 2px; } .stat p { margin: 0; font-size: 13px; color: var(--muted); }
+.feed-row { display: grid; grid-template-columns: 56px 1fr auto; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.feed-row .th { width: 56px; height: 40px; border-radius: 8px; background: var(--bg2); object-fit: cover; } .feed-row .th.ph { display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); }
+.feed-row .t { font-size: 14px; font-weight: 600; line-height: 1.4; } .feed-row .m { font-size: 12px; color: var(--muted); margin-top: 2px; } .feed-row.off .t { color: var(--muted); text-decoration: line-through; }
+.feed-row .acts { display: flex; gap: 6px; }
+.hist { display: flex; flex-direction: column; } .hist .h { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 14px; } .hist .h .m { font-size: 12px; color: var(--muted); margin-top: 2px; }
+@media (max-width: 900px) { .cms { grid-template-columns: 1fr; } .cms-side { position: static; height: auto; padding: 12px 12px 8px; min-width: 0; max-width: 100vw; overflow: hidden; } .cms-brand { padding-bottom: 10px; } .cms-sec { display: none; } .cms-nav { flex-direction: row; overflow-x: auto; gap: 4px; padding-bottom: 6px; -webkit-overflow-scrolling: touch; scrollbar-width: none; } .cms-nav::-webkit-scrollbar { display: none; } .cms-nav a { white-space: nowrap; padding: 8px 10px; } .cms-nav a i { display: none; } .cms-side-foot { display: none; } .cms-top { padding: 0 16px; height: auto; min-height: 56px; flex-wrap: wrap; row-gap: 8px; padding-top: 8px; padding-bottom: 8px; } .cms-body { padding: 20px 16px 60px; } .cms-split { grid-template-columns: 1fr; } .cms-list { position: static; max-height: none; } .cms-list .items { max-height: 360px; } .feed-row { grid-template-columns: 1fr; } .feed-row .th { display: none; } }
 .adm { display: grid; grid-template-columns: 220px 1fr; gap: 40px; align-items: start; }
 .adm-nav { position: sticky; top: 72px; display: flex; flex-direction: column; gap: 4px; }
 .adm-nav a { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-radius: 12px; color: var(--fg); font-weight: 500; }
@@ -952,12 +1042,13 @@ def doc(fname, title, body, desc='KELI는 한림대학교가 개발하고 수업
 <meta name="description" content="{E(desc)}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="assets/site.css?v={CSS_V}">'''
+    is_admin = fname == 'admin.html'
     inner = f'''{head_bits}
-{header(fname)}
-<main id="main">
+{'' if is_admin else header(fname)}
+<main id="main"{' class="cms-root"' if is_admin else ''}>
 {body}
 </main>
-{FOOTER}
+{'' if is_admin else FOOTER}
 <script>window.KELI_HIDDEN={json.dumps({k: [str(x) for x in HIDDEN.get(k, [])] for k in ('events', 'press', 'videos', 'unn', 'services')}, ensure_ascii=False)};</script>
 <script src="assets/site.js?v={JS_V}"></script>{'<script src="assets/admin.js?v=' + JS_V + '"></script>' if fname == 'admin.html' else ''}'''
     if fname == 'admin.html':
@@ -1344,13 +1435,12 @@ def html_body(b):
 
 def page_admin():
     body = f"""
-<section class="sec" style="padding-top:40px;padding-bottom:80px"><div class="wrap">
-<div class="row" style="margin-bottom:28px;align-items:center"><div><span class="eyebrow">KELI 관리자</span><h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 0">글을 올리고, 고치고, 지웁니다.</h1></div><div class="acts" style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn ghost sm" href="index.html" target="_blank" rel="noopener">사이트 보기</a><button class="btn ghost sm" type="button" id="adm-logout" hidden>로그아웃</button></div></div>
-
-<div id="adm-login" class="login" hidden>
+<div id="adm-login" class="login-wrap" hidden>
+<div class="login">
+<div class="login-brand"><span class="mark">K</span><div><strong>KELI 콘텐츠 스튜디오</strong><span>한림대학교 KELI 사무국 · 사이트 관리</span></div></div>
 <form class="form" id="login-form" novalidate>
-<p class="lead" style="margin:0 0 4px;text-align:left">GitHub 토큰으로 들어갑니다.</p>
-<p class="small muted" style="margin:0">이 사이트의 글은 GitHub 저장소({REPO})의 파일에 저장되고, 저장하면 1~2분 뒤 자동으로 배포됩니다. 그래서 저장소에 쓸 수 있는 토큰이 필요합니다. 토큰은 이 브라우저에만 저장되고 어디에도 전송되지 않습니다(GitHub 호출 제외).</p>
+<p class="lead" style="margin:0 0 4px;text-align:left;font-size:18px">GitHub 토큰으로 들어갑니다.</p>
+<p class="small muted" style="margin:0">이 사이트의 글은 GitHub 저장소({REPO})의 파일에 저장되고, 저장하면 1~2분 뒤 자동으로 배포됩니다. 토큰은 이 브라우저에만 저장되고 GitHub 외에는 어디에도 전송되지 않습니다.</p>
 <div class="field"><label for="tok">GitHub 토큰 (Fine-grained personal access token)</label><input id="tok" type="password" autocomplete="off" placeholder="github_pat_…"><span class="msg" id="tok-msg"></span></div>
 <label class="chk"><input type="checkbox" id="tok-keep" checked><span>이 브라우저에 기억하기(공용 PC에서는 끄세요)</span></label>
 <div class="acts"><button class="btn" type="submit" id="tok-go">들어가기</button><a class="more" href="#help" id="tok-help">토큰 만드는 방법</a></div>
@@ -1364,30 +1454,50 @@ def page_admin():
 <li>Permissions → Repository permissions: <strong>Contents: Read and write</strong>, <strong>Actions: Read and write</strong> (나머지는 그대로)</li>
 <li>Generate token → 나온 문자열(github_pat_…)을 위 칸에 붙여 넣기</li>
 </ol>
-<p class="small muted" style="margin:10px 0 0">저장소가 다른 사람 소유이면 그 사람이 유은님 계정을 저장소 Collaborator(Write)로 먼저 초대해야 합니다. 토큰을 잃어버리면 같은 방법으로 새로 만들면 됩니다.</p>
+<p class="small muted" style="margin:10px 0 0">저장소가 다른 사람 소유이면 그 사람이 내 계정을 저장소 Collaborator(Write)로 먼저 초대해야 합니다. 토큰을 잃어버리면 같은 방법으로 새로 만들면 됩니다.</p>
+</div>
+<p class="small muted" style="text-align:center;margin-top:20px"><a href="index.html">← 사이트로 돌아가기</a></p>
 </div>
 </div>
 
-<div id="adm-app" class="adm" hidden>
-<nav class="adm-nav" aria-label="관리자 메뉴">
-<a href="#home" data-view="home">대시보드</a>
-<a href="#notices" data-view="notices">공지사항 <span class="cnt" data-cnt="notices"></span></a>
-<a href="#archive" data-view="archive">아카이브 <span class="cnt" data-cnt="archive"></span></a>
-<a href="#stats" data-view="stats">홈 숫자</a>
-<a href="#feeds" data-view="feeds">자동 연동 글</a>
-<a href="#help" data-view="help">도움말</a>
+<div id="adm-app" class="cms" hidden>
+<aside class="cms-side">
+<a class="cms-brand" href="#home"><span class="mark">K</span><div><strong>KELI</strong><span>콘텐츠 스튜디오</span></div></a>
+<div class="cms-sec">Workspace</div>
+<nav class="cms-nav" aria-label="관리자 메뉴">
+<a href="#home" data-view="home"><i>▦</i>대시보드</a>
+<a href="#site" data-view="site"><i>⌂</i>홈 화면</a>
+<a href="#notices" data-view="notices"><i>✎</i>소식·공지<span class="cnt" data-cnt="notices"></span></a>
+<a href="#archive" data-view="archive"><i>▤</i>아카이브<span class="cnt" data-cnt="archive"></span></a>
+<a href="#services" data-view="services"><i>◈</i>서비스<span class="cnt" data-cnt="services"></span></a>
+<a href="#events" data-view="events"><i>◷</i>행사<span class="cnt" data-cnt="events"></span></a>
+<a href="#press" data-view="press"><i>▣</i>보도·언론<span class="cnt" data-cnt="press"></span></a>
+<a href="#videos" data-view="videos"><i>▶</i>영상<span class="cnt" data-cnt="videos"></span></a>
+<a href="#history" data-view="history"><i>↻</i>게시 기록</a>
+<a href="#settings" data-view="settings"><i>⚙</i>사이트 설정</a>
 </nav>
-<div class="adm-main">
-<div class="deploy" id="deploy" data-state="idle"><span class="dot"></span><span id="deploy-text">배포 상태를 확인하는 중…</span><a id="deploy-link" class="more" href="https://github.com/{REPO}/actions" target="_blank" rel="noopener" style="margin-left:auto">배포 기록</a></div>
-<div id="view" style="margin-top:20px"></div>
+<div class="cms-side-foot">
+<a class="cms-open" href="index.html" target="_blank" rel="noopener">홈페이지 열기 <span>↗</span></a>
+<div class="cms-user"><span class="avatar" id="u-avatar">·</span><div><strong id="u-name">—</strong><span>홈페이지 관리자</span></div><button class="btn ghost xs" type="button" id="adm-logout" hidden>로그아웃</button></div>
+</div>
+</aside>
+<div class="cms-main">
+<header class="cms-top">
+<div class="crumb-top"><span>콘텐츠 스튜디오</span><span class="sep">›</span><strong id="top-title">대시보드</strong></div>
+<div class="cms-top-r">
+<span class="deploy" id="deploy" data-state="idle"><span class="dot"></span><span id="deploy-text">배포 상태 확인 중…</span></span>
+<a class="btn ghost sm" href="index.html" target="_blank" rel="noopener">사이트 보기</a>
+<span id="top-actions" class="top-actions"></span>
+</div>
+</header>
+<div class="cms-body"><div id="view"></div></div>
 </div>
 </div>
-</div></section>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="box" id="modal-box"></div></div>
 <script>window.KELI_ADMIN={{repo:"{REPO}",branch:"main",site:"{SITE_URL}",workflow:"pages.yml"}};</script>
 """
-    write('admin.html', 'KELI 관리자', body)
+    write('admin.html', 'KELI 콘텐츠 스튜디오', body)
 
 # ------------------------------------------------------------------ 페이지
 def svc_stat():
@@ -1403,11 +1513,11 @@ def page_index():
     svc_n, svc_note = svc_stat()
     notices = ''.join(f'<a class="li" href="notice-{n["id"]}.html"><span><span class="t">{E(n["title"])}</span></span><span class="d">{n["date"]}</span></a>' for n in NOTICES[:3])
     body = f'''
-<section class="hero home"><div class="hero-fx" aria-hidden="true"><canvas id="hero-wave"></canvas></div><div class="wrap">
-<span class="eyebrow">K-University AI EdTech and Learning Initiative</span>
-<h1>대학이 함께 만드는<br>AI 기반 고등교육 혁신 생태계.</h1>
-<p class="lead">한림대가 개발하고 수업에서 검증한 AI 교육 서비스를 <br class="d">국내외 대학·기관에 제공하고 함께 확산합니다.</p>
-<div class="acts"><a class="btn" href="services.html">서비스 둘러보기</a><a class="more" href="join.html#inquiry">도입 문의</a></div>
+{banner_html()}<section class="hero home"><div class="hero-fx" aria-hidden="true"><canvas id="hero-wave"></canvas></div><div class="wrap">
+<span class="eyebrow">{E(site_get('hero', 'eyebrow'))}</span>
+<h1>{site_get('hero', 'title')}</h1>
+<p class="lead">{site_get('hero', 'lead')}</p>
+<div class="acts"><a class="btn" href="{E(site_get('hero', 'cta1_href'))}">{E(site_get('hero', 'cta1_label'))}</a><a class="more" href="{E(site_get('hero', 'cta2_href'))}">{E(site_get('hero', 'cta2_label'))}</a></div>
 </div></section>
 
 <section class="sec alt"><div class="wrap">
@@ -1893,7 +2003,8 @@ def page_notice():
     for n in NOTICES:
         link = f'<p style="margin-top:8px"><a class="more" href="{E(n["link"])}">관련 페이지</a></p>' if n.get('link') else ''
         pin = '<span class="badge live" style="margin-right:8px">고정</span>' if n.get('pinned') else ''
-        rows += f'<details class="li" id="{n["id"]}" data-key="{_NOTICE_KEY.get(n["cat"], "general")}"><summary><span>{pin}<span class="badge" style="margin-right:8px">{E(n["cat"])}</span><span class="t">{E(n["title"])}</span></span><span class="d">{E(n.get("date", ""))}</span></summary><div class="body art">{html_body(n["body"])}{notice_files(n)}{link}<p style="margin-top:8px"><a class="more" href="notice-{n["id"]}.html">글 페이지로 보기</a></p></div></details>'
+        summ = f'<br><span class="m">{E(n["summary"])}</span>' if n.get('summary') else ''
+        rows += f'<details class="li" id="{n["id"]}" data-key="{_NOTICE_KEY.get(n["cat"], "general")}"><summary><span>{pin}<span class="badge" style="margin-right:8px">{E(n["cat"])}</span><span class="t">{E(n["title"])}</span>{summ}</span><span class="d">{E(n.get("date", ""))}</span></summary><div class="body art">{html_body(n["body"])}{notice_files(n)}{link}<p style="margin-top:8px"><a class="more" href="notice-{n["id"]}.html">글 페이지로 보기</a></p></div></details>'
         page_notice_detail(n)
     body = crumb(('news.html', '소식'), (None, '공지사항')) + f'''
 <section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap"><span class="eyebrow">공지사항</span><h1>공지사항.</h1><p class="lead">제목을 누르면 본문이 펼쳐집니다.</p></div></section>
@@ -1910,7 +2021,7 @@ def page_notice_detail(n):
     body = crumb(('news.html', '소식'), ('notice.html', '공지사항'), (None, n['title'])) + f'''
 <section class="hero" style="padding-top:48px;padding-bottom:32px"><div class="wrap narrow" style="max-width:900px;text-align:left">
 <span class="eyebrow">공지사항 · {E(n["cat"])}</span><h1 style="font-size:clamp(28px,4vw,40px)">{E(n["title"])}</h1>
-<p class="muted">{E(n.get("date", ""))} · KELI 사무국</p>
+{('<p class="lead" style="margin-top:4px">' + E(n['summary']) + '</p>') if n.get('summary') else ''}<p class="muted">{E(n.get("date", ""))} · KELI 사무국</p>
 </div></section>
 <section class="sec" style="padding-top:0"><div class="wrap narrow" style="max-width:900px">
 <article class="art">{html_body(n["body"])}</article>
@@ -1921,7 +2032,7 @@ def page_notice_detail(n):
 <div class="list">{others}</div>
 </div></section>
 '''
-    write(f'notice-{n["id"]}.html', f'{n["title"]} · KELI 공지사항', body, desc=_inner_text(html_body(n['body']))[:150])
+    write(f'notice-{n["id"]}.html', f'{n["title"]} · KELI 공지사항', body, desc=(n.get('summary') or _inner_text(html_body(n['body'])))[:150])
 
 def page_events():
     rows = ''.join(ev_row(it) for it in FEED_ITEMS)
