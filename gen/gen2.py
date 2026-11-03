@@ -268,6 +268,12 @@ a.btn.ghost, .util a.btn.ghost { color: var(--fg); }
 /* sections */
 .sec { padding-block: clamp(64px, 9vw, 120px); }
 .sec.alt { background: var(--bg2); }
+.sec.glass { position: relative; isolation: isolate; overflow: hidden; background: radial-gradient(640px 640px at 8% 6%, rgba(11, 92, 255, .20), transparent 70%), radial-gradient(760px 760px at 94% 30%, rgba(23, 196, 170, .22), transparent 70%), radial-gradient(640px 640px at 16% 62%, rgba(124, 92, 255, .16), transparent 70%), radial-gradient(760px 760px at 88% 92%, rgba(11, 92, 255, .16), transparent 70%), linear-gradient(180deg, #f6f8fd 0%, #edf2fa 100%); }
+.sec.glass::before, .sec.glass::after { content: ""; position: absolute; z-index: -1; border-radius: 50%; pointer-events: none; filter: blur(2px); }
+.sec.glass::before { width: 420px; height: 420px; left: 30%; top: 18%; background: radial-gradient(circle, rgba(255,255,255,.9), rgba(255,255,255,0) 70%); }
+.sec.glass::after { width: 520px; height: 520px; right: 12%; bottom: 10%; background: radial-gradient(circle, rgba(11, 92, 255, .14), rgba(11, 92, 255, 0) 70%); }
+.sec.glass .tab { background: rgba(255,255,255,.55); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.8); } .sec.glass .tab[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.sec.glass .card { background: rgba(255,255,255,.6); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,.8); }
 .sec.dark { background: #1d1d1f; color: #f5f5f7; }
 .sec.dark .muted, .sec.dark .lead { color: #a1a1a6; }
 .sec.dark .btn.ghost { background: #2c2c2e; color: #f5f5f7; }
@@ -312,20 +318,21 @@ a.card:hover { background: color-mix(in srgb, var(--bg2) 85%, var(--fg) 6%); }
 .tab[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
 @media (max-width: 640px) { .tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; } .tab { flex: 0 0 auto; } }
 /* service cards */
-.svc { display: flex; flex-direction: column; border-radius: 8px; background: var(--bg); color: inherit; border: 1px solid var(--line); padding: 10px 10px 0; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
-.svc:hover { text-decoration: none; transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 10px 24px rgba(11, 92, 255, .08); } .svc:hover .body strong { color: var(--accent); } .svc:hover .thumb { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
-.sec.alt .svc { background: var(--bg); }
-.svc .thumb { aspect-ratio: 4 / 3; max-width: 100%; background: #f4f6fa; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 5px; transition: border-color .2s ease; }
+.svc { display: flex; flex-direction: column; border-radius: 22px; background: rgba(255,255,255,.55); -webkit-backdrop-filter: blur(24px) saturate(170%); backdrop-filter: blur(24px) saturate(170%); border: 1px solid rgba(255,255,255,.8); box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 8px 28px rgba(20, 40, 80, .07); color: inherit; padding: 10px 10px 0; transition: transform .25s ease, box-shadow .25s ease, background .25s ease; }
+.svc:hover { text-decoration: none; transform: translateY(-4px); background: rgba(255,255,255,.78); box-shadow: inset 0 1px 0 #fff, 0 18px 44px rgba(20, 40, 80, .13); }
+
+.svc .thumb { aspect-ratio: 16 / 11; max-width: 100%; background: rgba(255,255,255,.6); overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0,0,0,.05); border-radius: 14px; }
 .svc .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 .svc .thumb.logo img { object-fit: contain; padding: 28px; }
 .svc .thumb .word { font-size: 26px; font-weight: 800; color: #b8c0cc; letter-spacing: .02em; }
 .svc .body { padding: 16px 8px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
-.svc .meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); }
+.svc .meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(0,0,0,.07); }
+.svc .badge { background: rgba(255,255,255,.7); } .svc .badge.live { background: rgba(224,245,232,.9); }
 .svc .body .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .svc .body .k { font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: .02em; }
 .svc .body .top { display: none; }
-@media (max-width: 640px) { .svc { flex-direction: row; gap: 12px; padding: 10px; } .svc .thumb { width: 116px; aspect-ratio: 1 / 1; flex: 0 0 auto; align-self: flex-start; } .svc .thumb.logo img { padding: 10px; } .svc .body { padding: 2px 0 0; gap: 4px; min-width: 0; } .svc .body strong { font-size: 16px; } .svc .body p { font-size: 13px; } .svc .meta { padding-top: 8px; } .stbar { margin-top: 8px; } }
-.svc .body strong { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; transition: color .15s ease; }
+@media (max-width: 640px) { .svc { flex-direction: row; gap: 12px; padding: 10px; } .svc .thumb { width: 116px; aspect-ratio: 1 / 1; flex: 0 0 auto; align-self: flex-start; border-radius: 12px; } .svc .thumb.logo img { padding: 10px; } .svc .body { padding: 2px 0 0; gap: 4px; min-width: 0; } .svc .body strong { font-size: 16px; } .svc .body p { font-size: 13px; } .svc .meta { padding-top: 8px; } .stbar { margin-top: 8px; } }
+.svc .body strong { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
 .svc .body p { font-size: 14px; color: var(--muted); }
 /* lists */
 .list { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
@@ -1211,7 +1218,7 @@ def page_index():
 <p class="note" style="margin-top:16px">기준: 서비스·참여 기관 수는 사무국이 직접 입력합니다(2026. 10. KELI 리플렛·포털 파트너 목록). AI 결합 강좌 수는 한림 AI 교육 포털(ai.hallym.ac.kr)의 "AI 강좌 수"를 매일 자동으로 가져옵니다.</p>
 </div></section>
 
-<section class="sec" id="services"><div class="wrap">
+<section class="sec glass" id="services"><div class="wrap">
 <div class="head"><span class="eyebrow">HAI Ecosystems</span><h2>수업 설계부터 평가·분석까지, 19개 서비스.</h2><p class="lead">한림대학교가 직접 개발해 수업에서 검증한 뒤 KELI Marketplace에 먼저 올린 서비스입니다. 다른 대학과 기관도 도입할 수 있습니다.</p></div>
 {tabs('home-svc', [(a[0], a[1]) for a in AREAS])}
 <div class="grid g4" data-items="home-svc" style="margin-top:24px">{cards}</div>
@@ -1313,7 +1320,7 @@ def page_services():
 <p class="lead">직접 개발해 수업에서 검증한 뒤 KELI Marketplace에 먼저 올린 서비스입니다. 다른 대학과 기관도 도입할 수 있습니다.</p>
 <div class="acts"><a class="btn ghost" href="demos.html">전체 데모 영상</a><a class="btn ghost" href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a><a class="more" href="curriculum.html">수업에 결합하는 방법</a></div>
 </div></section>
-<section class="sec" style="padding-top:0"><div class="wrap">
+<section class="sec glass" style="padding-top:48px"><div class="wrap">
 <div class="row" style="margin-bottom:20px">{tabs('svc', [(a[0], a[1]) for a in AREAS])}<span class="muted small"><span data-count="svc">19개</span> 서비스</span></div>
 <div class="grid g3" data-items="svc">{cards}</div>
 </div></section>
@@ -1372,7 +1379,7 @@ def page_service(s):
 <div class="stages">{stages}</div>
 <p class="note" style="margin-top:12px">{stage_note} <a href="curriculum.html">AI 융합교육과정 보기</a></p>
 </div></section>
-{'<section class="sec alt"><div class="wrap"><div class="row" style="margin-bottom:20px"><h2 style="font-size:28px">같은 영역의 서비스</h2><a class="more" href="services.html#' + s['area'] + '">' + area + ' 전체</a></div><div class="grid g3">' + sib + '</div></div></section>' if sib else ''}
+{'<section class="sec glass"><div class="wrap"><div class="row" style="margin-bottom:20px"><h2 style="font-size:28px">같은 영역의 서비스</h2><a class="more" href="services.html#' + s['area'] + '">' + area + ' 전체</a></div><div class="grid g3">' + sib + '</div></div></section>' if sib else ''}
 <section class="sec"><div class="wrap"><div class="cta"><h2>내 교과목에 적용하려면.</h2><p class="lead">첫걸음은 1개 교과목 × 1개 서비스 × 1개 학기입니다.</p><div class="acts"><a class="btn" href="join.html?service={s['slug']}#inquiry">도입 문의</a><a class="more" href="archive.html#case">실증 사례 보기</a></div></div></div></section>
 '''
     write(f'service-{s["slug"]}.html', f'{s["name"]} · KELI', body, desc=s['head'])
