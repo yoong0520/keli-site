@@ -183,7 +183,7 @@
     }
     function show(){ if(!box) build(); box.classList.add('on'); document.body.classList.add('noscroll'); setTimeout(function(){ inp.focus(); },50); if(!data){ fetch('assets/search.json',{cache:'no-store'}).then(function(r){ return r.json(); }).then(function(d){ data=d; run(); }).catch(function(){ cnt.textContent='검색 목록을 불러오지 못했습니다. 검색 페이지로 이동해 주세요.'; }); } else run(); }
     function hide(){ if(box){ box.classList.remove('on'); document.body.classList.remove('noscroll'); } }
-    function run(){ if(!data) return; var v=inp.value.trim().toLowerCase(); if(!v){ list.innerHTML=''; cnt.textContent='마켓플레이스 · 소식 · 아카이브 · 영상 전체 '+data.length+'건에서 찾습니다'; return; }
+    function run(){ if(!data) return; var v=inp.value.trim().toLowerCase(); if(!v){ list.innerHTML=''; cnt.textContent='Marketplace · 소식 · 아카이브 · 영상 전체 '+data.length+'건에서 찾습니다'; return; }
       var hits=data.filter(function(x){ return (x.t+' '+x.d).toLowerCase().indexOf(v)>-1; }); cnt.textContent=hits.length+'건';
       list.innerHTML=hits.slice(0,30).map(function(x){ return '<a class="li" href="'+esc(x.h)+'"><span class="t">'+esc(x.t)+'</span><span class="d">'+esc(x.d)+'</span></a>'; }).join('')||'<p class="muted" style="padding:16px 4px">결과가 없습니다.</p>'; }
     triggers.forEach(function(a){ a.addEventListener('click', function(e){ if(a.closest('.srch')) return; e.preventDefault(); show(); }); });
