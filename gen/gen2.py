@@ -189,7 +189,7 @@ def _auto_covers():
             except Exception as e:
                 print('auto cover failed', a['id'], e); continue
         a['cover'] = f'media/archive/auto-{a["id"]}.jpg'
-_auto_covers()
+# _auto_covers()  # 표지 그림 사용 안 함(사무국 결정)
 HIDDEN = _load_json(os.path.join(CONTENT, 'hidden.json'), {})
 def _not_hidden(kind, items):
     h = set(str(x) for x in HIDDEN.get(kind, []))
@@ -386,7 +386,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .acover img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
 .acover-ph { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; padding: 16px; text-align: center; background: linear-gradient(160deg, #0b3473, #0079b2 70%, #00b6ad); color: #fff; font-weight: 700; font-size: 16px; line-height: 1.45; }
 .abody { display: flex; flex-direction: column; gap: 4px; } .abody .t { font-size: 15px; font-weight: 600; line-height: 1.5; } .abody .m { font-size: 13px; color: var(--muted); line-height: 1.6; }
-.arch-hero { display: grid; grid-template-columns: 300px 1fr; gap: 40px; align-items: start; text-align: left; max-width: 1000px; margin: 0 auto; }
+.arch-hero { display: grid; grid-template-columns: 1fr; gap: 0; align-items: start; text-align: left; max-width: 900px; margin: 0 auto; }
 .arch-hero .acts { justify-content: flex-start; margin-top: 16px; } .arch-hero .eyebrow { display: inline-block; }
 .arch-cover { border-radius: 16px; overflow: hidden; box-shadow: 0 18px 44px rgba(0,0,0,.18); border: 1px solid var(--line); background: var(--bg2); } .arch-cover img { display: block; width: 100%; }
 @media (max-width: 760px) { .arch-hero { grid-template-columns: 1fr; gap: 24px; } .arch-cover { max-width: 260px; } }
@@ -1373,7 +1373,7 @@ def page_join():
 ARCH_ICON = {'pdf': 'PDF', 'doc': '문서', 'video': '영상', 'link': '링크', 'image': '이미지'}
 def arch_has_page(a):
     fs = a.get('files') or []
-    return bool(a.get('body')) or len(fs) > 1 or (fs and a.get('url')) or bool(a.get('cover'))
+    return bool(a.get('body')) or len(fs) > 1 or (fs and a.get('url'))
 def arch_meta(a):
     bits = [a.get('org') or '', a.get('author') or '', a.get('period') or a.get('date') or '']
     return ' · '.join(E(b) for b in bits if b)
@@ -1440,7 +1440,7 @@ def page_archive_detail(a):
         acts += f'<a class="btn" href="{E(files[0]["url"])}" target="_blank" rel="noopener" download>내려받기</a>'
     if a.get('url'):
         acts += f'<a class="btn ghost" href="{E(a["url"])}" target="_blank" rel="noopener">원문 · 외부 주소</a>'
-    cover = f'<div class="arch-cover"><img src="{E(a["cover"])}" alt="{E(a["title"])} 표지"></div>' if a.get('cover') else ''
+    cover = ''   # 사무국 결정(2026-11-03): 아카이브에 표지 그림을 쓰지 않음
     viewer = ''
     if pdfs:
         f = pdfs[0]
