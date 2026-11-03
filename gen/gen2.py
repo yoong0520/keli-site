@@ -1335,10 +1335,29 @@ def page_join():
 '''
     write('join.html', '참여·도입 · KELI', body)
 
+ARCH_ICON = {'pdf': 'PDF', 'doc': '문서', 'video': '영상', 'link': '링크', 'image': '이미지'}
+def arch_has_page(a):
+    fs = a.get('files') or []
+    return bool(a.get('body')) or len(fs) > 1 or (fs and a.get('url'))
+def arch_href(a):
+    """목록에서 누르면: 설명 글·첨부 여러 개 → 자료 페이지 / 외부 주소 → 새 창 / 파일 하나 → 그 파일"""
+    if arch_has_page(a):
+        return f'archive-{a["id"]}.html', ''
+    fs = a.get('files') or []
+    if a.get('url'):
+        return a['url'], ' target="_blank" rel="noopener"'
+    if fs:
+        return fs[0]['url'], ' target="_blank" rel="noopener"'
+    return 'archive.html', ''
+
 def page_archive():
-    icon = {'pdf': 'PDF', 'video': '영상', 'link': '링크', 'image': '이미지'}
     def row(a):
-        return f'<a class="li" href="{a["url"]}" target="_blank" rel="noopener"><span><span class="badge" style="margin-right:8px">{icon[a["type"]]}</span><span class="t">{E(a["title"])}</span><br><span class="m">{E(a["org"])}</span></span><span class="d">{a["date"]}</span></a>'
+        href, ext = arch_href(a)
+        fs = a.get('files') or []
+        extra = (f' · 첨부 {len(fs)}' if len(fs) > 1 else '')
+        return f'<a class="li" href="{E(href)}"{ext}><span><span class="badge" style="margin-right:8px">{ARCH_ICON.get(a.get("type"), "자료")}</span><span class="t">{E(a["title"])}</span><br><span class="m">{E(a.get("org", ""))}{extra}</span></span><span class="d">{E(a.get("date", ""))}</span></a>'
+    for a in ARCHIVE:
+        if arch_has_page(a): page_archive_detail(a)
     secs = ''
     for key, label in ARCH_CATS:
         items = [a for a in ARCHIVE if a['cat'] == key]
@@ -1358,6 +1377,28 @@ def page_archive():
 </div></section>
 '''
     write('archive.html', '아카이브 · KELI', body)
+
+def page_archive_detail(a):
+    cat = dict(ARCH_CATS).get(a.get('cat'), '아카이브')
+    files = a.get('files') or []
+    fl = ('<div class="art-files"><strong>자료 파일</strong><ul>' + ''.join(f'<li><a href="{E(f["url"])}" target="_blank" rel="noopener" download>{E(f["name"])}</a>{(" <span class=\"muted small\">(" + E(f["size"]) + ")</span>") if f.get("size") else ""}</li>' for f in files) + '</ul></div>') if files else ''
+    link = f'<p><a class="btn ghost sm" href="{E(a["url"])}" target="_blank" rel="noopener">원문 · 외부 주소 열기</a></p>' if a.get('url') else ''
+    others = ''.join((lambda h: f'<a class="li" href="{E(h[0])}"{h[1]}><span><span class="m">{dict(ARCH_CATS).get(o.get("cat"), "")}</span><br><span class="t">{E(o["title"])}</span></span><span class="d">{E(o.get("date", ""))}</span></a>')(arch_href(o)) for o in ARCHIVE if o['id'] != a['id'] and o.get('cat') == a.get('cat'))[:3000]
+    body = crumb(('archive.html', '아카이브'), (None, a['title'])) + f'''
+<section class="hero" style="padding-top:48px;padding-bottom:32px"><div class="wrap narrow" style="max-width:900px;text-align:left">
+<span class="eyebrow">아카이브 · {E(cat)}</span><h1 style="font-size:clamp(28px,4vw,40px)">{E(a["title"])}</h1>
+<p class="muted">{E(a.get("org", ""))}{(" · " + E(a["date"])) if a.get("date") else ""} · <span class="badge">{ARCH_ICON.get(a.get("type"), "자료")}</span></p>
+</div></section>
+<section class="sec" style="padding-top:0"><div class="wrap narrow" style="max-width:900px">
+{('<article class="art">' + html_body(a["body"]) + '</article>') if a.get('body') else ''}
+{fl}{link}
+</div></section>
+<section class="sec alt"><div class="wrap narrow" style="max-width:900px">
+<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">같은 분류의 다른 자료</h2><a class="more" href="archive.html#{E(a.get("cat", ""))}">전체 보기</a></div>
+<div class="list">{others or '<p class="muted small">다른 자료가 없습니다.</p>'}</div>
+</div></section>
+'''
+    write(f'archive-{a["id"]}.html', f'{a["title"]} · KELI 아카이브', body, desc=(_inner_text(html_body(a['body']))[:150] if a.get('body') else f'{cat} · {a.get("org", "")}'))
 
 def page_news_hub():
     pr = ''.join(pr_row(it, summary=False) for it in PRESS_ITEMS[:3])
@@ -1566,7 +1607,7 @@ def page_search():
     idx += [(pr_href(it), it['title'], '보도자료 · ' + (it.get('date') or '')) for it in PRESS_ITEMS]
     idx += [('videos.html', v['title'], '영상 · ' + (v.get('published') or v.get('published_text') or '')) for v in VIDEO_ITEMS]
     idx += [(f'demos.html#demo-{d["id"]}', d['name'] + ' 데모 영상' + (' (' + d['audience'] + ')' if d.get('audience') else ''), '데모 영상 · ' + d.get('category', '')) for d in DEMO_ITEMS]
-    idx += [(a['url'], a['title'], '아카이브 · ' + dict(ARCH_CATS)[a['cat']]) for a in ARCHIVE]
+    idx += [(arch_href(a)[0], a['title'], '아카이브 · ' + dict(ARCH_CATS).get(a.get('cat'), '')) for a in ARCHIVE]
     idx += [(f'notice-{n["id"]}.html', n['title'], '공지사항 · ' + n['cat'] + ' · ' + n.get('date', '')) for n in NOTICES]
     rows = ''.join(f'<a class="li" href="{h}" data-q="{E((t + " " + d).lower())}"><span class="t">{E(t)}</span><span class="d">{E(d)}</span></a>' for h, t, d in idx)
     body = crumb((None, '검색')) + f'''
