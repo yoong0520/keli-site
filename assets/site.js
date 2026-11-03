@@ -12,11 +12,12 @@
       var n=0; qsa('[data-key]',target).forEach(function(el){ var on=(key==='all'||el.getAttribute('data-key')===key); el.hidden=!on; if(on)n++; });
       qsa('.tab',bar).forEach(function(t){ t.setAttribute('aria-pressed',String(t.getAttribute('data-val')===key)); });
       if(count) count.textContent=n+'개';
-      try{ localStorage.setItem('tab:'+bar.getAttribute('data-tabs'),key);}catch(e){}
     }
     qsa('.tab',bar).forEach(function(t){ t.addEventListener('click',function(){ apply(t.getAttribute('data-val')); }); });
-    var init='all'; try{ init=localStorage.getItem('tab:'+bar.getAttribute('data-tabs'))||'all'; }catch(e){}
-    var h=location.hash.replace('#',''); if(h && qs('.tab[data-val="'+h+'"]',bar)) init=h;
+    // 처음 열면 항상 "전체". 주소 뒤에 #분류 가 붙어 있을 때만 그 분류로(전체 메뉴의 하위 항목). 지난번 선택은 기억하지 않음(사무국 결정 2026-11-03)
+    var init='all';
+    var h=''; try{ h=decodeURIComponent(location.hash.replace('#','')); }catch(e){ h=location.hash.replace('#',''); }
+    if(h && qs('.tab[data-val="'+h+'"]',bar)) init=h;
     apply(init);
   });
   // forms (demo: validate, show receipt)
