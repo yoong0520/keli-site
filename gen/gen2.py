@@ -694,7 +694,7 @@ MEGA = [
     ('about.html', 'KELI 소개', [('about.html#offer', '무엇을 제공하나'), ('about.html#why', '왜 KELI인가'), ('about.html#vision', '비전'), ('about.html#structure', '구조 · 참여 기관'), ('about.html#office', '사무국 · 연락처'), ('en.html', 'English')]),
     ('services.html', '마켓플레이스', [('services.html', 'HAI Ecosystems 19'), ('services.html#platform', '통합 플랫폼'), ('services.html#career', '진로 · 연구'), ('services.html#courseware', '전공 코스웨어'), ('services.html#teaching', '학습 · 수업 지원'), ('services.html#analytics', '분석 · 데이터'), ('services.html#admin', '행정 · 평가'), ('demos.html', '전체 데모 영상'), ('curriculum.html', '수업 6단계와 서비스')]),
     ('join.html', '참여 · 도입', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의'), ('newsletter.html', '뉴스레터 구독')]),
-    ('archive.html', '아카이브', [('archive.html#case', '실증 사례집'), ('archive.html#trend', '기술 동향 · 연구'), ('archive.html#manual', '매뉴얼 · 소개자료')]),
+    ('archive.html', '아카이브', [('archive-case.html', '실증 사례집'), ('archive-trend.html', '기술 동향 · 연구'), ('archive-manual.html', '매뉴얼 · 소개자료')]),
     ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료'), ('search.html', '검색')]),
 ]
 
@@ -1475,8 +1475,9 @@ def page_archive():
         rows = ''.join(row(a) for a in items) if items else '<p class="muted" style="padding:20px 4px;border-bottom:1px solid var(--line)">아직 등록된 자료가 없습니다.</p>'
         secs += f'''
 <section class="sec" id="{key}" style="padding-top:0"><div class="wrap narrow" style="max-width:900px">
-<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">{label}</h2><span class="muted small">{len(items)}개 자료</span></div><div class="list">{rows}</div>
+<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px"><a href="archive-{key}.html" style="color:inherit">{label}</a></h2><a class="more" href="archive-{key}.html">전체 보기 · {len(items)}건</a></div><div class="list">{rows}</div>
 </div></section>'''
+        page_archive_cat(key, label, items, row)
     body = crumb((None, '아카이브')) + f'''
 <section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap">
 <span class="eyebrow">아카이브</span>
@@ -1488,6 +1489,20 @@ def page_archive():
 </div></section>
 '''
     write('archive.html', '아카이브 · KELI', body)
+
+ARCH_CAT_LEAD = {'case': '한림대학교 교수진이 실제 수업에 AI를 결합해 설계·운영한 기록입니다. 교과목별 계획서·주차별 세부 계획·결과보고서를 담았습니다.',
+                 'trend': '월간 에듀테크 솔루션 분석 보고서와 AI 튜터 분석 보고서 등, KELI 연구진이 펴내는 동향·연구 자료입니다.',
+                 'manual': 'HAI Ecosystems 활용 매뉴얼과 가이드라인, KELI 소개 자료를 모았습니다.'}
+def page_archive_cat(key, label, items, row):
+    rows = ''.join(row(a) for a in items) if items else '<p class="muted" style="padding:20px 4px;border-bottom:1px solid var(--line)">아직 등록된 자료가 없습니다.</p>'
+    body = crumb(('archive.html', '아카이브'), (None, label)) + f'''
+<section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap"><span class="eyebrow">아카이브</span><h1>{E(label)}.</h1><p class="lead">{E(ARCH_CAT_LEAD.get(key, ''))}</p></div></section>
+<section class="sec" style="padding-top:0"><div class="wrap narrow" style="max-width:900px">
+<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">{E(label)}</h2><span class="muted small">{len(items)}개 자료</span></div><div class="list">{rows}</div>
+</div></section>
+<section class="sec" style="padding-top:0"><div class="wrap narrow" style="max-width:900px"><p class="note">자료는 새 창 또는 자료 페이지에서 열립니다. 다른 분류: {' · '.join(f'<a href="archive-{k}.html">{l}</a>' for k, l in ARCH_CATS if k != key)}</p></div></section>
+'''
+    write(f'archive-{key}.html', f'{label} · KELI 아카이브', body)
 
 def page_archive_detail(a):
     cat = dict(ARCH_CATS).get(a.get('cat'), '아카이브')
@@ -1526,7 +1541,7 @@ def page_archive_detail(a):
         others_html = f'<div class="list">{rr}</div>'
     meta = arch_meta(a) + ((' · ' + E(a['date'])) if a.get('period') and a.get('date') else '')
     article = f'<article class="art">{html_body(a["body"])}</article>' if a.get('body') else ''
-    body = crumb(('archive.html', '아카이브'), (f'archive.html#{a.get("cat", "")}', cat), (None, a['title'])) + f'''
+    body = crumb(('archive.html', '아카이브'), (f'archive-{a.get("cat", "")}.html', cat), (None, a['title'])) + f'''
 <section class="hero" style="padding-top:40px;padding-bottom:40px"><div class="wrap"><div class="arch-hero">
 {cover}
 <div class="arch-info"><span class="eyebrow">아카이브 · {E(cat)}</span><h1 style="font-size:clamp(26px,3.6vw,38px)">{E(a["title"])}</h1>
@@ -1539,7 +1554,7 @@ def page_archive_detail(a):
 </div></section>
 {viewer}
 <section class="sec alt"><div class="wrap narrow" style="max-width:900px">
-<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">{E(cat)}의 다른 자료</h2><a class="more" href="archive.html#{E(a.get("cat", ""))}">전체 보기</a></div>
+<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">{E(cat)}의 다른 자료</h2><a class="more" href="archive-{E(a.get("cat", ""))}.html">전체 보기</a></div>
 {others_html or '<p class="muted small">다른 자료가 없습니다.</p>'}
 </div></section>
 '''
