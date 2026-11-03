@@ -126,23 +126,46 @@
       wirePlay();
     }).catch(function(){});
   })();
-  // mega menu: 상단 메뉴에 올리거나(마우스) 누르면(터치) 전체 메뉴 펼침
+  // mega menu: 상단 메뉴에 올리거나(마우스) 누르면(터치) 전체 메뉴 펼침 (펼침 애니메이션 + 뒤 배경 어둡게)
   (function(){
-    var mega=qs('#mega'), hdr=qs('.hdr'); if(!mega||!hdr) return;
-    var navLinks=qsa('.nav a[data-menu]'), timer=null, coarse=window.matchMedia&&window.matchMedia('(pointer: coarse)').matches;
-    function open(key){ clearTimeout(timer); mega.hidden=false; qsa('.mega-col',mega).forEach(function(c){ c.classList.toggle('hot', c.getAttribute('data-menu')===key); }); navLinks.forEach(function(a){ a.setAttribute('aria-expanded', a.getAttribute('data-menu')===key?'true':'false'); }); }
-    function close(){ clearTimeout(timer); timer=setTimeout(function(){ mega.hidden=true; navLinks.forEach(function(a){ a.setAttribute('aria-expanded','false'); }); },160); }
+    var mega=qs('#mega'), hdr=qs('.hdr'), dim=qs('#dim'); if(!mega||!hdr) return;
+    var navLinks=qsa('.nav a[data-menu]'), timer=null;
+    function isOpen(){ return mega.classList.contains('open'); }
+    function open(key){ clearTimeout(timer); mega.classList.add('open'); mega.setAttribute('aria-hidden','false'); if(dim) dim.classList.add('on'); qsa('.mega-col',mega).forEach(function(c){ c.classList.toggle('hot', c.getAttribute('data-menu')===key); }); navLinks.forEach(function(a){ a.setAttribute('aria-expanded', a.getAttribute('data-menu')===key?'true':'false'); }); }
+    function closeNow(){ mega.classList.remove('open'); mega.setAttribute('aria-hidden','true'); if(dim) dim.classList.remove('on'); navLinks.forEach(function(a){ a.setAttribute('aria-expanded','false'); }); }
+    function close(){ clearTimeout(timer); timer=setTimeout(closeNow,160); }
     navLinks.forEach(function(a){
       a.setAttribute('aria-haspopup','true'); a.setAttribute('aria-expanded','false');
       a.addEventListener('mouseenter',function(){ open(a.getAttribute('data-menu')); });
       a.addEventListener('focus',function(){ open(a.getAttribute('data-menu')); });
-      a.addEventListener('click',function(e){ if(window.innerWidth<=860) return; var k=a.getAttribute('data-menu'); var hot=qs('.mega-col.hot',mega); if(mega.hidden||!hot||hot.getAttribute('data-menu')!==k){ e.preventDefault(); open(k); } });
+      a.addEventListener('click',function(e){ if(window.innerWidth<=860) return; var k=a.getAttribute('data-menu'); var hot=qs('.mega-col.hot',mega); if(!isOpen()||!hot||hot.getAttribute('data-menu')!==k){ e.preventDefault(); open(k); } });
     });
-    qs('.nav').addEventListener('mouseenter', function(){ var cur=qs('.nav a.on')||navLinks[0]; if(mega.hidden) open(cur?cur.getAttribute('data-menu'):null); });
+    qs('.nav').addEventListener('mouseenter', function(){ var cur=qs('.nav a.on')||navLinks[0]; if(!isOpen()) open(cur?cur.getAttribute('data-menu'):null); });
     qs('.nav').addEventListener('mouseleave', close); mega.addEventListener('mouseenter', function(){ clearTimeout(timer); }); mega.addEventListener('mouseleave', close);
+    if(dim){ dim.addEventListener('mouseenter', close); dim.addEventListener('click', closeNow); }
     hdr.addEventListener('focusout', function(e){ if(!hdr.contains(e.relatedTarget)) close(); });
-    document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ mega.hidden=true; } });
-    document.addEventListener('click', function(e){ if(!hdr.contains(e.target)) mega.hidden=true; });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeNow(); });
+    document.addEventListener('click', function(e){ if(!hdr.contains(e.target)) closeNow(); });
+  })();
+  // search overlay: 검색 아이콘을 누르면 페이지를 떠나지 않고 팝업으로 검색 (assets/search.json)
+  (function(){
+    var triggers=qsa('a[href="search.html"]'); if(!triggers.length||location.protocol==='file:') return;
+    var box=null, data=null, inp, list, cnt;
+    function esc(t){ return String(t||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    function build(){
+      box=document.createElement('div'); box.className='srch'; box.setAttribute('role','dialog'); box.setAttribute('aria-modal','true'); box.setAttribute('aria-label','검색');
+      box.innerHTML='<div class="srch-back"></div><div class="srch-box"><div class="srch-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="무엇을 찾으세요? 예) 수학, 진단평가, 심포지엄" aria-label="검색어" autocomplete="off"><button type="button" class="srch-x" aria-label="닫기">✕</button></div><div class="srch-cnt"></div><div class="srch-list"></div><div class="srch-foot">Enter 첫 결과로 이동 · Esc 닫기 · <a href="search.html">검색 페이지로</a></div></div>';
+      document.body.appendChild(box); inp=qs('input',box); list=qs('.srch-list',box); cnt=qs('.srch-cnt',box);
+      qs('.srch-back',box).addEventListener('click', hide); qs('.srch-x',box).addEventListener('click', hide);
+      inp.addEventListener('input', run); inp.addEventListener('keydown', function(e){ if(e.key==='Enter'){ var f=qs('a',list); if(f) location.href=f.getAttribute('href'); } });
+    }
+    function show(){ if(!box) build(); box.classList.add('on'); document.body.classList.add('noscroll'); setTimeout(function(){ inp.focus(); },50); if(!data){ fetch('assets/search.json',{cache:'no-store'}).then(function(r){ return r.json(); }).then(function(d){ data=d; run(); }).catch(function(){ cnt.textContent='검색 목록을 불러오지 못했습니다. 검색 페이지로 이동해 주세요.'; }); } else run(); }
+    function hide(){ if(box){ box.classList.remove('on'); document.body.classList.remove('noscroll'); } }
+    function run(){ if(!data) return; var v=inp.value.trim().toLowerCase(); if(!v){ list.innerHTML=''; cnt.textContent='마켓플레이스 · 소식 · 아카이브 · 영상 전체 '+data.length+'건에서 찾습니다'; return; }
+      var hits=data.filter(function(x){ return (x.t+' '+x.d).toLowerCase().indexOf(v)>-1; }); cnt.textContent=hits.length+'건';
+      list.innerHTML=hits.slice(0,30).map(function(x){ return '<a class="li" href="'+esc(x.h)+'"><span class="t">'+esc(x.t)+'</span><span class="d">'+esc(x.d)+'</span></a>'; }).join('')||'<p class="muted" style="padding:16px 4px">결과가 없습니다.</p>'; }
+    triggers.forEach(function(a){ a.addEventListener('click', function(e){ if(a.closest('.srch')) return; e.preventDefault(); show(); }); });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') hide(); if((e.ctrlKey||e.metaKey)&&e.key==='k'){ e.preventDefault(); show(); } });
   })();
   // search
   var si=qs('#q'); if(si){ var rows=qsa('#results [data-q]'), rc=qs('#rc'); function run(){ var v=si.value.trim().toLowerCase(), n=0; rows.forEach(function(r){ var on=!v||r.getAttribute('data-q').indexOf(v)>-1; r.hidden=!on; if(on)n++; }); if(rc) rc.textContent=n+'건'; } si.addEventListener('input',run); var q0=p.get('q'); if(q0){ si.value=q0; } run(); }
