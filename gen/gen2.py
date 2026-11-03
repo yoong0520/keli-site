@@ -194,7 +194,7 @@ HIDDEN = _load_json(os.path.join(CONTENT, 'hidden.json'), {})
 def _not_hidden(kind, items):
     h = set(str(x) for x in HIDDEN.get(kind, []))
     return [it for it in items if str(it.get('id')) not in h]
-ARCH_CATS = [('case', '실증 사례집'), ('trend', '기술 동향·연구'), ('manual', '매뉴얼·소개자료')]
+ARCH_CATS = [('manual', '매뉴얼·소개자료'), ('trend', '기술 동향·연구'), ('case', '실증 사례집')]
 
 # ------------------------------------------------------------------ CSS
 CSS = r"""
@@ -459,6 +459,8 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .mega-col-title:hover { text-decoration: none; color: var(--accent); border-color: var(--accent); }
 .mega-col ul { list-style: none; margin: 0; padding: 0; } .mega-col li a { display: block; padding: 6px 0; font-size: 15px; color: var(--muted); line-height: 1.5; } .mega-col li a:hover, .mega-col li a:focus-visible { color: var(--accent); text-decoration: none; font-weight: 600; }
 .mega-col.hot .mega-col-title { color: var(--accent); border-color: var(--accent); }
+.mega-col li.has-sub > a { color: var(--fg); font-weight: 600; } .mega-col ul ul { margin: 2px 0 6px 6px; padding-left: 12px; border-left: 1px solid var(--line); } .mega-col ul ul a { font-size: 14px; padding: 4px 0; }
+.mnav .msub2 { display: flex; flex-wrap: wrap; gap: 0 14px; padding-left: 12px; width: 100%; } .mnav .msub2 a { font-size: 14px; }
 .hdr { position: sticky; }
 .mnav .mgrp { padding: 6px 0; border-bottom: 1px solid var(--line); } .mnav .mtop { font-weight: 700; } .mnav .msub { display: flex; flex-wrap: wrap; gap: 0 18px; padding: 0 0 6px 12px; } .mnav .msub a { font-size: 15px; color: var(--muted); padding: 4px 0; }
 @media (max-width: 1024px) { .mega-inner { grid-template-columns: 1fr; gap: 20px; } .mega-intro { display: none; } .mega-cols { gap: 20px; } }
@@ -474,6 +476,21 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .srch-foot { padding: 10px 18px 14px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); }
 body.noscroll { overflow: hidden; }
 @keyframes fadein { from { opacity: 0; } to { opacity: 1; } } @keyframes popin { from { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(.98); } to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } }
+/* KELI 소개: 조직도 */
+.org { display: flex; flex-direction: column; align-items: center; max-width: 980px; margin: 0 auto; }
+.org-lv { display: flex; justify-content: center; width: 100%; }
+.org-box { background: var(--bg2); border-radius: 14px; padding: 16px 20px; display: flex; flex-direction: column; gap: 4px; text-align: center; width: min(100%, 360px); }
+.org-box strong { font-size: 17px; font-weight: 700; } .org-box span { font-size: 13px; color: var(--muted); } .org-box em { font-style: normal; font-size: 13px; color: var(--fg); line-height: 1.6; margin-top: 4px; }
+.org-box.top { background: var(--fg); color: var(--bg); } .org-box.top span, .org-box.top em { color: var(--bg); opacity: .85; }
+.org-box.hot { background: var(--accent); color: #fff; } .org-box.hot span, .org-box.hot em { color: #fff; opacity: .9; }
+.org-line { width: 2px; height: 28px; background: #c9d0db; }
+.org-row { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; width: 100%; padding-top: 24px; }
+.org-row::before { content: ""; position: absolute; top: 0; left: 16.66%; right: 16.66%; border-top: 2px solid #c9d0db; }
+.org-row .org-box { position: relative; width: auto; }
+.org-row .org-box::before { content: ""; position: absolute; left: 50%; top: -24px; width: 2px; height: 24px; background: #c9d0db; }
+.org-base { width: 100%; border: 2px dashed #c9d0db; border-radius: 14px; padding: 14px 20px; text-align: center; display: flex; gap: 6px 14px; justify-content: center; flex-wrap: wrap; align-items: baseline; }
+.org-base strong { font-size: 16px; } .org-base span { font-size: 14px; color: var(--muted); }
+@media (max-width: 760px) { .org-row { grid-template-columns: 1fr; gap: 0; padding-top: 0; } .org-row::before { display: none; } .org-row .org-box { margin-top: 24px; } .org-row .org-box:first-child { margin-top: 0; } .org-row .org-box::before { top: -24px; } .org-row .org-box:first-child::before { display: none; } }
 /* 홈 KELI 소개 도형 */
 .intro-grid { grid-template-columns: 5fr 7fr; align-items: center; gap: 56px; }
 .intro-grid .acts { display: flex; gap: 12px 28px; flex-wrap: wrap; align-items: center; }
@@ -804,11 +821,11 @@ NAV = [('about.html', 'KELI 소개'), ('services.html', '마켓플레이스'), (
 NEWS_PAGES = {'news.html', 'notice.html', 'events.html', 'newsletter.html', 'videos.html'}
 # 상단 메뉴를 누르거나 올리면 펼쳐지는 전체 메뉴(메가 메뉴). 각 메뉴 아래 게시판·섹션 바로가기
 MEGA = [
-    ('about.html', 'KELI 소개', [('about.html#offer', '무엇을 제공하나'), ('about.html#why', '왜 KELI인가'), ('about.html#vision', '비전'), ('about.html#structure', '구조 · 참여 기관'), ('about.html#office', '사무국 · 연락처'), ('en.html', 'English')]),
-    ('services.html', '마켓플레이스', [('services.html', 'HAI Ecosystems 19'), ('services.html#platform', '통합 플랫폼'), ('services.html#career', '진로 · 연구'), ('services.html#courseware', '전공 코스웨어'), ('services.html#teaching', '학습 · 수업 지원'), ('services.html#analytics', '분석 · 데이터'), ('services.html#admin', '행정 · 평가'), ('demos.html', '전체 데모 영상'), ('curriculum.html', '수업 6단계와 서비스')]),
-    ('join.html', 'KELI 협의체 참여', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의'), ('newsletter.html', '뉴스레터 구독')]),
-    ('archive.html', '아카이브', [('archive-case.html', '실증 사례집'), ('archive-trend.html', '기술 동향 · 연구'), ('archive-manual.html', '매뉴얼 · 소개자료')]),
-    ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료'), ('search.html', '검색')]),
+    ('about.html', 'KELI 소개', [('about.html#vision', '비전'), ('about.html#consortium', 'KELI 협의체'), ('about.html#org', '조직도')]),
+    ('services.html', '마켓플레이스', [('services.html', 'HAI Ecosystems', [('services.html#platform', '통합 플랫폼'), ('services.html#career', '진로 · 연구'), ('services.html#courseware', '전공 코스웨어'), ('services.html#teaching', '학습 · 수업 지원'), ('services.html#analytics', '분석 · 데이터'), ('services.html#admin', '행정 · 평가'), ('demos.html', '전체 데모 영상')])]),
+    ('join.html', 'KELI 협의체 참여', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의')]),
+    ('archive.html', '아카이브', [('archive-manual.html', '매뉴얼 · 소개자료'), ('archive-trend.html', '기술 동향 · 연구'), ('archive-case.html', '실증 사례집')]),
+    ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료')]),
 ]
 
 def header(current):
@@ -817,8 +834,14 @@ def header(current):
         if h == 'services.html' and (current.startswith('service') or current == 'curriculum.html'): return ' class="on"'
         return ' class="on"' if h == current else ''
     links = ''.join(f'<a href="{h}"{on(h)} data-menu="{h}">{t}</a>' for h, t in NAV)
-    mlinks = ''.join(f'<div class="mgrp"><a class="mtop" href="{h}">{t}</a><div class="msub">' + ''.join(f'<a href="{sh}">{st}</a>' for sh, st in subs) + '</div></div>' for h, t, subs in MEGA) + '<div class="mgrp"><div class="msub"><a href="search.html">검색</a><a href="en.html">English</a><a href="join.html#inquiry">도입 문의</a></div></div>'
-    cols = ''.join(f'<div class="mega-col" data-menu="{h}"><a class="mega-col-title" href="{h}">{t}</a><ul>' + ''.join(f'<li><a href="{sh}">{st}</a></li>' for sh, st in subs) + '</ul></div>' for h, t, subs in MEGA)
+    def _sub_m(it):
+        sh, st = it[0], it[1]; kids = it[2] if len(it) > 2 else []
+        return f'<a href="{sh}">{st}</a>' + (('<div class="msub2">' + ''.join(f'<a href="{kh}">{kt}</a>' for kh, kt in kids) + '</div>') if kids else '')
+    def _sub_c(it):
+        sh, st = it[0], it[1]; kids = it[2] if len(it) > 2 else []
+        return f'<li class="{"has-sub" if kids else ""}"><a href="{sh}">{st}</a>' + (('<ul>' + ''.join(f'<li><a href="{kh}">{kt}</a></li>' for kh, kt in kids) + '</ul>') if kids else '') + '</li>'
+    mlinks = ''.join(f'<div class="mgrp"><a class="mtop" href="{h}">{t}</a><div class="msub">' + ''.join(_sub_m(it) for it in subs) + '</div></div>' for h, t, subs in MEGA) + '<div class="mgrp"><div class="msub"><a href="search.html">검색</a><a href="en.html">English</a><a href="join.html#inquiry">도입 문의</a></div></div>'
+    cols = ''.join(f'<div class="mega-col" data-menu="{h}"><a class="mega-col-title" href="{h}">{t}</a><ul>' + ''.join(_sub_c(it) for it in subs) + '</ul></div>' for h, t, subs in MEGA)
     mega = f'''<div class="mega" id="mega" aria-hidden="true"><div class="wrap mega-inner">
 <div class="mega-intro"><span class="eyebrow">K-University AI EduTech &amp; Learning Initiative</span><strong>고등교육 AI 공유 플랫폼</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="more" href="join.html#inquiry">도입 문의</a><a class="more" href="demos.html">전체 데모 영상</a></div>
 <div class="mega-cols">{cols}</div>
@@ -1341,16 +1364,7 @@ def page_about():
 <div class="chips"><span class="chip">주관 · 한림대학교 KELI 사무국</span><span class="chip">대상 · 국내외 대학·기관·기업</span><span class="chip">제공 · 무상 시범 도입 → 유상 정식 도입</span></div>
 </div></section>
 
-<section class="sec alt" id="offer"><div class="wrap">
-<div class="head"><h2>무엇을 제공하나요.</h2></div>
-<div class="grid g3">
-<a class="card" href="services.html"><span class="k">HAI Ecosystems</span><h3>한림대 자체 개발 AI 교육 서비스</h3><p>수업 설계부터 평가·분석까지, 6영역 19개 서비스.</p><span class="more">서비스 보기</span></a>
-<a class="card" href="services.html"><span class="k">KELI Marketplace</span><h3>서비스 탐색부터 도입 신청까지</h3><p>영역별로 찾고, 데모 영상과 매뉴얼을 확인하고, 도입을 문의합니다.</p><span class="more">마켓 보기</span></a>
-<a class="card" href="join.html"><span class="k">실증·연수 지원</span><h3>한 학기 시범 운영과 효과 분석</h3><p>교수자 연수와 효과 분석 리포트를 함께 제공합니다.</p><span class="more">참여 방법</span></a>
-</div>
-</div></section>
-
-<section class="sec" id="why"><div class="wrap">
+<section class="sec alt" id="why"><div class="wrap">
 <div class="head"><h2>왜 함께 만드나요.</h2><p class="lead">대학마다 따로 만들면 비용과 인력이 중복됩니다. 한림대가 먼저 만들고 검증한 것을 여러 대학이 나누어 씁니다.</p></div>
 <div class="vs">
 <div class="card"><span class="k">따로 만들면</span><h3>대학마다 비용·인력 중복</h3><p>유사한 AI 튜터·챗봇을 반복 개발하고, 사업이 끝나면 유지보수가 끊깁니다.</p></div>
@@ -1358,7 +1372,7 @@ def page_about():
 </div>
 </div></section>
 
-<section class="sec alt" id="vision"><div class="wrap">
+<section class="sec" id="vision"><div class="wrap">
 <div class="head"><span class="eyebrow">Vision</span><h2>K-University 모델을 함께 개발·공유·확산하고,<br>글로벌 고등교육의 AI 대전환을 선도합니다.</h2></div>
 <div class="grid g3">
 <div class="card center"><h3>검증된 AI 서비스를<br>여러 대학이 함께 씁니다</h3></div>
@@ -1367,17 +1381,31 @@ def page_about():
 </div>
 </div></section>
 
-<section class="sec" id="structure"><div class="wrap">
-<div class="head"><h2>KELI 구조.</h2></div>
-<div class="tbl-wrap"><table class="tbl">
-<tbody>
-<tr><th>서비스 영역</th><td>플랫폼 · 진로 · 코스웨어 · 수업 · 데이터 · 행정</td></tr>
-<tr><th>운영 사이클</th><td>발견 → 연결 → 실증 → 확산</td></tr>
-<tr><th>참여 주체</th><td>국내외 대학 · 에듀테크 기업 · 유관기관</td></tr>
-<tr><th>참여 방식</th><td>공동 실증 · 공동 개발 · Marketplace 등재</td></tr>
-<tr><th>운영 기구</th><td>총회 · 운영위원회 · 기술표준위원회 · 품질윤리위원회</td></tr>
-<tr><th>사무국 역할</th><td>협의체 운영 · 참여 문의 · 회원 협력 · 포털 운영</td></tr>
-</tbody></table></div>
+<section class="sec alt" id="consortium"><div class="wrap">
+<div class="head"><span class="eyebrow">KELI 협의체</span><h2>대학·기업·기관이 함께 만드는 협의체.</h2><p class="lead">KELI 협의체는 주관기관 한림대학교와 참여기관이 「KELI 협의체 참여 협약」을 맺고, AI 교육 서비스를 공동 실증·공동 개발하고 국내외로 확산하는 협력체입니다. 참여는 협약 체결로 시작하고, 개별 과제는 과제 확인서로 정합니다.</p></div>
+<div class="grid g3">
+<div class="card"><span class="k">참여 주체</span><h3>국내외 대학 · 에듀테크 기업 · 유관기관</h3><p>현재 대학 <span data-stat="universities">{STATS['universities']}</span>곳, 에듀테크 기업 <span data-stat="companies">{STATS['companies']}</span>곳이 함께합니다.</p><a class="more" href="join.html#members">참여 기관 보기</a></div>
+<div class="card"><span class="k">참여 방식</span><h3>공동 실증 · 공동 개발 · Marketplace 등재</h3><p>첫걸음은 1개 교과목 × 1개 서비스 × 1개 학기의 공동 실증입니다. 시범 도입은 무상 또는 협의, 정식 도입은 기관별 협의로 정합니다.</p><a class="more" href="join.html">참여 방법 · 절차</a></div>
+<div class="card"><span class="k">함께 하는 일</span><h3>협약서 제4조의 협력 사항</h3><p>AI 결합 교과목·코스웨어 공동 개발, 학습데이터 표준·오픈 API 공동 정립, 교수자·학습자·행정직원 AI 역량 연수, 국제 심포지엄·매칭데이·해커톤 등 공동 행사.</p><a class="more" href="join.html#inquiry">도입 문의</a></div>
+</div>
+</div></section>
+
+<section class="sec" id="org"><div class="wrap">
+<div class="head"><span class="eyebrow">조직도</span><h2>KELI 협의체의 기구와 사무국.</h2><p class="lead">총회와 운영위원회가 의결하고, 두 전문위원회가 심의하며, 주관기관 안의 KELI 사무국이 실무를 맡습니다.</p></div>
+<div class="org" role="img" aria-label="조직도: 총회 아래 운영위원회, 그 아래 기술·표준위원회, 품질·윤리위원회, KELI 사무국, 맨 아래 참여기관">
+<div class="org-lv"><div class="org-box top"><strong>총회</strong><span>전 참여기관 대표 · 연 1회</span><em>사업계획·결산 승인 · 규정 제·개정 · 임원 선출</em></div></div>
+<div class="org-line"></div>
+<div class="org-lv"><div class="org-box"><strong>운영위원회</strong><span>주관·참여기관 대표 11인 내외 · 반기 1회</span><em>사업 우선순위 · 예산 심의 · 회원 가입과 참여 종료</em></div></div>
+<div class="org-line"></div>
+<div class="org-row">
+<div class="org-box"><strong>기술·표준위원회</strong><span>대학 교원 · 기업 기술책임자 · 표준 전문가</span><em>연동 규격 · 학습데이터 표준 · 오픈 API 공개 범위 · 상호운용성</em></div>
+<div class="org-box"><strong>품질·윤리위원회</strong><span>교육공학·평가 · 법률·개인정보 전문가</span><em>Marketplace 등재 심사 · 실증 품질 기준 · AI 윤리 · 개인정보 영향평가</em></div>
+<div class="org-box hot"><strong>KELI 사무국</strong><span>주관기관 한림대학교 AI교육혁신원 AI교육확산센터</span><em>회원 관리 · 수요 발굴 · 매칭 · 실증 운영 · 품질·보안 · 교육·연수 · 사업화·기술이전 · 글로벌 확산 · 성과 확산·홍보</em></div>
+</div>
+<div class="org-line"></div>
+<div class="org-base"><strong>참여기관</strong><span>국내외 대학 · 에듀테크 기업 · 유관기관</span></div>
+</div>
+<p class="note" style="margin-top:16px">근거: KELI 협의체 참여 협약서 제7조(협의체의 기구) · 제8조(KELI 사무국). 각 기구의 세부 구성과 운영은 별도 규정으로 정합니다.</p>
 </div></section>
 
 <section class="sec alt" id="office"><div class="wrap">

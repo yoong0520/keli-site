@@ -234,7 +234,7 @@
   }
 
   // ---------------------------------------------------------------- 아카이브: 외부 주소를 가져오거나, 파일을 직접 올리거나, 설명 글과 함께 올리거나
-  var ACATS = [['case', '실증 사례집'], ['trend', '기술 동향·연구'], ['manual', '매뉴얼·소개자료']], ATYPES = [['pdf', 'PDF'], ['doc', '문서'], ['link', '링크'], ['video', '영상'], ['image', '이미지']];
+  var ACATS = [['manual', '매뉴얼·소개자료'], ['trend', '기술 동향·연구'], ['case', '실증 사례집']], ATYPES = [['pdf', 'PDF'], ['doc', '문서'], ['link', '링크'], ['video', '영상'], ['image', '이미지']];
   function lbl(list, k) { var m = list.filter(function (x) { return x[0] === k; })[0]; return m ? m[1] : k; }
   function typeOf(name) { return /\.pdf$/i.test(name) ? 'pdf' : /\.(png|jpe?g|gif|webp)$/i.test(name) ? 'image' : /\.(mp4|mov|webm)$/i.test(name) ? 'video' : /\.(hwpx?|docx?|pptx?|xlsx?|zip|txt)$/i.test(name) ? 'doc' : 'doc'; }
   function archiveOpen(a) { var fs = a.files || []; if (a.body || fs.length > 1 || (fs.length && a.url)) return CFG.site + 'archive-' + a.id + '.html'; return a.url || (fs[0] && fs[0].url) || (CFG.site + 'archive.html'); }
