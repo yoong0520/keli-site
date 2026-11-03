@@ -501,6 +501,7 @@ body.noscroll { overflow: hidden; }
 @media (max-width: 760px) { .org-row { grid-template-columns: 1fr; gap: 0; padding-top: 0; } .org-row::before { display: none; } .org-row .org-box { margin-top: 26px; } .org-row .org-box:first-child { margin-top: 0; } .org-row .org-box:first-child::before { display: none; } .org-base { flex-direction: column; align-items: flex-start; } }
 /* 홈 KELI 소개 도형: 위→아래 흐름 */
 .hl { color: var(--accent); font-weight: 700; }
+.intro-grid .acts { display: flex; gap: 12px 28px; flex-wrap: wrap; align-items: center; }
 .intro-grid { grid-template-columns: 6fr 6fr; align-items: center; gap: 56px; }
 .kdiag { display: flex; flex-direction: column; align-items: center; }
 .kd-src, .kd-node { display: flex; align-items: center; gap: 14px; background: var(--bg2); border-radius: 16px; padding: 14px 18px; min-width: 0; }
