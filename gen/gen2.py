@@ -437,7 +437,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .mega-cols { display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; }
 .mega-col-title { display: block; font-size: 16px; font-weight: 700; color: var(--fg); padding-bottom: 10px; margin-bottom: 8px; border-bottom: 2px solid var(--fg); }
 .mega-col-title:hover { text-decoration: none; color: var(--accent); border-color: var(--accent); }
-.mega-col ul { list-style: none; margin: 0; padding: 0; } .mega-col li a { display: block; padding: 6px 0; font-size: 15px; color: var(--muted); line-height: 1.5; } .mega-col li a:hover { color: var(--fg); text-decoration: none; }
+.mega-col ul { list-style: none; margin: 0; padding: 0; } .mega-col li a { display: block; padding: 6px 0; font-size: 15px; color: var(--muted); line-height: 1.5; } .mega-col li a:hover, .mega-col li a:focus-visible { color: var(--accent); text-decoration: none; font-weight: 600; }
 .mega-col.hot .mega-col-title { color: var(--accent); border-color: var(--accent); }
 .hdr { position: sticky; }
 .mnav .mgrp { padding: 6px 0; border-bottom: 1px solid var(--line); } .mnav .mtop { font-weight: 700; } .mnav .msub { display: flex; flex-wrap: wrap; gap: 0 18px; padding: 0 0 6px 12px; } .mnav .msub a { font-size: 15px; color: var(--muted); padding: 4px 0; }
