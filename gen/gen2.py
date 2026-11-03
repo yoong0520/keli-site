@@ -649,7 +649,7 @@ body.noscroll { overflow: hidden; }
 .org-box.mid { border: 2px solid var(--accent); }
 .org-box.hot { background: var(--accent); color: #fff; } .org-box.hot > *:not(.shine) { position: relative; z-index: 1; } .org-box.hot span { color: #fff; opacity: .85; } .org-box.hot .org-ic { background: rgba(255,255,255,.18); color: #fff; } .org-box.hot .org-tags b { background: rgba(255,255,255,.16); color: #fff; }
 .org-line { position: relative; width: 2px; height: 46px; background: linear-gradient(to bottom, var(--accent) 0 55%, transparent 55% 100%) 0 0 / 2px 12px repeat-y; display: flex; align-items: center; justify-content: center; animation: org-flow-y 1.1s linear infinite; }
-.org-line::after { content: ""; position: absolute; left: 50%; bottom: -1px; width: 8px; height: 8px; border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: translateX(-50%) rotate(45deg); animation: org-tip 1.1s ease-in-out infinite; }
+.org-line::after { content: ""; position: absolute; left: 50%; bottom: -2px; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid var(--accent); transform: translateX(-50%); animation: org-tip 1.1s ease-in-out infinite; }
 .org-line b { position: absolute; white-space: nowrap; font-size: 12px; font-weight: 600; color: var(--accent); background: var(--bg2); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; }
 .org-row { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; width: 100%; padding-top: 26px; }
 .org-row::before, .org-row::after { content: ""; position: absolute; top: 0; height: 2px; background: linear-gradient(to right, var(--accent) 0 55%, transparent 55% 100%) 0 0 / 12px 2px repeat-x; }
@@ -657,11 +657,11 @@ body.noscroll { overflow: hidden; }
 .org-row::after { left: 50%; right: calc((100% - 40px) / 6); animation: org-flow-right 1.1s linear infinite; }
 .org-row .org-box { width: auto; }
 .org-row .org-box::before { content: ""; position: absolute; left: 50%; top: -26px; width: 2px; height: 26px; margin-left: -1px; background: linear-gradient(to bottom, var(--accent) 0 55%, transparent 55% 100%) 0 0 / 2px 12px repeat-y; animation: org-flow-y 1.1s linear infinite; }
-.org-row .org-box::after { content: ""; position: absolute; left: 50%; top: -5px; width: 7px; height: 7px; border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: translateX(-50%) rotate(45deg); }
+.org-row .org-box::after { content: ""; position: absolute; left: 50%; top: -8px; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid var(--accent); transform: translateX(-50%); animation: org-tip 1.1s ease-in-out infinite; }
 @keyframes org-flow-y { to { background-position-y: 12px; } }
 @keyframes org-flow-right { to { background-position-x: 12px; } }
 @keyframes org-flow-left { to { background-position-x: -12px; } }
-@keyframes org-tip { 0%, 100% { transform: translateX(-50%) translateY(0) rotate(45deg); opacity: 1; } 50% { transform: translateX(-50%) translateY(3px) rotate(45deg); opacity: .6; } }
+@keyframes org-tip { 0%, 100% { transform: translateX(-50%) translateY(0); opacity: 1; } 50% { transform: translateX(-50%) translateY(3px); opacity: .7; } }
 .org-box.hot { animation: org-hot 3.2s ease-in-out infinite; }
 .org-box.hot .shine { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; }
 .org-box.hot .shine::before { content: ""; position: absolute; top: -40%; bottom: -40%; left: -60%; width: 40%; background: linear-gradient(100deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.28) 50%, rgba(255,255,255,0) 100%); transform: skewX(-18deg); animation: org-shine 4.5s ease-in-out infinite; }
@@ -1628,7 +1628,7 @@ def page_index():
 </div></section>
 
 <section class="sec glass" id="services"><div class="wrap">
-<div class="head"><span class="eyebrow">HAI Ecosystems</span><h2>수업 설계부터 평가·분석까지, 19개 서비스.</h2><p class="lead">한림대학교가 직접 개발해 수업에서 검증한 뒤 KELI Marketplace에 먼저 올린 서비스입니다. 다른 대학과 기관도 도입할 수 있습니다.</p></div>
+<div class="head"><span class="eyebrow">HAI Ecosystems</span><h2>수업 설계부터 평가·분석까지, {len(SERVICES)}개 서비스.</h2><p class="lead">한림대학교가 직접 개발해 수업에서 검증한 뒤 KELI Marketplace에 먼저 올린 서비스입니다. 다른 대학과 기관도 도입할 수 있습니다.</p></div>
 {tabs('home-svc', [(a[0], a[1]) for a in AREAS])}
 <div class="grid g4" data-items="home-svc" style="margin-top:24px">{cards}</div>
 <div class="cta" style="margin-top:40px"><div class="acts"><a class="btn ghost" href="demos.html">전체 데모 영상</a><a class="btn ghost" href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a></div></div>
@@ -2252,7 +2252,7 @@ def page_videos():
 
 def search_index():
     idx = [(f'service-{s["slug"]}.html', s['name'], s['one'] + ' · ' + AREA_LABEL.get(s['area'], s['area'])) for s in SERVICES]
-    idx += [('about.html', 'KELI 소개', '정의 · 비전 · 구조 · 사무국'), ('services.html', 'Marketplace', 'HAI Ecosystems 19'), ('curriculum.html', 'AI 융합교육과정', '수업 6단계와 서비스'), ('join.html', 'KELI 협의체 참여', '도입 절차 · 이용 방식 · 참여 기관 · 문의'), ('archive.html', '아카이브', '사례집 · 기술 동향 · 매뉴얼'), ('notice.html', '공지사항', '소식'), ('events.html', '행사', '심포지엄 · 데모데이 · 매칭데이'), ('newsletter.html', '뉴스레터', '구독')]
+    idx += [('about.html', 'KELI 소개', '정의 · 비전 · 구조 · 사무국'), ('services.html', 'Marketplace', f'HAI Ecosystems {len(SERVICES)}'), ('curriculum.html', 'AI 융합교육과정', '수업 6단계와 서비스'), ('join.html', 'KELI 협의체 참여', '도입 절차 · 이용 방식 · 참여 기관 · 문의'), ('archive.html', '아카이브', '사례집 · 기술 동향 · 매뉴얼'), ('notice.html', '공지사항', '소식'), ('events.html', '행사', '심포지엄 · 데모데이 · 매칭데이'), ('newsletter.html', '뉴스레터', '구독')]
     idx += [(ev_href(it), it['title'], '행사 · ' + (it.get('when') or '')) for it in FEED_ITEMS]
     idx += [(pr_href(it), it['title'], ('언론 보도 · ' if it.get('src') == 'unn' else '보도자료 · ') + (it.get('date') or '')) for it in PRESS_ALL]
     idx += [('videos.html', v['title'], '영상 · ' + (v.get('published') or v.get('published_text') or '')) for v in VIDEO_ITEMS]

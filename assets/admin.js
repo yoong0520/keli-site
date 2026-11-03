@@ -233,7 +233,8 @@
   function mountEditor(id, initial) {
     var ed = qs('#' + id), src = qs('#' + id + '-src'), htmlMode = false, listeners = [];
     ed.innerHTML = initial || '';
-    function body() { return htmlMode ? src.value.trim() : ed.innerHTML.trim(); }
+    function clean(html) { return String(html || '').replace(/<img\b([^>]*?)\ssrc="blob:[^"]*"([^>]*?)\sdata-src="([^"]*)"([^>]*)>/g, '<img$1 src="$3"$2$4>').replace(/<img\b([^>]*?)\sdata-src="([^"]*)"([^>]*?)\ssrc="blob:[^"]*"([^>]*)>/g, '<img$1 src="$2"$3$4>'); }
+    function body() { return clean(htmlMode ? src.value.trim() : ed.innerHTML.trim()); }
     function fire() { listeners.forEach(function (f) { f(); }); }
     qsa('[data-ed]', qs('#' + id + '-bar')).forEach(function (b) {
       b.addEventListener('mousedown', function (e) { e.preventDefault(); });
@@ -255,7 +256,7 @@
         fire();
       });
     });
-    qs('#' + id + '-img').addEventListener('change', function () { var f = this.files[0]; if (!f) return; var inp = this; var range = window.getSelection().rangeCount ? window.getSelection().getRangeAt(0) : null; toast('이미지 올리는 중…'); uploadFile(f).then(function (r) { ed.focus(); if (range) { window.getSelection().removeAllRanges(); window.getSelection().addRange(range); } document.execCommand('insertHTML', false, '<figure class="art-fig"><img src="' + esc(r.url) + '" alt="' + esc(f.name.replace(/\.[^.]+$/, '')) + '"><figcaption></figcaption></figure><p></p>'); toast('이미지를 넣었습니다'); fire(); }).catch(function (e) { toast('이미지 실패: ' + e.message, 6000); }).then(function () { inp.value = ''; }); });
+    qs('#' + id + '-img').addEventListener('change', function () { var f = this.files[0]; if (!f) return; var inp = this; var range = window.getSelection().rangeCount ? window.getSelection().getRangeAt(0) : null; toast('이미지 올리는 중…'); uploadFile(f).then(function (r) { ed.focus(); if (range) { window.getSelection().removeAllRanges(); window.getSelection().addRange(range); } var local = ''; try { local = URL.createObjectURL(f); } catch (e3) {} document.execCommand('insertHTML', false, '<figure class="art-fig"><img src="' + esc(local || r.url) + '"' + (local ? ' data-src="' + esc(r.url) + '"' : '') + ' alt="' + esc(f.name.replace(/\.[^.]+$/, '')) + '"><figcaption></figcaption></figure><p></p>'); toast('이미지를 넣었습니다. 사이트에는 게시 후 1~2분 뒤 보입니다'); fire(); }).catch(function (e) { toast('이미지 실패: ' + e.message, 6000); }).then(function () { inp.value = ''; }); });
     ed.addEventListener('input', fire); src.addEventListener('input', fire);
     return { body: body, onInput: function (f) { listeners.push(f); } };
   }
@@ -307,7 +308,7 @@
     var box = qs('#editor'); var draftKey = 'keli_draft_' + it.id; var draft = null; try { draft = JSON.parse(localStorage.getItem(draftKey) || 'null'); } catch (e) {}
     box.innerHTML = '<div class="ph"><div><h3>' + (isNew ? '새 소식' : '소식 편집') + '</h3><p>작성 내용은 저장 후 게시해야 홈페이지에 반영됩니다.</p></div>' + (isNew ? '' : '<button class="danger-link" type="button" id="n-del">🗑 삭제</button>') + '</div>' +
       '<form class="form" id="nf" novalidate>' +
-      '<div class="field"><label for="n-title">제목<span class="req">*</span></label><input id="n-title" required value="' + esc(it.title) + '"><span class="msg" id="n-title-msg">제목을 입력해 주세요</span></div>' +
+      '<div class="field"><label for="n-title">제목<span class="req">*</span></label><input id="n-title" required value="' + esc(it.title) + '"><span class="msg" id="n-title-msg" style="display:none">제목을 입력해 주세요</span></div>' +
       '<div class="grid g2" style="gap:16px"><div class="field"><label for="n-cat">분류<span class="req">*</span></label><select id="n-cat">' + CATS.concat(CATS.indexOf(it.cat) < 0 && it.cat ? [it.cat] : []).map(function (c) { return '<option' + (c === it.cat ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('') + '</select></div>' +
       '<div class="field"><label for="n-date">게시일<span class="req">*</span></label><input id="n-date" type="date" value="' + esc(toIso(it.date) || toIso(today())) + '"></div></div>' +
       '<div class="field"><label for="n-summary">요약 <span class="muted" style="font-weight:400">— 목록과 글 머리글에 한 줄로 보입니다(선택)</span></label><textarea id="n-summary" placeholder="한림대학교 KELI 사무국이 …를 소개했습니다.">' + esc(it.summary || '') + '</textarea></div>' +
@@ -360,7 +361,7 @@
     var box = qs('#editor');
     box.innerHTML = '<div class="ph"><div><h3>' + (isNew ? '자료 추가' : '자료 편집') + '</h3><p>외부 주소, 파일, 설명 가운데 하나는 있어야 합니다.</p></div>' + (isNew ? '' : '<span style="display:flex;gap:12px;align-items:center"><a class="btn ghost xs" href="' + esc(archiveOpen(it)) + '" target="_blank" rel="noopener">열기</a><button class="danger-link" type="button" id="a-del">🗑 삭제</button></span>') + '</div>' +
       '<form class="form" id="af" novalidate>' +
-      '<div class="field"><label for="a-title">제목<span class="req">*</span></label><input id="a-title" value="' + esc(it.title) + '"><span class="msg" id="a-title-msg">제목을 입력해 주세요</span></div>' +
+      '<div class="field"><label for="a-title">제목<span class="req">*</span></label><input id="a-title" value="' + esc(it.title) + '"><span class="msg" id="a-title-msg" style="display:none">제목을 입력해 주세요</span></div>' +
       '<div class="grid g2" style="gap:16px">' +
       '<div class="field"><label for="a-cat">분류<span class="req">*</span></label><select id="a-cat">' + ACATS.map(function (c) { return '<option value="' + c[0] + '"' + (c[0] === it.cat ? ' selected' : '') + '>' + c[1] + '</option>'; }).join('') + '</select></div>' +
       '<div class="field"><label for="a-type">유형</label><select id="a-type">' + ATYPES.map(function (c) { return '<option value="' + c[0] + '"' + (c[0] === it.type ? ' selected' : '') + '>' + c[1] + '</option>'; }).join('') + '</select><span class="hint">파일을 올리면 자동으로 맞춰집니다</span></div>' +
@@ -369,7 +370,7 @@
       '<div class="field"><label for="a-url">방법 1 · 다른 사이트의 주소 가져오기(선택)</label><input id="a-url" value="' + esc(it.url || '') + '" placeholder="https://… (한림 AI 교육 포털, 구글 드라이브, 유튜브 등)"><span class="hint">주소만 넣으면 목록에서 그 주소가 새 창으로 열립니다</span></div>' +
       '<div class="field"><label>방법 2 · 파일 직접 올리기(선택, 여러 개 가능)</label>' + filesHtml('a-files', 'PDF·HWP·PPT·이미지·영상 등. 파일이 하나면 목록에서 바로 열리고, 여러 개면 자료 페이지가 생깁니다' + (SERVER && SERVER_FILES ? '(용량 제한 없음)' : '(파일당 100MB까지)')) + '</div>' +
       '<div class="field"><label>방법 3 · 설명 글(선택)</label>' + editorHtml('a-ed') + '<span class="hint">설명을 쓰면 자료 페이지(제목 · 설명 · 첨부 · 외부 주소)가 만들어집니다</span></div>' +
-      '<span class="msg" id="a-need-msg">외부 주소, 파일, 설명 가운데 하나는 있어야 합니다</span>' +
+      '<span class="msg" id="a-need-msg" style="display:none">외부 주소, 파일, 설명 가운데 하나는 있어야 합니다</span>' +
       '<div class="status-row"><label class="chk"><input type="checkbox" id="a-pub"' + (it.published !== false ? ' checked' : '') + '><span>홈페이지에 표시(끄면 비공개로 저장)</span></label></div></form>';
     qs('#top-actions').innerHTML = '<span id="edit-status" class="small"><span class="saved">● ' + (isNew ? '새 자료' : '저장됨') + '</span></span><button class="btn ghost sm" type="button" id="a-draft">비공개로 저장</button><button class="btn dark sm" type="button" id="a-save">게시하기</button>';
     var editor = mountEditor('a-ed', it.body || ''); editor.onInput(function () { setDirty(true); });
