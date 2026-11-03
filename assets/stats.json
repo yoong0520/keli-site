@@ -1,6 +1,6 @@
 {
-  "_안내": "KELI 사무국이 직접 고치는 파일입니다. 숫자만 바꾸고 저장하면 1~2분 뒤 홈 화면에 반영됩니다. courses를 null로 두면 한림 AI 교육 포털의 AI 강좌 수를 자동으로 씁니다.",
-  "services": 19,
+  "_안내": "KELI 사무국이 관리자 화면(admin.html)에서 고치는 파일입니다. 숫자만 바꾸고 저장하면 1~2분 뒤 홈 화면에 반영됩니다. services·courses를 null로 두면 한림 AI 교육 포털의 서비스 수·AI 강좌 수를 자동으로 씁니다.",
+  "services": null,
   "universities": 23,
   "companies": 31,
   "courses": null,

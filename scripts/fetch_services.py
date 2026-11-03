@@ -32,7 +32,7 @@ def main():
         items.sort(key=lambda x: (x['category_order'], 0 if x['status'] == 'live' else 1, x['home_order'], x['name'].lower()))
         kst = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
         out = {'source': PORTAL + '/hallym-ai', 'api': API, 'fetched_at': kst.strftime('%Y. %m. %d.').replace(' 0', ' '), 'fetched_iso': kst.isoformat(timespec='minutes'),
-               'count': len(items), 'categories': [c for c, _ in sorted(cats.items(), key=lambda kv: kv[1])], 'items': items}
+               'count': len(items), 'live_count': sum(1 for i in items if i['status'] == 'live'), 'coming_count': sum(1 for i in items if i['status'] != 'live'), 'categories': [c for c, _ in sorted(cats.items(), key=lambda kv: kv[1])], 'items': items}
         os.makedirs(os.path.dirname(OUT), exist_ok=True)
         json.dump(out, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
         print('ok', len(items), 'services in', len(cats), 'categories')

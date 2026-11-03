@@ -59,6 +59,8 @@
       if(s.courses!=null&&s.courses!==''){ setStat('courses',s.courses); setStat('courses_note','사무국 입력값'); }
     }).catch(function(){}).then(function(){ return load('assets/stats.live.json'); }).then(function(l){
       if(l&&l.courses){ setStat('courses_live',l.courses); setStat('courses_date',l.fetched_at||''); if(!(manual&&manual.courses!=null&&manual.courses!=='')){ setStat('courses',l.courses); setStat('courses_note','한림 AI 교육 포털 '+(l.fetched_at||'')+' 기준'); } }
+    }).catch(function(){}).then(function(){ return load('assets/services.live.json'); }).then(function(v){
+      if(v&&v.count&&!(manual&&manual.services!=null&&manual.services!=='')){ setStat('services',v.count); setStat('services_note','운영 중 '+(v.live_count||'')+' · 오픈 예정 '+(v.coming_count||'')+' · 포털 '+String(v.fetched_at||'').replace(/ /g,'\u00a0')+' 기준'); }
     }).catch(function(){}).then(countUp);
   })();
   // 관리자가 숨긴 자동 연동 글(content/hidden.json → window.KELI_HIDDEN)은 다시 그릴 때도 뺀다

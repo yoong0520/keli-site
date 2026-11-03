@@ -684,6 +684,8 @@ JS = r"""
       if(s.courses!=null&&s.courses!==''){ setStat('courses',s.courses); setStat('courses_note','사무국 입력값'); }
     }).catch(function(){}).then(function(){ return load('assets/stats.live.json'); }).then(function(l){
       if(l&&l.courses){ setStat('courses_live',l.courses); setStat('courses_date',l.fetched_at||''); if(!(manual&&manual.courses!=null&&manual.courses!=='')){ setStat('courses',l.courses); setStat('courses_note','한림 AI 교육 포털 '+(l.fetched_at||'')+' 기준'); } }
+    }).catch(function(){}).then(function(){ return load('assets/services.live.json'); }).then(function(v){
+      if(v&&v.count&&!(manual&&manual.services!=null&&manual.services!=='')){ setStat('services',v.count); setStat('services_note','운영 중 '+(v.live_count||'')+' · 오픈 예정 '+(v.coming_count||'')+' · 포털 '+String(v.fetched_at||'').replace(/ /g,'\u00a0')+' 기준'); }
     }).catch(function(){}).then(countUp);
   })();
   // 관리자가 숨긴 자동 연동 글(content/hidden.json → window.KELI_HIDDEN)은 다시 그릴 때도 뺀다
@@ -858,7 +860,7 @@ def header(current):
     mlinks = ''.join(f'<div class="mgrp"><a class="mtop" href="{h}">{t}</a><div class="msub">' + ''.join(_sub_m(it) for it in subs) + '</div></div>' for h, t, subs in MEGA) + '<div class="mgrp"><div class="msub"><a href="search.html">검색</a><a href="en.html">English</a><a href="join.html#inquiry">도입 문의</a></div></div>'
     cols = ''.join(f'<div class="mega-col" data-menu="{h}"><a class="mega-col-title" href="{h}">{t}</a><ul>' + ''.join(_sub_c(it) for it in subs) + '</ul></div>' for h, t, subs in MEGA)
     mega = f'''<div class="mega" id="mega" aria-hidden="true"><div class="wrap mega-inner">
-<div class="mega-intro"><span class="eyebrow">K-University AI EduTech &amp; Learning Initiative</span><strong>고등교육 AI 공유 플랫폼</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="more" href="join.html#inquiry">도입 문의</a><a class="more" href="demos.html">전체 데모 영상</a></div>
+<div class="mega-intro"><span class="eyebrow">K-University AI EduTech &amp; Learning Initiative</span><strong>고등교육 AI<br>공유 플랫폼</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="more" href="join.html#inquiry">도입 문의</a><a class="more" href="demos.html">전체 데모 영상</a></div>
 <div class="mega-cols">{cols}</div>
 </div></div>'''
     return f'''<header class="hdr"><div class="wrap bar">
@@ -1247,7 +1249,7 @@ DEMO_NOTE = f'한림 AI 교육 포털의 「한림 AI」 화면(ai.hallym.ac.kr/
 # ------------------------------------------------------------------ 홈 숫자 3 (관리자 입력 + 포털 자동 수집)
 STATS = _load_json(os.path.join(OUT, 'assets', 'stats.json'), {
     "_안내": "KELI 사무국이 관리자 화면(admin.html)에서 고치는 파일입니다. 숫자만 바꾸고 저장하면 1~2분 뒤 홈 화면에 반영됩니다. courses를 null로 두면 한림 AI 교육 포털의 AI 강좌 수를 자동으로 씁니다.",
-    "services": 19, "universities": 23, "companies": 31, "courses": None,
+    "services": None, "universities": 23, "companies": 31, "courses": None,
     "basis": "2026. 10. KELI 리플렛 · 포털 파트너 목록",
 })
 def _load_live():
@@ -1315,8 +1317,17 @@ def page_admin():
     write('admin.html', 'KELI 관리자', body)
 
 # ------------------------------------------------------------------ 페이지
+def svc_stat():
+    """홈 숫자 카드의 AI 교육 서비스 수: 사무국 입력값이 있으면 그 값, 없으면 포털 등록 서비스 수"""
+    if STATS.get('services') not in (None, ''):
+        return STATS['services'], '사무국 입력값'
+    if SVC_LIVE and SVC_LIVE.get('count'):
+        return SVC_LIVE['count'], f"운영 중 {SVC_LIVE.get('live_count', '')} · 오픈 예정 {SVC_LIVE.get('coming_count', '')} · 포털 {SVC_LIVE.get('fetched_at', '').replace(' ', chr(160))} 기준"
+    return len(SERVICES), 'KELI Marketplace 등재 기준'
+
 def page_index():
     cards = ''.join(svc_card(s) for s in SERVICES)
+    svc_n, svc_note = svc_stat()
     notices = ''.join(f'<a class="li" href="notice-{n["id"]}.html"><span><span class="t">{E(n["title"])}</span></span><span class="d">{n["date"]}</span></a>' for n in NOTICES[:3])
     body = f'''
 <section class="hero home"><div class="hero-fx" aria-hidden="true"><canvas id="hero-wave"></canvas></div><div class="wrap">
@@ -1328,11 +1339,11 @@ def page_index():
 
 <section class="sec alt"><div class="wrap">
 <div class="grid g3" id="stats">
-<div class="card"><span class="num" data-stat="services" data-count="{STATS['services']}">{STATS['services']}</span><h3>AI 교육 서비스</h3><p>한림대가 개발하고 수업에서 검증한 HAI Ecosystems</p></div>
+<div class="card"><span class="num" data-stat="services" data-count="{svc_n}">{svc_n}</span><h3>AI 교육 서비스</h3><p>한림대가 개발하고 수업에서 검증한 HAI Ecosystems<br><span class="small" data-stat="services_note">{svc_note}</span></p></div>
 <div class="card"><span class="num" data-stat="partners" data-count="{STATS['universities'] + STATS['companies']}">{STATS['universities'] + STATS['companies']}</span><h3>참여 기관</h3><p>대학 <span data-stat="universities">{STATS['universities']}</span> · 에듀테크 기업 <span data-stat="companies">{STATS['companies']}</span></p></div>
 <div class="card"><span class="num" data-stat="courses" data-count="{LIVE['courses']}">{LIVE['courses']:,}</span><h3>AI 결합 강좌</h3><p>한림대학교 누적 운영 강좌 · <span data-stat="courses_note">한림 AI 교육 포털 {LIVE['fetched_at']} 기준</span></p></div>
 </div>
-<p class="note" style="margin-top:16px">기준: 서비스·참여 기관 수는 사무국이 직접 입력합니다(2026. 10. KELI 리플렛·포털 파트너 목록). AI 결합 강좌 수는 한림 AI 교육 포털(ai.hallym.ac.kr)의 "AI 강좌 수"를 매일 자동으로 가져옵니다.</p>
+<p class="note" style="margin-top:16px">기준: AI 교육 서비스 수와 AI 결합 강좌 수는 한림 AI 교육 포털(ai.hallym.ac.kr)의 등록 서비스 수와 "AI 강좌 수"를 매일 자동으로 가져옵니다. 참여 기관 수는 사무국이 직접 입력합니다(2026. 10. KELI 리플렛·포털 파트너 목록).</p>
 </div></section>
 
 <section class="sec" id="intro"><div class="wrap">

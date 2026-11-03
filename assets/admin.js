@@ -95,7 +95,7 @@
     if (kind === 'notices' && !state.notices) return loadJson('content/notices.json', { items: [] }).then(function (j) { state.notices = j; });
     if (kind === 'archive' && !state.archive) return loadJson('content/archive.json', { items: [] }).then(function (j) { state.archive = j; });
     if (kind === 'hidden' && !state.hidden) return loadJson('content/hidden.json', { events: [], press: [], videos: [], unn: [], services: [] }).then(function (j) { state.hidden = j; });
-    if (kind === 'stats' && !state.stats) return loadJson('assets/stats.json', { services: 19, universities: 23, companies: 31, courses: null, basis: '' }).then(function (j) { state.stats = j; });
+    if (kind === 'stats' && !state.stats) return loadJson('assets/stats.json', { services: null, universities: 23, companies: 31, courses: null, basis: '' }).then(function (j) { state.stats = j; });
     return Promise.resolve();
   }
   function counts() { qsa('[data-cnt]').forEach(function (e) { var k = e.getAttribute('data-cnt'); var s = state[k]; e.textContent = s ? (s.items || []).length : ''; }); }
@@ -282,9 +282,9 @@
   function vStats() {
     return ensure('stats').then(function () {
       var s = state.stats;
-      return fetch('assets/stats.live.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; }).then(function (live) {
+      return Promise.all([fetch('assets/stats.live.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; }), fetch('assets/services.live.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; })]).then(function (both) { var live = both[0], svc = both[1];
         view.innerHTML = '<div class="adm-head"><h2>홈 숫자</h2></div><form class="form" id="sf" novalidate><div class="grid g2" style="gap:16px">' +
-          '<div class="field"><label for="s-services">AI 교육 서비스 수</label><input id="s-services" type="number" min="0" value="' + esc(s.services) + '"></div>' +
+          '<div class="field"><label for="s-services">AI 교육 서비스 수</label><input id="s-services" type="number" min="0" value="' + (s.services == null ? '' : esc(s.services)) + '" placeholder="비워 두면 포털 값 자동"><span class="hint">현재 포털 값: <strong>' + esc(svc.count != null ? svc.count : '—') + '</strong> (운영 중 ' + esc(svc.live_count != null ? svc.live_count : '—') + ' · 오픈 예정 ' + esc(svc.coming_count != null ? svc.coming_count : '—') + ', ' + esc(svc.fetched_at || '') + ' 수집)</span></div>' +
           '<div class="field"><label for="s-univ">참여 대학 수</label><input id="s-univ" type="number" min="0" value="' + esc(s.universities) + '"></div>' +
           '<div class="field"><label for="s-comp">참여 에듀테크 기업 수</label><input id="s-comp" type="number" min="0" value="' + esc(s.companies) + '"></div>' +
           '<div class="field"><label for="s-courses">AI 결합 강좌 수</label><input id="s-courses" type="number" min="0" value="' + (s.courses == null ? '' : esc(s.courses)) + '" placeholder="비워 두면 포털 값 자동"><span class="hint">현재 포털 값: <strong>' + esc(live.courses != null ? Number(live.courses).toLocaleString('ko-KR') : '—') + '</strong> (' + esc(live.fetched_at || '') + ' 수집)</span></div>' +
