@@ -202,7 +202,7 @@ CSS = r"""
 :root {
   --bg: #ffffff; --bg2: #f5f5f7; --fg: #1d1d1f; --muted: #6e6e73; --line: #d2d2d7;
   --accent: #0B5CFF; --accent-fg: #ffffff; --pink: #ef8aa5; --ok: #1a6b30; --ok-bg: #e3f3e7; --soon: #7a5200; --soon-bg: #fff1cc;
-  --s1: #0b57a4; --s1-bg: #e4eefb; --s2: #0e6b55; --s2-bg: #e1f4ee; --s3: #a14a00; --s3-bg: #fff0dc; --s4: #4b2fbf; --s4-bg: #ece8ff; --s5: #b02457; --s5-bg: #fde6ee; --s6: #3b6b10; --s6-bg: #ebf5df;
+  --s1: #0B5CFF; --s1-bg: #e6eeff; --s2: #0e6b55; --s2-bg: #e1f4ee; --s3: #a14a00; --s3-bg: #fff0dc; --s4: #4b2fbf; --s4-bg: #ece8ff; --s5: #b02457; --s5-bg: #fde6ee; --s6: #3b6b10; --s6-bg: #ebf5df;
   --font: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
 }
 /* 기기 다크 모드와 무관하게 항상 흰 바탕(사무국 결정 2026-11-03). 다크는 html[data-theme="dark"]를 직접 넣을 때만 */
