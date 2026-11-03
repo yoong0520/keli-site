@@ -13,7 +13,7 @@
   var qs = function (s, r) { return (r || document).querySelector(s); };
   var qsa = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
-  var token = null, user = null, state = { notices: null, archive: null, hidden: null, stats: null, site: null, feeds: {}, sha: {} };
+  var token = null, user = null, state = { notices: null, archive: null, hidden: null, stats: null, site: null, cats: null, feeds: {}, sha: {} };
   var dirty = false;   // 편집 중 저장 안 한 변경이 있는가
 
   // ---------------------------------------------------------------- 공통 UI
@@ -132,6 +132,7 @@
     if (kind === 'archive' && !state.archive) return loadJson('content/archive.json', { items: [] }).then(function (j) { state.archive = j; });
     if (kind === 'hidden' && !state.hidden) return loadJson('content/hidden.json', { events: [], press: [], videos: [], unn: [], services: [] }).then(function (j) { state.hidden = j; ['events', 'press', 'videos', 'unn', 'services'].forEach(function (k) { state.hidden[k] = (state.hidden[k] || []).map(String); }); });
     if (kind === 'stats' && !state.stats) return loadJson('assets/stats.json', { services: null, universities: 23, companies: 31, courses: null, basis: '' }).then(function (j) { state.stats = j; });
+    if (kind === 'cats' && !state.cats) return loadJson('content/categories.json', {}).then(function (j) { state.cats = j; if (!(j.notices || []).length) j.notices = CATS_DEFAULT.notices.slice(); if (!(j.archive || []).length) j.archive = CATS_DEFAULT.archive.slice(); });
     if (kind === 'site' && !state.site) return loadJson('content/site.json', { hero: {}, banner: { on: false, text: '', link: '', until: '' } }).then(function (j) { state.site = j; state.site.hero = state.site.hero || {}; state.site.banner = state.site.banner || {}; });
     return Promise.resolve();
   }
@@ -225,7 +226,7 @@
   }
 
   // ---------------------------------------------------------------- 공용: 본문 편집기 · 첨부파일 상자
-  var ED_BTNS = [['h3', '소제목'], ['bold', '굵게'], ['italic', '기울임'], ['sep'], ['ul', '• 목록'], ['ol', '1. 목록'], ['quote', '인용'], ['sep'], ['link', '링크'], ['img', '이미지'], ['table', '표'], ['sep'], ['clear', '서식 지우기'], ['html', 'HTML']];
+  var ED_BTNS = [['tpl', '서식 ▾'], ['sep'], ['h3', '소제목'], ['bold', '굵게'], ['italic', '기울임'], ['sep'], ['ul', '• 목록'], ['ol', '1. 목록'], ['quote', '인용'], ['sep'], ['link', '링크'], ['img', '이미지'], ['table', '표'], ['sep'], ['clear', '서식 지우기'], ['html', 'HTML']];
   function editorHtml(id) {
     return '<div class="ed-bar" id="' + id + '-bar">' + ED_BTNS.map(function (b) { return b[0] === 'sep' ? '<span class="sep"></span>' : '<button type="button" data-ed="' + b[0] + '">' + b[1] + '</button>'; }).join('') + '</div>' +
       '<div class="ed" id="' + id + '" contenteditable="true"></div><textarea class="ed-src" id="' + id + '-src" hidden spellcheck="false"></textarea><input type="file" id="' + id + '-img" accept="image/*" hidden>';
@@ -240,6 +241,7 @@
       b.addEventListener('mousedown', function (e) { e.preventDefault(); });
       b.addEventListener('click', function () {
         var c = b.getAttribute('data-ed');
+        if (c === 'tpl') { pickTemplate(function (html) { if (htmlMode) { src.value = (src.value.trim() ? src.value + '\n' : '') + html; } else { if (ed.innerHTML.trim() && !confirm('지금 쓴 내용 뒤에 서식을 붙입니다. 계속할까요?')) return; ed.innerHTML = (ed.innerHTML.trim() ? ed.innerHTML + '<p></p>' : '') + html; } fire(); toast('서식을 넣었습니다. {{ }} 안의 글을 바꿔 쓰세요'); }); return; }
         if (c === 'html') { htmlMode = !htmlMode; b.classList.toggle('on', htmlMode); if (htmlMode) { src.value = ed.innerHTML; ed.hidden = true; src.hidden = false; src.focus(); } else { ed.innerHTML = src.value; src.hidden = true; ed.hidden = false; ed.focus(); } return; }
         if (htmlMode) { toast('HTML 모드에서는 소스를 직접 고치세요'); return; }
         ed.focus();
@@ -259,6 +261,14 @@
     qs('#' + id + '-img').addEventListener('change', function () { var f = this.files[0]; if (!f) return; var inp = this; var range = window.getSelection().rangeCount ? window.getSelection().getRangeAt(0) : null; toast('이미지 올리는 중…'); uploadFile(f).then(function (r) { ed.focus(); if (range) { window.getSelection().removeAllRanges(); window.getSelection().addRange(range); } var local = ''; try { local = URL.createObjectURL(f); } catch (e3) {} document.execCommand('insertHTML', false, '<figure class="art-fig"><img src="' + esc(local || r.url) + '"' + (local ? ' data-src="' + esc(r.url) + '"' : '') + ' alt="' + esc(f.name.replace(/\.[^.]+$/, '')) + '"><figcaption></figcaption></figure><p></p>'); toast('이미지를 넣었습니다. 사이트에는 게시 후 1~2분 뒤 보입니다'); fire(); }).catch(function (e) { toast('이미지 실패: ' + e.message, 6000); }).then(function () { inp.value = ''; }); });
     ed.addEventListener('input', fire); src.addEventListener('input', fire);
     return { body: body, onInput: function (f) { listeners.push(f); } };
+  }
+  function pickTemplate(onPick) {
+    var T = window.KELI_TEMPLATES || []; var groups = []; T.forEach(function (t) { if (groups.indexOf(t.group) < 0) groups.push(t.group); });
+    var bx = modal('<h3 style="margin:0 0 4px;font-size:20px">글 서식 넣기</h3><p class="small muted" style="margin:0 0 14px">KELI 디자인에 맞춘 서식입니다. 넣은 뒤 {{ }} 안의 글만 바꿔 쓰면 됩니다. 제목·날짜·분류는 글 머리글에 자동으로 붙으므로 본문에 다시 쓰지 않습니다.</p>' +
+      groups.map(function (g) { return '<p class="small" style="margin:14px 0 6px;font-weight:700;color:var(--muted)">' + esc(g) + '</p><div class="hist">' + T.filter(function (t) { return t.group === g; }).map(function (t) { return '<div class="h"><div><div><strong>' + esc(t.name) + '</strong></div><div class="m">' + esc(t.desc) + '</div></div><button class="btn sm" type="button" data-tpl="' + esc(t.id) + '">넣기</button></div>'; }).join('') + '</div>'; }).join('') +
+      '<div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn ghost" type="button" id="tpl-x">닫기</button></div>', true);
+    qs('#tpl-x', bx).addEventListener('click', closeModal);
+    qsa('[data-tpl]', bx).forEach(function (b) { b.addEventListener('click', function () { var t = T.filter(function (x) { return x.id === b.getAttribute('data-tpl'); })[0]; closeModal(); if (t) onPick(t.html); }); });
   }
   function filesHtml(id, hint) { return '<div class="files-box" id="' + id + '"></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px"><input type="file" id="' + id + '-in" multiple><span class="small muted">' + (hint || 'PDF·HWP·이미지 등 여러 개 가능. 올리는 즉시 저장소에 들어갑니다' + (SERVER && SERVER_FILES ? '(용량 제한 없음)' : '(파일당 100MB까지)')) + '</span></div>'; }
   function mountFiles(id, files, onChange) {
@@ -287,24 +297,58 @@
     var on = qs('.cms-item.on', box); if (on && on.scrollIntoView) { try { on.scrollIntoView({ block: 'nearest' }); } catch (e) {} }
   }
 
+  // ---------------------------------------------------------------- 게시판 분류(content/categories.json): 각 게시판의 "분류 관리"에서 고친다
+  var CATS_DEFAULT = { notices: [{ key: 'general', label: '일반' }, { key: 'recruit', label: '모집' }, { key: 'press', label: '보도' }, { key: 'event', label: '행사 안내' }],
+    archive: [{ key: 'manual', label: '매뉴얼·소개자료', lead: '' }, { key: 'trend', label: '기술 동향·연구', lead: '' }, { key: 'case', label: '실증 사례집', lead: '' }] };
+  function cats(board) { return (state.cats && state.cats[board] && state.cats[board].length) ? state.cats[board] : CATS_DEFAULT[board]; }
+  function keyOf(label) { return String(label || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || ('c' + Date.now().toString(36)); }
+  function manageCats(board, used, onDone) {   // used: {key: 글 수} — 글이 있는 분류는 지울 수 없음
+    var list = cats(board).map(function (c) { return { key: c.key, label: c.label, lead: c.lead || '' }; }); var isArch = board === 'archive';
+    function render() {
+      var bx = qs('#modal-box');
+      bx.innerHTML = '<h3 style="margin:0 0 4px;font-size:20px">' + (isArch ? '아카이브' : '소식·공지') + ' 분류 관리</h3><p class="small muted" style="margin:0 0 14px">이름을 고치면 사이트의 탭·메뉴·페이지 이름이 함께 바뀝니다. 글이 있는 분류는 지울 수 없습니다(먼저 글의 분류를 옮기세요).</p>' +
+        '<div class="hist">' + list.map(function (c, i) { var n = used[c.key] || used[c.label] || 0; return '<div class="h" style="grid-template-columns:1fr auto"><div><input data-cl="' + i + '" value="' + esc(c.label) + '" style="width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:14px" placeholder="분류 이름">' + (isArch ? '<input data-cd="' + i + '" value="' + esc(c.lead) + '" style="width:100%;margin-top:6px;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:13px" placeholder="분류 페이지 머리말(선택)">' : '') + '<div class="m">주소·탭 키: ' + esc(c.key) + ' · 글 ' + n + '건</div></div><span style="display:flex;gap:4px"><button class="btn ghost xs" type="button" data-up="' + i + '"' + (i === 0 ? ' disabled' : '') + '>↑</button><button class="btn ghost xs" type="button" data-dn="' + i + '"' + (i === list.length - 1 ? ' disabled' : '') + '>↓</button><button class="btn ghost xs danger" type="button" data-del="' + i + '"' + (n ? ' disabled title="글이 있는 분류"' : '') + '>삭제</button></span></div>'; }).join('') + '</div>' +
+        '<div style="display:flex;gap:8px;margin-top:12px"><input id="cat-new" placeholder="새 분류 이름" style="flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14px"><button class="btn ghost sm" type="button" id="cat-add">추가</button></div>' +
+        '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:18px"><button class="btn ghost" type="button" id="cat-x">취소</button><button class="btn" type="button" id="cat-ok">저장하고 게시</button></div>';
+      function sync() { qsa('[data-cl]', bx).forEach(function (i) { list[Number(i.getAttribute('data-cl'))].label = i.value.trim(); }); qsa('[data-cd]', bx).forEach(function (i) { list[Number(i.getAttribute('data-cd'))].lead = i.value.trim(); }); }
+      qsa('[data-up]', bx).forEach(function (b) { b.addEventListener('click', function () { sync(); var i = Number(b.getAttribute('data-up')); var t = list[i - 1]; list[i - 1] = list[i]; list[i] = t; render(); }); });
+      qsa('[data-dn]', bx).forEach(function (b) { b.addEventListener('click', function () { sync(); var i = Number(b.getAttribute('data-dn')); var t = list[i + 1]; list[i + 1] = list[i]; list[i] = t; render(); }); });
+      qsa('[data-del]', bx).forEach(function (b) { b.addEventListener('click', function () { sync(); list.splice(Number(b.getAttribute('data-del')), 1); render(); }); });
+      qs('#cat-add', bx).addEventListener('click', function () { sync(); var v = qs('#cat-new', bx).value.trim(); if (!v) return; var k = keyOf(v); while (list.some(function (c) { return c.key === k; })) k += '2'; list.push({ key: k, label: v, lead: '' }); render(); });
+      qs('#cat-x', bx).addEventListener('click', closeModal);
+      qs('#cat-ok', bx).addEventListener('click', function () {
+        sync(); if (list.some(function (c) { return !c.label; })) { toast('이름이 빈 분류가 있습니다'); return; } if (!list.length) { toast('분류는 하나 이상 있어야 합니다'); return; }
+        var old = cats(board); var renamed = {}; old.forEach(function (o) { var n = list.filter(function (c) { return c.key === o.key; })[0]; if (n && n.label !== o.label) renamed[o.label] = n.label; });
+        var b2 = qs('#cat-ok', bx); b2.disabled = true;
+        ensure('cats').then(function () { state.cats[board] = list.map(function (c) { return isArch ? { key: c.key, label: c.label, lead: c.lead } : { key: c.key, label: c.label }; }); return saveJson('content/categories.json', state.cats, (isArch ? '아카이브' : '소식') + ' 분류 수정'); })
+          .then(function () {   // 소식 글은 분류를 이름으로 갖고 있어 이름이 바뀌면 글도 같이 고친다
+            if (!isArch && Object.keys(renamed).length && state.notices) { var ch = 0; (state.notices.items || []).forEach(function (n) { if (renamed[n.cat]) { n.cat = renamed[n.cat]; ch++; } }); if (ch) return saveJson('content/notices.json', state.notices, '분류 이름 변경에 따라 공지 ' + ch + '건 갱신'); }
+          }).then(function () { closeModal(); afterSave('분류를 저장했습니다'); if (onDone) onDone(); }).catch(function (e) { fail(e); b2.disabled = false; });
+      });
+    }
+    modal('<p class="muted">불러오는 중…</p>'); render();
+  }
+
   // ---------------------------------------------------------------- 소식·공지: 목록 + 편집 2단
   var CATS = ['일반', '모집', '보도', '행사 안내'];
   function vNotices(args) {
-    return ensure('notices').then(function () {
+    return Promise.all([ensure('notices'), ensure('cats')]).then(function () {
+      CATS = cats('notices').map(function (c) { return c.label; });
       var items = sortNotices(state.notices.items || []); var cur = null, isNew = false;
       if (args[0] === 'new') isNew = true;
       else if (args[0]) cur = items.filter(function (x) { return x.id === args[0]; })[0];
       if (!cur && !isNew && items.length) { location.replace('#notices/' + items[0].id); return; }
       var list = listPanel({ title: '전체 소식', count: items.length, addHref: '#notices/new', addLabel: '새 소식 작성', searchPh: '소식 검색', chips: [['all', '전체']].concat(CATS.map(function (c) { return [c, c]; })),
         items: items.map(function (n) { return { id: n.id, href: '#notices/' + n.id, on: cur && cur.id === n.id, off: n.published === false, pinned: n.pinned, cat: n.cat, chip: n.cat, title: n.title, date: n.date, extra: n.files && n.files.length ? '첨부 ' + n.files.length : '' }; }) });
-      view.innerHTML = head('Hallym University / Website CMS', '소식·공지', '새로운 소식을 작성하고 홈페이지에 보여줄 항목을 선택합니다.', '<span>마지막 저장</span><br><strong>' + esc(items[0] && items[0].updated ? items[0].updated : '—') + '</strong>') +
+      view.innerHTML = head('Hallym University / Website CMS', '소식·공지', '새로운 소식을 작성하고 홈페이지에 보여줄 항목을 선택합니다.', '<button class="btn ghost xs" type="button" id="cats-manage">분류 관리</button><br><span>마지막 저장 <strong>' + esc(items[0] && items[0].updated ? items[0].updated : '—') + '</strong></span>') +
         '<div class="cms-split">' + list + '<div class="panel cms-editor" id="editor"></div></div>';
       wireList();
+      qs('#cats-manage').addEventListener('click', function () { var used = {}; items.forEach(function (n) { used[n.cat] = (used[n.cat] || 0) + 1; }); manageCats('notices', used, route); });
       if (isNew || cur) editNotice(cur); else qs('#editor').innerHTML = '<div class="empty">아직 소식이 없습니다. "새 소식 작성"을 눌러 첫 글을 올려 보세요.</div>';
     });
   }
   function editNotice(it) {
-    var isNew = !it; it = it || { id: newId('n'), cat: '일반', title: '', date: today(), summary: '', body: '', link: '', pinned: false, published: true, files: [] };
+    var isNew = !it; it = it || { id: newId('n'), cat: CATS[0] || '일반', title: '', date: today(), summary: '', body: '', link: '', pinned: false, published: true, files: [] };
     var box = qs('#editor'); var draftKey = 'keli_draft_' + it.id; var draft = null; try { draft = JSON.parse(localStorage.getItem(draftKey) || 'null'); } catch (e) {}
     box.innerHTML = '<div class="ph"><div><h3>' + (isNew ? '새 소식' : '소식 편집') + '</h3><p>작성 내용은 저장 후 게시해야 홈페이지에 반영됩니다.</p></div>' + (isNew ? '' : '<button class="danger-link" type="button" id="n-del">🗑 삭제</button>') + '</div>' +
       '<form class="form" id="nf" novalidate>' +
@@ -339,25 +383,27 @@
   }
 
   // ---------------------------------------------------------------- 아카이브: 목록 + 편집 2단 (외부 주소 / 파일 / 설명 글)
-  var ACATS = [['case', '실증 사례집'], ['trend', '기술 동향·연구'], ['manual', '매뉴얼·소개자료']], ATYPES = [['pdf', 'PDF'], ['doc', '문서'], ['link', '링크'], ['video', '영상'], ['image', '이미지']];
+  var ACATS = [['manual', '매뉴얼·소개자료'], ['trend', '기술 동향·연구'], ['case', '실증 사례집']], ATYPES = [['pdf', 'PDF'], ['doc', '문서'], ['link', '링크'], ['video', '영상'], ['image', '이미지']];
   function lbl(list, k) { var m = list.filter(function (x) { return x[0] === k; })[0]; return m ? m[1] : k; }
   function typeOf(name) { return /\.pdf$/i.test(name) ? 'pdf' : /\.(png|jpe?g|gif|webp)$/i.test(name) ? 'image' : /\.(mp4|mov|webm)$/i.test(name) ? 'video' : 'doc'; }
   function archiveOpen(a) { var fs = a.files || []; if (a.body || fs.length > 1 || (fs.length && a.url)) return CFG.site + 'archive-' + a.id + '.html'; return a.url || (fs[0] && fs[0].url) || (CFG.site + 'archive.html'); }
   function vArchive(args) {
-    return ensure('archive').then(function () {
+    return Promise.all([ensure('archive'), ensure('cats')]).then(function () {
+      ACATS = cats('archive').map(function (c) { return [c.key, c.label]; });
       var items = state.archive.items || []; var cur = null, isNew = false;
       if (args[0] === 'new') isNew = true; else if (args[0]) cur = items.filter(function (x) { return x.id === args[0]; })[0];
       if (!cur && !isNew && items.length) { location.replace('#archive/' + items[0].id); return; }
       var list = listPanel({ title: '전체 자료', count: items.length, addHref: '#archive/new', addLabel: '자료 추가', searchPh: '자료 검색', chips: [['all', '전체']].concat(ACATS),
         items: items.map(function (a) { return { id: a.id, href: '#archive/' + a.id, on: cur && cur.id === a.id, off: a.published === false, cat: lbl(ACATS, a.cat) + ' · ' + lbl(ATYPES, a.type), chip: a.cat, title: a.title, date: a.date, extra: (a.org || '') + ((a.files || []).length ? ' · 첨부 ' + a.files.length : '') }; }) });
-      view.innerHTML = head('Hallym University / Website CMS', '아카이브', '실증 사례집 · 기술 동향 · 매뉴얼을 올립니다. 다른 사이트 주소를 가져오거나, 파일을 직접 올리거나, 설명 글과 함께 올리면 자료 페이지가 생깁니다.') +
+      view.innerHTML = head('Hallym University / Website CMS', '아카이브', '자료를 올립니다. 다른 사이트 주소를 가져오거나, 파일을 직접 올리거나, 설명 글과 함께 올리면 자료 페이지가 생깁니다.', '<button class="btn ghost xs" type="button" id="cats-manage">분류 관리</button>') +
         '<div class="cms-split">' + list + '<div class="panel cms-editor" id="editor"></div></div>';
       wireList();
+      qs('#cats-manage').addEventListener('click', function () { var used = {}; items.forEach(function (a) { used[a.cat] = (used[a.cat] || 0) + 1; }); manageCats('archive', used, route); });
       if (isNew || cur) editArchive(cur); else qs('#editor').innerHTML = '<div class="empty">아직 자료가 없습니다.</div>';
     });
   }
   function editArchive(it) {
-    var isNew = !it; it = it || { id: newId('a'), cat: 'case', type: 'pdf', title: '', org: 'KELI 사무국', date: today(), url: '', body: '', files: [], published: true };
+    var isNew = !it; it = it || { id: newId('a'), cat: (ACATS[0] || ['case'])[0], type: 'pdf', title: '', org: 'KELI 사무국', date: today(), url: '', body: '', files: [], published: true };
     var box = qs('#editor');
     box.innerHTML = '<div class="ph"><div><h3>' + (isNew ? '자료 추가' : '자료 편집') + '</h3><p>외부 주소, 파일, 설명 가운데 하나는 있어야 합니다.</p></div>' + (isNew ? '' : '<span style="display:flex;gap:12px;align-items:center"><a class="btn ghost xs" href="' + esc(archiveOpen(it)) + '" target="_blank" rel="noopener">열기</a><button class="danger-link" type="button" id="a-del">🗑 삭제</button></span>') + '</div>' +
       '<form class="form" id="af" novalidate>' +
@@ -477,7 +523,7 @@
       Promise.all([liveFeed('services'), liveFeed('events'), liveFeed('press'), liveFeed('unn'), liveFeed('videos'), ensure('notices'), ensure('archive')]).then(counts).catch(function () {});
     });
   }
-  function logout() { clearToken(); token = null; user = null; state = { notices: null, archive: null, hidden: null, stats: null, site: null, feeds: {}, sha: {} }; showLogin(''); location.hash = ''; }
+  function logout() { clearToken(); token = null; user = null; state = { notices: null, archive: null, hidden: null, stats: null, site: null, cats: null, feeds: {}, sha: {} }; showLogin(''); location.hash = ''; }
   qs('#adm-logout').addEventListener('click', logout);
   qs('#login-form').addEventListener('submit', function (e) {
     e.preventDefault(); var m = qs('#tok-msg'); m.style.display = 'none'; var btn = qs('#tok-go'); var keep = qs('#tok-keep').checked;

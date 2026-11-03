@@ -7,7 +7,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = 'yoong0520/keli-site'
 SHOT = os.environ.get('SHOT') or os.path.join(ROOT, '..', 'qa-shots'); os.makedirs(SHOT, exist_ok=True)
 store = {}
-for p in ['content/notices.json', 'content/archive.json', 'content/hidden.json', 'content/site.json', 'assets/stats.json']:
+for p in ['content/notices.json', 'content/archive.json', 'content/hidden.json', 'content/site.json', 'content/categories.json', 'assets/stats.json']:
     store[p] = open(os.path.join(ROOT, p), encoding='utf-8').read()
 shas = {p: 'sha0' for p in store}
 log = []
@@ -45,7 +45,10 @@ srv = Q(('127.0.0.1', 8781), H); threading.Thread(target=srv.serve_forever, daem
 errs = []
 U = 'http://127.0.0.1:8781/admin.html'
 with sync_playwright() as p:
-    b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1366, 'height': 900}, locale='ko-KR'); pg = ctx.new_page()
+    b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1366, 'height': 900}, locale='ko-KR')
+    # 이 검사는 GitHub 토큰 모드용: 사이트 설정의 관리자 서버 주소를 무시한다(서버 모드는 qa_admin_server.py)
+    ctx.add_init_script("try{localStorage.removeItem('keli_api')}catch(e){}; Object.defineProperty(window,'KELI_ADMIN',{configurable:true,set:function(v){v.api='';this._ka=v;},get:function(){return this._ka;}});")
+    pg = ctx.new_page()
     pg.on('console', lambda msg: errs.append(msg.text) if msg.type == 'error' and 'api.github.com' not in msg.text and 'Failed to load resource' not in msg.text else None)   # 가짜 저장소라 올린 파일(content/files/…)은 실제로 없음 → 404 무시
     pg.on('pageerror', lambda e: errs.append('PAGEERROR ' + str(e)))
     pg.on('dialog', lambda d: d.accept())
@@ -64,6 +67,9 @@ with sync_playwright() as p:
     pg.goto(U + '#notices/new'); pg.wait_for_selector('#editor #nf')
     pg.fill('#n-title', '관리자 화면 테스트 공지'); pg.select_option('#n-cat', '모집'); pg.fill('#n-summary', '요약 한 줄입니다.')
     pg.click('#ed'); pg.keyboard.type('첫 문단입니다. 두 번째 문장도 있습니다.'); pg.keyboard.press('Enter'); pg.click('[data-ed="h3"]'); pg.keyboard.type('소제목'); pg.keyboard.press('Enter'); pg.click('[data-ed="ul"]'); pg.keyboard.type('목록 하나')
+    # 서식 넣기
+    pg.click('[data-ed="tpl"]'); pg.wait_for_selector('#modal[data-open="1"] [data-tpl="event"]'); pg.click('[data-tpl="event"]'); pg.wait_for_timeout(300)
+    assert 'art-kv' in pg.inner_html('#ed') and '{{' in pg.inner_text('#ed'), 'template inserted'
     pg.click('[data-ed="html"]'); assert pg.is_visible('#ed-src'); src = pg.input_value('#ed-src'); assert '<h3>' in src and '<ul>' in src, src
     pg.fill('#ed-src', src + '<p>HTML 모드에서 덧붙인 문단 <strong>굵게</strong></p>'); pg.click('[data-ed="html"]')
     assert 'HTML 모드에서 덧붙인' in pg.inner_html('#ed')
@@ -81,6 +87,10 @@ with sync_playwright() as p:
     pg.click('#n-draft'); pg.wait_for_timeout(500); assert [x for x in json.loads(store['content/notices.json'])['items'] if x['id'] == new[0]['id']][0]['published'] is False
     pg.wait_for_selector('#n-del'); pg.click('#n-del'); pg.wait_for_selector('#modal[data-open="1"]'); pg.click('#modal [data-x="1"]'); pg.wait_for_timeout(600)
     assert not [x for x in json.loads(store['content/notices.json'])['items'] if x['title'] == '관리자 화면 테스트 공지']
+    # 분류 관리: 새 분류 추가 → 저장 → 칩에 나타남
+    pg.click('#cats-manage'); pg.wait_for_selector('#modal[data-open="1"] #cat-add'); pg.fill('#cat-new', '연구 소식'); pg.click('#cat-add'); pg.wait_for_timeout(200); pg.click('#cat-ok'); pg.wait_for_timeout(700)
+    cj = json.loads(store['content/categories.json']); assert [c for c in cj['notices'] if c['label'] == '연구 소식'], cj
+    pg.wait_for_selector('[data-chip]'); assert '연구 소식' in pg.inner_text('.cms-list .chips')
     # 목록 검색·분류 칩
     pg.wait_for_selector('[data-search]'); pg.fill('[data-search]', '없는글zzz'); pg.wait_for_timeout(200); assert pg.evaluate("[...document.querySelectorAll('.cms-item')].filter(e=>e.style.display!='none').length") == 0; pg.fill('[data-search]', '')
     # 아카이브 추가(파일 업로드) → 삭제

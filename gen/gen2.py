@@ -221,8 +221,18 @@ def build_services():
 UNIV = ['건양대학교', '계명대학교', '대전과학기술대학교', '대전대학교', '동서대학교', '동의대학교', '배재대학교', '백석문화대학교', '부산대학교', '서울시립대학교', '서울신학대학교', '아주대학교', '안산대학교', '우송대학교', '원광대학교', '위덕대학교', '인하대학교', '제주대학교', '충남대학교', '포항공과대학교', '한림대학교', '한성대학교', '호서대학교']
 CORP = ['HM컴퍼니', '가르침에듀', '나이테듀', '니어네트웍스', '더캣코리아', '데이디', '디큐', '디피니션', '마인드로직', '문제G', '미라크소프트', '소풍앤컴퍼니', '수퍼코딩', '슈퍼러닝', '씨즈소프트', '아이스크림 arts', '아이오테드', '언택트에듀', '엘렉시', '온율티', '유비온', '인텔리시스', '인튜브', '지키다', '청운정보', '캐모릭스', '클라썸', '택스캔바스', '프리윌린', '플랭', '하이브시스템']
 
-NOTICE_CATS = [('general', '일반'), ('recruit', '모집'), ('press', '보도')]
-_NOTICE_KEY = {'일반': 'general', '모집': 'recruit', '보도': 'press'}
+CATS_DEFAULT = {
+    'notices': [{'key': 'general', 'label': '일반'}, {'key': 'recruit', 'label': '모집'}, {'key': 'press', 'label': '보도'}, {'key': 'event', 'label': '행사 안내'}],
+    'archive': [{'key': 'manual', 'label': '매뉴얼·소개자료', 'lead': 'HAI Ecosystems 활용 매뉴얼과 가이드라인, KELI 소개 자료를 모았습니다.'},
+                {'key': 'trend', 'label': '기술 동향·연구', 'lead': '월간 에듀테크 솔루션 분석 보고서와 AI 튜터 분석 보고서 등, KELI 연구진이 펴내는 동향·연구 자료입니다.'},
+                {'key': 'case', 'label': '실증 사례집', 'lead': '한림대학교 교수진이 실제 수업에 AI를 결합해 설계·운영한 기록입니다. 교과목별 계획서·주차별 세부 계획·결과보고서를 담았습니다.'}],
+}
+_cats_file = _load_json(os.path.join(CONTENT, 'categories.json'), {})
+def _cats(board):
+    lst = [c for c in (_cats_file.get(board) or []) if c.get('key') and c.get('label')]
+    return lst or CATS_DEFAULT[board]
+NOTICE_CATS = [(c['key'], c['label']) for c in _cats('notices')]
+_NOTICE_KEY = {c['label']: c['key'] for c in _cats('notices')}
 def _load_notices():
     items = _load_json(os.path.join(CONTENT, 'notices.json'), {}).get('items', [])
     items = [n for n in items if n.get('published', True) and n.get('title')]
@@ -285,7 +295,8 @@ HIDDEN = _load_json(os.path.join(CONTENT, 'hidden.json'), {})
 def _not_hidden(kind, items):
     h = set(str(x) for x in HIDDEN.get(kind, []))
     return [it for it in items if str(it.get('id')) not in h]
-ARCH_CATS = [('manual', '매뉴얼·소개자료'), ('trend', '기술 동향·연구'), ('case', '실증 사례집')]
+ARCH_CATS = [(c['key'], c['label']) for c in _cats('archive')]
+ARCH_CAT_LEAD = {c['key']: c.get('lead', '') for c in _cats('archive')}
 
 # ------------------------------------------------------------------ CSS
 CSS = r"""
@@ -529,38 +540,39 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .cms-user { display: flex; align-items: center; gap: 10px; padding: 6px 8px; font-size: 13px; flex-wrap: wrap; } .cms-user strong { display: block; color: #fff; font-size: 13px; } .cms-user span:not(.avatar) { display: block; font-size: 11px; color: #8d97ad; } .cms-user .btn { margin-left: auto; color: #c9d1e3; border-color: rgba(255,255,255,.2); }
 .avatar { width: 32px; height: 32px; border-radius: 50%; background: #2a3550; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex: none; }
 .cms-main { min-width: 0; display: flex; flex-direction: column; }
-.cms-top { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 0 32px; height: 64px; background: #fff; border-bottom: 1px solid var(--line); }
+.cms-top { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 0 48px; height: 64px; background: #fff; border-bottom: 1px solid var(--line); }
 .crumb-top { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); } .crumb-top strong { color: var(--fg); font-weight: 600; } .crumb-top .sep { color: #c7c7cc; }
 .cms-top-r { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 .top-actions { display: inline-flex; gap: 8px; } .top-actions:empty { display: none; }
 .cms-top .deploy { padding: 6px 12px; font-size: 13px; background: var(--bg2); border-radius: 999px; max-width: 420px; }
 .cms-top .deploy #deploy-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .btn.dark { background: #151b2b; color: #fff; } .btn.dark:hover { filter: none; background: #0f1420; }
-.cms-body { padding: 32px 32px 80px; max-width: 1320px; width: 100%; }
-.cms-head { margin-bottom: 24px; display: flex; justify-content: space-between; gap: 16px; align-items: flex-end; flex-wrap: wrap; }
+.cms-body { padding: 36px 48px 96px; width: 100%; max-width: 1760px; }
+.cms-head { margin-bottom: 28px; display: flex; justify-content: space-between; gap: 16px; align-items: flex-end; flex-wrap: wrap; }
 .cms-head .eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; text-align: left; }
 .cms-head h2 { margin: 0; font-size: 30px; letter-spacing: -.02em; } .cms-head p { margin: 6px 0 0; color: var(--muted); font-size: 15px; }
 .cms-head .meta { text-align: right; font-size: 12px; color: var(--muted); line-height: 1.6; } .cms-head .meta strong { color: var(--fg); font-size: 13px; }
-.panel { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 24px; } .panel + .panel { margin-top: 20px; }
+.panel { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 28px 32px; } .panel + .panel { margin-top: 24px; }
 .panel h3 { margin: 0; font-size: 18px; } .panel .ph { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
 .panel .ph p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
-.cms-split { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
+.cms-split { display: grid; grid-template-columns: 360px 1fr; gap: 32px; align-items: start; }
+@media (min-width: 1500px) { .cms-split { grid-template-columns: 400px 1fr; gap: 40px; } }
 .cms-list { position: sticky; top: 88px; padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: calc(100vh - 112px); }
 .cms-list .lh { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px 12px; } .cms-list .lh strong { font-size: 15px; } .cms-list .lh .n { color: var(--muted); font-weight: 500; margin-left: 6px; }
 .cms-list .search { padding: 0 20px 12px; } .cms-list .search input { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px 9px 34px; font-size: 14px; background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%236e6e73" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>') 12px center no-repeat; }
 .cms-list .chips { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 20px 12px; } .cms-list .chips button { height: 26px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--line); background: #fff; font-size: 12px; font-weight: 600; } .cms-list .chips button.on { background: var(--fg); color: #fff; border-color: var(--fg); }
 .cms-list .items { overflow: auto; border-top: 1px solid var(--line); }
-.cms-item { display: block; padding: 14px 20px; border-bottom: 1px solid var(--line); color: var(--fg); border-left: 3px solid transparent; }
+.cms-item { display: block; padding: 16px 22px; border-bottom: 1px solid var(--line); color: var(--fg); border-left: 3px solid transparent; }
 .cms-item:hover { background: #fafafa; text-decoration: none; } .cms-item.on { background: #f0f5ff; border-left-color: var(--accent); }
 .cms-item .row1 { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; color: var(--muted); margin-bottom: 4px; } .cms-item .row1 .st { font-weight: 600; } .cms-item .row1 .st.pub { color: #1a6b30; } .cms-item .row1 .st.off { color: #7a5200; }
 .cms-item .t { display: block; font-size: 14px; font-weight: 600; line-height: 1.45; } .cms-item .d { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
 .cms-item.off .t { color: var(--muted); }
 .cms-list .add { display: block; text-align: center; padding: 14px; font-size: 14px; font-weight: 600; color: var(--accent); border-top: 1px solid var(--line); background: #fff; } .cms-list .add:hover { background: #f0f5ff; text-decoration: none; }
-.cms-editor .form { background: transparent; padding: 0; border-radius: 0; gap: 20px; }
+.cms-editor .form { background: transparent; padding: 0; border-radius: 0; gap: 24px; }
 .cms-editor .field label { font-size: 13px; } .cms-editor .field label .req { color: #c0392b; margin-left: 2px; }
 .cms-editor .field input, .cms-editor .field select, .cms-editor .field textarea { padding: 11px 13px; border-radius: 10px; font-size: 15px; }
 .cms-editor textarea { min-height: 88px; resize: vertical; font: inherit; line-height: 1.6; }
-.cms-editor .ed { min-height: 320px; }
+.cms-editor .ed { min-height: 460px; font-size: 17px; }
 .cms-editor .status-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; padding: 14px 16px; border-radius: 12px; background: var(--bg2); font-size: 14px; }
 .cms-editor .danger-link { color: #c0392b; font-size: 13px; font-weight: 600; background: none; border: 0; padding: 0; cursor: pointer; }
 .dirty { color: #b26a00; font-weight: 600; } .saved { color: #1a6b30; font-weight: 600; }
@@ -572,6 +584,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .feed-row .t { font-size: 14px; font-weight: 600; line-height: 1.4; } .feed-row .m { font-size: 12px; color: var(--muted); margin-top: 2px; } .feed-row.off .t { color: var(--muted); text-decoration: line-through; }
 .feed-row .acts { display: flex; gap: 6px; }
 .hist { display: flex; flex-direction: column; } .hist .h { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 14px; } .hist .h .m { font-size: 12px; color: var(--muted); margin-top: 2px; }
+@media (max-width: 1100px) { .cms-body { padding: 28px 24px 80px; } .cms-top { padding: 0 24px; } .cms-split { grid-template-columns: 320px 1fr; gap: 24px; } .panel { padding: 22px 24px; } }
 @media (max-width: 900px) { .cms { grid-template-columns: 1fr; } .cms-side { position: static; height: auto; padding: 12px 12px 8px; min-width: 0; max-width: 100vw; overflow: hidden; } .cms-brand { padding-bottom: 10px; } .cms-sec { display: none; } .cms-nav { flex-direction: row; overflow-x: auto; gap: 4px; padding-bottom: 6px; -webkit-overflow-scrolling: touch; scrollbar-width: none; } .cms-nav::-webkit-scrollbar { display: none; } .cms-nav a { white-space: nowrap; padding: 8px 10px; } .cms-nav a i { display: none; } .cms-side-foot { display: none; } .cms-top { padding: 0 16px; height: auto; min-height: 56px; flex-wrap: wrap; row-gap: 8px; padding-top: 8px; padding-bottom: 8px; } .cms-body { padding: 20px 16px 60px; } .cms-split { grid-template-columns: 1fr; } .cms-list { position: static; max-height: none; } .cms-list .items { max-height: 360px; } .feed-row { grid-template-columns: 1fr; } .feed-row .th { display: none; } }
 .adm { display: grid; grid-template-columns: 220px 1fr; gap: 40px; align-items: start; }
 .adm-nav { position: sticky; top: 72px; display: flex; flex-direction: column; gap: 4px; }
@@ -752,6 +765,12 @@ ol.art-ul { counter-reset: n; } ol.art-ul li::before { content: counter(n); coun
 .art-fig { margin: 28px 0; } .art-fig img { max-width: 100%; width: auto; height: auto; border-radius: 18px; display: block; margin: 0 auto; }
 .art-fig figcaption { margin-top: 10px; font-size: 14px; color: var(--muted); text-align: center; }
 .art-tbl { margin: 0 0 24px; }
+.art-quote { margin: 28px 0; padding: 18px 24px; border-left: 4px solid var(--accent); background: var(--bg2); border-radius: 0 16px 16px 0; font-size: 17px; line-height: 1.7; }
+.art-quote cite { display: block; margin-top: 8px; font-style: normal; font-size: 14px; color: var(--muted); }
+.art-note { margin: 28px 0 0; padding: 16px 20px; border-radius: 14px; background: var(--bg2); font-size: 14px; line-height: 1.8; color: var(--muted); }
+.art-btn { display: inline-flex; align-items: center; height: 44px; padding: 0 22px; border-radius: 999px; background: var(--accent); color: #fff !important; font-weight: 600; font-size: 15px; text-decoration: none !important; }
+.art-btn:hover { filter: brightness(.92); }
+.art .ph, .ed .ph { color: #b26a00; }
 @media (max-width: 640px) { .art-kv { grid-template-columns: 1fr; gap: 4px 0; } .art-kv dt { margin-top: 8px; } .art-kv dt:first-child { margin-top: 0; } .art { font-size: 16px; } .art-lead { font-size: 17px; } }
 .post { margin-top: 28px; font-size: 17px; line-height: 1.85; } .post p { margin: 0 0 14px; } .post ul, .post ol { margin: 0 0 14px; padding-left: 22px; } .post li { margin: 4px 0; } .post h3 { margin: 24px 0 8px; } .post img { max-width: 100%; border-radius: 16px; margin: 8px 0; } .post table { border-collapse: collapse; width: 100%; } .post td, .post th { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left; }
 .kv { display: grid; grid-template-columns: 96px 1fr; gap: 10px 16px; margin: 0; } .kv dt { color: var(--muted); font-size: 15px; } .kv dd { margin: 0; }
@@ -1069,7 +1088,7 @@ MEGA = [
     ('about.html', 'KELI 소개', [('about.html#vision', '비전'), ('about.html#consortium', 'KELI 협의체'), ('about.html#org', '조직도')]),
     ('services.html', 'Marketplace', [('services.html', 'HAI Ecosystems', [(f'services.html#{k}', lb) for k, lb, _ in AREAS] + [('demos.html', '전체 데모 영상')])]),
     ('join.html', 'KELI 협의체 참여', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의')]),
-    ('archive.html', '아카이브', [('archive-manual.html', '매뉴얼 · 소개자료'), ('archive-trend.html', '기술 동향 · 연구'), ('archive-case.html', '실증 사례집')]),
+    ('archive.html', '아카이브', [(f'archive-{k}.html', l.replace('·', ' · ')) for k, l in ARCH_CATS]),
     ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료')]),
 ]
 
@@ -1134,7 +1153,7 @@ def doc(fname, title, body, desc='KELI는 한림대학교가 개발하고 수업
 </main>
 {'' if is_admin else FOOTER}
 <script>window.KELI_HIDDEN={json.dumps({k: [str(x) for x in HIDDEN.get(k, [])] for k in ('events', 'press', 'videos', 'unn', 'services')}, ensure_ascii=False)};</script>
-<script src="assets/site.js?v={JS_V}"></script>{'<script src="assets/admin.js?v=' + JS_V + '"></script>' if fname == 'admin.html' else ''}'''
+<script src="assets/site.js?v={JS_V}"></script>{'<script src="assets/templates.js?v=' + JS_V + '"></script><script src="assets/admin.js?v=' + JS_V + '"></script>' if fname == 'admin.html' else ''}'''
     if fname == 'admin.html':
         head_bits = head_bits.replace('<meta name="description"', '<meta name="robots" content="noindex, nofollow">\n<meta name="description"', 1)
     if not skeleton:
@@ -1968,9 +1987,6 @@ def page_archive():
 '''
     write('archive.html', '아카이브 · KELI', body)
 
-ARCH_CAT_LEAD = {'case': '한림대학교 교수진이 실제 수업에 AI를 결합해 설계·운영한 기록입니다. 교과목별 계획서·주차별 세부 계획·결과보고서를 담았습니다.',
-                 'trend': '월간 에듀테크 솔루션 분석 보고서와 AI 튜터 분석 보고서 등, KELI 연구진이 펴내는 동향·연구 자료입니다.',
-                 'manual': 'HAI Ecosystems 활용 매뉴얼과 가이드라인, KELI 소개 자료를 모았습니다.'}
 def page_archive_cat(key, label, items, row):
     rows = ''.join(row(a) for a in items) if items else '<p class="muted" style="padding:20px 4px;border-bottom:1px solid var(--line)">아직 등록된 자료가 없습니다.</p>'
     body = crumb(('archive.html', '아카이브'), (None, label)) + f'''
@@ -2091,12 +2107,12 @@ def page_notice():
         link = f'<p style="margin-top:8px"><a class="more" href="{E(n["link"])}">관련 페이지</a></p>' if n.get('link') else ''
         pin = '<span class="badge live" style="margin-right:8px">고정</span>' if n.get('pinned') else ''
         summ = f'<br><span class="m">{E(n["summary"])}</span>' if n.get('summary') else ''
-        rows += f'<details class="li" id="{n["id"]}" data-key="{_NOTICE_KEY.get(n["cat"], "general")}"><summary><span>{pin}<span class="badge" style="margin-right:8px">{E(n["cat"])}</span><span class="t">{E(n["title"])}</span>{summ}</span><span class="d">{E(n.get("date", ""))}</span></summary><div class="body art">{html_body(n["body"])}{notice_files(n)}{link}<p style="margin-top:8px"><a class="more" href="notice-{n["id"]}.html">글 페이지로 보기</a></p></div></details>'
+        rows += f'<details class="li" id="{n["id"]}" data-key="{_NOTICE_KEY.get(n["cat"], n["cat"])}"><summary><span>{pin}<span class="badge" style="margin-right:8px">{E(n["cat"])}</span><span class="t">{E(n["title"])}</span>{summ}</span><span class="d">{E(n.get("date", ""))}</span></summary><div class="body art">{html_body(n["body"])}{notice_files(n)}{link}<p style="margin-top:8px"><a class="more" href="notice-{n["id"]}.html">글 페이지로 보기</a></p></div></details>'
         page_notice_detail(n)
     body = crumb(('news.html', '소식'), (None, '공지사항')) + f'''
 <section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap"><span class="eyebrow">공지사항</span><h1>공지사항.</h1><p class="lead">제목을 누르면 본문이 펼쳐집니다.</p></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap narrow" style="max-width:900px">
-<div class="row" style="margin-bottom:20px">{tabs('ntc', [('general','일반'),('recruit','모집'),('press','보도')])}</div>
+<div class="row" style="margin-bottom:20px">{tabs('ntc', NOTICE_CATS)}</div>
 <div class="list" data-items="ntc">{rows}</div>
 </div></section>
 '''
@@ -2311,6 +2327,7 @@ def main():
     open(os.path.join(OUT, 'assets', 'site.css'), 'w', encoding='utf-8').write(CSS)
     open(os.path.join(OUT, 'assets', 'site.js'), 'w', encoding='utf-8').write(JS)
     shutil.copy(os.path.join(BASE, 'gen', 'admin.js'), os.path.join(OUT, 'assets', 'admin.js'))
+    shutil.copy(os.path.join(BASE, 'gen', 'templates.js'), os.path.join(OUT, 'assets', 'templates.js'))
     if os.path.isdir(IMG_SRC):   # 서비스 화면 이미지 원본이 있는 작업 환경에서만 복사(저장소에는 이미 들어 있음)
         for s in SERVICES:
             if s['img']:
