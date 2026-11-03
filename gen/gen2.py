@@ -774,7 +774,7 @@ ol.art-ul { counter-reset: n; } ol.art-ul li::before { content: counter(n); coun
 .art-sum .k { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 10px; }
 .art-sum .art-ul { margin: 0; gap: 8px; }
 .art-fig { margin: 28px 0; } .art-fig img { max-width: 100%; width: auto; height: auto; border-radius: 18px; display: block; margin: 0 auto; }
-@media (min-width: 1240px) { .wrap.narrow .art-fig { margin-left: -100px; margin-right: -100px; } .wrap.narrow .art-fig img { max-width: 100%; } }
+@media (min-width: 1240px) { .wrap.narrow .art > .art-fig { margin-left: -100px; margin-right: -100px; } }
 .art-fig figcaption { margin-top: 10px; font-size: 14px; color: var(--muted); text-align: center; }
 .art-tbl { margin: 0 0 24px; }
 .art-quote { margin: 28px 0; padding: 18px 24px; border-left: 4px solid var(--accent); background: var(--bg2); border-radius: 0 16px 16px 0; font-size: 17px; line-height: 1.7; }
@@ -2041,7 +2041,7 @@ def page_archive_detail(a):
         for f in files:
             size = f' <span class="muted small">({E(f["size"])})</span>' if f.get('size') else ''
             rows += f'<li><a href="{E(f["url"])}" target="_blank" rel="noopener" download>{E(f["name"])}</a>{size}</li>'
-        fl = file_gallery(files) + f'<div class="art-files"><strong>자료 파일</strong><ul>{rows}</ul></div>'
+        fl = file_gallery(files, a.get('body') or '') + f'<div class="art-files"><strong>자료 파일</strong><ul>{rows}</ul></div>'
     acts = ''
     if pdfs:
         size = f' ({E(pdfs[0]["size"])})' if pdfs[0].get('size') else ''
@@ -2120,9 +2120,9 @@ _IMG_RE = re.compile(r'\.(png|jpe?g|gif|webp|svg|avif)(\?.*)?$', re.I)
 def is_image_file(f):
     return bool(_IMG_RE.search(str(f.get('url', '')) or '')) or bool(_IMG_RE.search(str(f.get('name', '')) or ''))
 
-def file_gallery(files, label='그림'):
-    """첨부 가운데 그림 파일(png · jpg · gif · webp · svg)은 목록 위에 바로 보여 준다. 누르면 원본이 새 창에서 열린다."""
-    imgs = [f for f in (files or []) if is_image_file(f)]
+def file_gallery(files, body=''):
+    """첨부 가운데 그림 파일(png · jpg · gif · webp · svg)은 목록 위에 바로 보여 준다. 본문에 이미 넣은 그림은 다시 보여 주지 않는다."""
+    imgs = [f for f in (files or []) if is_image_file(f) and (f.get('url') or '') not in (body or '')]
     if not imgs:
         return ''
     figs = ''.join(f'<figure class="art-fig gal-item"><a href="{E(f["url"])}" target="_blank" rel="noopener"><img src="{E(f["url"])}" alt="{E(f["name"])}" loading="lazy"></a><figcaption>{E(re.sub(r"\.[^.]+$", "", f["name"]))}</figcaption></figure>' for f in imgs)
@@ -2132,7 +2132,7 @@ def notice_files(n):
     fs = n.get('files') or []
     if not fs:
         return ''
-    return file_gallery(fs) + '<div class="art-files"><strong>첨부파일</strong><ul>' + ''.join(f'<li><a href="{E(f["url"])}" target="_blank" rel="noopener" download>{E(f["name"])}</a>{(" <span class=\"muted small\">(" + E(f["size"]) + ")</span>") if f.get("size") else ""}</li>' for f in fs) + '</ul></div>'
+    return file_gallery(fs, n.get('body') or '') + '<div class="art-files"><strong>첨부파일</strong><ul>' + ''.join(f'<li><a href="{E(f["url"])}" target="_blank" rel="noopener" download>{E(f["name"])}</a>{(" <span class=\"muted small\">(" + E(f["size"]) + ")</span>") if f.get("size") else ""}</li>' for f in fs) + '</ul></div>'
 
 def page_notice():
     rows = ''

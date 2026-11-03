@@ -473,7 +473,7 @@ ol.art-ul { counter-reset: n; } ol.art-ul li::before { content: counter(n); coun
 .art-sum .k { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 10px; }
 .art-sum .art-ul { margin: 0; gap: 8px; }
 .art-fig { margin: 28px 0; } .art-fig img { max-width: 100%; width: auto; height: auto; border-radius: 18px; display: block; margin: 0 auto; }
-@media (min-width: 1240px) { .wrap.narrow .art-fig { margin-left: -100px; margin-right: -100px; } .wrap.narrow .art-fig img { max-width: 100%; } }
+@media (min-width: 1240px) { .wrap.narrow .art > .art-fig { margin-left: -100px; margin-right: -100px; } }
 .art-fig figcaption { margin-top: 10px; font-size: 14px; color: var(--muted); text-align: center; }
 .art-tbl { margin: 0 0 24px; }
 .art-quote { margin: 28px 0; padding: 18px 24px; border-left: 4px solid var(--accent); background: var(--bg2); border-radius: 0 16px 16px 0; font-size: 17px; line-height: 1.7; }
