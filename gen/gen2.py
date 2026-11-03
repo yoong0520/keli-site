@@ -429,10 +429,11 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .login { max-width: 560px; margin: 0 auto; }
 .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font-size: 14px; } .kv dt { color: var(--muted); } .kv dd { margin: 0; }
 @media (max-width: 860px) { .adm { grid-template-columns: 1fr; gap: 20px; } .adm-nav { position: static; flex-direction: row; overflow-x: auto; padding-bottom: 4px; } .adm-nav a { white-space: nowrap; } .adm .li { grid-template-columns: 1fr; } .adm .li .acts { justify-content: flex-start; } }
+.nav a:hover { text-decoration: none; color: var(--accent); }
 .mega { position: absolute; left: 0; right: 0; top: 100%; background: var(--bg); border-bottom: 1px solid var(--line); box-shadow: 0 24px 48px rgba(0,0,0,.10); z-index: 40; }
 .mega-inner { display: grid; grid-template-columns: 220px 1fr; gap: 40px; padding: 28px 16px 34px; }
-.mega-intro { background: linear-gradient(135deg, #0b3473, #0079b2); color: #fff; border-radius: 20px; padding: 24px 22px; display: flex; flex-direction: column; gap: 10px; align-self: start; }
-.mega-intro strong { font-size: 22px; letter-spacing: .04em; } .mega-intro p { margin: 0; font-size: 14px; line-height: 1.6; opacity: .92; } .mega-intro .btn { align-self: flex-start; margin-top: 6px; background: #fff; color: #0b3473; }
+.mega-intro { display: flex; flex-direction: column; gap: 8px; align-self: stretch; padding: 4px 32px 4px 0; border-right: 1px solid var(--line); }
+.mega-intro .eyebrow { display: block; text-align: left; font-size: 12px; letter-spacing: .04em; color: var(--accent); margin: 0; } .mega-intro strong { font-size: 20px; line-height: 1.35; letter-spacing: -.01em; } .mega-intro p { margin: 0 0 6px; font-size: 14px; line-height: 1.65; color: var(--muted); } .mega-intro .more { font-size: 14px; }
 .mega-cols { display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; }
 .mega-col-title { display: block; font-size: 16px; font-weight: 700; color: var(--fg); padding-bottom: 10px; margin-bottom: 8px; border-bottom: 2px solid var(--fg); }
 .mega-col-title:hover { text-decoration: none; color: var(--accent); border-color: var(--accent); }
@@ -669,10 +670,11 @@ JS = r"""
     function close(){ clearTimeout(timer); timer=setTimeout(function(){ mega.hidden=true; navLinks.forEach(function(a){ a.setAttribute('aria-expanded','false'); }); },160); }
     navLinks.forEach(function(a){
       a.setAttribute('aria-haspopup','true'); a.setAttribute('aria-expanded','false');
-      a.addEventListener('mouseenter',function(){ if(!coarse) open(a.getAttribute('data-menu')); });
+      a.addEventListener('mouseenter',function(){ open(a.getAttribute('data-menu')); });
       a.addEventListener('focus',function(){ open(a.getAttribute('data-menu')); });
       a.addEventListener('click',function(e){ if(window.innerWidth<=860) return; var k=a.getAttribute('data-menu'); var hot=qs('.mega-col.hot',mega); if(mega.hidden||!hot||hot.getAttribute('data-menu')!==k){ e.preventDefault(); open(k); } });
     });
+    qs('.nav').addEventListener('mouseenter', function(){ var cur=qs('.nav a.on')||navLinks[0]; if(mega.hidden) open(cur?cur.getAttribute('data-menu'):null); });
     qs('.nav').addEventListener('mouseleave', close); mega.addEventListener('mouseenter', function(){ clearTimeout(timer); }); mega.addEventListener('mouseleave', close);
     hdr.addEventListener('focusout', function(e){ if(!hdr.contains(e.relatedTarget)) close(); });
     document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ mega.hidden=true; } });
@@ -704,7 +706,7 @@ def header(current):
     mlinks = ''.join(f'<div class="mgrp"><a class="mtop" href="{h}">{t}</a><div class="msub">' + ''.join(f'<a href="{sh}">{st}</a>' for sh, st in subs) + '</div></div>' for h, t, subs in MEGA) + '<div class="mgrp"><div class="msub"><a href="search.html">검색</a><a href="en.html">English</a><a href="join.html#inquiry">도입 문의</a></div></div>'
     cols = ''.join(f'<div class="mega-col" data-menu="{h}"><a class="mega-col-title" href="{h}">{t}</a><ul>' + ''.join(f'<li><a href="{sh}">{st}</a></li>' for sh, st in subs) + '</ul></div>' for h, t, subs in MEGA)
     mega = f'''<div class="mega" id="mega" hidden><div class="wrap mega-inner">
-<div class="mega-intro"><strong>KELI</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="btn sm" href="join.html#inquiry">도입 문의</a></div>
+<div class="mega-intro"><span class="eyebrow">K-University AI EduTech &amp; Learning Initiative</span><strong>고등교육 AI 공유 플랫폼</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="more" href="join.html#inquiry">도입 문의</a><a class="more" href="demos.html">전체 데모 영상</a></div>
 <div class="mega-cols">{cols}</div>
 </div></div>'''
     return f'''<header class="hdr"><div class="wrap bar">
