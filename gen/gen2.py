@@ -1397,22 +1397,17 @@ def page_archive():
     def row(a):
         href, ext = arch_href(a)
         fs = a.get('files') or []
-        extra = (f' · 첨부 {len(fs)}' if len(fs) > 1 else '')
+        extra = (f' · {E(a["author"])}' if a.get('author') else '') + (f' · 첨부 {len(fs)}' if len(fs) > 1 else '')
         return f'<a class="li" href="{E(href)}"{ext}><span><span class="badge" style="margin-right:8px">{ARCH_ICON.get(a.get("type"), "자료")}</span><span class="t">{E(a["title"])}</span><br><span class="m">{E(a.get("org", ""))}{extra}</span></span><span class="d">{E(a.get("date", ""))}</span></a>'
     for a in ARCHIVE:
         if arch_has_page(a): page_archive_detail(a)
     secs = ''
     for key, label in ARCH_CATS:
         items = [a for a in ARCHIVE if a['cat'] == key]
-        cards = [a for a in items if a.get('cover')]
-        plain = [a for a in items if not a.get('cover')]
-        grid = f'<div class="arch-grid">{"".join(arch_card(a) for a in cards)}</div>' if cards else ''
-        rows = ('<div class="list"' + (' style="margin-top:28px"' if cards else '') + '>' + ''.join(row(a) for a in plain) + '</div>') if plain else ''
-        if not items:
-            rows = '<p class="muted" style="padding:20px 4px;border-bottom:1px solid var(--line)">아직 등록된 자료가 없습니다.</p>'
+        rows = ''.join(row(a) for a in items) if items else '<p class="muted" style="padding:20px 4px;border-bottom:1px solid var(--line)">아직 등록된 자료가 없습니다.</p>'
         secs += f'''
-<section class="sec" id="{key}" style="padding-top:0"><div class="wrap">
-<div class="row" style="margin-bottom:20px"><h2 style="font-size:28px">{label}</h2><span class="muted small">{len(items)}개 자료</span></div>{grid}{rows}
+<section class="sec" id="{key}" style="padding-top:0"><div class="wrap narrow" style="max-width:900px">
+<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">{label}</h2><span class="muted small">{len(items)}개 자료</span></div><div class="list">{rows}</div>
 </div></section>'''
     body = crumb((None, '아카이브')) + f'''
 <section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap">
@@ -1454,15 +1449,13 @@ def page_archive_detail(a):
                   f'<iframe class="pdf-frame" src="{E(f["url"])}#view=FitH" title="{E(a["title"])} PDF" loading="lazy"></iframe>'
                   f'<p class="note" style="margin-top:10px">휴대전화에서는 첫 장만 보일 수 있습니다. 그럴 때는 내려받기를 눌러 주세요.</p></div></section>')
     others = [o for o in ARCHIVE if o['id'] != a['id'] and o.get('cat') == a.get('cat')]
-    ocards = [o for o in others if o.get('cover')][:4]
-    orows = [o for o in others if not o.get('cover')][:4]
-    others_html = f'<div class="arch-grid">{"".join(arch_card(o) for o in ocards)}</div>' if ocards else ''
-    if orows:
+    others_html = ''
+    if others:
         rr = ''
-        for o in orows:
+        for o in others[:5]:
             h, ext = arch_href(o)
-            rr += f'<a class="li" href="{E(h)}"{ext}><span><span class="m">{E(o.get("org", ""))}</span><br><span class="t">{E(o["title"])}</span></span><span class="d">{E(o.get("date", ""))}</span></a>'
-        others_html += f'<div class="list" style="margin-top:20px">{rr}</div>'
+            rr += f'<a class="li" href="{E(h)}"{ext}><span><span class="m">{E(o.get("org", ""))}{(" · " + E(o["author"])) if o.get("author") else ""}</span><br><span class="t">{E(o["title"])}</span></span><span class="d">{E(o.get("date", ""))}</span></a>'
+        others_html = f'<div class="list">{rr}</div>'
     meta = arch_meta(a) + ((' · ' + E(a['date'])) if a.get('period') and a.get('date') else '')
     article = f'<article class="art">{html_body(a["body"])}</article>' if a.get('body') else ''
     body = crumb(('archive.html', '아카이브'), (f'archive.html#{a.get("cat", "")}', cat), (None, a['title'])) + f'''
@@ -1477,7 +1470,7 @@ def page_archive_detail(a):
 {fl}
 </div></section>
 {viewer}
-<section class="sec alt"><div class="wrap">
+<section class="sec alt"><div class="wrap narrow" style="max-width:900px">
 <div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">{E(cat)}의 다른 자료</h2><a class="more" href="archive.html#{E(a.get("cat", ""))}">전체 보기</a></div>
 {others_html or '<p class="muted small">다른 자료가 없습니다.</p>'}
 </div></section>
