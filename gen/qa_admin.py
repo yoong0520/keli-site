@@ -7,7 +7,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = 'yoong0520/keli-site'
 SHOT = os.environ.get('SHOT') or os.path.join(ROOT, '..', 'qa-shots'); os.makedirs(SHOT, exist_ok=True)
 store = {}
-for p in ['content/notices.json', 'content/archive.json', 'content/hidden.json', 'content/site.json', 'content/categories.json', 'assets/stats.json']:
+for p in ['content/notices.json', 'content/archive.json', 'content/hidden.json', 'content/site.json', 'content/categories.json', 'content/chatbot.json', 'assets/stats.json']:
     store[p] = open(os.path.join(ROOT, p), encoding='utf-8').read()
 shas = {p: 'sha0' for p in store}
 log = []
@@ -114,6 +114,10 @@ with sync_playwright() as p:
     pg.wait_for_selector('.feed-row.off'); pg.screenshot(path=os.path.join(SHOT, 'adm_services.png'), full_page=True)
     pg.goto(U + '#press'); pg.wait_for_selector('.feed-row'); assert pg.locator('.panel').count() >= 2
     pg.click('#f-dispatch'); pg.wait_for_timeout(300); assert ('dispatch', 'pages.yml') in log
+    # 챗봇 설정: 질문 추가 → 저장
+    pg.goto(U + '#bot'); pg.wait_for_selector('#bot-form'); pg.click('#faq-add'); pg.wait_for_timeout(200); rows = pg.locator('[data-faq]').count(); pg.fill('[data-faq="' + str(rows - 1) + '"] [data-f="q_ko"]', '주차는 어디에 하나요?'); pg.fill('[data-faq="' + str(rows - 1) + '"] [data-f="a_ko"]', '한림대학교 정문 주차장을 이용해 주세요.'); pg.fill('#b-qko', '질문 하나\n질문 둘')
+    pg.click('#bot-save'); pg.wait_for_timeout(700); bj = json.loads(store['content/chatbot.json']); assert bj['enabled'] is True and bj['quick_ko'] == ['질문 하나', '질문 둘'] and [f for f in bj['faq'] if f['q_ko'] == '주차는 어디에 하나요?'], bj
+    pg.screenshot(path=os.path.join(SHOT, 'adm_bot.png'), full_page=True)
     # 게시 기록 · 설정
     pg.goto(U + '#history'); pg.wait_for_selector('.hist .h'); assert '공지 등록: 테스트' in pg.inner_text('.hist')
     pg.goto(U + '#settings'); pg.wait_for_selector('#hp-logout'); pg.screenshot(path=os.path.join(SHOT, 'adm_settings.png'), full_page=True); pg.click('#hp-logout'); pg.wait_for_selector('#adm-login:not([hidden])')

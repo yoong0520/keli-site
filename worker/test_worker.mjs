@@ -23,11 +23,15 @@ export class FakeR2 {
       async abort() { self.mpus.delete(uploadId); } };
   }
 }
-export const env = { FILES: new FakeR2(), GITHUB_TOKEN: 'ghp_test', SESSION_SECRET: 'secret-for-tests', SETUP_KEY: 'setup-123', REPO: 'yoong0520/keli-site', ALLOW_ORIGINS: 'https://keli-aied.org' };
+class FakeKV { constructor() { this.m = new Map(); } async get(k) { return this.m.has(k) ? this.m.get(k) : null; } async put(k, v) { this.m.set(k, String(v)); } }
+export const aiCalls = [];
+export const env = { FILES: new FakeR2(), KV: new FakeKV(), GITHUB_TOKEN: 'ghp_test', SESSION_SECRET: 'secret-for-tests', SETUP_KEY: 'setup-123', REPO: 'yoong0520/keli-site', ALLOW_ORIGINS: 'https://keli-aied.org', SITE_URL: 'https://keli-aied.org/',
+  AI: { async run(model, opts) { aiCalls.push({ model, opts }); const sys = opts.messages[0].content; const q = opts.messages[opts.messages.length - 1].content; return { response: (sys.startsWith('You are Iru-mi') ? 'EN answer about: ' : '이음이 답: ') + q + ' / facts=' + (sys.match(/^\[\d+\]/gm) || []).length }; } } };
 export const ghLog = [];
 export const ghStore = {};   // 가짜 저장소 파일: path → {sha, text}
 const realFetch = globalThis.fetch;
 globalThis.fetch = async (url, init) => {
+  if (String(url) === 'https://keli-aied.org/assets/kb.json') { const fs = await import('node:fs'); return new Response(fs.readFileSync(new URL('../assets/kb.json', import.meta.url)), { status: 200, headers: { 'content-type': 'application/json' } }); }
   if (!String(url).startsWith('https://api.github.com')) return realFetch(url, init);
   const u = new URL(url); const path = u.pathname; const m = (init && init.method) || 'GET';
   ghLog.push([m, path, (init && init.headers && init.headers.Authorization) || '']);
@@ -113,5 +117,16 @@ if (process.argv[2] === 'serve') {
   r = await call('GET', '/files/content/files/2026/11/big.mp4'); assert(r.status === 404, 'deleted');
   r = await call('DELETE', '/api/users/staff1', { token: tok }); d = await j(r); assert(d.users.length === 1, 'delete user');
   r = await call('GET', '/api/me', { token: staff2 }); assert(r.status === 401, 'deleted user session dead');
+  // ---- 7) 챗봇
+  r = await call('POST', '/api/chat', { body: { lang: 'ko', messages: [{ role: 'user', content: '도입은 어떻게 하나요?' }] } }); d = await j(r); assert(r.status === 200 && d.answer.indexOf('이음이 답') === 0 && d.engine === 'workers-ai', 'chat ko ' + JSON.stringify(d));
+  assert(/facts=\d+/.test(d.answer) && Number(d.answer.match(/facts=(\d+)/)[1]) >= 3, 'facts given to model');
+  assert(d.sources.length >= 1 && d.sources.some((x) => /join/.test(x.url)), 'join source ' + JSON.stringify(d.sources));
+  r = await call('POST', '/api/chat', { body: { lang: 'en', messages: [{ role: 'user', content: 'What is KELI?' }] } }); d = await j(r); assert(d.answer.indexOf('EN answer') === 0, 'chat en');
+  r = await call('POST', '/api/chat', { body: { lang: 'ko', messages: [] } }); assert(r.status === 400, 'empty question');
+  const aiBackup = env.AI; env.AI = null;
+  r = await call('POST', '/api/chat', { body: { lang: 'ko', messages: [{ role: 'user', content: '수학 튜터' }] } }); d = await j(r); assert(d.engine === 'search' && /HAI-MathTutor/.test(d.answer), 'search fallback ' + d.answer.slice(0, 80)); env.AI = aiBackup;
+  for (let i = 0; i < 20; i++) await call('POST', '/api/chat', { body: { lang: 'ko', messages: [{ role: 'user', content: 'x' + i }] }, headers: { 'CF-Connecting-IP': '9.9.9.9' } });
+  r = await call('POST', '/api/chat', { body: { lang: 'ko', messages: [{ role: 'user', content: 'once more' }] }, headers: { 'CF-Connecting-IP': '9.9.9.9' } }); assert(r.status === 429, 'rate limit');
+  r = await call('OPTIONS', '/api/chat'); assert(r.status === 204, 'chat preflight');
   console.log('worker tests OK');
 }

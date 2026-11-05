@@ -248,6 +248,20 @@ SITE_DEFAULT = {
     'banner': {'on': False, 'text': '', 'link': '', 'until': ''},
 }
 SITE_CFG = _load_json(os.path.join(CONTENT, 'site.json'), {})
+BOT_DEFAULT = {
+    'enabled': True,
+    'greeting_ko': '안녕하세요! KELI 사무국 마스코트 이음이예요. KELI 서비스, 참여 방법, 행사… 무엇이든 물어보세요.',
+    'greeting_en': "Hi! I'm Iru-mi, the KELI mascot. Ask me about KELI services, how to join, events, or anything else.",
+    'quick_ko': ['KELI가 뭐예요?', '어떤 서비스가 있나요?', '도입은 어떻게 하나요?', '곧 열리는 행사가 있나요?', '사무국 연락처'],
+    'quick_en': ['What is KELI?', 'What services are there?', 'How can we join?', 'Upcoming events?', 'Contact the secretariat'],
+    'faq': [
+        {'url': 'about.html', 'q_ko': 'KELI가 뭐예요?', 'q_en': 'What is KELI?', 'a_ko': 'KELI(K-University AI EdTech and Learning Initiative)는 한림대학교가 개발하고 수업에서 검증한 AI 교육 서비스 HAI Ecosystems를 국내외 대학·기관·기업에 제공하고, 함께 실증하고 확산하는 고등교육 AI 공유 플랫폼이에요. 주관은 한림대학교 AI교육혁신원 AI교육확산센터(KELI 사무국)예요.', 'a_en': 'KELI (K-University AI EdTech and Learning Initiative) is a higher-education AI sharing platform. Hallym University provides HAI Ecosystems — AI education services it developed and validated in real classes — to universities, institutions and companies in Korea and abroad, and they test and scale them together. It is run by the KELI Secretariat at Hallym University.'},
+        {'url': 'join.html', 'q_ko': '도입은 어떻게 하나요?', 'q_en': 'How can we adopt a service?', 'a_ko': '네 단계예요. ① 도입 문의 폼이나 이메일(contact@keliedu.org)로 기관명·관심 서비스·적용 교과목을 알려 주세요. ② 사무국이 무상으로 시연하고 적용 방법을 안내해요. ③ 1개 교과목 × 1개 서비스 × 1개 학기부터 시범 도입해 효과를 확인해요. ④ 교과목·범위·기간을 정해 정식 도입하고, 이용 조건은 사무국과 협의해요.', 'a_en': 'Four steps. 1) Tell us your institution, the services you are interested in and the course via the inquiry form or contact@keliedu.org. 2) The secretariat gives a free demo and explains how to apply it. 3) Pilot it — one course × one service × one semester — and see the effect. 4) Adopt it formally; terms are agreed with the secretariat.'},
+        {'url': 'join.html', 'q_ko': '비용이 드나요?', 'q_en': 'Is there a cost?', 'a_ko': '시범 도입은 무상 또는 협의로 진행하고, 정식 도입은 유상이며 기관별로 사무국과 협의해요.', 'a_en': 'Pilots are free or by agreement; formal adoption is paid and negotiated per institution with the secretariat.'},
+        {'url': 'join.html#inquiry', 'q_ko': '사무국 연락처', 'q_en': 'Contact the secretariat', 'a_ko': 'KELI 사무국(한림대학교 AI교육혁신원 AI교육확산센터)은 전화 033-248-3246, 이메일 contact@keliedu.org 예요. 주소는 (24252) 강원특별자치도 춘천시 한림대학길 1 한림대학교이고, 인스타그램은 @hallym_keli 예요.', 'a_en': 'KELI Secretariat (Center for AI Education Advancement, Hallym University): phone +82-33-248-3246, email contact@keliedu.org, address 1 Hallymdaehak-gil, Chuncheon, Gangwon State 24252, Republic of Korea. Instagram @hallym_keli.'},
+    ],
+}
+BOT = dict(BOT_DEFAULT); BOT.update({k: v for k, v in _load_json(os.path.join(CONTENT, 'chatbot.json'), {}).items() if not k.startswith('_')})
 def site_get(section, key):
     v = (SITE_CFG.get(section) or {}).get(key)
     return v if v not in (None, '') else SITE_DEFAULT[section].get(key, '')
@@ -525,6 +539,34 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .art-files { margin: 24px 0; padding: 18px 22px; border-radius: 16px; background: var(--bg2); }
 .art-files a { word-break: break-all; overflow-wrap: anywhere; }
 .art-files strong { display: block; font-size: 14px; margin-bottom: 6px; } .art-files ul { margin: 0; padding-left: 18px; } .art-files li { margin: 4px 0; }
+/* 마스코트 챗봇(이음이·이루미) */
+.kchat-fab { position: fixed; right: 20px; bottom: 20px; z-index: 70; display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border: 0; border-radius: 999px; background: var(--accent); color: #fff; font: inherit; font-size: 15px; font-weight: 700; box-shadow: 0 14px 34px rgba(11, 92, 255, .35); cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+.kchat-fab:hover { transform: translateY(-2px); box-shadow: 0 18px 40px rgba(11, 92, 255, .42); }
+.kchat-fab img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; background: #fff; border: 2px solid #fff; }
+.kchat-fab[aria-expanded="true"] { display: none; }
+.kchat { position: fixed; right: 20px; bottom: 20px; z-index: 71; width: min(400px, calc(100vw - 40px)); height: min(640px, calc(100vh - 40px)); display: flex; flex-direction: column; background: #fff; color: var(--fg); border-radius: 24px; box-shadow: 0 30px 80px rgba(0, 0, 0, .28); overflow: hidden; }
+.kchat[hidden] { display: none; }
+.kc-head { display: flex; align-items: center; gap: 10px; padding: 14px 14px 12px 16px; background: linear-gradient(135deg, #0B5CFF, #4A8BFF); color: #fff; }
+.kc-face { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,.7); background: #fff; }
+.kc-who { flex: 1; min-width: 0; display: flex; flex-direction: column; } .kc-name { font-size: 16px; font-weight: 700; } .kc-sub { font-size: 12px; opacity: .85; }
+.kc-lang { display: inline-flex; background: rgba(255,255,255,.18); border-radius: 999px; padding: 2px; } .kc-lang button { border: 0; background: transparent; color: #fff; font: inherit; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; cursor: pointer; opacity: .8; } .kc-lang button[aria-pressed="true"] { background: #fff; color: var(--accent); opacity: 1; }
+.kc-x { border: 0; background: transparent; color: #fff; font-size: 16px; cursor: pointer; padding: 4px 6px; }
+.kc-body { flex: 1; overflow: auto; padding: 16px 14px 8px; display: flex; flex-direction: column; gap: 10px; background: #f5f6f8; }
+.kc-msg { display: flex; gap: 8px; align-items: flex-end; max-width: 92%; } .kc-msg.me { align-self: flex-end; flex-direction: row-reverse; }
+.kc-msg img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; flex: none; background: #fff; }
+.kc-bub { padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.6; background: #fff; border: 1px solid var(--line); word-break: keep-all; overflow-wrap: anywhere; }
+.kc-msg.me .kc-bub { background: var(--accent); color: #fff; border-color: var(--accent); border-bottom-right-radius: 6px; } .kc-msg.bot .kc-bub { border-bottom-left-radius: 6px; }
+.kc-bub a { color: var(--accent); text-decoration: underline; } .kc-msg.me .kc-bub a { color: #fff; }
+.kc-bub p { margin: 0 0 8px; } .kc-bub p:last-child { margin: 0; } .kc-bub ul { margin: 4px 0 6px; padding-left: 18px; }
+.kc-src { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; } .kc-src a { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: var(--s1-bg); color: var(--accent); text-decoration: none; border: 1px solid #cfe0ff; }
+.kc-typing span { display: inline-block; width: 6px; height: 6px; margin: 0 2px; border-radius: 50%; background: #9aa3b2; animation: kc-dot 1s infinite; } .kc-typing span:nth-child(2) { animation-delay: .15s; } .kc-typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes kc-dot { 0%, 80%, 100% { transform: translateY(0); opacity: .5; } 40% { transform: translateY(-4px); opacity: 1; } }
+.kc-quick { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 14px 4px; background: #f5f6f8; } .kc-quick button { border: 1px solid #cfe0ff; background: #fff; color: var(--accent); font: inherit; font-size: 13px; font-weight: 600; padding: 6px 11px; border-radius: 999px; cursor: pointer; } .kc-quick button:hover { background: var(--s1-bg); }
+.kc-form { display: flex; gap: 8px; padding: 10px 12px 6px; background: #fff; border-top: 1px solid var(--line); } .kc-in { flex: 1; border: 1px solid var(--line); border-radius: 999px; padding: 11px 16px; font: inherit; font-size: 15px; } .kc-in:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+.kc-send { width: 42px; height: 42px; border-radius: 50%; border: 0; background: var(--accent); color: #fff; font-size: 18px; font-weight: 700; cursor: pointer; } .kc-send:disabled { opacity: .5; }
+.kc-note { margin: 0; padding: 0 16px 10px; font-size: 11px; color: var(--muted); background: #fff; }
+@media (max-width: 520px) { .kchat { right: 0; bottom: 0; width: 100vw; height: 100dvh; border-radius: 0; } .kchat-fab .kc-hi { display: none; } .kchat-fab { padding: 6px; } }
+@media (prefers-reduced-motion: reduce) { .kc-typing span { animation: none; } }
 /* 사이트 배너(관리자 "홈 화면"에서 켬) */
 .site-banner { background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; padding: 10px 0; text-align: center; } .site-banner a { color: #fff; text-decoration: underline; margin-left: 8px; }
 /* 관리자(콘텐츠 스튜디오) */
@@ -1161,7 +1203,18 @@ FOOTER = f'''<footer class="ftr"><div class="wrap">
 </div></footer>'''
 
 CSS_V = hashlib.md5(CSS.encode('utf-8')).hexdigest()[:8]
-JS_V = hashlib.md5(JS.encode('utf-8')).hexdigest()[:8]
+JS_V = hashlib.md5((JS + open(os.path.join(BASE, 'gen', 'chat.js'), encoding='utf-8').read()).encode('utf-8')).hexdigest()[:8]   # 챗봇 스크립트까지 포함한 해시
+
+def chat_widget(fname):
+    en = fname == 'en.html'
+    return f'''<div class="kchat" id="kchat" data-lang="{'en' if en else 'ko'}" hidden>
+<div class="kc-head"><img class="kc-face" src="media/mascot/eumi.png" alt=""><div class="kc-who"><strong class="kc-name">이음이</strong><span class="kc-sub">KELI 사무국 마스코트 · AI 안내</span></div><div class="kc-lang" role="group" aria-label="언어"><button type="button" data-lang="ko" aria-pressed="true">한국어</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div><button type="button" class="kc-x" aria-label="닫기">✕</button></div>
+<div class="kc-body" aria-live="polite"></div>
+<div class="kc-quick"></div>
+<form class="kc-form"><input class="kc-in" type="text" autocomplete="off" placeholder="무엇이든 물어보세요" aria-label="질문"><button type="submit" class="kc-send" aria-label="보내기">↑</button></form>
+<p class="kc-note">AI가 사이트 내용을 바탕으로 답해요. 정확한 사항은 사무국(033-248-3246)에 확인해 주세요.</p>
+</div>
+<button type="button" class="kchat-fab" id="kchat-fab" aria-label="이음이에게 물어보기" aria-expanded="false"><img src="media/mascot/eumi.png" alt=""><span class="kc-hi">{'Ask Iru-mi' if en else '이음이에게 물어보기'}</span></button>'''
 
 def doc(fname, title, body, desc='KELI는 한림대학교가 개발하고 수업에서 검증한 AI 교육 서비스를 국내외 대학·기관에 제공하고 함께 확산하는 고등교육 AI 공유 플랫폼입니다.', skeleton=True):
     head_bits = f'''<title>{E(title)}</title>
@@ -1177,7 +1230,7 @@ def doc(fname, title, body, desc='KELI는 한림대학교가 개발하고 수업
 {body}
 </main>
 {'' if is_admin else FOOTER}
-<script>window.KELI_HIDDEN={json.dumps({k: [str(x) for x in HIDDEN.get(k, [])] for k in ('events', 'press', 'videos', 'unn', 'services')}, ensure_ascii=False)};</script>
+{'' if is_admin or not BOT.get('enabled', True) else chat_widget(fname)}<script>window.KELI_HIDDEN={json.dumps({k: [str(x) for x in HIDDEN.get(k, [])] for k in ('events', 'press', 'videos', 'unn', 'services')}, ensure_ascii=False)};window.KELI_API={json.dumps(((SITE_CFG.get('admin') or {}).get('api') or '').strip())};</script>
 <script src="assets/site.js?v={JS_V}"></script>{'<script src="assets/templates.js?v=' + JS_V + '"></script><script src="assets/admin.js?v=' + JS_V + '"></script>' if fname == 'admin.html' else ''}'''
     if fname == 'admin.html':
         head_bits = head_bits.replace('<meta name="description"', '<meta name="robots" content="noindex, nofollow">\n<meta name="description"', 1)
@@ -1599,6 +1652,7 @@ def page_admin():
 <a href="#events" data-view="events"><i>◷</i>행사<span class="cnt" data-cnt="events"></span></a>
 <a href="#press" data-view="press"><i>▣</i>보도·언론<span class="cnt" data-cnt="press"></span></a>
 <a href="#videos" data-view="videos"><i>▶</i>영상<span class="cnt" data-cnt="videos"></span></a>
+<a href="#bot" data-view="bot"><i>☺</i>챗봇</a>
 <a href="#history" data-view="history"><i>↻</i>게시 기록</a>
 <a href="#settings" data-view="settings"><i>⚙</i>사이트 설정</a>
 </nav>
@@ -2311,6 +2365,36 @@ def search_index():
     idx += [(f'notice-{n["id"]}.html', n['title'], '공지사항 · ' + n['cat'] + ' · ' + n.get('date', '')) for n in NOTICES]
     return idx
 
+def build_kb():
+    """챗봇 지식: 사이트의 사실만 모은 짧은 조각들(국문 + 가능하면 영문). 서버(/api/chat)가 질문과 맞는 조각을 골라 답에 쓴다."""
+    chunks = []
+    def add(id_, title, text, url, lang='ko'):
+        chunks.append({'id': id_, 'title': title, 'text': re.sub(r'\s+', ' ', _inner_text(text)).strip(), 'url': url, 'lang': lang})
+    add('about', 'KELI 소개', 'KELI(K-University AI EdTech and Learning Initiative)는 한림대학교가 개발하고 수업에서 검증한 AI 교육 서비스 HAI Ecosystems를 국내외 대학·기관·기업에 제공하고, 함께 실증하고 확산하는 고등교육 AI 공유 플랫폼. 주관: 한림대학교 AI교육혁신원 AI교육확산센터(KELI 사무국). 운영 사이클: 발견 → 연결 → 실증 → 확산. 조직: 총회, 운영위원회, 기술·표준위원회, 품질·윤리위원회, KELI 사무국. 참여 주체: 국내 대학, 해외 대학·기관, 에듀테크 기업, 유관기관.', SITE_URL + 'about.html')
+    add('about-en', 'About KELI', 'KELI (K-University AI EdTech and Learning Initiative) is a higher-education AI sharing platform: Hallym University provides HAI Ecosystems, AI education services it developed and validated in real classes, to universities, institutions and companies in Korea and abroad, which test and scale them together. Run by the KELI Secretariat (Center for AI Education Advancement, Hallym University). Cycle: discover → connect → validate → scale.', SITE_URL + 'en.html', 'en')
+    add('contact', 'KELI 사무국 연락처', f'KELI 사무국: 한림대학교 AI교육혁신원 AI교육확산센터. 전화 033-248-3246, 이메일 {EMAIL}, 주소 (24252) 강원특별자치도 춘천시 한림대학길 1 한림대학교, Instagram @hallym_keli, 사이트 {SITE_URL}. 메일 제목 앞에 [서비스 도입 문의]를 붙이면 빠름.', SITE_URL + 'join.html#inquiry')
+    add('join', 'KELI 협의체 참여·도입 절차', '도입 4단계: 1 문의(도입 문의 폼 또는 이메일로 기관명·관심 서비스·적용 교과목) → 2 상담·시연(사무국이 무상 시연·적용 방법 안내) → 3 시범 도입(1개 교과목 × 1개 서비스 × 1개 학기부터, 무상 또는 협의) → 4 정식 도입(교과목·범위·기간을 정해 운영, 유상·기관별 협의). 에듀테크 기업은 도입 문의 폼에서 참여 유형을 "에듀테크 기업"으로 선택하고 등재 희망 서비스명을 적으면 Marketplace 등재 절차를 안내.', SITE_URL + 'join.html')
+    add('members', '참여 기관', f'참여 대학({len(UNIV)}): {", ".join(UNIV)}. 참여 에듀테크 기업({len(CORP)}): {", ".join(CORP)}. 홈 숫자: AI 교육 서비스 {svc_stat()[0]}, 참여 기관 {STATS["universities"] + STATS["companies"]}, AI 결합 강좌 {LIVE["courses"]}.', SITE_URL + 'join.html#members')
+    add('stages', '수업 6단계와 서비스', '수업 6단계: 01 설계, 02 콘텐츠 생성, 03 수업·상호작용, 04 실습·학습, 05 평가, 06 분석·개선. ' + ' / '.join(f'{v}: ' + ', '.join(x['name'] for x in SERVICES if k in x['stage']) for k, v in STAGES), SITE_URL + 'curriculum.html')
+    for x in SERVICES:
+        feats = (' 핵심 기능: ' + ', '.join(x['features'])) if x.get('features') else ''
+        roles = (' 대상: ' + '·'.join(x['roles'])) if x.get('roles') else ''
+        add('svc-' + x['slug'], x['name'], f'{x["name"]} — {x["one"]}. 분류: {AREA_LABEL.get(x["area"], x["area"])}. 운영 상태: {STATUS[x["status"]][0] if x.get("status") else "확인 중"}.{roles} {x.get("desc") or x.get("head") or ""}{feats}' + (f' 서비스 주소: {x["url"]}' if x.get('url') else ''), SITE_URL + f'service-{x["slug"]}.html')
+    for it in FEED_ITEMS[:12]:
+        add('ev-' + str(it['id']), it['title'], f'행사 · {it.get("when") or ""} · {it.get("place") or ""}. {(it.get("summary") or "")[:400]}', SITE_URL + ev_href(it))
+    for n in NOTICES[:10]:
+        add('ntc-' + n['id'], n['title'], f'공지사항({n["cat"]}, {n.get("date", "")}). {n.get("summary") or ""} {_inner_text(html_body(n["body"]))[:500]}', SITE_URL + f'notice-{n["id"]}.html')
+    for a in ARCHIVE[:40]:
+        add('arc-' + str(a['id']), a['title'], f'아카이브 · {dict(ARCH_CATS).get(a.get("cat"), "")} · {a.get("org", "")} {a.get("author", "")} {a.get("date", "")}. {_inner_text(html_body(a["body"]))[:300] if a.get("body") else ""}', SITE_URL + arch_href(a)[0])
+    add('menu', '사이트 메뉴', 'KELI 소개(비전 · KELI 협의체 · 조직도) / Marketplace(HAI Ecosystems 서비스, 전체 데모 영상, 수업에 결합하는 방법) / KELI 협의체 참여(참여 방법·절차, 참여 기관, 도입 문의) / 아카이브(' + ' · '.join(l for _, l in ARCH_CATS) + ') / 소식(공지사항, 행사, 영상, 뉴스레터·보도자료) / ENG(영문 소개) / 검색.', SITE_URL)
+    for f in BOT.get('faq') or []:
+        u = SITE_URL + (f.get('url') or '')
+        if f.get('q_ko') and f.get('a_ko'): add('faq-' + hashlib.md5(f['q_ko'].encode('utf-8')).hexdigest()[:8], f['q_ko'], f['a_ko'], u)
+        if f.get('q_en') and f.get('a_en'): add('faq-en-' + hashlib.md5(f['q_en'].encode('utf-8')).hexdigest()[:8], f['q_en'], f['a_en'], u if f.get('url') else SITE_URL + 'en.html', 'en')
+    json.dump({'site': SITE_URL, 'built': LIVE.get('fetched_at', ''), 'chunks': chunks}, open(os.path.join(OUT, 'assets', 'kb.json'), 'w', encoding='utf-8'), ensure_ascii=False)
+    pub = {k: v for k, v in BOT.items() if k in ('enabled', 'greeting_ko', 'greeting_en', 'quick_ko', 'quick_en', 'faq')}
+    json.dump(pub, open(os.path.join(OUT, 'assets', 'chatbot.json'), 'w', encoding='utf-8'), ensure_ascii=False)
+
 def page_search():
     idx = search_index()
     json.dump([{'h': h, 't': t, 'd': d} for h, t, d in idx], open(os.path.join(OUT, 'assets', 'search.json'), 'w', encoding='utf-8'), ensure_ascii=False)
@@ -2358,7 +2442,7 @@ def main():
     os.makedirs(os.path.join(OUT, 'assets', 'img', 'services'), exist_ok=True)
     write_stats_files()
     open(os.path.join(OUT, 'assets', 'site.css'), 'w', encoding='utf-8').write(CSS)
-    open(os.path.join(OUT, 'assets', 'site.js'), 'w', encoding='utf-8').write(JS)
+    open(os.path.join(OUT, 'assets', 'site.js'), 'w', encoding='utf-8').write(JS + '\n' + open(os.path.join(BASE, 'gen', 'chat.js'), encoding='utf-8').read())
     shutil.copy(os.path.join(BASE, 'gen', 'admin.js'), os.path.join(OUT, 'assets', 'admin.js'))
     shutil.copy(os.path.join(BASE, 'gen', 'templates.js'), os.path.join(OUT, 'assets', 'templates.js'))
     if os.path.isdir(IMG_SRC):   # 서비스 화면 이미지 원본이 있는 작업 환경에서만 복사(저장소에는 이미 들어 있음)
@@ -2383,7 +2467,7 @@ def main():
     for it in FEED_ITEMS: page_feed_event(it)
     for it in PRESS_ITEMS: page_press(it)
     page_videos(); page_demos()
-    page_newsletter(); page_search(); page_en()
+    page_newsletter(); page_search(); page_en(); build_kb()
     page_policy('privacy.html', '개인정보처리방침', 'Privacy'); page_policy('terms.html', '이용약관', 'Terms')
     page_admin()
     print('pages', len([f for f in os.listdir(OUT) if f.endswith('.html')]))

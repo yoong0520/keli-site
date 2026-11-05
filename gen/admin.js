@@ -13,7 +13,7 @@
   var qs = function (s, r) { return (r || document).querySelector(s); };
   var qsa = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
-  var token = null, user = null, state = { notices: null, archive: null, hidden: null, stats: null, site: null, cats: null, feeds: {}, sha: {} };
+  var token = null, user = null, state = { notices: null, archive: null, hidden: null, stats: null, site: null, cats: null, bot: null, feeds: {}, sha: {} };
   var dirty = false;   // 편집 중 저장 안 한 변경이 있는가
 
   // ---------------------------------------------------------------- 공통 UI
@@ -133,6 +133,7 @@
     if (kind === 'hidden' && !state.hidden) return loadJson('content/hidden.json', { events: [], press: [], videos: [], unn: [], services: [] }).then(function (j) { state.hidden = j; ['events', 'press', 'videos', 'unn', 'services'].forEach(function (k) { state.hidden[k] = (state.hidden[k] || []).map(String); }); });
     if (kind === 'stats' && !state.stats) return loadJson('assets/stats.json', { services: null, universities: 23, companies: 31, courses: null, basis: '' }).then(function (j) { state.stats = j; });
     if (kind === 'cats' && !state.cats) return loadJson('content/categories.json', {}).then(function (j) { state.cats = j; if (!(j.notices || []).length) j.notices = CATS_DEFAULT.notices.slice(); if (!(j.archive || []).length) j.archive = CATS_DEFAULT.archive.slice(); });
+    if (kind === 'bot' && !state.bot) return Promise.all([loadJson('content/chatbot.json', {}), fetch('assets/chatbot.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; })]).then(function (r) { var saved = r[0] || {}, pub = r[1] || {}; state.bot = Object.assign({}, pub, saved); if (!state.bot.faq) state.bot.faq = pub.faq || []; if (state.bot.enabled == null) state.bot.enabled = true; });
     if (kind === 'site' && !state.site) return loadJson('content/site.json', { hero: {}, banner: { on: false, text: '', link: '', until: '' } }).then(function (j) { state.site = j; state.site.hero = state.site.hero || {}; state.site.banner = state.site.banner || {}; });
     return Promise.resolve();
   }
@@ -153,7 +154,7 @@
 
   // ---------------------------------------------------------------- 라우터
   var view = qs('#view');
-  var TITLES = { home: '대시보드', site: '홈 화면', notices: '소식·공지', archive: '아카이브', services: '서비스', events: '행사', press: '보도·언론', videos: '영상', history: '게시 기록', settings: '사이트 설정' };
+  var TITLES = { home: '대시보드', site: '홈 화면', notices: '소식·공지', archive: '아카이브', services: '서비스', events: '행사', press: '보도·언론', videos: '영상', bot: '챗봇', history: '게시 기록', settings: '사이트 설정' };
   function buildSubnav() {   // 메뉴 아래에 분류를 세로로: 소식·공지(분류) · 아카이브(분류) · 서비스(포털 분류) · 보도·언론(출처)
     function sub(view, items) { var a = qs('.cms-nav a[data-view="' + view + '"]'); if (!a) return; var old = a.nextElementSibling; if (old && old.classList.contains('sub')) old.remove(); if (!items.length) return; var d = document.createElement('div'); d.className = 'sub'; d.innerHTML = items.map(function (it) { return '<a href="#' + view + '/c/' + encodeURIComponent(it[0]) + '" data-sub="' + esc(it[0]) + '">' + esc(it[1]) + (it[2] != null ? '<span class="cnt">' + it[2] + '</span>' : '') + '</a>'; }).join(''); a.insertAdjacentElement('afterend', d); }
     var nc = {}, ac = {}; ((state.notices || {}).items || []).forEach(function (n) { nc[n.cat] = (nc[n.cat] || 0) + 1; }); ((state.archive || {}).items || []).forEach(function (x) { ac[x.cat] = (ac[x.cat] || 0) + 1; });
@@ -171,7 +172,7 @@
     var subKey = (h[1] === 'c' && h[2]) ? decodeURIComponent(h[2]) : ''; markSub(v, subKey);
     qs('#top-title').textContent = TITLES[v] || '대시보드'; qs('#top-actions').innerHTML = '';
     view.innerHTML = '<p class="muted">불러오는 중…</p>';
-    var fn = { home: vHome, site: vSite, notices: vNotices, archive: vArchive, services: vServices, events: vEvents, press: vPress, videos: vVideos, history: vHistory, settings: vSettings }[v] || vHome;
+    var fn = { home: vHome, site: vSite, notices: vNotices, archive: vArchive, services: vServices, events: vEvents, press: vPress, videos: vVideos, bot: vBot, history: vHistory, settings: vSettings }[v] || vHome;
     Promise.resolve(fn(h.slice(1))).then(function () { counts(); buildSubnav(); }).catch(function (e) { view.innerHTML = '<div class="panel"><p>불러오지 못했습니다: ' + esc(e.message) + '</p><p class="small muted">토큰 권한(Contents: Read and write)과 저장소 이름을 확인해 주세요.</p></div>'; });
   }
   window.addEventListener('hashchange', route);
@@ -486,6 +487,36 @@
   function vVideos() { return feedView({ title: '영상', desc: '한림대학교 유튜브(@HALLYMNEWS)의 KELI·켈리 영상을 매일 가져옵니다. 서비스 데모 영상은 한림 AI 교육 포털에서 따로 가져옵니다(전체 데모 영상 페이지).',
     sections: [{ key: 'videos', label: '유튜브 KELI·켈리 영상', note: '숨기면 소식 · 영상 페이지에서 빠집니다.', feed: 'videos', thumb: function (it) { return it.thumb; }, meta: function (it) { return (it.published || it.date || '') + (it.group === 'keli' ? ' · KELI' : ' · 관련'); } }] }); }
 
+  // ---------------------------------------------------------------- 챗봇(이음이 · 이루미): 켜기/끄기 · 인사말 · 빠른 질문 · 자주 묻는 질문
+  function vBot() {
+    return ensure('bot').then(function () {
+      var B = state.bot; var faq = (B.faq || []).map(function (f) { return Object.assign({}, f); });
+      function faqRows() { return faq.map(function (f, i) { return '<div class="panel" style="padding:18px 20px;margin-top:12px" data-faq="' + i + '"><div class="grid g2" style="gap:12px"><div class="field"><label>질문(국문)</label><input data-f="q_ko" value="' + esc(f.q_ko || '') + '"></div><div class="field"><label>Question (EN)</label><input data-f="q_en" value="' + esc(f.q_en || '') + '"></div><div class="field"><label>답(국문)</label><textarea data-f="a_ko">' + esc(f.a_ko || '') + '</textarea></div><div class="field"><label>Answer (EN)</label><textarea data-f="a_en">' + esc(f.a_en || '') + '</textarea></div><div class="field" style="grid-column:1/-1"><label>관련 페이지(선택)</label><input data-f="url" value="' + esc(f.url || '') + '" placeholder="join.html 처럼 사이트 안 주소"></div></div><div style="margin-top:8px;text-align:right"><button class="danger-link" type="button" data-rm="' + i + '">이 질문 삭제</button></div></div>'; }).join(''); }
+      view.innerHTML = head('Hallym University / Website CMS', '챗봇 · 이음이와 이루미', '사이트 오른쪽 아래의 마스코트 챗봇입니다. 국문은 이음이, 영문은 이루미가 답하고, 사이트의 서비스·참여 방법·행사·공지·연락처를 바탕으로 AI가 대답합니다.') +
+        '<form id="bot-form" class="cms-editor" novalidate>' +
+        '<div class="panel"><div class="ph"><div><h3>기본</h3><p>끄면 사이트에서 챗봇 단추가 사라집니다(다음 배포부터).</p></div></div><div class="form">' +
+        '<label class="chk"><input type="checkbox" id="b-on"' + (B.enabled !== false ? ' checked' : '') + '><span>챗봇 켜기</span></label>' +
+        '<div class="grid g2" style="gap:16px"><div class="field"><label for="b-gko">인사말(국문 · 이음이)</label><textarea id="b-gko">' + esc(B.greeting_ko || '') + '</textarea></div><div class="field"><label for="b-gen">Greeting (EN · Iru-mi)</label><textarea id="b-gen">' + esc(B.greeting_en || '') + '</textarea></div>' +
+        '<div class="field"><label for="b-qko">빠른 질문(국문, 한 줄에 하나)</label><textarea id="b-qko">' + esc((B.quick_ko || []).join('\n')) + '</textarea></div><div class="field"><label for="b-qen">Quick questions (EN, one per line)</label><textarea id="b-qen">' + esc((B.quick_en || []).join('\n')) + '</textarea></div></div></div></div>' +
+        '<div class="panel"><div class="ph"><div><h3>자주 묻는 질문</h3><p>여기 적은 답은 AI가 가장 먼저 참고하고, AI 서버가 없을 때도 그대로 답합니다. 서비스·행사·공지는 사이트 내용을 자동으로 읽으니 따로 적지 않아도 됩니다.</p></div><button class="btn ghost sm" type="button" id="faq-add">질문 추가</button></div><div id="faq-list">' + faqRows() + '</div></div>' +
+        '<div class="panel"><div class="ph"><div><h3>AI 서버</h3><p>Cloudflare 관리자 서버에 Workers AI(무료) 또는 Anthropic 키를 연결하면 AI가 답합니다. 연결 전에는 자주 묻는 질문과 사이트 검색으로 답합니다.</p></div></div><p class="small muted" style="margin:0" id="bot-srv">' + (SERVER ? '서버 주소: ' + esc(SERVER) + ' — 확인 중…' : '관리자 서버 주소가 없습니다(사이트 설정에서 넣으세요). 지금은 검색 답변만 합니다.') + '</p></div>' +
+        '</form>';
+      qs('#top-actions').innerHTML = '<span id="edit-status" class="small"><span class="saved">● 저장됨</span></span><button class="btn dark sm" type="button" id="bot-save">저장하고 게시</button>';
+      qsa('input,textarea', view).forEach(function (i) { i.addEventListener('input', function () { setDirty(true); }); });
+      function collect() { qsa('[data-faq]', view).forEach(function (row) { var i = Number(row.getAttribute('data-faq')); qsa('[data-f]', row).forEach(function (inp) { faq[i][inp.getAttribute('data-f')] = inp.value.trim(); }); }); }
+      function rerender() { qs('#faq-list').innerHTML = faqRows(); wire(); }
+      function wire() { qsa('[data-rm]', view).forEach(function (b) { b.addEventListener('click', function () { collect(); faq.splice(Number(b.getAttribute('data-rm')), 1); rerender(); setDirty(true); }); }); qsa('#faq-list input,#faq-list textarea').forEach(function (i) { i.addEventListener('input', function () { setDirty(true); }); }); }
+      wire();
+      qs('#faq-add').addEventListener('click', function () { collect(); faq.push({ q_ko: '', q_en: '', a_ko: '', a_en: '', url: '' }); rerender(); setDirty(true); });
+      qs('#bot-save').addEventListener('click', function () {
+        collect(); var btn = qs('#bot-save'); btn.disabled = true; btn.textContent = '저장 중…';
+        var out = { _안내: '마스코트 챗봇 설정. 관리자 화면(챗봇)에서 고칩니다.', enabled: qs('#b-on').checked, greeting_ko: qs('#b-gko').value.trim(), greeting_en: qs('#b-gen').value.trim(), quick_ko: qs('#b-qko').value.split('\n').map(function (x) { return x.trim(); }).filter(Boolean), quick_en: qs('#b-qen').value.split('\n').map(function (x) { return x.trim(); }).filter(Boolean), faq: faq.filter(function (f) { return f.q_ko || f.q_en; }) };
+        state.bot = out; saveJson('content/chatbot.json', out, '챗봇 설정 수정').then(function () { afterSave('챗봇 설정을 저장했습니다'); }).catch(fail).then(function () { btn.disabled = false; btn.textContent = '저장하고 게시'; });
+      });
+      if (SERVER) fetch(SERVER + '/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lang: 'ko', messages: [{ role: 'user', content: 'KELI가 뭐예요?' }] }) }).then(function (r) { return r.json(); }).then(function (j) { var e = j.engine === 'claude' ? 'Claude(Anthropic)' : j.engine === 'workers-ai' ? 'Workers AI(Llama)' : '검색 답변(AI 미연결)'; qs('#bot-srv').innerHTML = '서버 주소: ' + esc(SERVER) + ' — 지금 답하는 엔진: <strong>' + e + '</strong>' + (j.engine === 'search' ? '. Cloudflare → 워커 Settings → Bindings → Workers AI(변수 이름 AI)를 추가하면 AI가 답합니다.' : ''); }).catch(function (e) { qs('#bot-srv').textContent = '서버 주소: ' + SERVER + ' — 연결 실패(' + e.message + ')'; });
+    });
+  }
+
   // ---------------------------------------------------------------- 게시 기록: 누가 언제 무엇을 바꿨나
   function vHistory() {
     return gh('/repos/' + CFG.repo + '/commits?per_page=40&sha=' + CFG.branch).then(function (list) {
@@ -546,7 +577,7 @@
       Promise.all([liveFeed('services'), liveFeed('events'), liveFeed('press'), liveFeed('unn'), liveFeed('videos'), ensure('notices'), ensure('archive')]).then(counts).catch(function () {});
     });
   }
-  function logout() { clearToken(); token = null; user = null; state = { notices: null, archive: null, hidden: null, stats: null, site: null, cats: null, feeds: {}, sha: {} }; showLogin(''); location.hash = ''; }
+  function logout() { clearToken(); token = null; user = null; state = { notices: null, archive: null, hidden: null, stats: null, site: null, cats: null, bot: null, feeds: {}, sha: {} }; showLogin(''); location.hash = ''; }
   qs('#adm-logout').addEventListener('click', logout);
   qs('#login-form').addEventListener('submit', function (e) {
     e.preventDefault(); var m = qs('#tok-msg'); m.style.display = 'none'; var btn = qs('#tok-go'); var keep = qs('#tok-keep').checked;

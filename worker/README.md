@@ -43,6 +43,14 @@
 4. 사이트 설정 → "관리자 서버 주소"에 같은 주소를 넣고 "저장하고 게시" → 다음 배포부터 모든 사람의 관리자 화면이 아이디·비밀번호 로그인으로 열립니다.
 5. 사이트 설정 → "사용자(직원 계정)"에서 직원 계정을 만들어 아이디·비밀번호를 각자에게 알려 줍니다(권한: 편집자 = 글 쓰기·고치기, 관리자 = 사용자 관리까지).
 
+## 7. 마스코트 챗봇(이음이 · 이루미) 켜기 (2026-11-05 추가, 카드 불필요)
+사이트 오른쪽 아래의 챗봇은 이 서버의 `/api/chat` 로 질문을 보냅니다. AI 두뇌를 둘 중 하나로 연결합니다.
+- 무료(권장): 워커 → Settings → Bindings → "+ Add binding" → **Workers AI** → Variable name `AI` → Deploy. Cloudflare 의 Llama 모델이 답합니다(하루 무료 한도 안에서 수백 문답).
+- 더 좋은 답을 원하면: Anthropic 콘솔(console.anthropic.com)에서 API 키를 만들어 Secrets 에 `ANTHROPIC_API_KEY` 로 넣고 Deploy. 있으면 Claude가 먼저 답합니다(유료, 질문당 몇 원).
+- 둘 다 없으면 챗봇은 "자주 묻는 질문"과 사이트 검색으로만 답합니다(오류는 나지 않음).
+- 코드를 새로 붙여 넣은 뒤(2단계) Variables 에 `SITE_URL` = `https://keli-aied.org/` 를 추가하면 챗봇이 그 사이트의 지식 파일(assets/kb.json)을 읽습니다(비워도 keli-aied.org 로 동작).
+- 관리자 화면 → "챗봇" 메뉴에서 켜기/끄기 · 인사말 · 빠른 질문 · 자주 묻는 질문을 고치고, 지금 어떤 엔진이 답하는지 확인할 수 있습니다.
+
 ## 확인 · 문제 해결
 - 서버 주소를 브라우저에서 열면 `{"ok":true,"service":"KELI admin server","setup":true}` 가 보여야 합니다(`setup:true` = 아직 관리자 없음).
 - "관리자 서버에 연결하지 못했습니다": 주소 오타, 또는 3단계 `ALLOW_ORIGINS` 에 `https://keli-aied.org` 가 없음.
