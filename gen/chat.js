@@ -20,9 +20,11 @@
   function renderQuick(){ var list=(cfg&&cfg['quick_'+lang])||[]; quick.innerHTML=list.map(function(q){ return '<button type="button">'+esc(q)+'</button>'; }).join(''); qsa('button',quick).forEach(function(b){ b.addEventListener('click',function(){ ask(b.textContent); }); }); }
   function md(t){   // 아주 작은 마크다운: 줄바꿈 · 목록 · 굵게 · 링크
     var h=esc(t).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/(https?:\/\/[^\s<)]+)/g,function(u){ return '<a href="'+u+'" target="_blank" rel="noopener">'+u.replace(/^https?:\/\//,'')+'</a>'; });
-    var lines=h.split(/\n/), out='', inList=false;
-    lines.forEach(function(l){ var m=l.match(/^\s*[-•·]\s+(.*)$/); if(m){ if(!inList){ out+='<ul>'; inList=true; } out+='<li>'+m[1]+'</li>'; } else { if(inList){ out+='</ul>'; inList=false; } if(l.trim()) out+='<p>'+l+'</p>'; } });
-    if(inList) out+='</ul>'; return out||'<p></p>';
+    var lines=h.split(/\n/), out='', inList='';   // inList: '' | 'ul' | 'ol'
+    var close=function(){ if(inList){ out+='</'+inList+'>'; inList=''; } };
+    lines.forEach(function(l){ var m=l.match(/^\s*[-•·*]\s+(.*)$/), n=l.match(/^\s*\d+[.)]\s+(.*)$/); var tag=m?'ul':(n?'ol':'');
+      if(tag){ if(inList!==tag){ close(); out+='<'+tag+'>'; inList=tag; } out+='<li>'+(m||n)[1]+'</li>'; } else { close(); if(l.trim()) out+='<p>'+l+'</p>'; } });
+    close(); return out||'<p></p>';
   }
   function bubble(role, html, sources){
     var d=document.createElement('div'); d.className='kc-msg '+(role==='me'?'me':'bot');
