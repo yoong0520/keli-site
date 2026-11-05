@@ -1,481 +1,481 @@
 {
-  "_안내": "아카이브 자료 목록. 관리자 화면(admin.html)에서 고칩니다. cat: case(실증 사례집)·trend(기술 동향·연구)·manual(매뉴얼·소개자료), type: pdf·video·link·image",
-  "items": [
+ "_안내": "아카이브 자료 목록. 관리자 화면(admin.html)에서 고칩니다. cat: case(실증 사례집)·trend(기술 동향·연구)·manual(매뉴얼·소개자료), type: pdf·video·link·image",
+ "items": [
+  {
+   "id": "o78",
+   "cat": "case",
+   "type": "pdf",
+   "title": "수업적용·설계·운영 사례",
+   "org": "한림대학교",
+   "author": "신범주",
+   "date": "2026.07.24",
+   "url": "",
+   "body": "<p class=\"art-lead\">선형대수학 튜터 학습 데이터를 활용한 AI 튜터 성능 향상 연구입니다.</p>",
+   "files": [
     {
-      "id": "o78",
-      "cat": "case",
-      "type": "pdf",
-      "title": "수업적용·설계·운영 사례",
-      "org": "한림대학교",
-      "author": "신범주",
-      "date": "2026.07.24",
-      "url": "",
-      "body": "<p class=\"art-lead\">선형대수학 튜터 학습 데이터를 활용한 AI 튜터 성능 향상 연구입니다.</p>",
-      "files": [
-        {
-          "name": "2026KELI_신범주_수업적용·설계·운영 사례_202606_v01.pdf",
-          "url": "content/files/archive/78/2026KELI_신범주_수업적용·설계·운영_사례_202606_v01.pdf",
-          "size": "517 KB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 78)"
-    },
-    {
-      "id": "o68",
-      "cat": "case",
-      "type": "pdf",
-      "title": "C 프로그래밍",
-      "org": "한림대학교 소프트웨어학부",
-      "author": "김진환",
-      "date": "2026.06.16",
-      "url": "",
-      "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>C 프로그래밍</dd><dt>교수명</dt><dd>김진환</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>소프트웨어학부</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
-      "files": [
-        {
-          "name": "AI활용수업사례_김진환 (2).pdf",
-          "url": "content/files/archive/68/AI활용수업사례_김진환_(2).pdf",
-          "size": "1.1 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 68)"
-    },
-    {
-      "id": "o67",
-      "cat": "case",
-      "type": "pdf",
-      "title": "원가관리회계",
-      "org": "한림대학교 경영학과",
-      "author": "박주형",
-      "date": "2026.06.16",
-      "url": "",
-      "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>원가관리회계</dd><dt>교수명</dt><dd>박주형</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>경영학과</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
-      "files": [
-        {
-          "name": "AI활용수업사례_박주형 (2).pdf",
-          "url": "content/files/archive/67/AI활용수업사례_박주형_(2).pdf",
-          "size": "1.1 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 67)"
-    },
-    {
-      "id": "o66",
-      "cat": "case",
-      "type": "pdf",
-      "title": "유소년 스포츠 지도론",
-      "org": "한림대학교 체육학과",
-      "author": "정은희",
-      "date": "2026.06.16",
-      "url": "",
-      "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>유소년 스포츠 지도론</dd><dt>교수명</dt><dd>정은희</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>체육학과</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
-      "files": [
-        {
-          "name": "AI활용수업사례_정은희 (2).pdf",
-          "url": "content/files/archive/66/AI활용수업사례_정은희_(2).pdf",
-          "size": "1.1 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 66)"
-    },
-    {
-      "id": "o65",
-      "cat": "case",
-      "type": "pdf",
-      "title": "창의코딩-모두의SW리터러시",
-      "org": "한림대학교 법학과",
-      "author": "정연진",
-      "date": "2026.06.16",
-      "url": "",
-      "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>창의코딩-모두의SW리터러시</dd><dt>교수명</dt><dd>정연진</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>법학과</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
-      "files": [
-        {
-          "name": "AI활용수업사례_정연진 (2).pdf",
-          "url": "content/files/archive/65/AI활용수업사례_정연진_(2).pdf",
-          "size": "1.6 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 65)"
-    },
-    {
-      "id": "o64",
-      "cat": "case",
-      "type": "pdf",
-      "title": "한일 교류의 역사와 쟁점",
-      "org": "한림대학교 일본학",
-      "author": "전성곤",
-      "date": "2026.06.16",
-      "url": "",
-      "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>한일 교류의 역사와 쟁점</dd><dt>교수명</dt><dd>전성곤</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>일본학</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
-      "files": [
-        {
-          "name": "AI활용수업사례_전성곤 (2).pdf",
-          "url": "content/files/archive/64/AI활용수업사례_전성곤_(2).pdf",
-          "size": "1.3 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 64)"
-    },
-    {
-      "id": "o63",
-      "cat": "case",
-      "type": "pdf",
-      "title": "데이터로 소통하기",
-      "org": "한림대학교 교양대학",
-      "author": "이은정",
-      "date": "2026.06.16",
-      "url": "",
-      "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>데이터로 소통하기</dd><dt>교수명</dt><dd>이은정</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>교양대학</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
-      "files": [
-        {
-          "name": "AI활용수업사례__이은정 (2).pdf",
-          "url": "content/files/archive/63/AI활용수업사례_이은정_(2).pdf",
-          "size": "1.1 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 63)"
-    },
-    {
-      "id": "o62",
-      "cat": "case",
-      "type": "pdf",
-      "title": "인공지능 기초",
-      "org": "한림대학교 소프트웨어학부 스마트IoT",
-      "author": "김병정",
-      "date": "2026.06.16",
-      "url": "",
-      "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>인공지능 기초</dd><dt>교수명</dt><dd>김병정</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>소프트웨어학부 스마트IoT</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
-      "files": [
-        {
-          "name": "AI활용수업사례_김병정 (2).pdf",
-          "url": "content/files/archive/62/AI활용수업사례_김병정_(2).pdf",
-          "size": "1.2 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 62)"
-    },
-    {
-      "id": "o44",
-      "cat": "case",
-      "type": "pdf",
-      "title": "보건교육방법론",
-      "org": "한림대학교 간호학과",
-      "author": "권명순 · 간진숙",
-      "date": "2026.04.16",
-      "url": "",
-      "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>보건교육방법론</dd><dt>교수명</dt><dd>권명순 · 간진숙</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>간호학과</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
-      "files": [
-        {
-          "name": "AI활용수업사례_권명순_간진숙.pdf",
-          "url": "content/files/archive/44/AI활용수업사례_권명순_간진숙.pdf",
-          "size": "1.4 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 44)"
-    },
-    {
-      "id": "o26",
-      "cat": "case",
-      "type": "pdf",
-      "title": "통계적 알고리즘",
-      "org": "한림대학교 데이터사이언스학부 데이터테크전공",
-      "author": "이재화",
-      "date": "2026.04.15",
-      "url": "",
-      "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>통계적 알고리즘</dd><dt>교수명</dt><dd>이재화</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>데이터사이언스학부 데이터테크전공</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
-      "files": [
-        {
-          "name": "AI활용수업사례_이재화.pdf",
-          "url": "content/files/archive/26/AI활용수업사례_이재화.pdf",
-          "size": "1.3 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 26)"
-    },
-    {
-      "id": "o25",
-      "cat": "case",
-      "type": "pdf",
-      "title": "Career English 1",
-      "org": "한림대학교 일송자유교양대학/영어교육센터",
-      "author": "이재선",
-      "date": "2026.04.15",
-      "url": "",
-      "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>Career English 1</dd><dt>교수명</dt><dd>이재선</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>일송자유교양대학/영어교육센터</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
-      "files": [
-        {
-          "name": "AI활용수업사례_이재선.pdf",
-          "url": "content/files/archive/25/AI활용수업사례_이재선.pdf",
-          "size": "1.7 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 25)"
-    },
-    {
-      "id": "o122",
-      "cat": "trend",
-      "type": "pdf",
-      "title": "월간 에듀테크 솔루션 분석 보고서 Vol.05 · AI 평가·피드백 도구",
-      "org": "KELI 사무국",
-      "author": "김슬기",
-      "date": "2026.10.16",
-      "url": "",
-      "body": "<p class=\"art-lead\">■ 연구 개요</p><p>연구책임자: 김슬기</p><p>과제명: 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</p><p>산출물 유형: 기술 동향</p><p>대상 월: 2026년 10월</p><p>보고서명: 월간 에듀테크 솔루션 분석 보고서 Vol.05</p><p>■ 보고서 소개</p><p>「월간 에듀테크 솔루션 분석 보고서」 Vol.05(2026년 10월분)는 글·코드·풀이를 채점하거나 형성 피드백을 만드는 AI 평가·피드백 도구를 분석했다.</p><p>LLM 채점은 조건이 갖춰지면 인간 채점에 가까워지지만 과제와 실행 조건에 따라 크게 흔들렸고 AI 피드백은 수정 결과를 높였으나 학습 전이로 이어진다고 보기는 어려웠다.</p><p>Gradescope(체험 강좌, 과업 6개)와 Grammarly for Education AI Grader(무료 계정, 채점 결과 1건)는 측정 범위가 달랐고 둘 다 신중 검토였다.</p><p>평가 재설계에는 실 확인 지점·이의 제기 경로 점검표도 실었다.</p><p>■ 키워드</p><p>AI 채점, 형성 피드백, 학습 전이, 인간 감독, 평가 재설계</p><ul class=\"art-ul\"><li>연구책임자: 김슬기</li><li>과제명: 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</li><li>산출물 유형: 기술 동향</li><li>대상 월: 2026년 10월</li><li>보고서명: 월간 에듀테크 솔루션 분석 보고서 Vol.05</li></ul>",
-      "files": [
-        {
-          "name": "2026KELI_김슬기_월간 에듀테크 솔루션 분석 보고서_202610_v01.pdf",
-          "url": "content/files/archive/122/2026KELI_김슬기_월간_에듀테크_솔루션_분석_보고서_202610_v01.pdf",
-          "size": "2.6 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/technic (이관 seq 122)",
-      "period": "2026년 10월"
-    },
-    {
-      "id": "o121",
-      "cat": "trend",
-      "type": "pdf",
-      "title": "월간 에듀테크 솔루션 분석 보고서 Vol.04 · 학습분석 도구",
-      "org": "KELI 사무국",
-      "author": "김슬기",
-      "date": "2026.09.30",
-      "url": "",
-      "body": "<p class=\"art-lead\">■ 연구 개요</p><p>연구책임자: 김슬기</p><p>과제명: 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</p><p>산출물 유형: 기술 동향</p><p>대상 월: 2026년 9월</p><p>보고서명: 월간 에듀테크 솔루션 분석 보고서 Vol.04</p><p>■ 보고서 소개</p><p>「월간 에듀테크 솔루션 분석 보고서」 Vol.04(2026년 9월분)는 학습분석 도구를 기술·시장·교육적 적용·한계의 네 측면에서 분석했다.</p><p>대학 현장 조기경보 실험에서 정확한 예측은 평균 효과로 이어지지 않았고 사람의 연락만으로 효과가 보장되지도 않았으며 예측 오류는 집단마다 달랐다.</p><p>Canvas Intelligent Insights와 Moodle Analytics는 자료 기준일까지 공개된 문서로 판정해 필수 항목 측정이 부족했고 의견은 모두 판정 유보였다.</p><p>대학은 판정 검토·기록과 연락·상담, 데이터 보호 절차를 묶어 설계할 수 있다.</p><p>■ 키워드</p><p>학습분석, 조기경보, 개입 설계, 예측 편향, 데이터 거버넌스</p><ul class=\"art-ul\"><li>연구책임자: 김슬기</li><li>과제명: 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</li><li>산출물 유형: 기술 동향</li><li>대상 월: 2026년 9월</li><li>보고서명: 월간 에듀테크 솔루션 분석 보고서 Vol.04</li></ul>",
-      "files": [
-        {
-          "name": "2026KELI_김슬기_월간 에듀테크 솔루션 분석 보고서_202609_v01.pdf",
-          "url": "content/files/archive/121/2026KELI_김슬기_월간_에듀테크_솔루션_분석_보고서_202609_v01.pdf",
-          "size": "2.5 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/technic (이관 seq 121)",
-      "period": "2026년 9월"
-    },
-    {
-      "id": "o120",
-      "cat": "trend",
-      "type": "pdf",
-      "title": "월간 에듀테크 솔루션 분석 보고서 Vol.03 · AI 튜터링 플랫폼",
-      "org": "KELI 사무국",
-      "author": "김슬기",
-      "date": "2026.08.31",
-      "url": "",
-      "body": "<p class=\"art-lead\">■ 연구 개요</p><p>연구책임자: 김슬기</p><p>과제명: 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</p><p>산출물 유형: 기술 동향</p><p>대상 월: 2026년 8월</p><p>보고서명: 월간 에듀테크 솔루션 분석 보고서 Vol.03</p><p>■ 보고서 소개</p><p>「월간 에듀테크 솔루션 분석 보고서」 Vol.03(2026년 8월분)은 교수법을 설계한 대화형 AI 튜터를 기술·시장·교육적 적용·한계의 네 측면에서 분석했다.</p><p>정답을 곧바로 주지 않는 지시는 프롬프트만으로 지켜지기 어려웠고 이를 보완하는 구조 설계는 연구 단계가 많았다.</p><p>대학 강좌 실험의 효과는 비교 조건·측정·설계에 따라 크게 엇갈렸다.</p><p>CS50 Duck과 Duolingo Max는 공개 문서로 평가해 필수 항목을 5개만 판정할 수 있어 판정 유보였다.</p><p>대학은 교수자·조교의 역할을 나누고 저작권·데이터·고지 조건을 도입 전에 점검할 수 있다.</p><p>■ 키워드</p><p>AI 튜터, 고등교육, 교수법 설계, 정답 노출, 가상 조교</p><ul class=\"art-ul\"><li>연구책임자: 김슬기</li><li>과제명: 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</li><li>산출물 유형: 기술 동향</li><li>대상 월: 2026년 8월</li><li>보고서명: 월간 에듀테크 솔루션 분석 보고서 Vol.03</li></ul>",
-      "files": [
-        {
-          "name": "2026KELI_김슬기_월간 에듀테크 솔루션 분석 보고서_202608_v01.pdf",
-          "url": "content/files/archive/120/2026KELI_김슬기_월간_에듀테크_솔루션_분석_보고서_202608_v01.pdf",
-          "size": "3.0 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/technic (이관 seq 120)",
-      "period": "2026년 8월"
-    },
-    {
-      "id": "o119",
-      "cat": "trend",
-      "type": "pdf",
-      "title": "월간 에듀테크 솔루션 분석 보고서 Vol.02 · 적응형 학습 시스템",
-      "org": "KELI 사무국",
-      "author": "김슬기",
-      "date": "2026.07.31",
-      "url": "",
-      "body": "<p class=\"art-lead\">■ 연구 개요</p><p>연구책임자: 김슬기</p><p>과제명: 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</p><p>산출물 유형: 기술 동향</p><p>대상 월: 2026년 7월</p><p>보고서명: 월간 에듀테크 솔루션 분석 보고서 Vol.02</p><p>■ 보고서 소개</p><p>「월간 에듀테크 솔루션 분석 보고서」 Vol.02(2026년 7월분)은 적응형 학습 시스템을 기술 구조·시장·교육적 적용·한계의 네 측면에서 분석했다.</p><p>전용 엔진은 미리 만든 도메인 모델로 숙달을 추정하고 Gemini 학습 노트북은 목표를 세부 목표로 나눠 진단 퀴즈로 출발점을 잡는다(산출 기준 미공개).</p><p>고등교육의 효과는 K-12보다 작게 보고되었고 제품 단위 독립 근거는 부족했다.</p><p>ALEKS와 학습 노트북은 공개 문서로 판정한 필수 항목이 적어 모두 판정 유보였다.</p><p>대학은 학습 지원과 배치·성적 반영을 구분하고 시범 운영과 효과 측정을 거쳐 넓힐 수 있다.</p><p>■ 키워드</p><p>적응형 학습, 지식 추적, 생성형 개인화, 고등교육, AI 디지털교과서</p><ul class=\"art-ul\"><li>연구책임자: 김슬기</li><li>과제명: 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</li><li>산출물 유형: 기술 동향</li><li>대상 월: 2026년 7월</li><li>보고서명: 월간 에듀테크 솔루션 분석 보고서 Vol.02</li></ul>",
-      "files": [
-        {
-          "name": "2026KELI_김슬기_월간 에듀테크 솔루션 분석 보고서_202607_v01.pdf",
-          "url": "content/files/archive/119/2026KELI_김슬기_월간_에듀테크_솔루션_분석_보고서_202607_v01.pdf",
-          "size": "2.4 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/technic (이관 seq 119)",
-      "period": "2026년 7월"
-    },
-    {
-      "id": "o118",
-      "cat": "trend",
-      "type": "pdf",
-      "title": "월간 에듀테크 솔루션 분석 보고서 Vol.01 · LLM 기반 학습 도구",
-      "org": "KELI 사무국",
-      "author": "김슬기",
-      "date": "2026.06.01",
-      "url": "",
-      "body": "<p class=\"art-lead\">■ 연구 개요</p><p>연구책임자: 김슬기</p><p>과제명: 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</p><p>산출물 유형: 기술 동향</p><p>대상 월: 2026년 6월</p><p>보고서명: 월간 에듀테크 솔루션 분석 보고서 Vol.01</p><p>■ 보고서 소개</p><p>「월간 에듀테크 솔루션 분석 보고서」 Vol.01(2026년 6월분)은 LLM 기반 학습 도구를</p><p>기술 구조, 시장 동향, 교육적 적용, 한계·논쟁점의 4분면으로 분석했다.</p><p>학습 모드는 정답 보류를 보장하지 않고 메타분석의 큰 효과는 신중히 읽어야 하며 상용 학습 모드의 대학 실험 근거는 확인되지 않았다.</p><p>ChatGPT 학습 모드와 Gemini 가이드 학습은 기준일까지 공개된 문서로 판정해 둘 다 판정 유보였다.</p><p>기관 도입에는 AI 기본법과 개인정보 안내서에 맞춘 데이터 조건과 과제·평가 설계가 필요하다.</p><p>■ 키워드</p><p>LLM 기반 학습 도구, 학습 모드, 고등교육, 기관 도입, 데이터 보호</p><ul class=\"art-ul\"><li>연구책임자: 김슬기</li><li>과제명: 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</li><li>산출물 유형: 기술 동향</li><li>대상 월: 2026년 6월</li><li>보고서명: 월간 에듀테크 솔루션 분석 보고서 Vol.01</li></ul>",
-      "files": [
-        {
-          "name": "2026KELI_김슬기_월간 에듀테크 솔루션 분석 보고서_202606_v01.pdf",
-          "url": "content/files/archive/118/2026KELI_김슬기_월간_에듀테크_솔루션_분석_보고서_202606_v01.pdf",
-          "size": "2.3 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/technic (이관 seq 118)",
-      "period": "2026년 6월"
-    },
-    {
-      "id": "o126",
-      "cat": "trend",
-      "type": "pdf",
-      "title": "2026년 10월 선형대수학 AI 튜터 분석 보고서 — 학습 참여 현황·기능 평가",
-      "org": "KELI 사무국",
-      "author": "신범주",
-      "date": "2026.10.28",
-      "url": "",
-      "body": "<p class=\"art-lead\">선형대수학 AI 튜터 학습 데이터를 활용하여 학생별 문제 풀이 시간과 풀이 이미지 제출 현황을 분석하고, AI 튜터 기능 평가 및 학생 의견을 바탕으로 서비스 개선 방향을 검토한 연구 보고서입니다.</p>",
-      "files": [
-        {
-          "name": "2026KELI_신범주_에듀테크 솔루션 분석 보고서_202610_v01.pdf",
-          "url": "content/files/archive/126/2026KELI_신범주_에듀테크_솔루션_분석_보고서_202610_v01.pdf",
-          "size": "430 KB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/policy (이관 seq 126)"
-    },
-    {
-      "id": "o117",
-      "cat": "trend",
-      "type": "pdf",
-      "title": "AI 에듀테크 전공 공통 참조 운영 모델: 신생 융합전공의 효율적 운영을 위한 국내외 사례 분석과 한림대학교 AI에듀테크전공 적용안",
-      "org": "KELI 사무국",
-      "author": "김슬기 외",
-      "date": "2026.10.01",
-      "url": "",
-      "body": "<p class=\"art-lead\">이 보고서는 국내외 교육 관련 전공 56개 사례(해외 31·국내 25)의 공식 자료를 학사 구조·교육과정·교원·현장 연계·학생 지원·질 관리·자원·정체성의</p><p>여덟 차원으로 비교해 교원·예산·학생 규모가 제한된 신생 융합전공에 옮길 수 있는 공통 설계 원리 여섯 가지를 정리했다.</p><p>본교(한림대학교) AI에듀테크전공의 운영 현황은 같은 차원에서 공개된 공식 자료와 전공 운영 사실로 자체 진단했고,</p><p>설계 원칙 6개, 구성 요소 6개, 4단계 구분, 성과지표 13개로 이루어진 공유·적층형 운영 모델과 본교 적용안을 제안한다.</p><p>모델의 기본형은 학부 융합·연계전공이다.</p><p>키워드: 전공 운영 모델, 신생 융합전공, AI 에듀테크, 공유 교과, 적층형 이수</p><p>작성자 및 소속: 김슬기(연구책임자, 한림대학교 일송자유교양대학), 고영웅, 김진환, 김병정, 김성우, 김용수, 서동기, 육청민, 이정근, 정혜선, 진서연, 한민정·</p><p>한수미·홍수현·황현석 (이상 한림대학교)</p>",
-      "files": [
-        {
-          "name": "2026KELI_김슬기_전공공통참조운영모델_202610_v01.pdf",
-          "url": "content/files/archive/117/2026KELI_김슬기_전공공통참조운영모델_202610_v01.pdf",
-          "size": "2.1 MB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/policy (이관 seq 117)"
-    },
-    {
-      "id": "o116",
-      "cat": "trend",
-      "type": "pdf",
-      "title": "2026년 7월 선형대수학 AI 튜터 분석 보고서",
-      "org": "KELI 사무국",
-      "author": "신범주",
-      "date": "2026.07.23",
-      "url": "",
-      "body": "<p class=\"art-lead\">선형대수학 튜터 학습 데이터를 활용한 AI 튜터 성능 향상 연구 보고서입니다.</p>",
-      "files": [
-        {
-          "name": "2026KELI_신범주_에듀테크 솔루션 분석 보고서_202607_v01.pdf",
-          "url": "content/files/archive/116/2026KELI_신범주_에듀테크_솔루션_분석_보고서_202607_v01.pdf",
-          "size": "493 KB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/policy (이관 seq 116)"
-    },
-    {
-      "id": "o115",
-      "cat": "trend",
-      "type": "pdf",
-      "title": "2026년 8월 선형대수학 AI 튜터 분석 보고서 — 과제 참여·수행 현황",
-      "org": "KELI 사무국",
-      "author": "신범주",
-      "date": "2026.08.21",
-      "url": "",
-      "body": "<p class=\"art-lead\">선형대수학 튜터 학습 데이터를 활용한 AI 튜터 성능 향상 연구 보고서입니다.</p>",
-      "files": [
-        {
-          "name": "2026KELI_신범주_에듀테크 솔루션 분석 보고서_202608_v01.pdf",
-          "url": "content/files/archive/115/2026KELI_신범주_에듀테크_솔루션_분석_보고서_202608_v01.pdf",
-          "size": "412 KB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/policy (이관 seq 115)"
-    },
-    {
-      "id": "o114",
-      "cat": "trend",
-      "type": "pdf",
-      "title": "2026년 9월 선형대수학 AI 튜터 분석 보고서 — 시험 정답률·성적 분포",
-      "org": "KELI 사무국",
-      "author": "신범주",
-      "date": "2026.09.28",
-      "url": "",
-      "body": "<p class=\"art-lead\">선형대수학 튜터 학습 데이터를 활용한 AI 튜터 성능 향상 연구 보고서입니다.</p>",
-      "files": [
-        {
-          "name": "2026KELI_신범주_에듀테크 솔루션 분석 보고서_202609_v01.pdf",
-          "url": "content/files/archive/114/2026KELI_신범주_에듀테크_솔루션_분석_보고서_202609_v01.pdf",
-          "size": "549 KB"
-        }
-      ],
-      "published": true,
-      "source": "https://keliedu.org/keli/contents/archive/policy (이관 seq 114)"
-    },
-    {
-      "id": "a5",
-      "cat": "manual",
-      "type": "link",
-      "title": "HAI 활용 매뉴얼 사이트",
-      "org": "한림대학교 AI교육확산센터",
-      "date": "2026",
-      "url": "https://haimanual.csedu4all.com",
-      "published": true
-    },
-    {
-      "id": "a6",
-      "cat": "manual",
-      "type": "pdf",
-      "title": "한림대학교 교수자를 위한 수업에서의 AI 활용 가이드라인",
-      "org": "교육혁신센터",
-      "date": "2026",
-      "url": "",
-      "published": true,
-      "body": "",
-      "files": [
-        {
-          "name": "[붙임] 한림대학교 교수자를 위한 수업에서의 AI 활용 가이드라인.pdf",
-          "url": "content/files/2026/11/mw0neuuf_[붙임]_한림대학교_교수자를_위한_수업에서의_AI_활용_가이드라인.pdf",
-          "size": "768 KB"
-        }
-      ]
-    },
-    {
-      "id": "a9",
-      "cat": "manual",
-      "type": "image",
-      "title": "What is KELI? (국/영문 홍보 리플렛)",
-      "org": "KELI 사무국",
-      "date": "2026.10",
-      "url": "",
-      "published": true,
-      "body": "<p class=\"art-lead\">KELI를 한 장으로 소개하는 3단 리플렛입니다. 국문과 영문 두 가지이며, 그림을 누르면 크게 볼 수 있습니다.</p><figure class=\"art-fig\"><img src=\"content/files/2026/11/mw0mrlxc_0._[KELI_사무국]_KELI_홍보_3단_리플렛(국문)_최종.png\" alt=\"KELI 홍보 3단 리플렛(국문)\"><figcaption>KELI 홍보 3단 리플렛 · 국문</figcaption></figure><figure class=\"art-fig\"><img src=\"content/files/2026/11/mw0ncpie_0._[KELI_사무국]_KELI_홍보_3단_리플렛(영문)_최종.png\" alt=\"KELI 홍보 3단 리플렛(영문)\"><figcaption>KELI 홍보 3단 리플렛 · 영문 (English)</figcaption></figure>",
-      "files": [
-        {
-          "name": "[KELI 사무국] KELI 홍보 3단 리플렛(국문).png",
-          "url": "content/files/2026/11/mw0mrlxc_0._[KELI_사무국]_KELI_홍보_3단_리플렛(국문)_최종.png",
-          "size": "1.6 MB"
-        },
-        {
-          "name": "[KELI 사무국] KELI 홍보 3단 리플렛(영문).png",
-          "url": "content/files/2026/11/mw0ncpie_0._[KELI_사무국]_KELI_홍보_3단_리플렛(영문)_최종.png",
-          "size": "1.7 MB"
-        }
-      ]
+     "name": "2026KELI_신범주_수업적용·설계·운영 사례_202606_v01.pdf",
+     "url": "content/files/archive/78/2026KELI_신범주_수업적용·설계·운영_사례_202606_v01.pdf",
+     "size": "517 KB"
     }
-  ]
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 78)"
+  },
+  {
+   "id": "o68",
+   "cat": "case",
+   "type": "pdf",
+   "title": "C 프로그래밍",
+   "org": "한림대학교 소프트웨어학부",
+   "author": "김진환",
+   "date": "2026.06.16",
+   "url": "",
+   "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>C 프로그래밍</dd><dt>교수명</dt><dd>김진환</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>소프트웨어학부</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
+   "files": [
+    {
+     "name": "AI활용수업사례_김진환 (2).pdf",
+     "url": "content/files/archive/68/AI활용수업사례_김진환_(2).pdf",
+     "size": "1.1 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 68)"
+  },
+  {
+   "id": "o67",
+   "cat": "case",
+   "type": "pdf",
+   "title": "원가관리회계",
+   "org": "한림대학교 경영학과",
+   "author": "박주형",
+   "date": "2026.06.16",
+   "url": "",
+   "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>원가관리회계</dd><dt>교수명</dt><dd>박주형</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>경영학과</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
+   "files": [
+    {
+     "name": "AI활용수업사례_박주형 (2).pdf",
+     "url": "content/files/archive/67/AI활용수업사례_박주형_(2).pdf",
+     "size": "1.1 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 67)"
+  },
+  {
+   "id": "o66",
+   "cat": "case",
+   "type": "pdf",
+   "title": "유소년 스포츠 지도론",
+   "org": "한림대학교 체육학과",
+   "author": "정은희",
+   "date": "2026.06.16",
+   "url": "",
+   "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>유소년 스포츠 지도론</dd><dt>교수명</dt><dd>정은희</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>체육학과</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
+   "files": [
+    {
+     "name": "AI활용수업사례_정은희 (2).pdf",
+     "url": "content/files/archive/66/AI활용수업사례_정은희_(2).pdf",
+     "size": "1.1 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 66)"
+  },
+  {
+   "id": "o65",
+   "cat": "case",
+   "type": "pdf",
+   "title": "창의코딩-모두의SW리터러시",
+   "org": "한림대학교 법학과",
+   "author": "정연진",
+   "date": "2026.06.16",
+   "url": "",
+   "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>창의코딩-모두의SW리터러시</dd><dt>교수명</dt><dd>정연진</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>법학과</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
+   "files": [
+    {
+     "name": "AI활용수업사례_정연진 (2).pdf",
+     "url": "content/files/archive/65/AI활용수업사례_정연진_(2).pdf",
+     "size": "1.6 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 65)"
+  },
+  {
+   "id": "o64",
+   "cat": "case",
+   "type": "pdf",
+   "title": "한일 교류의 역사와 쟁점",
+   "org": "한림대학교 일본학",
+   "author": "전성곤",
+   "date": "2026.06.16",
+   "url": "",
+   "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>한일 교류의 역사와 쟁점</dd><dt>교수명</dt><dd>전성곤</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>일본학</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
+   "files": [
+    {
+     "name": "AI활용수업사례_전성곤 (2).pdf",
+     "url": "content/files/archive/64/AI활용수업사례_전성곤_(2).pdf",
+     "size": "1.3 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 64)"
+  },
+  {
+   "id": "o63",
+   "cat": "case",
+   "type": "pdf",
+   "title": "데이터로 소통하기",
+   "org": "한림대학교 교양대학",
+   "author": "이은정",
+   "date": "2026.06.16",
+   "url": "",
+   "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>데이터로 소통하기</dd><dt>교수명</dt><dd>이은정</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>교양대학</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
+   "files": [
+    {
+     "name": "AI활용수업사례__이은정 (2).pdf",
+     "url": "content/files/archive/63/AI활용수업사례_이은정_(2).pdf",
+     "size": "1.1 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 63)"
+  },
+  {
+   "id": "o62",
+   "cat": "case",
+   "type": "pdf",
+   "title": "인공지능 기초",
+   "org": "한림대학교 소프트웨어학부 스마트IoT",
+   "author": "김병정",
+   "date": "2026.06.16",
+   "url": "",
+   "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>인공지능 기초</dd><dt>교수명</dt><dd>김병정</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>소프트웨어학부 스마트IoT</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
+   "files": [
+    {
+     "name": "AI활용수업사례_김병정 (2).pdf",
+     "url": "content/files/archive/62/AI활용수업사례_김병정_(2).pdf",
+     "size": "1.2 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 62)"
+  },
+  {
+   "id": "o44",
+   "cat": "case",
+   "type": "pdf",
+   "title": "보건교육방법론",
+   "org": "한림대학교 간호학과",
+   "author": "권명순 · 간진숙",
+   "date": "2026.04.16",
+   "url": "",
+   "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>보건교육방법론</dd><dt>교수명</dt><dd>권명순 · 간진숙</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>간호학과</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
+   "files": [
+    {
+     "name": "AI활용수업사례_권명순_간진숙.pdf",
+     "url": "content/files/archive/44/AI활용수업사례_권명순_간진숙.pdf",
+     "size": "1.4 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 44)"
+  },
+  {
+   "id": "o26",
+   "cat": "case",
+   "type": "pdf",
+   "title": "통계적 알고리즘",
+   "org": "한림대학교 데이터사이언스학부 데이터테크전공",
+   "author": "이재화",
+   "date": "2026.04.15",
+   "url": "",
+   "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>통계적 알고리즘</dd><dt>교수명</dt><dd>이재화</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>데이터사이언스학부 데이터테크전공</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
+   "files": [
+    {
+     "name": "AI활용수업사례_이재화.pdf",
+     "url": "content/files/archive/26/AI활용수업사례_이재화.pdf",
+     "size": "1.3 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 26)"
+  },
+  {
+   "id": "o25",
+   "cat": "case",
+   "type": "pdf",
+   "title": "Career English 1",
+   "org": "한림대학교 일송자유교양대학/영어교육센터",
+   "author": "이재선",
+   "date": "2026.04.15",
+   "url": "",
+   "body": "<dl class=\"art-kv\"><dt>교과목명</dt><dd>Career English 1</dd><dt>교수명</dt><dd>이재선</dd><dt>대학명</dt><dd>한림대학교</dd><dt>전공명</dt><dd>일송자유교양대학/영어교육센터</dd></dl><h3 class=\"art-h\">목차</h3><ol class=\"art-ol\"><li>AI 활용 수업 계획서</li><li>AI 활용 수업 주차별 세부 계획서</li><li>AI 활용 수업 결과보고서</li></ol>",
+   "files": [
+    {
+     "name": "AI활용수업사례_이재선.pdf",
+     "url": "content/files/archive/25/AI활용수업사례_이재선.pdf",
+     "size": "1.7 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/business (이관 seq 25)"
+  },
+  {
+   "id": "o122",
+   "cat": "trend",
+   "type": "pdf",
+   "title": "월간 에듀테크 솔루션 분석 보고서 Vol.05 · AI 평가·피드백 도구",
+   "org": "KELI 사무국",
+   "author": "김슬기",
+   "date": "2026.10.16",
+   "url": "",
+   "body": "<div class=\"art-sum\"><span class=\"k\">핵심 요약</span><ul class=\"art-ul\"><li>글·코드·풀이를 채점하거나 형성 피드백을 만드는 AI 평가·피드백 도구를 분석한 월간 보고서</li><li>LLM 채점은 조건이 갖춰지면 인간 채점에 가까워지지만 과제·실행 조건에 따라 크게 흔들림</li><li>Gradescope · Grammarly for Education AI Grader 두 제품 모두 \"신중 검토\" 판정</li></ul></div><dl class=\"art-kv\"><dt>발행</dt><dd>2026. 10. · KELI 사무국</dd><dt>연구책임자</dt><dd>김슬기</dd><dt>과제명</dt><dd>고등교육 AI에듀테크의 통합적 발전 방안 연구 – 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</dd><dt>산출물 유형</dt><dd>기술 동향 · 월간 보고서</dd><dt>대상 월</dt><dd>2026년 10월 (Vol.05)</dd></dl><h2 class=\"art-h\">보고서 소개</h2><p>「월간 에듀테크 솔루션 분석 보고서」 Vol.05(2026년 10월분)는 글·코드·풀이를 채점하거나 형성 피드백을 만드는 AI 평가·피드백 도구를 분석했다. 평가 재설계에 바로 쓸 수 있도록 실 확인 지점과 이의 제기 경로 점검표도 함께 실었다.</p><h2 class=\"art-h\">주요 분석 결과</h2><ul class=\"art-ul\"><li>LLM 채점은 조건이 갖춰지면 인간 채점에 가까워지지만, 과제와 실행 조건에 따라 결과가 크게 흔들렸다.</li><li>AI 피드백은 수정 결과를 높였으나, 학습 전이로 이어진다고 보기는 어려웠다.</li><li>Gradescope(체험 강좌, 과업 6개)와 Grammarly for Education AI Grader(무료 계정, 채점 결과 1건)는 측정 범위가 달랐고, 둘 다 신중 검토였다.</li><li>평가 재설계에는 실 확인 지점·이의 제기 경로 점검표를 실었다.</li></ul><h2 class=\"art-h\">키워드</h2><div class=\"chips\"><span class=\"chip\">AI 채점</span><span class=\"chip\">형성 피드백</span><span class=\"chip\">학습 전이</span><span class=\"chip\">인간 감독</span><span class=\"chip\">평가 재설계</span></div><div class=\"art-note\">※ 보고서 전문(PDF)은 위 \"PDF 바로 보기\" 또는 아래 \"자료 파일\"에서 볼 수 있습니다.<br>· 인용: 김슬기(2026), 월간 에듀테크 솔루션 분석 보고서 Vol.05 — AI 평가·피드백 도구, KELI 사무국<br>· 문의: KELI 사무국 033-248-3246 / contact@keliedu.org</div>",
+   "files": [
+    {
+     "name": "2026KELI_김슬기_월간 에듀테크 솔루션 분석 보고서_202610_v01.pdf",
+     "url": "content/files/archive/122/2026KELI_김슬기_월간_에듀테크_솔루션_분석_보고서_202610_v01.pdf",
+     "size": "2.6 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/technic (이관 seq 122)",
+   "period": "2026년 10월"
+  },
+  {
+   "id": "o121",
+   "cat": "trend",
+   "type": "pdf",
+   "title": "월간 에듀테크 솔루션 분석 보고서 Vol.04 · 학습분석 도구",
+   "org": "KELI 사무국",
+   "author": "김슬기",
+   "date": "2026.09.30",
+   "url": "",
+   "body": "<div class=\"art-sum\"><span class=\"k\">핵심 요약</span><ul class=\"art-ul\"><li>학습분석 도구를 기술·시장·교육적 적용·한계의 네 측면에서 분석한 월간 보고서</li><li>조기경보 실험에서 정확한 예측이 평균 효과로 이어지지 않았고, 예측 오류는 집단마다 달랐음</li><li>Canvas Intelligent Insights · Moodle Analytics 두 제품 모두 \"판정 유보\"</li></ul></div><dl class=\"art-kv\"><dt>발행</dt><dd>2026. 9. · KELI 사무국</dd><dt>연구책임자</dt><dd>김슬기</dd><dt>과제명</dt><dd>고등교육 AI에듀테크의 통합적 발전 방안 연구 – 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</dd><dt>산출물 유형</dt><dd>기술 동향 · 월간 보고서</dd><dt>대상 월</dt><dd>2026년 9월 (Vol.04)</dd></dl><h2 class=\"art-h\">보고서 소개</h2><p>「월간 에듀테크 솔루션 분석 보고서」 Vol.04(2026년 9월분)는 학습분석 도구를 기술·시장·교육적 적용·한계의 네 측면에서 분석했다. 대학이 판정 검토·기록, 연락·상담, 데이터 보호 절차를 묶어 설계할 수 있도록 정리했다.</p><h2 class=\"art-h\">주요 분석 결과</h2><ul class=\"art-ul\"><li>대학 현장 조기경보 실험에서 정확한 예측은 평균 효과로 이어지지 않았고, 사람의 연락만으로 효과가 보장되지도 않았다.</li><li>예측 오류는 집단마다 달랐다.</li><li>Canvas Intelligent Insights와 Moodle Analytics는 자료 기준일까지 공개된 문서로 판정해 필수 항목 측정이 부족했고, 의견은 모두 판정 유보였다.</li><li>대학은 판정 검토·기록과 연락·상담, 데이터 보호 절차를 묶어 설계할 수 있다.</li></ul><h2 class=\"art-h\">키워드</h2><div class=\"chips\"><span class=\"chip\">학습분석</span><span class=\"chip\">조기경보</span><span class=\"chip\">개입 설계</span><span class=\"chip\">예측 편향</span><span class=\"chip\">데이터 거버넌스</span></div><div class=\"art-note\">※ 보고서 전문(PDF)은 위 \"PDF 바로 보기\" 또는 아래 \"자료 파일\"에서 볼 수 있습니다.<br>· 인용: 김슬기(2026), 월간 에듀테크 솔루션 분석 보고서 Vol.04 — 학습분석 도구, KELI 사무국<br>· 문의: KELI 사무국 033-248-3246 / contact@keliedu.org</div>",
+   "files": [
+    {
+     "name": "2026KELI_김슬기_월간 에듀테크 솔루션 분석 보고서_202609_v01.pdf",
+     "url": "content/files/archive/121/2026KELI_김슬기_월간_에듀테크_솔루션_분석_보고서_202609_v01.pdf",
+     "size": "2.5 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/technic (이관 seq 121)",
+   "period": "2026년 9월"
+  },
+  {
+   "id": "o120",
+   "cat": "trend",
+   "type": "pdf",
+   "title": "월간 에듀테크 솔루션 분석 보고서 Vol.03 · AI 튜터링 플랫폼",
+   "org": "KELI 사무국",
+   "author": "김슬기",
+   "date": "2026.08.31",
+   "url": "",
+   "body": "<div class=\"art-sum\"><span class=\"k\">핵심 요약</span><ul class=\"art-ul\"><li>교수법을 설계한 대화형 AI 튜터를 기술·시장·교육적 적용·한계의 네 측면에서 분석한 월간 보고서</li><li>\"정답을 곧바로 주지 않는\" 지시는 프롬프트만으로 지켜지기 어려웠고, 강좌 실험 효과는 조건에 따라 크게 엇갈림</li><li>CS50 Duck · Duolingo Max 두 제품 모두 \"판정 유보\"</li></ul></div><dl class=\"art-kv\"><dt>발행</dt><dd>2026. 8. · KELI 사무국</dd><dt>연구책임자</dt><dd>김슬기</dd><dt>과제명</dt><dd>고등교육 AI에듀테크의 통합적 발전 방안 연구 – 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</dd><dt>산출물 유형</dt><dd>기술 동향 · 월간 보고서</dd><dt>대상 월</dt><dd>2026년 8월 (Vol.03)</dd></dl><h2 class=\"art-h\">보고서 소개</h2><p>「월간 에듀테크 솔루션 분석 보고서」 Vol.03(2026년 8월분)은 교수법을 설계한 대화형 AI 튜터를 기술·시장·교육적 적용·한계의 네 측면에서 분석했다. 대학이 교수자·조교의 역할을 나누고 저작권·데이터·고지 조건을 도입 전에 점검할 수 있도록 정리했다.</p><h2 class=\"art-h\">주요 분석 결과</h2><ul class=\"art-ul\"><li>정답을 곧바로 주지 않는 지시는 프롬프트만으로 지켜지기 어려웠고, 이를 보완하는 구조 설계는 연구 단계가 많았다.</li><li>대학 강좌 실험의 효과는 비교 조건·측정·설계에 따라 크게 엇갈렸다.</li><li>CS50 Duck과 Duolingo Max는 공개 문서로 평가해 필수 항목을 5개만 판정할 수 있어 판정 유보였다.</li><li>대학은 교수자·조교의 역할을 나누고 저작권·데이터·고지 조건을 도입 전에 점검할 수 있다.</li></ul><h2 class=\"art-h\">키워드</h2><div class=\"chips\"><span class=\"chip\">AI 튜터</span><span class=\"chip\">고등교육</span><span class=\"chip\">교수법 설계</span><span class=\"chip\">정답 노출</span><span class=\"chip\">가상 조교</span></div><div class=\"art-note\">※ 보고서 전문(PDF)은 위 \"PDF 바로 보기\" 또는 아래 \"자료 파일\"에서 볼 수 있습니다.<br>· 인용: 김슬기(2026), 월간 에듀테크 솔루션 분석 보고서 Vol.03 — AI 튜터링 플랫폼, KELI 사무국<br>· 문의: KELI 사무국 033-248-3246 / contact@keliedu.org</div>",
+   "files": [
+    {
+     "name": "2026KELI_김슬기_월간 에듀테크 솔루션 분석 보고서_202608_v01.pdf",
+     "url": "content/files/archive/120/2026KELI_김슬기_월간_에듀테크_솔루션_분석_보고서_202608_v01.pdf",
+     "size": "3.0 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/technic (이관 seq 120)",
+   "period": "2026년 8월"
+  },
+  {
+   "id": "o119",
+   "cat": "trend",
+   "type": "pdf",
+   "title": "월간 에듀테크 솔루션 분석 보고서 Vol.02 · 적응형 학습 시스템",
+   "org": "KELI 사무국",
+   "author": "김슬기",
+   "date": "2026.07.31",
+   "url": "",
+   "body": "<div class=\"art-sum\"><span class=\"k\">핵심 요약</span><ul class=\"art-ul\"><li>적응형 학습 시스템을 기술 구조·시장·교육적 적용·한계의 네 측면에서 분석한 월간 보고서</li><li>고등교육의 효과는 K-12보다 작게 보고되었고, 제품 단위 독립 근거는 부족</li><li>ALEKS · Gemini 학습 노트북 두 제품 모두 \"판정 유보\"</li></ul></div><dl class=\"art-kv\"><dt>발행</dt><dd>2026. 7. · KELI 사무국</dd><dt>연구책임자</dt><dd>김슬기</dd><dt>과제명</dt><dd>고등교육 AI에듀테크의 통합적 발전 방안 연구 – 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</dd><dt>산출물 유형</dt><dd>기술 동향 · 월간 보고서</dd><dt>대상 월</dt><dd>2026년 7월 (Vol.02)</dd></dl><h2 class=\"art-h\">보고서 소개</h2><p>「월간 에듀테크 솔루션 분석 보고서」 Vol.02(2026년 7월분)은 적응형 학습 시스템을 기술 구조·시장·교육적 적용·한계의 네 측면에서 분석했다. 대학이 학습 지원과 배치·성적 반영을 구분하고, 시범 운영과 효과 측정을 거쳐 넓혀 갈 수 있도록 정리했다.</p><h2 class=\"art-h\">주요 분석 결과</h2><ul class=\"art-ul\"><li>전용 엔진은 미리 만든 도메인 모델로 숙달을 추정하고, Gemini 학습 노트북은 목표를 세부 목표로 나눠 진단 퀴즈로 출발점을 잡는다(산출 기준 미공개).</li><li>고등교육의 효과는 K-12보다 작게 보고되었고, 제품 단위 독립 근거는 부족했다.</li><li>ALEKS와 학습 노트북은 공개 문서로 판정한 필수 항목이 적어 모두 판정 유보였다.</li><li>대학은 학습 지원과 배치·성적 반영을 구분하고, 시범 운영과 효과 측정을 거쳐 넓힐 수 있다.</li></ul><h2 class=\"art-h\">키워드</h2><div class=\"chips\"><span class=\"chip\">적응형 학습</span><span class=\"chip\">지식 추적</span><span class=\"chip\">생성형 개인화</span><span class=\"chip\">고등교육</span><span class=\"chip\">AI 디지털교과서</span></div><div class=\"art-note\">※ 보고서 전문(PDF)은 위 \"PDF 바로 보기\" 또는 아래 \"자료 파일\"에서 볼 수 있습니다.<br>· 인용: 김슬기(2026), 월간 에듀테크 솔루션 분석 보고서 Vol.02 — 적응형 학습 시스템, KELI 사무국<br>· 문의: KELI 사무국 033-248-3246 / contact@keliedu.org</div>",
+   "files": [
+    {
+     "name": "2026KELI_김슬기_월간 에듀테크 솔루션 분석 보고서_202607_v01.pdf",
+     "url": "content/files/archive/119/2026KELI_김슬기_월간_에듀테크_솔루션_분석_보고서_202607_v01.pdf",
+     "size": "2.4 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/technic (이관 seq 119)",
+   "period": "2026년 7월"
+  },
+  {
+   "id": "o118",
+   "cat": "trend",
+   "type": "pdf",
+   "title": "월간 에듀테크 솔루션 분석 보고서 Vol.01 · LLM 기반 학습 도구",
+   "org": "KELI 사무국",
+   "author": "김슬기",
+   "date": "2026.06.01",
+   "url": "",
+   "body": "<div class=\"art-sum\"><span class=\"k\">핵심 요약</span><ul class=\"art-ul\"><li>LLM 기반 학습 도구를 기술 구조·시장 동향·교육적 적용·한계·논쟁점의 4분면으로 분석한 월간 보고서</li><li>학습 모드는 정답 보류를 보장하지 않고, 상용 학습 모드의 대학 실험 근거는 확인되지 않음</li><li>ChatGPT 학습 모드 · Gemini 가이드 학습 두 제품 모두 \"판정 유보\"</li></ul></div><dl class=\"art-kv\"><dt>발행</dt><dd>2026. 6. · KELI 사무국</dd><dt>연구책임자</dt><dd>김슬기</dd><dt>과제명</dt><dd>고등교육 AI에듀테크의 통합적 발전 방안 연구 – 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</dd><dt>산출물 유형</dt><dd>기술 동향 · 월간 보고서</dd><dt>대상 월</dt><dd>2026년 6월 (Vol.01)</dd></dl><h2 class=\"art-h\">보고서 소개</h2><p>「월간 에듀테크 솔루션 분석 보고서」 Vol.01(2026년 6월분)은 LLM 기반 학습 도구를 기술 구조, 시장 동향, 교육적 적용, 한계·논쟁점의 4분면으로 분석했다. 기관 도입에 필요한 데이터 조건과 과제·평가 설계의 방향을 함께 제시했다.</p><h2 class=\"art-h\">주요 분석 결과</h2><ul class=\"art-ul\"><li>학습 모드는 정답 보류를 보장하지 않으며, 메타분석의 큰 효과는 신중히 읽어야 한다.</li><li>상용 학습 모드의 대학 실험 근거는 확인되지 않았다.</li><li>ChatGPT 학습 모드와 Gemini 가이드 학습은 기준일까지 공개된 문서로 판정해 둘 다 판정 유보였다.</li><li>기관 도입에는 AI 기본법과 개인정보 안내서에 맞춘 데이터 조건과 과제·평가 설계가 필요하다.</li></ul><h2 class=\"art-h\">키워드</h2><div class=\"chips\"><span class=\"chip\">LLM 기반 학습 도구</span><span class=\"chip\">학습 모드</span><span class=\"chip\">고등교육</span><span class=\"chip\">기관 도입</span><span class=\"chip\">데이터 보호</span></div><div class=\"art-note\">※ 보고서 전문(PDF)은 위 \"PDF 바로 보기\" 또는 아래 \"자료 파일\"에서 볼 수 있습니다.<br>· 인용: 김슬기(2026), 월간 에듀테크 솔루션 분석 보고서 Vol.01 — LLM 기반 학습 도구, KELI 사무국<br>· 문의: KELI 사무국 033-248-3246 / contact@keliedu.org</div>",
+   "files": [
+    {
+     "name": "2026KELI_김슬기_월간 에듀테크 솔루션 분석 보고서_202606_v01.pdf",
+     "url": "content/files/archive/118/2026KELI_김슬기_월간_에듀테크_솔루션_분석_보고서_202606_v01.pdf",
+     "size": "2.3 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/technic (이관 seq 118)",
+   "period": "2026년 6월"
+  },
+  {
+   "id": "o126",
+   "cat": "trend",
+   "type": "pdf",
+   "title": "2026년 10월 선형대수학 AI 튜터 분석 보고서 — 학습 참여 현황·기능 평가",
+   "org": "KELI 사무국",
+   "author": "신범주",
+   "date": "2026.10.28",
+   "url": "",
+   "body": "<p class=\"art-lead\">선형대수학 AI 튜터 학습 데이터를 활용하여 학생별 문제 풀이 시간과 풀이 이미지 제출 현황을 분석하고, AI 튜터 기능 평가 및 학생 의견을 바탕으로 서비스 개선 방향을 검토한 연구 보고서입니다.</p>",
+   "files": [
+    {
+     "name": "2026KELI_신범주_에듀테크 솔루션 분석 보고서_202610_v01.pdf",
+     "url": "content/files/archive/126/2026KELI_신범주_에듀테크_솔루션_분석_보고서_202610_v01.pdf",
+     "size": "430 KB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/policy (이관 seq 126)"
+  },
+  {
+   "id": "o117",
+   "cat": "trend",
+   "type": "pdf",
+   "title": "AI 에듀테크 전공 공통 참조 운영 모델: 신생 융합전공의 효율적 운영을 위한 국내외 사례 분석과 한림대학교 AI에듀테크전공 적용안",
+   "org": "KELI 사무국",
+   "author": "김슬기 외",
+   "date": "2026.10.01",
+   "url": "",
+   "body": "<p class=\"art-lead\">이 보고서는 국내외 교육 관련 전공 56개 사례(해외 31·국내 25)의 공식 자료를 학사 구조·교육과정·교원·현장 연계·학생 지원·질 관리·자원·정체성의</p><p>여덟 차원으로 비교해 교원·예산·학생 규모가 제한된 신생 융합전공에 옮길 수 있는 공통 설계 원리 여섯 가지를 정리했다.</p><p>본교(한림대학교) AI에듀테크전공의 운영 현황은 같은 차원에서 공개된 공식 자료와 전공 운영 사실로 자체 진단했고,</p><p>설계 원칙 6개, 구성 요소 6개, 4단계 구분, 성과지표 13개로 이루어진 공유·적층형 운영 모델과 본교 적용안을 제안한다.</p><p>모델의 기본형은 학부 융합·연계전공이다.</p><p>키워드: 전공 운영 모델, 신생 융합전공, AI 에듀테크, 공유 교과, 적층형 이수</p><p>작성자 및 소속: 김슬기(연구책임자, 한림대학교 일송자유교양대학), 고영웅, 김진환, 김병정, 김성우, 김용수, 서동기, 육청민, 이정근, 정혜선, 진서연, 한민정·</p><p>한수미·홍수현·황현석 (이상 한림대학교)</p>",
+   "files": [
+    {
+     "name": "2026KELI_김슬기_전공공통참조운영모델_202610_v01.pdf",
+     "url": "content/files/archive/117/2026KELI_김슬기_전공공통참조운영모델_202610_v01.pdf",
+     "size": "2.1 MB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/policy (이관 seq 117)"
+  },
+  {
+   "id": "o116",
+   "cat": "trend",
+   "type": "pdf",
+   "title": "2026년 7월 선형대수학 AI 튜터 분석 보고서",
+   "org": "KELI 사무국",
+   "author": "신범주",
+   "date": "2026.07.23",
+   "url": "",
+   "body": "<p class=\"art-lead\">선형대수학 튜터 학습 데이터를 활용한 AI 튜터 성능 향상 연구 보고서입니다.</p>",
+   "files": [
+    {
+     "name": "2026KELI_신범주_에듀테크 솔루션 분석 보고서_202607_v01.pdf",
+     "url": "content/files/archive/116/2026KELI_신범주_에듀테크_솔루션_분석_보고서_202607_v01.pdf",
+     "size": "493 KB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/policy (이관 seq 116)"
+  },
+  {
+   "id": "o115",
+   "cat": "trend",
+   "type": "pdf",
+   "title": "2026년 8월 선형대수학 AI 튜터 분석 보고서 — 과제 참여·수행 현황",
+   "org": "KELI 사무국",
+   "author": "신범주",
+   "date": "2026.08.21",
+   "url": "",
+   "body": "<p class=\"art-lead\">선형대수학 튜터 학습 데이터를 활용한 AI 튜터 성능 향상 연구 보고서입니다.</p>",
+   "files": [
+    {
+     "name": "2026KELI_신범주_에듀테크 솔루션 분석 보고서_202608_v01.pdf",
+     "url": "content/files/archive/115/2026KELI_신범주_에듀테크_솔루션_분석_보고서_202608_v01.pdf",
+     "size": "412 KB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/policy (이관 seq 115)"
+  },
+  {
+   "id": "o114",
+   "cat": "trend",
+   "type": "pdf",
+   "title": "2026년 9월 선형대수학 AI 튜터 분석 보고서 — 시험 정답률·성적 분포",
+   "org": "KELI 사무국",
+   "author": "신범주",
+   "date": "2026.09.28",
+   "url": "",
+   "body": "<p class=\"art-lead\">선형대수학 튜터 학습 데이터를 활용한 AI 튜터 성능 향상 연구 보고서입니다.</p>",
+   "files": [
+    {
+     "name": "2026KELI_신범주_에듀테크 솔루션 분석 보고서_202609_v01.pdf",
+     "url": "content/files/archive/114/2026KELI_신범주_에듀테크_솔루션_분석_보고서_202609_v01.pdf",
+     "size": "549 KB"
+    }
+   ],
+   "published": true,
+   "source": "https://keliedu.org/keli/contents/archive/policy (이관 seq 114)"
+  },
+  {
+   "id": "a5",
+   "cat": "manual",
+   "type": "link",
+   "title": "HAI 활용 매뉴얼 사이트",
+   "org": "한림대학교 AI교육확산센터",
+   "date": "2026",
+   "url": "https://haimanual.csedu4all.com",
+   "published": true
+  },
+  {
+   "id": "a6",
+   "cat": "manual",
+   "type": "pdf",
+   "title": "한림대학교 교수자를 위한 수업에서의 AI 활용 가이드라인",
+   "org": "교육혁신센터",
+   "date": "2026",
+   "url": "",
+   "published": true,
+   "body": "",
+   "files": [
+    {
+     "name": "[붙임] 한림대학교 교수자를 위한 수업에서의 AI 활용 가이드라인.pdf",
+     "url": "content/files/2026/11/mw0neuuf_[붙임]_한림대학교_교수자를_위한_수업에서의_AI_활용_가이드라인.pdf",
+     "size": "768 KB"
+    }
+   ]
+  },
+  {
+   "id": "a9",
+   "cat": "manual",
+   "type": "image",
+   "title": "What is KELI? (국/영문 홍보 리플렛)",
+   "org": "KELI 사무국",
+   "date": "2026.10",
+   "url": "",
+   "published": true,
+   "body": "<p class=\"art-lead\">KELI를 한 장으로 소개하는 3단 리플렛입니다. 국문과 영문 두 가지이며, 그림을 누르면 크게 볼 수 있습니다.</p><figure class=\"art-fig\"><img src=\"content/files/2026/11/mw0mrlxc_0._[KELI_사무국]_KELI_홍보_3단_리플렛(국문)_최종.png\" alt=\"KELI 홍보 3단 리플렛(국문)\"><figcaption>KELI 홍보 3단 리플렛 · 국문</figcaption></figure><figure class=\"art-fig\"><img src=\"content/files/2026/11/mw0ncpie_0._[KELI_사무국]_KELI_홍보_3단_리플렛(영문)_최종.png\" alt=\"KELI 홍보 3단 리플렛(영문)\"><figcaption>KELI 홍보 3단 리플렛 · 영문 (English)</figcaption></figure>",
+   "files": [
+    {
+     "name": "[KELI 사무국] KELI 홍보 3단 리플렛(국문).png",
+     "url": "content/files/2026/11/mw0mrlxc_0._[KELI_사무국]_KELI_홍보_3단_리플렛(국문)_최종.png",
+     "size": "1.6 MB"
+    },
+    {
+     "name": "[KELI 사무국] KELI 홍보 3단 리플렛(영문).png",
+     "url": "content/files/2026/11/mw0ncpie_0._[KELI_사무국]_KELI_홍보_3단_리플렛(영문)_최종.png",
+     "size": "1.7 MB"
+    }
+   ]
+  }
+ ]
 }
