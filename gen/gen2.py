@@ -814,6 +814,7 @@ body.noscroll { overflow: hidden; }
 ol.art-ul { counter-reset: n; } ol.art-ul li::before { content: counter(n); counter-increment: n; width: auto; height: auto; top: 0; background: none; color: var(--accent); font-weight: 700; font-size: 15px; }
 .art-sum { background: var(--bg2); border-radius: 18px; padding: 22px 26px; margin: 0 0 28px; }
 .art-sum .k { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 10px; }
+.art-k { margin: 16px 0 6px; font-size: 14px; font-weight: 600; color: var(--muted); }
 .art-sum .art-ul { margin: 0; gap: 8px; }
 .art-fig { margin: 28px 0; } .art-fig img { max-width: 100%; width: auto; height: auto; border-radius: 18px; display: block; margin: 0 auto; }
 @media (min-width: 1240px) { .wrap.narrow .art > .art-fig { margin-left: -100px; margin-right: -100px; } }
