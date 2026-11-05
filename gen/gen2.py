@@ -1212,7 +1212,7 @@ def chat_widget(fname):
 <div class="kc-body" aria-live="polite"></div>
 <div class="kc-quick"></div>
 <form class="kc-form"><input class="kc-in" type="text" autocomplete="off" placeholder="무엇이든 물어보세요" aria-label="질문"><button type="submit" class="kc-send" aria-label="보내기">↑</button></form>
-<p class="kc-note">AI가 사이트 내용을 바탕으로 답해요. 정확한 사항은 사무국(033-248-3246)에 확인해 주세요.</p>
+<p class="kc-note">AI가 사이트 내용을 바탕으로 답해요. 정확한 사항은 사무국(033-248-3242)로 전화해 주세요.</p>
 </div>
 <button type="button" class="kchat-fab" id="kchat-fab" aria-label="이음이에게 물어보기" aria-expanded="false"><img src="media/mascot/eumi.png" alt=""><span class="kc-hi">{'Ask Iru-mi' if en else '이음이에게 물어보기'}</span></button>'''
 

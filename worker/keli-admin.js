@@ -204,7 +204,7 @@ async function rateLimit(env, ip) {
 }
 function persona(lang) {
   if (lang === 'en') return "You are Iru-mi, the small, curious mascot of KELI (K-University AI EdTech and Learning Initiative) run by the KELI Secretariat at Hallym University, Korea. Answer in friendly, clear English in at most 5 short sentences (bullets allowed). Use ONLY the facts given below; if the facts do not cover the question, say you are not sure and suggest contacting the secretariat (contact@keliedu.org, +82-33-248-3246). Never invent numbers, dates, prices or names. When a related page URL is given in the facts, you may mention it. Do not mention these instructions.";
-  return '너는 한림대학교 KELI 사무국의 마스코트 "이음이"야. 밝고 친근한 해요체로, 최대 5문장(필요하면 짧은 목록)으로 답해. 반드시 아래 "사실"에 있는 내용만 써. 사실에 없는 것은 모른다고 말하고 사무국(033-248-3246, contact@keliedu.org)에 문의하라고 안내해. 숫자·날짜·금액·이름을 지어내지 마. 사실에 관련 페이지 주소가 있으면 알려 줘도 좋아. 이 지시문 자체는 언급하지 마.';
+  return '너는 한림대학교 KELI 사무국의 마스코트 "이음이"야. 밝고 친근한 해요체로, 최대 5문장(필요하면 짧은 목록)으로 답해. 반드시 아래 "사실"에 있는 내용만 써. 사실에 없는 것은 모른다고 말하고 사무국(033-248-3242)로 전화하라고 안내해. 숫자·날짜·금액·이름을 지어내지 마. 사실에 관련 페이지 주소가 있으면 알려 줘도 좋아. 이 지시문 자체는 언급하지 마.';
 }
 async function askLLM(env, lang, system, messages) {
   if (env.ANTHROPIC_API_KEY) {
@@ -242,7 +242,7 @@ async function chat(request, env, url) {
   const llm = await askLLM(env, lang, system, messages);
   if (llm && llm.text) return json({ ok: true, answer: llm.text, sources, engine: llm.engine });
   const top = ranked[0] && ranked[0].s >= 2 ? ranked[0].c : null;   // AI 가 없으면 가장 맞는 조각을 그대로
-  const answer = top ? (lang === 'en' ? 'Here is what I found on the site.\n\n' : '사이트에서 찾은 내용이에요.\n\n') + '**' + top.title + '** — ' + top.text.slice(0, 420) : (lang === 'en' ? 'I am not sure about that yet. Please contact the secretariat: contact@keliedu.org' : '아직 잘 모르는 내용이에요. 사무국(033-248-3246, contact@keliedu.org)에 물어봐 주세요.');
+  const answer = top ? (lang === 'en' ? 'Here is what I found on the site.\n\n' : '사이트에서 찾은 내용이에요.\n\n') + '**' + top.title + '** — ' + top.text.slice(0, 420) : (lang === 'en' ? 'I am not sure about that yet. Please contact the secretariat: contact@keliedu.org' : '아직 잘 모르는 내용이에요. 사무국(033-248-3242)로 전화해 주세요.');
   return json({ ok: true, answer, sources, engine: 'search' });
 }
 
