@@ -18,7 +18,7 @@ E = html.escape
 SITE = 'KELI'
 EMAIL = 'contact@keliedu.org'
 INSTA = 'https://www.instagram.com/hallym_keli/'
-PHONE = '033-248-3044'
+PHONE = '033-248-3242'
 STAFF = '전형준'
 
 # ------------------------------------------------------------------ 데이터
@@ -258,7 +258,7 @@ BOT_DEFAULT = {
         {'url': 'about.html', 'q_ko': 'KELI가 뭐예요?', 'q_en': 'What is KELI?', 'a_ko': 'KELI(K-University AI EdTech and Learning Initiative)는 한림대학교가 개발하고 수업에서 검증한 AI 교육 서비스 HAI Ecosystems를 국내외 대학·기관·기업에 제공하고, 함께 실증하고 확산하는 고등교육 AI 공유 플랫폼이에요. 주관은 한림대학교 AI교육혁신원 AI교육확산센터(KELI 사무국)예요.', 'a_en': 'KELI (K-University AI EdTech and Learning Initiative) is a higher-education AI sharing platform. Hallym University provides HAI Ecosystems — AI education services it developed and validated in real classes — to universities, institutions and companies in Korea and abroad, and they test and scale them together. It is run by the KELI Secretariat at Hallym University.'},
         {'url': 'join.html', 'q_ko': '도입은 어떻게 하나요?', 'q_en': 'How can we adopt a service?', 'a_ko': '네 단계예요. ① 도입 문의 폼이나 이메일(contact@keliedu.org)로 기관명·관심 서비스·적용 교과목을 알려 주세요. ② 사무국이 무상으로 시연하고 적용 방법을 안내해요. ③ 1개 교과목 × 1개 서비스 × 1개 학기부터 시범 도입해 효과를 확인해요. ④ 교과목·범위·기간을 정해 정식 도입하고, 이용 조건은 사무국과 협의해요.', 'a_en': 'Four steps. 1) Tell us your institution, the services you are interested in and the course via the inquiry form or contact@keliedu.org. 2) The secretariat gives a free demo and explains how to apply it. 3) Pilot it — one course × one service × one semester — and see the effect. 4) Adopt it formally; terms are agreed with the secretariat.'},
         {'url': 'join.html', 'q_ko': '비용이 드나요?', 'q_en': 'Is there a cost?', 'a_ko': '시범 도입은 무상 또는 협의로 진행하고, 정식 도입은 유상이며 기관별로 사무국과 협의해요.', 'a_en': 'Pilots are free or by agreement; formal adoption is paid and negotiated per institution with the secretariat.'},
-        {'url': 'join.html#inquiry', 'q_ko': '사무국 연락처', 'q_en': 'Contact the secretariat', 'a_ko': 'KELI 사무국(한림대학교 AI교육혁신원 AI교육확산센터)은 전화 033-248-3246, 이메일 contact@keliedu.org 예요. 주소는 (24252) 강원특별자치도 춘천시 한림대학길 1 한림대학교이고, 인스타그램은 @hallym_keli 예요.', 'a_en': 'KELI Secretariat (Center for AI Education Advancement, Hallym University): phone +82-33-248-3246, email contact@keliedu.org, address 1 Hallymdaehak-gil, Chuncheon, Gangwon State 24252, Republic of Korea. Instagram @hallym_keli.'},
+        {'url': 'join.html#inquiry', 'q_ko': '사무국 연락처', 'q_en': 'Contact the secretariat', 'a_ko': 'KELI 사무국(한림대학교 AI교육혁신원 AI교육확산센터)은 전화 033-248-3242, 이메일 contact@keliedu.org 예요. 주소는 (24252) 강원특별자치도 춘천시 한림대학길 1 한림대학교이고, 인스타그램은 @hallym_keli 예요.', 'a_en': 'KELI Secretariat (Center for AI Education Advancement, Hallym University): phone +82-33-248-3242, email contact@keliedu.org, address 1 Hallymdaehak-gil, Chuncheon, Gangwon State 24252, Republic of Korea. Instagram @hallym_keli.'},
     ],
 }
 BOT = dict(BOT_DEFAULT); BOT.update({k: v for k, v in _load_json(os.path.join(CONTENT, 'chatbot.json'), {}).items() if not k.startswith('_')})
@@ -2373,7 +2373,7 @@ def build_kb():
         chunks.append({'id': id_, 'title': title, 'text': re.sub(r'\s+', ' ', _inner_text(text)).strip(), 'url': url, 'lang': lang})
     add('about', 'KELI 소개', 'KELI(K-University AI EdTech and Learning Initiative)는 한림대학교가 개발하고 수업에서 검증한 AI 교육 서비스 HAI Ecosystems를 국내외 대학·기관·기업에 제공하고, 함께 실증하고 확산하는 고등교육 AI 공유 플랫폼. 주관: 한림대학교 AI교육혁신원 AI교육확산센터(KELI 사무국). 운영 사이클: 발견 → 연결 → 실증 → 확산. 조직: 총회, 운영위원회, 기술·표준위원회, 품질·윤리위원회, KELI 사무국. 참여 주체: 국내 대학, 해외 대학·기관, 에듀테크 기업, 유관기관.', SITE_URL + 'about.html')
     add('about-en', 'About KELI', 'KELI (K-University AI EdTech and Learning Initiative) is a higher-education AI sharing platform: Hallym University provides HAI Ecosystems, AI education services it developed and validated in real classes, to universities, institutions and companies in Korea and abroad, which test and scale them together. Run by the KELI Secretariat (Center for AI Education Advancement, Hallym University). Cycle: discover → connect → validate → scale.', SITE_URL + 'en.html', 'en')
-    add('contact', 'KELI 사무국 연락처', f'KELI 사무국: 한림대학교 AI교육혁신원 AI교육확산센터. 전화 033-248-3246, 이메일 {EMAIL}, 주소 (24252) 강원특별자치도 춘천시 한림대학길 1 한림대학교, Instagram @hallym_keli, 사이트 {SITE_URL}. 메일 제목 앞에 [서비스 도입 문의]를 붙이면 빠름.', SITE_URL + 'join.html#inquiry')
+    add('contact', 'KELI 사무국 연락처', f'KELI 사무국: 한림대학교 AI교육혁신원 AI교육확산센터. 전화 033-248-3242, 이메일 {EMAIL}, 주소 (24252) 강원특별자치도 춘천시 한림대학길 1 한림대학교, Instagram @hallym_keli, 사이트 {SITE_URL}. 메일 제목 앞에 [서비스 도입 문의]를 붙이면 빠름.', SITE_URL + 'join.html#inquiry')
     add('join', 'KELI 협의체 참여·도입 절차', '도입 4단계: 1 문의(도입 문의 폼 또는 이메일로 기관명·관심 서비스·적용 교과목) → 2 상담·시연(사무국이 무상 시연·적용 방법 안내) → 3 시범 도입(1개 교과목 × 1개 서비스 × 1개 학기부터, 무상 또는 협의) → 4 정식 도입(교과목·범위·기간을 정해 운영, 유상·기관별 협의). 에듀테크 기업은 도입 문의 폼에서 참여 유형을 "에듀테크 기업"으로 선택하고 등재 희망 서비스명을 적으면 Marketplace 등재 절차를 안내.', SITE_URL + 'join.html')
     add('members', '참여 기관', f'참여 대학({len(UNIV)}): {", ".join(UNIV)}. 참여 에듀테크 기업({len(CORP)}): {", ".join(CORP)}. 홈 숫자: AI 교육 서비스 {svc_stat()[0]}, 참여 기관 {STATS["universities"] + STATS["companies"]}, AI 결합 강좌 {LIVE["courses"]}.', SITE_URL + 'join.html#members')
     add('stages', '수업 6단계와 서비스', '수업 6단계: 01 설계, 02 콘텐츠 생성, 03 수업·상호작용, 04 실습·학습, 05 평가, 06 분석·개선. ' + ' / '.join(f'{v}: ' + ', '.join(x['name'] for x in SERVICES if k in x['stage']) for k, v in STAGES), SITE_URL + 'curriculum.html')

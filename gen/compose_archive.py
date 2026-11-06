@@ -7,7 +7,7 @@ import json, os, sys, html, re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 P = os.path.join(ROOT, 'content', 'archive.json')
-CONTACT = '문의: KELI 사무국 033-248-3246 / contact@keliedu.org'
+CONTACT = '문의: KELI 사무국 033-248-3242 / contact@keliedu.org'
 
 _PREF = re.compile(r'\s*\((?:p|pp)\.?\s*\d+(?:\s*[–~,-]\s*(?:p\.?)?\d+)*\)')
 def e(s):
