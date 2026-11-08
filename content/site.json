@@ -9,5 +9,9 @@
   },
   "admin": {
     "api": "https://keli-admin.quiet-waterfall-20bb.workers.dev"
+  },
+  "seo": {
+    "google": "Uw2MEDV9OKAmqKJ8nBXUt478e_Z1PQPTIf7dK9J5Aj4",
+    "naver": ""
   }
 }
