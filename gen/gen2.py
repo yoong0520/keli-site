@@ -1217,35 +1217,107 @@ def chat_widget(fname):
 </div>
 <button type="button" class="kchat-fab" id="kchat-fab" aria-label="이음이에게 물어보기" aria-expanded="false"><img src="media/mascot/eumi.png" alt=""><span class="kc-hi">{'Ask Iru-mi' if en else '이음이에게 물어보기'}</span></button>'''
 
+SEO = SITE_CFG.get('seo') or {}
+KEYWORDS = 'KELI, 켈리, 한림대학교 KELI, 한림대 KELI, KELI 플랫폼, 고등교육 AI 공유 플랫폼, AI 교육 서비스, HAI Ecosystems, 에듀테크, 글로컬대학30, K-University AI EdTech and Learning Initiative'
+OG_IMAGE = SITE_URL + 'assets/img/og.png'
+NOINDEX = {'admin.html', 'search.html'}
+
+def seo_title(fname, title):
+    """검색 결과에 '한림대학교'와 'KELI 플랫폼'이 함께 보이도록 제목을 다듬는다."""
+    if fname == 'index.html': return 'KELI 플랫폼 | 한림대학교 고등교육 AI 공유 플랫폼'
+    if fname == 'en.html': return 'KELI | Hallym University Higher-Education AI Sharing Platform'
+    if fname == 'admin.html': return title
+    m = re.match(r'^(.*?)\s*·\s*KELI( 아카이브| 공지사항| 플랫폼| Marketplace)?$', title)
+    if m:
+        return f'{m.group(1)} | KELI{m.group(2) or " 플랫폼"} · 한림대학교'
+    if title.startswith('KELI '):          # 'KELI 소개', 'KELI Marketplace'
+        return f'{title} | 한림대학교 KELI 플랫폼'
+    return f'{title} | KELI 플랫폼 · 한림대학교'
+
+def jsonld(fname, desc):
+    if fname not in ('index.html', 'en.html'): return ''
+    en = fname == 'en.html'
+    org = {
+        '@context': 'https://schema.org', '@type': 'Organization',
+        'name': 'KELI' if en else 'KELI 플랫폼',
+        'alternateName': ['KELI', 'K-University AI EdTech and Learning Initiative', 'Hallym University KELI'] if en
+                         else ['한림대학교 KELI', '한림대 KELI', '켈리', 'K-University AI EdTech and Learning Initiative'],
+        'url': SITE_URL, 'logo': SITE_URL + 'assets/img/keli-logo.png', 'image': OG_IMAGE,
+        'description': desc,
+        'email': EMAIL, 'telephone': '+82-33-248-3242',
+        'address': {'@type': 'PostalAddress', 'streetAddress': '한림대학길 1', 'addressLocality': '춘천시', 'addressRegion': '강원특별자치도', 'postalCode': '24252', 'addressCountry': 'KR'},
+        'parentOrganization': {'@type': 'CollegeOrUniversity', 'name': 'Hallym University' if en else '한림대학교', 'url': 'https://www.hallym.ac.kr'},
+        'sameAs': [INSTA],
+    }
+    site = {
+        '@context': 'https://schema.org', '@type': 'WebSite',
+        'name': 'KELI' if en else 'KELI 플랫폼', 'alternateName': 'Hallym University KELI' if en else '한림대학교 KELI 플랫폼',
+        'url': SITE_URL, 'inLanguage': 'en' if en else 'ko',
+        'publisher': {'@type': 'Organization', 'name': 'KELI Secretariat, Hallym University' if en else '한림대학교 KELI 사무국'},
+        'potentialAction': {'@type': 'SearchAction', 'target': {'@type': 'EntryPoint', 'urlTemplate': SITE_URL + 'search.html?q={search_term_string}'}, 'query-input': 'required name=search_term_string'},
+    }
+    return ''.join(f'\n<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in (org, site))
+
+def seo_head(fname, title, desc):
+    en = fname == 'en.html'
+    url = SITE_URL + ('' if fname == 'index.html' else fname)
+    bits = [f'<link rel="canonical" href="{url}">']
+    if fname in NOINDEX:
+        bits.append('<meta name="robots" content="noindex, nofollow">')
+    else:
+        bits.append('<meta name="robots" content="index, follow, max-image-preview:large">')
+        bits.append(f'<meta name="keywords" content="{KEYWORDS}">')
+    if SEO.get('google'): bits.append(f'<meta name="google-site-verification" content="{E(SEO["google"])}">')
+    if SEO.get('naver'): bits.append(f'<meta name="naver-site-verification" content="{E(SEO["naver"])}">')
+    bits += [
+        '<meta property="og:type" content="website">',
+        f'<meta property="og:site_name" content="{"KELI · Hallym University" if en else "KELI 플랫폼 · 한림대학교"}">',
+        f'<meta property="og:title" content="{E(title)}">',
+        f'<meta property="og:description" content="{E(desc)}">',
+        f'<meta property="og:url" content="{url}">',
+        f'<meta property="og:image" content="{OG_IMAGE}">',
+        '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">',
+        f'<meta property="og:locale" content="{"en_US" if en else "ko_KR"}">',
+        '<meta name="twitter:card" content="summary_large_image">',
+        f'<meta name="twitter:title" content="{E(title)}">',
+        f'<meta name="twitter:description" content="{E(desc)}">',
+        f'<meta name="twitter:image" content="{OG_IMAGE}">',
+        '<link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon.png">',
+        '<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">',
+    ]
+    if fname in ('index.html', 'en.html'):
+        bits += [f'<link rel="alternate" hreflang="ko" href="{SITE_URL}">', f'<link rel="alternate" hreflang="en" href="{SITE_URL}en.html">', f'<link rel="alternate" hreflang="x-default" href="{SITE_URL}">']
+    return '\n'.join(bits) + jsonld(fname, desc)
+
 def doc(fname, title, body, desc='KELI는 한림대학교가 개발하고 수업에서 검증한 AI 교육 서비스를 국내외 대학·기관에 제공하고 함께 확산하는 고등교육 AI 공유 플랫폼입니다.', skeleton=True):
-    head_bits = f'''<title>{E(title)}</title>
+    title = seo_title(fname, title)
+    head_bits = f"""<title>{E(title)}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="color-scheme" content="light">
 <meta name="description" content="{E(desc)}">
+{seo_head(fname, title, desc)}
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="assets/site.css?v={CSS_V}">'''
+<link rel="stylesheet" href="assets/site.css?v={CSS_V}">"""
     is_admin = fname == 'admin.html'
-    inner = f'''{head_bits}
+    inner = f"""{head_bits}
 {'' if is_admin else header(fname)}
 <main id="main"{' class="cms-root"' if is_admin else ''}>
 {body}
 </main>
 {'' if is_admin else FOOTER}
 {'' if is_admin or not BOT.get('enabled', True) else chat_widget(fname)}<script>window.KELI_HIDDEN={json.dumps({k: [str(x) for x in HIDDEN.get(k, [])] for k in ('events', 'press', 'videos', 'unn', 'services')}, ensure_ascii=False)};window.KELI_API={json.dumps(((SITE_CFG.get('admin') or {}).get('api') or '').strip())};</script>
-<script src="assets/site.js?v={JS_V}"></script>{'<script src="assets/templates.js?v=' + JS_V + '"></script><script src="assets/admin.js?v=' + JS_V + '"></script>' if fname == 'admin.html' else ''}'''
-    if fname == 'admin.html':
-        head_bits = head_bits.replace('<meta name="description"', '<meta name="robots" content="noindex, nofollow">\n<meta name="description"', 1)
+<script src="assets/site.js?v={JS_V}"></script>{'<script src="assets/templates.js?v=' + JS_V + '"></script><script src="assets/admin.js?v=' + JS_V + '"></script>' if fname == 'admin.html' else ''}"""
     if not skeleton:
         return inner
-    return f'''<!doctype html>
-<html lang="ko">
+    return f"""<!doctype html>
+<html lang="{'en' if fname == 'en.html' else 'ko'}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 {inner}
 </body>
 </html>
-'''.replace(f'<link rel="stylesheet" href="assets/site.css?v={CSS_V}">', f'<link rel="stylesheet" href="assets/site.css?v={CSS_V}">\n</head>\n<body>', 1)
+""".replace(f'<link rel="stylesheet" href="assets/site.css?v={CSS_V}">', f'<link rel="stylesheet" href="assets/site.css?v={CSS_V}">\n</head>\n<body>', 1)
 
 # ------------------------------------------------------------------ 줄바꿈 정리
 # 규칙: (1) 문장은 마침표(.!?) 뒤에서 줄을 바꾼다 → <br>
@@ -1296,7 +1368,7 @@ def nb(html_, en=False):
     out = []
     for i, seg in enumerate(_SKIP.split(html_)):
         if i % 2 == 1:   # title/script/style/textarea/select: <br> 없이 결합자만
-            if seg.startswith(('<title', '<select')):
+            if seg.startswith('<select'):   # <title>은 검색엔진이 읽으므로 결합자 없이 그대로 둔다
                 seg = _TXT.sub(lambda m: '>' + _join_words(m.group(1), en) + '<', seg)
             out.append(seg)
             continue
@@ -1305,9 +1377,36 @@ def nb(html_, en=False):
         out.append(seg)
     return ''.join(out)
 
+PAGES = []   # (파일명, lastmod 또는 None) — sitemap.xml 재료
+
+def _lastmod(fname):
+    """상세 글은 글의 날짜를 lastmod 로. 그 밖의 페이지는 비워 둔다(매일 다시 만들어도 날짜가 바뀌지 않도록)."""
+    m = re.match(r'(archive|notice)-(.+)\.html$', fname)
+    if not m: return None
+    src = ARCHIVE if m.group(1) == 'archive' else NOTICES
+    for it in src:
+        if str(it.get('id')) == m.group(2):
+            d = re.sub(r'[^0-9]', '', str(it.get('date', '')))[:8]
+            return f'{d[:4]}-{d[4:6]}-{d[6:8]}' if len(d) == 8 else None
+    return None
+
 def write(fname, title, body, desc=None):
     kw = {'desc': desc} if desc else {}
     open(os.path.join(OUT, fname), 'w', encoding='utf-8').write(nb(doc(fname, title, body, **kw)))
+    if fname not in NOINDEX: PAGES.append((fname, _lastmod(fname)))
+
+def write_sitemap():
+    pages = [('index.html', None)] + [p for p in PAGES if p[0] != 'index.html']
+    seen = set(); rows = []
+    for f, lm in pages:
+        if f in seen: continue
+        seen.add(f)
+        loc = SITE_URL + ('' if f == 'index.html' else f)
+        pr = '1.0' if f == 'index.html' else ('0.8' if f in ('about.html', 'services.html', 'join.html', 'archive.html', 'news.html', 'en.html') else ('0.6' if '-' not in f else '0.5'))
+        rows.append(f'<url><loc>{E(loc)}</loc>' + (f'<lastmod>{lm}</lastmod>' if lm else '') + f'<priority>{pr}</priority></url>')
+    open(os.path.join(OUT, 'sitemap.xml'), 'w', encoding='utf-8').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(rows) + '\n</urlset>\n')
+    open(os.path.join(OUT, 'robots.txt'), 'w', encoding='utf-8').write(f'User-agent: *\nAllow: /\nDisallow: /admin.html\nDisallow: /search.html\n\nSitemap: {SITE_URL}sitemap.xml\n')
+    return len(rows)
 
 def status_badge(s):
     if not s['status']: return ''
@@ -2471,7 +2570,8 @@ def main():
     page_newsletter(); page_search(); page_en(); build_kb()
     page_policy('privacy.html', '개인정보처리방침', 'Privacy'); page_policy('terms.html', '이용약관', 'Terms')
     page_admin()
-    print('pages', len([f for f in os.listdir(OUT) if f.endswith('.html')]))
+    n = write_sitemap()
+    print('pages', len([f for f in os.listdir(OUT) if f.endswith('.html')]), 'sitemap urls', n)
 
 if __name__ == '__main__':
     main()
