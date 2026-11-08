@@ -242,7 +242,7 @@ def _load_notices():
     return items
 NOTICES = _load_notices()
 SITE_DEFAULT = {
-    'hero': {'eyebrow': 'K-University AI EdTech and Learning Initiative', 'title': '대학이 함께 만드는<br>AI 기반 고등교육 혁신 생태계.',
+    'hero': {'eyebrow': '한림대학교 KELI · K-University AI EdTech and Learning Initiative', 'title': '대학이 함께 만드는<br>AI 기반 고등교육 혁신 생태계.',
              'lead': '한림대가 개발하고 수업에서 검증한 AI 교육 서비스를 <br class="d">국내외 대학·기관에 제공하고 함께 확산합니다.',
              'cta1_label': '서비스 둘러보기', 'cta1_href': 'services.html', 'cta2_label': '도입 문의', 'cta2_href': 'join.html#inquiry'},
     'banner': {'on': False, 'text': '', 'link': '', 'until': ''},
@@ -1183,7 +1183,7 @@ def header(current):
     mlinks = ''.join(f'<div class="mgrp"><a class="mtop" href="{h}">{t}</a><div class="msub">' + ''.join(_sub_m(it) for it in subs) + '</div></div>' for h, t, subs in MEGA) + '<div class="mgrp"><div class="msub"><a href="search.html">검색</a><a href="en.html">English</a><a href="join.html#inquiry">도입 문의</a></div></div>'
     cols = ''.join(f'<div class="mega-col" data-menu="{h}"><a class="mega-col-title" href="{h}">{t}</a><ul>' + ''.join(_sub_c(it) for it in subs) + '</ul></div>' for h, t, subs in MEGA)
     mega = f'''<div class="mega" id="mega" aria-hidden="true"><div class="wrap mega-inner">
-<div class="mega-intro"><span class="eyebrow">K-University AI EduTech &amp; Learning Initiative</span><strong>고등교육 AI<br>공유 플랫폼</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="more" href="join.html#inquiry">도입 문의</a><a class="more" href="demos.html">전체 데모 영상</a></div>
+<div class="mega-intro"><span class="eyebrow">한림대학교 KELI</span><strong>고등교육 AI<br>공유 플랫폼</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="more" href="join.html#inquiry">도입 문의</a><a class="more" href="demos.html">전체 데모 영상</a></div>
 <div class="mega-cols">{cols}</div>
 </div></div>'''
     return f'''<header class="hdr"><div class="wrap bar">
@@ -1232,7 +1232,7 @@ NOINDEX = {'admin.html', 'search.html'}
 
 def seo_title(fname, title):
     """검색 결과에 '한림대학교'와 'KELI 플랫폼'이 함께 보이도록 제목을 다듬는다."""
-    if fname == 'index.html': return 'KELI 플랫폼 | 한림대학교 고등교육 AI 공유 플랫폼'
+    if fname == 'index.html': return '한림대학교 KELI 플랫폼 | 고등교육 AI 공유 플랫폼'
     if fname == 'en.html': return 'KELI | Hallym University Higher-Education AI Sharing Platform'
     if fname == 'admin.html': return title
     m = re.match(r'^(.*?)\s*·\s*KELI( 아카이브| 공지사항| 플랫폼| Marketplace)?$', title)
@@ -1247,9 +1247,9 @@ def jsonld(fname, desc):
     en = fname == 'en.html'
     org = {
         '@context': 'https://schema.org', '@type': 'Organization',
-        'name': 'KELI' if en else 'KELI 플랫폼',
-        'alternateName': ['KELI', 'K-University AI EdTech and Learning Initiative', 'Hallym University KELI'] if en
-                         else ['한림대학교 KELI', '한림대 KELI', '켈리', 'K-University AI EdTech and Learning Initiative'],
+        'name': 'Hallym University KELI' if en else '한림대학교 KELI 플랫폼',
+        'alternateName': ['KELI', 'K-University AI EdTech and Learning Initiative', 'KELI Platform'] if en
+                         else ['KELI', 'KELI 플랫폼', '한림대 KELI', '켈리', 'K-University AI EdTech and Learning Initiative'],
         'url': SITE_URL, 'logo': SITE_URL + 'assets/img/keli-logo.png', 'image': OG_IMAGE,
         'description': desc,
         'email': EMAIL, 'telephone': '+82-33-248-3242',
@@ -1297,7 +1297,7 @@ def seo_head(fname, title, desc):
         bits += [f'<link rel="alternate" hreflang="ko" href="{SITE_URL}">', f'<link rel="alternate" hreflang="en" href="{SITE_URL}en.html">', f'<link rel="alternate" hreflang="x-default" href="{SITE_URL}">']
     return '\n'.join(bits) + jsonld(fname, desc)
 
-def doc(fname, title, body, desc='KELI는 한림대학교가 개발하고 수업에서 검증한 AI 교육 서비스를 국내외 대학·기관에 제공하고 함께 확산하는 고등교육 AI 공유 플랫폼입니다.', skeleton=True):
+def doc(fname, title, body, desc='한림대학교 KELI 플랫폼(K-University AI EdTech and Learning Initiative)은 한림대가 개발하고 수업에서 검증한 AI 교육 서비스 HAI Ecosystems를 국내외 대학·기관에 제공하고 함께 확산하는 고등교육 AI 공유 플랫폼입니다.', skeleton=True):
     title = seo_title(fname, title)
     head_bits = f"""<title>{E(title)}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
