@@ -154,7 +154,7 @@
 
   // ---------------------------------------------------------------- 라우터
   var view = qs('#view');
-  var TITLES = { home: '대시보드', site: '홈 화면', notices: '소식·공지', archive: '아카이브', services: '서비스', events: '행사', press: '보도·언론', videos: '영상', bot: '챗봇', history: '게시 기록', settings: '사이트 설정' };
+  var TITLES = { home: '대시보드', site: '홈 화면', notices: '소식·공지', archive: '아카이브', services: '서비스', events: '행사', press: '보도·언론', videos: '영상', bot: '챗봇', stats: '방문 통계', history: '게시 기록', settings: '사이트 설정' };
   function buildSubnav() {   // 메뉴 아래에 분류를 세로로: 소식·공지(분류) · 아카이브(분류) · 서비스(포털 분류) · 보도·언론(출처)
     function sub(view, items) { var a = qs('.cms-nav a[data-view="' + view + '"]'); if (!a) return; var old = a.nextElementSibling; if (old && old.classList.contains('sub')) old.remove(); if (!items.length) return; var d = document.createElement('div'); d.className = 'sub'; d.innerHTML = items.map(function (it) { return '<a href="#' + view + '/c/' + encodeURIComponent(it[0]) + '" data-sub="' + esc(it[0]) + '">' + esc(it[1]) + (it[2] != null ? '<span class="cnt">' + it[2] + '</span>' : '') + '</a>'; }).join(''); a.insertAdjacentElement('afterend', d); }
     var nc = {}, ac = {}; ((state.notices || {}).items || []).forEach(function (n) { nc[n.cat] = (nc[n.cat] || 0) + 1; }); ((state.archive || {}).items || []).forEach(function (x) { ac[x.cat] = (ac[x.cat] || 0) + 1; });
@@ -172,7 +172,7 @@
     var subKey = (h[1] === 'c' && h[2]) ? decodeURIComponent(h[2]) : ''; markSub(v, subKey);
     qs('#top-title').textContent = TITLES[v] || '대시보드'; qs('#top-actions').innerHTML = '';
     view.innerHTML = '<p class="muted">불러오는 중…</p>';
-    var fn = { home: vHome, site: vSite, notices: vNotices, archive: vArchive, services: vServices, events: vEvents, press: vPress, videos: vVideos, bot: vBot, history: vHistory, settings: vSettings }[v] || vHome;
+    var fn = { home: vHome, site: vSite, notices: vNotices, archive: vArchive, services: vServices, events: vEvents, press: vPress, videos: vVideos, bot: vBot, stats: vStats, history: vHistory, settings: vSettings }[v] || vHome;
     Promise.resolve(fn(h.slice(1))).then(function () { counts(); buildSubnav(); }).catch(function (e) { view.innerHTML = '<div class="panel"><p>불러오지 못했습니다: ' + esc(e.message) + '</p><p class="small muted">토큰 권한(Contents: Read and write)과 저장소 이름을 확인해 주세요.</p></div>'; });
   }
   window.addEventListener('hashchange', route);
@@ -514,6 +514,93 @@
         state.bot = out; saveJson('content/chatbot.json', out, '챗봇 설정 수정').then(function () { afterSave('챗봇 설정을 저장했습니다'); }).catch(fail).then(function () { btn.disabled = false; btn.textContent = '저장하고 게시'; });
       });
       if (SERVER) fetch(SERVER + '/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lang: 'ko', messages: [{ role: 'user', content: 'KELI가 뭐예요?' }] }) }).then(function (r) { return r.json(); }).then(function (j) { var e = j.engine === 'claude' ? 'Claude(Anthropic)' : j.engine === 'workers-ai' ? 'Workers AI(Llama)' : '검색 답변(AI 미연결)'; qs('#bot-srv').innerHTML = '서버 주소: ' + esc(SERVER) + ' — 지금 답하는 엔진: <strong>' + e + '</strong>' + (j.engine === 'search' ? '. Cloudflare → 워커 Settings → Bindings → Workers AI(변수 이름 AI)를 추가하면 AI가 답합니다.' : ''); }).catch(function (e) { qs('#bot-srv').textContent = '서버 주소: ' + SERVER + ' — 연결 실패(' + e.message + ')'; });
+    });
+  }
+
+
+  // ---------------------------------------------------------------- 방문 통계: 누가 얼마나, 어디서 와서, 무엇을 봤나 (관리자 서버 D1)
+  var STATS_DAYS = 30;
+  function vStats() {
+    if (!SERVER) { view.innerHTML = head('Hallym University / Website CMS', '방문 통계', '사이트 방문 기록입니다.') + '<div class="panel"><p>관리자 서버 주소가 없습니다. 사이트 설정에서 Cloudflare 관리자 서버 주소를 넣으면 방문 통계를 모을 수 있습니다.</p></div>'; return Promise.resolve(); }
+    view.innerHTML = head('Hallym University / Website CMS', '방문 통계', '누가 얼마나 들어왔고, 어디서 왔고, 무엇을 가장 많이 봤는지 봅니다. 쿠키 없이 집계하며 개인을 식별하지 않습니다.') + '<p class="muted">불러오는 중…</p>';
+    return srv('/api/stats?days=' + STATS_DAYS).then(function (d) {
+      if (!d.enabled) {
+        view.innerHTML = head('Hallym University / Website CMS', '방문 통계', '사이트 방문 기록입니다.') +
+          '<div class="panel"><div class="ph"><div><h3>아직 켜져 있지 않습니다</h3><p>Cloudflare 관리자 서버에 기록 창고(D1 데이터베이스)를 한 번만 붙이면 그때부터 방문이 쌓입니다. 카드 등록 없이 무료입니다.</p></div></div>' +
+          '<ol style="margin:0;padding-left:20px;line-height:1.8"><li>Cloudflare 대시보드 → 왼쪽 <b>Storage &amp; Databases → D1 SQL Database</b> → <b>Create</b> → 이름 <code>keli-stats</code> → Create</li><li>Workers &amp; Pages → <b>keli-admin</b> → Settings → <b>Bindings → + Add binding → D1 database</b> → Variable name <code>DB</code>, Database <code>keli-stats</code> → Deploy</li><li>워커 코드가 2026-11-08 이후 판(worker/keli-admin.js)인지 확인(아니면 Edit code 에 새 코드를 붙여 넣고 Deploy)</li><li>이 화면을 새로고침하면 "켜짐"으로 바뀌고, 그때부터 들어오는 방문이 집계됩니다</li></ol></div>';
+        return;
+      }
+      var tot = d.total || {}, prev = d.prev || {}, days = d.days;
+      function delta(a, b) { if (!b) return ''; var pct = Math.round((a - b) / b * 100); return '<span class="delta ' + (pct > 0 ? 'up' : pct < 0 ? 'down' : '') + '">' + (pct > 0 ? '▲ ' : pct < 0 ? '▼ ' : '') + Math.abs(pct) + '%</span>'; }
+      function fmt(n) { return Number(n || 0).toLocaleString('ko-KR'); }
+      // 날짜 축 채우기(방문 없는 날은 0)
+      var byDay = {}; (d.daily || []).forEach(function (r) { byDay[r.day] = r; });
+      var series = []; for (var i = days - 1; i >= 0; i--) { var dt = new Date(Date.now() + 9 * 3600000 - i * 86400000).toISOString().slice(0, 10); var r = byDay[dt] || { pv: 0, uv: 0 }; series.push({ day: dt, pv: r.pv, uv: r.uv }); }
+      function chart() {
+        var W = 920, H = 240, L = 40, R = 12, T = 12, B = 28, iw = W - L - R, ih = H - T - B; var max = Math.max(5, Math.max.apply(null, series.map(function (x) { return x.pv; })));
+        var step = max <= 10 ? 2 : max <= 50 ? 10 : max <= 100 ? 20 : max <= 500 ? 100 : max <= 1000 ? 200 : 500; var top = Math.ceil(max / step) * step; var y = function (v) { return T + ih - v / top * ih; };
+        var bw = iw / series.length, g = Math.max(1, Math.min(6, bw * 0.3)); var out = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="날짜별 방문수와 방문자 수">';
+        for (var v = 0; v <= top; v += step) out += '<line class="grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + y(v) + '" y2="' + y(v) + '"/><text x="' + (L - 6) + '" y="' + (y(v) + 4) + '" text-anchor="end">' + v + '</text>';
+        var every = days > 60 ? 15 : days > 20 ? 5 : 1;
+        var bwid = Math.min(48, Math.max(1, bw - g));
+        series.forEach(function (p, i) { var x = L + i * bw; var h = p.pv / top * ih; out += '<rect class="bar" x="' + (x + (bw - bwid) / 2) + '" y="' + (T + ih - h) + '" width="' + bwid + '" height="' + h + '" rx="2"><title>' + p.day + ' · 방문 ' + p.pv + ' · 방문자 ' + p.uv + '</title></rect>'; if (i % every === 0 || i === series.length - 1) out += '<text x="' + (x + bw / 2) + '" y="' + (H - 8) + '" text-anchor="middle">' + p.day.slice(5).replace('-', '/') + '</text>'; });
+        var pts = series.map(function (p, i) { return (L + i * bw + bw / 2).toFixed(1) + ',' + y(p.uv).toFixed(1); });
+        out += '<polyline class="line" points="' + pts.join(' ') + '"/>'; if (days <= 31) series.forEach(function (p, i) { out += '<circle class="dot" r="3" cx="' + (L + i * bw + bw / 2) + '" cy="' + y(p.uv) + '"><title>' + p.day + ' · 방문자 ' + p.uv + '</title></circle>'; });
+        return out + '</svg>';
+      }
+      function refLabel(h) {
+        if (!h) return ['직접 입력 · 즐겨찾기 · 메신저', '']; var x = h.toLowerCase();
+        if (/google\./.test(x)) return ['구글 검색', h]; if (/naver\./.test(x)) return ['네이버', h]; if (/daum\.|kakao\./.test(x)) return ['다음 · 카카오', h]; if (/bing\.|yahoo\.|duckduckgo/.test(x)) return ['기타 검색', h];
+        if (/instagram/.test(x)) return ['인스타그램', h]; if (/facebook|fb\.com/.test(x)) return ['페이스북', h]; if (/youtube|youtu\.be/.test(x)) return ['유튜브', h]; if (/linkedin/.test(x)) return ['링크드인', h]; if (/t\.co$|twitter|x\.com/.test(x)) return ['X(트위터)', h];
+        if (/hallym\.ac\.kr/.test(x)) return ['한림대 누리집', h]; if (/keliedu\.org/.test(x)) return ['옛 KELI 포털', h]; if (/csedu4all/.test(x)) return ['AI교육확산센터', h]; if (/mail\.|outlook|hiworks/.test(x)) return ['이메일', h];
+        return [h, ''];
+      }
+      function bars(rows, label, cap) { var max = Math.max.apply(null, rows.map(function (r) { return r.n; }).concat([1])); var tot2 = rows.reduce(function (a, r) { return a + r.n; }, 0) || 1; return rows.length ? '<div class="bars">' + rows.slice(0, cap || 10).map(function (r) { var lb = label(r); return '<div class="lbl" title="' + esc(lb[1] || lb[0]) + '">' + esc(lb[0]) + (lb[1] && lb[1] !== lb[0] ? '<span class="sub">' + esc(lb[1]) + '</span>' : '') + '</div><div class="n">' + fmt(r.n) + ' · ' + Math.round(r.n / tot2 * 100) + '%</div><div class="trk"><b style="width:' + (r.n / max * 100) + '%"></b></div>'; }).join('') + '</div>' : '<p class="small muted" style="margin:0">아직 기록이 없습니다.</p>'; }
+      var refs = {}; (d.refs || []).forEach(function (r) { var k = refLabel(r.ref)[0]; refs[k] = refs[k] || { n: 0, hosts: [] }; refs[k].n += r.n; if (r.ref && refs[k].hosts.indexOf(r.ref) < 0) refs[k].hosts.push(r.ref); });
+      var refRows = Object.keys(refs).map(function (k) { return { k: k, n: refs[k].n, h: refs[k].hosts.slice(0, 3).join(', ') }; }).sort(function (a, b) { return b.n - a.n; });
+      var maxPv = Math.max.apply(null, (d.pages || []).map(function (r) { return r.pv; }).concat([1]));
+      var pages = (d.pages || []).slice(0, 20).map(function (r, i) { var t = r.title || r.path; return '<tr><td class="num">' + (i + 1) + '</td><td><a href="' + esc(CFG.site.replace(/\/$/, '') + r.path) + '" target="_blank" rel="noopener">' + esc(t) + '</a><span class="pth">' + esc(r.path) + '</span><div class="share"><b style="width:' + (r.pv / maxPv * 100) + '%"></b></div></td><td class="num">' + fmt(r.pv) + '</td><td class="num">' + fmt(r.uv) + '</td></tr>'; }).join('');
+      var clicks = (d.clicks || []); var files = clicks.filter(function (c) { return /\/content\/files\/|\.(pdf|hwpx?|docx?|pptx?|xlsx?|zip|mp4)(\?|$)/i.test(c.tgt); }); var outs = clicks.filter(function (c) { return files.indexOf(c) < 0; });
+      var hmax = Math.max.apply(null, (d.hours || []).map(function (r) { return r.n; }).concat([1])); var hmap = {}; (d.hours || []).forEach(function (r) { hmap[r.hour] = r.n; });
+      var hours = ''; for (var hh = 0; hh < 24; hh++) hours += '<b style="height:' + Math.max(2, (hmap[hh] || 0) / hmax * 100) + '%" title="' + hh + '시 · ' + fmt(hmap[hh] || 0) + '"></b>';
+      var hx = ''; for (hh = 0; hh < 24; hh++) hx += '<span>' + hh + '</span>';
+      var devName = { desktop: 'PC', mobile: '휴대폰', tablet: '태블릿' }; var ccName = { KR: '대한민국', US: '미국', JP: '일본', CN: '중국', DK: '덴마크', NL: '네덜란드', VN: '베트남', TW: '대만', DE: '독일', GB: '영국', SG: '싱가포르', '': '알 수 없음' }; var langName = { ko: '국문', en: '영문' };
+      view.innerHTML = head('Hallym University / Website CMS', '방문 통계', '누가 얼마나 들어왔고, 어디서 왔고, 무엇을 가장 많이 봤는지 봅니다. 쿠키 없이 집계하며 개인을 식별하지 않습니다.', '<strong>' + esc(d.from.replace(/-/g, '.')) + ' ~ ' + esc(d.to.replace(/-/g, '.')) + '</strong><br>' + (d.since ? '집계 시작 ' + esc(d.since.replace(/-/g, '.')) : '오늘부터 집계')) +
+        '<div class="chips-row" style="margin:0 0 16px"><span class="small muted">기간</span>' + [7, 30, 90, 365].map(function (n) { return '<button class="chip' + (n === days ? ' on' : '') + '" type="button" data-days="' + n + '">' + (n === 365 ? '1년' : n + '일') + '</button>'; }).join('') + '<span style="flex:1"></span><label class="chk small" style="margin:0"><input type="checkbox" id="st-notrack"' + (localStorage.getItem('keli_no_track') === '1' ? ' checked' : '') + '><span>내 방문은 집계에서 제외</span></label><button class="btn ghost xs" type="button" id="st-csv">CSV 내려받기</button></div>' +
+        '<div class="stat-grid">' +
+        '<div class="stat"><span class="k">방문수(페이지뷰)</span><span class="num">' + fmt(tot.pv) + delta(tot.pv, prev.pv) + '</span><p>' + days + '일 · 이전 ' + days + '일 ' + fmt(prev.pv) + '</p></div>' +
+        '<div class="stat"><span class="k">방문자(하루 단위 고유)</span><span class="num">' + fmt(tot.uv) + delta(tot.uv, prev.uv) + '</span><p>이전 ' + days + '일 ' + fmt(prev.uv) + '</p></div>' +
+        '<div class="stat"><span class="k">하루 평균 방문</span><span class="num">' + fmt(Math.round((tot.pv || 0) / days)) + '</span><p>방문자당 ' + ((tot.uv ? (tot.pv / tot.uv) : 0).toFixed(1)) + '쪽 열람</p></div>' +
+        '<div class="stat"><span class="k">오늘</span><span class="num">' + fmt((d.today || {}).pv) + '</span><p>방문자 ' + fmt((d.today || {}).uv) + ' · 최근 30분 ' + fmt(d.live) + '명</p></div>' +
+        '</div>' +
+        '<div class="panel" style="margin-top:16px"><div class="ph"><div><h3>날짜별 방문</h3><p>막대는 방문수(페이지뷰), 선은 방문자 수입니다. 막대에 마우스를 올리면 숫자가 보입니다.</p></div></div><div class="legend"><span><i style="background:#0B5CFF"></i>방문수</span><span><i style="background:#F28C28;border-radius:50%"></i>방문자</span></div>' + chart() + '</div>' +
+        '<div class="grid2" style="margin-top:16px">' +
+        '<div class="panel"><div class="ph"><div><h3>가장 많이 본 콘텐츠</h3><p>페이지별 방문수와 방문자 수입니다.</p></div></div>' + (pages ? '<table class="rank"><thead><tr><th>#</th><th>페이지</th><th style="text-align:right">방문</th><th style="text-align:right">방문자</th></tr></thead><tbody>' + pages + '</tbody></table>' : '<p class="small muted" style="margin:0">아직 기록이 없습니다.</p>') + '</div>' +
+        '<div><div class="panel"><div class="ph"><div><h3>들어온 경로</h3><p>어디를 거쳐 들어왔는지입니다. "직접 입력"은 주소를 직접 치거나 즐겨찾기·메신저(카카오톡 등)에서 온 경우입니다.</p></div></div>' + bars(refRows, function (r) { return [r.k, r.h]; }, 12) + '</div>' +
+        ((d.utm || []).length ? '<div class="panel" style="margin-top:16px"><div class="ph"><div><h3>캠페인(UTM) 유입</h3><p>주소에 utm_source 등을 붙여 보낸 링크의 성과입니다.</p></div></div>' + bars(d.utm, function (r) { return [r.src + (r.med ? ' · ' + r.med : ''), r.cmp || '']; }, 10) + '</div>' : '') +
+        '<div class="panel" style="margin-top:16px"><div class="ph"><div><h3>기기 · 브라우저 · 언어</h3></div></div><div class="grid2" style="gap:12px">' +
+        '<div>' + bars(d.dev || [], function (r) { return [devName[r.dev] || r.dev || '기타', '']; }) + '</div><div>' + bars(d.br || [], function (r) { return [r.br || '기타', '']; }, 6) + '</div>' +
+        '<div>' + bars((d.lang || []).map(function (r) { return { n: r.n, lang: r.lang }; }), function (r) { return [langName[r.lang] || r.lang || '기타', '']; }) + '</div><div>' + bars(d.cc || [], function (r) { return [ccName[r.cc] || r.cc || '알 수 없음', '']; }, 6) + '</div></div></div></div>' +
+        '</div>' +
+        '<div class="grid2" style="margin-top:16px">' +
+        '<div class="panel"><div class="ph"><div><h3>시간대별 방문</h3><p>하루 중 언제 많이 들어오는지(한국 시간).</p></div></div><div class="hours">' + hours + '</div><div class="hours-x">' + hx + '</div></div>' +
+        '<div class="panel"><div class="ph"><div><h3>내려받은 자료</h3><p>첨부파일(PDF 등)을 누른 횟수입니다.</p></div></div>' + bars(files, function (r) { var nm = decodeURIComponent((r.tgt || '').split('/').pop().split('?')[0]); return [nm.replace(/^[a-z0-9]{8}_/, ''), '']; }, 10) + '</div>' +
+        '<div class="panel"><div class="ph"><div><h3>바깥으로 나간 링크</h3><p>서비스 바로가기·외부 사이트를 누른 횟수입니다.</p></div></div>' + bars(outs, function (r) { var hh2 = ''; try { hh2 = new URL(r.tgt).hostname.replace(/^www\./, ''); } catch (e) {} return [hh2 || r.tgt, r.tgt]; }, 10) + '</div>' +
+        '</div>' +
+        '<p class="small muted" style="margin-top:14px">집계 방식: 사이트에 들어온 브라우저가 "어느 페이지를, 어디서 와서, 어떤 기기로" 봤는지만 보냅니다. 쿠키를 쓰지 않고 IP 주소를 저장하지 않으며, 방문자 수는 날마다 바뀌는 해시로 센 "하루 단위 고유 방문자"입니다(같은 사람이 이틀 오면 2명). 검색엔진 로봇과 관리자 화면 방문은 제외됩니다. 기록은 400일 뒤 자동으로 지워집니다.</p>';
+      qsa('[data-days]', view).forEach(function (b) { b.addEventListener('click', function () { STATS_DAYS = Number(b.getAttribute('data-days')); vStats(); }); });
+      qs('#st-notrack').addEventListener('change', function (e) { try { if (e.target.checked) localStorage.setItem('keli_no_track', '1'); else localStorage.removeItem('keli_no_track'); } catch (e2) {} toast(e.target.checked ? '이 브라우저의 방문은 집계하지 않습니다' : '이 브라우저의 방문도 집계합니다'); });
+      qs('#st-csv').addEventListener('click', function () {
+        var lines = ['구분,항목,보조,방문수,방문자'];
+        series.forEach(function (r) { lines.push(['날짜별', r.day, '', r.pv, r.uv].join(',')); });
+        (d.pages || []).forEach(function (r) { lines.push(['페이지', '"' + (r.title || '').replace(/"/g, '""') + '"', r.path, r.pv, r.uv].join(',')); });
+        (d.refs || []).forEach(function (r) { lines.push(['유입경로', r.ref || '직접', '', r.n, ''].join(',')); });
+        (d.utm || []).forEach(function (r) { lines.push(['UTM', r.src, (r.med || '') + ' ' + (r.cmp || ''), r.n, ''].join(',')); });
+        (d.dev || []).forEach(function (r) { lines.push(['기기', r.dev, '', r.n, ''].join(',')); });
+        (d.cc || []).forEach(function (r) { lines.push(['국가', r.cc, '', r.n, ''].join(',')); });
+        clicks.forEach(function (r) { lines.push(['클릭', '"' + r.tgt.replace(/"/g, '""') + '"', '', r.n, ''].join(',')); });
+        var blob = new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8' }); var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'KELI_방문통계_' + d.from + '_' + d.to + '.csv'; a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+      });
     });
   }
 

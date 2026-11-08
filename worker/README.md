@@ -51,11 +51,21 @@
 - 코드를 새로 붙여 넣은 뒤(2단계) Variables 에 `SITE_URL` = `https://keli-aied.org/` 를 추가하면 챗봇이 그 사이트의 지식 파일(assets/kb.json)을 읽습니다(비워도 keli-aied.org 로 동작).
 - 관리자 화면 → "챗봇" 메뉴에서 켜기/끄기 · 인사말 · 빠른 질문 · 자주 묻는 질문을 고치고, 지금 어떤 엔진이 답하는지 확인할 수 있습니다.
 
+## 8. 방문 통계 켜기 (2026-11-08 추가, 카드 불필요)
+관리자 화면 → "방문 통계"에서 방문수·방문자·들어온 경로·많이 본 콘텐츠·내려받은 자료를 봅니다. 기록은 Cloudflare D1(SQLite) 에 쌓입니다(무료 한도: 하루 쓰기 10만 건 · 저장 5GB).
+1. 왼쪽 메뉴 "Storage & Databases → D1 SQL Database" → "Create" → 이름 `keli-stats` → Create.
+2. 워커 → Settings → Bindings → "+ Add binding" → "D1 database" → Variable name `DB`, Database `keli-stats` → Deploy.
+3. 워커 코드가 2026-11-08 이후 판인지 확인(Edit code 에서 `api/hit` 가 검색되면 새 코드). 아니면 `keli-admin.js` 를 다시 붙여 넣고 Deploy.
+4. 표(테이블)는 첫 방문 때 자동으로 만들어집니다. 관리자 화면 → 방문 통계를 새로고침하면 그때부터 쌓인 방문이 보입니다.
+- 집계 방식: 쿠키 없음 · IP 저장 안 함(날마다 바뀌는 해시로 "하루 단위 고유 방문자"만 셈) · 검색 로봇과 관리자 화면 제외 · 400일 지난 기록 자동 삭제. 사무국 PC 는 "내 방문은 집계에서 제외"를 켜 두면 됩니다.
+- 사이트에 올라가 있는 `assets/site.js` 끝부분(gen/track.js)이 방문을 보냅니다. `SITE_URL`·`ALLOW_ORIGINS` 에 적힌 사이트에서 온 기록만 받습니다.
+
 ## 확인 · 문제 해결
 - 서버 주소를 브라우저에서 열면 `{"ok":true,"service":"KELI admin server","setup":true}` 가 보여야 합니다(`setup:true` = 아직 관리자 없음).
 - "관리자 서버에 연결하지 못했습니다": 주소 오타, 또는 3단계 `ALLOW_ORIGINS` 에 `https://keli-aied.org` 가 없음.
 - "서버에 GITHUB_TOKEN 비밀 변수가 없습니다": 3단계 비밀 변수 누락 → 넣고 Deploy.
 - "저장소 바인딩(FILES 또는 KV)이 없습니다": 4단계 또는 5단계 바인딩 누락.
+- 방문 통계 화면에 "아직 켜져 있지 않습니다": 8단계 D1 바인딩(`DB`) 누락 또는 옛 코드.
 - 로그인 5회 실패 → 15분 잠금. 비밀번호를 잊으면 관리자가 "비밀번호 재설정".
 - 토큰을 바꿨다면 `GITHUB_TOKEN` 값만 교체 → Deploy. 직원 쪽은 아무것도 안 해도 됩니다.
 - 되돌리기: 사이트 설정에서 서버 주소를 비우고 저장하면 GitHub 토큰 로그인으로 돌아갑니다.

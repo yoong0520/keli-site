@@ -631,6 +631,14 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .dirty { color: #b26a00; font-weight: 600; } .saved { color: #1a6b30; font-weight: 600; }
 .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
 .stat { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; color: var(--fg); } .stat:hover { text-decoration: none; border-color: #c7c7cc; }
+.stat .delta { display: inline-block; margin-left: 8px; font-size: 13px; font-weight: 600; color: var(--muted); } .stat .delta.up { color: #0a7a3d; } .stat .delta.down { color: #b42318; }
+.chips-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; } .chips-row .chip.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.chart { width: 100%; height: auto; display: block; font: 12px/1 inherit; } .chart text { fill: var(--muted); font-size: 11px; } .chart .grid { stroke: #eceef3; stroke-width: 1; } .chart .bar { fill: #0B5CFF; } .chart .bar:hover { fill: #0947c4; } .chart .line { fill: none; stroke: #F28C28; stroke-width: 2; stroke-linejoin: round; } .chart .dot { fill: #F28C28; stroke: #fff; stroke-width: 2; }
+.legend { display: flex; gap: 16px; font-size: 13px; color: var(--muted); margin: 0 0 8px; } .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.bars { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; align-items: center; font-size: 14px; } .bars .lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .bars .lbl .sub { color: var(--muted); font-size: 12px; margin-left: 6px; } .bars .n { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; } .bars .trk { grid-column: 1 / -1; height: 6px; background: #eef1f6; border-radius: 4px; overflow: hidden; margin: -4px 0 4px; } .bars .trk b { display: block; height: 100%; background: #0B5CFF; border-radius: 4px; }
+.rank { width: 100%; border-collapse: collapse; font-size: 14px; } .rank th { text-align: left; font-size: 12px; color: var(--muted); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--line); } .rank td { padding: 8px; border-bottom: 1px solid #f0f1f4; vertical-align: top; } .rank td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; } .rank .pth { color: var(--muted); font-size: 12px; display: block; } .rank .share { height: 4px; background: #eef1f6; border-radius: 3px; margin-top: 6px; overflow: hidden; } .rank .share b { display: block; height: 100%; background: #0B5CFF; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; } .grid2 .panel { margin: 0; }
+.hours { display: grid; grid-template-columns: repeat(24, 1fr); gap: 2px; align-items: end; height: 90px; } .hours b { display: block; background: #0B5CFF; border-radius: 3px 3px 0 0; min-height: 2px; opacity: .9; } .hours-x { display: grid; grid-template-columns: repeat(24, 1fr); font-size: 10px; color: var(--muted); margin-top: 4px; } .hours-x span:nth-child(3n+2), .hours-x span:nth-child(3n+3) { visibility: hidden; }
 .stat .k { font-size: 12px; color: var(--muted); font-weight: 600; } .stat .num { display: block; font-size: 34px; font-weight: 800; letter-spacing: -.02em; margin: 6px 0 2px; } .stat p { margin: 0; font-size: 13px; color: var(--muted); }
 .feed-row { display: grid; grid-template-columns: 56px 1fr auto; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); }
 .feed-row .th { width: 56px; height: 40px; border-radius: 8px; background: var(--bg2); object-fit: cover; } .feed-row .th.ph { display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); }
@@ -1204,7 +1212,7 @@ FOOTER = f'''<footer class="ftr"><div class="wrap">
 </div></footer>'''
 
 CSS_V = hashlib.md5(CSS.encode('utf-8')).hexdigest()[:8]
-JS_V = hashlib.md5((JS + open(os.path.join(BASE, 'gen', 'chat.js'), encoding='utf-8').read()).encode('utf-8')).hexdigest()[:8]   # 챗봇 스크립트까지 포함한 해시
+JS_V = hashlib.md5((JS + open(os.path.join(BASE, 'gen', 'chat.js'), encoding='utf-8').read() + open(os.path.join(BASE, 'gen', 'track.js'), encoding='utf-8').read()).encode('utf-8')).hexdigest()[:8]   # 챗봇·통계 스크립트까지 포함한 해시
 
 def chat_widget(fname):
     en = fname == 'en.html'
@@ -1753,6 +1761,7 @@ def page_admin():
 <a href="#press" data-view="press"><i>▣</i>보도·언론<span class="cnt" data-cnt="press"></span></a>
 <a href="#videos" data-view="videos"><i>▶</i>영상<span class="cnt" data-cnt="videos"></span></a>
 <a href="#bot" data-view="bot"><i>☺</i>챗봇</a>
+<a href="#stats" data-view="stats"><i>▥</i>방문 통계</a>
 <a href="#history" data-view="history"><i>↻</i>게시 기록</a>
 <a href="#settings" data-view="settings"><i>⚙</i>사이트 설정</a>
 </nav>
@@ -2542,7 +2551,7 @@ def main():
     os.makedirs(os.path.join(OUT, 'assets', 'img', 'services'), exist_ok=True)
     write_stats_files()
     open(os.path.join(OUT, 'assets', 'site.css'), 'w', encoding='utf-8').write(CSS)
-    open(os.path.join(OUT, 'assets', 'site.js'), 'w', encoding='utf-8').write(JS + '\n' + open(os.path.join(BASE, 'gen', 'chat.js'), encoding='utf-8').read())
+    open(os.path.join(OUT, 'assets', 'site.js'), 'w', encoding='utf-8').write(JS + '\n' + open(os.path.join(BASE, 'gen', 'chat.js'), encoding='utf-8').read() + '\n' + open(os.path.join(BASE, 'gen', 'track.js'), encoding='utf-8').read())
     shutil.copy(os.path.join(BASE, 'gen', 'admin.js'), os.path.join(OUT, 'assets', 'admin.js'))
     shutil.copy(os.path.join(BASE, 'gen', 'templates.js'), os.path.join(OUT, 'assets', 'templates.js'))
     if os.path.isdir(IMG_SRC):   # 서비스 화면 이미지 원본이 있는 작업 환경에서만 복사(저장소에는 이미 들어 있음)

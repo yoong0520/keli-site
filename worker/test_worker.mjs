@@ -3,6 +3,7 @@
 //       node worker/test_worker.mjs serve 8787 → 관리자 화면 검사용 로컬 서버(워커를 HTTP 로 감쌈)
 import worker from './keli-admin.js';
 import http from 'node:http';
+import { DatabaseSync } from 'node:sqlite';
 
 async function bodyBytes(b) { if (b == null) return new Uint8Array(); if (typeof b === 'string') return new TextEncoder().encode(b); if (b instanceof Uint8Array) return b; return new Uint8Array(await new Response(b).arrayBuffer()); }
 export class FakeR2 {
@@ -23,9 +24,20 @@ export class FakeR2 {
       async abort() { self.mpus.delete(uploadId); } };
   }
 }
+export class FakeD1 {   // Cloudflare D1 흉내: Node 내장 SQLite 로 진짜 SQL 을 돌린다
+  constructor() { this.db = new DatabaseSync(':memory:'); }
+  prepare(sql) {
+    const db = this.db; const st = { _sql: sql, _args: [], bind(...a) { st._args = a.map((v) => (v === undefined ? null : v)); return st; },
+      async run() { const r = db.prepare(sql).run(...st._args); return { success: true, results: [], meta: { changes: r.changes } }; },
+      async all() { return { success: true, results: db.prepare(sql).all(...st._args) }; },
+      async first(col) { const row = db.prepare(sql).get(...st._args); return col ? (row ? row[col] : null) : (row || null); } };
+    return st;
+  }
+  async batch(stmts) { const out = []; for (const s of stmts) out.push(/^\s*(SELECT|WITH)/i.test(s._sql) ? await s.all() : await s.run()); return out; }
+}
 class FakeKV { constructor() { this.m = new Map(); } async get(k) { return this.m.has(k) ? this.m.get(k) : null; } async put(k, v) { this.m.set(k, String(v)); } }
 export const aiCalls = [];
-export const env = { FILES: new FakeR2(), KV: new FakeKV(), GITHUB_TOKEN: 'ghp_test', SESSION_SECRET: 'secret-for-tests', SETUP_KEY: 'setup-123', REPO: 'yoong0520/keli-site', ALLOW_ORIGINS: 'https://keli-aied.org', SITE_URL: 'https://keli-aied.org/',
+export const env = { FILES: new FakeR2(), KV: new FakeKV(), DB: new FakeD1(), GITHUB_TOKEN: 'ghp_test', SESSION_SECRET: 'secret-for-tests', SETUP_KEY: 'setup-123', REPO: 'yoong0520/keli-site', ALLOW_ORIGINS: 'https://keli-aied.org', SITE_URL: 'https://keli-aied.org/',
   AI: { async run(model, opts) { aiCalls.push({ model, opts }); const sys = opts.messages[0].content; const q = opts.messages[opts.messages.length - 1].content; return { response: (sys.startsWith('You are Iru-mi') ? 'EN answer about: ' : '이음이 답: ') + q + ' / facts=' + (sys.match(/^\[\d+\]/gm) || []).length }; } } };
 export const ghLog = [];
 export const ghStore = {};   // 가짜 저장소 파일: path → {sha, text}
@@ -128,5 +140,27 @@ if (process.argv[2] === 'serve') {
   for (let i = 0; i < 20; i++) await call('POST', '/api/chat', { body: { lang: 'ko', messages: [{ role: 'user', content: 'x' + i }] }, headers: { 'CF-Connecting-IP': '9.9.9.9' } });
   r = await call('POST', '/api/chat', { body: { lang: 'ko', messages: [{ role: 'user', content: 'once more' }] }, headers: { 'CF-Connecting-IP': '9.9.9.9' } }); assert(r.status === 429, 'rate limit');
   r = await call('OPTIONS', '/api/chat'); assert(r.status === 204, 'chat preflight');
+  // ---- 8) 방문 통계
+  const UA = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130.0 Safari/537.36', 'CF-Connecting-IP': '1.2.3.4' };
+  const MOB = { 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1', 'CF-Connecting-IP': '5.6.7.8' };
+  r = await call('POST', '/api/hit', { raw: JSON.stringify({ t: 'pv', p: '/index.html', ti: 'KELI 플랫폼', r: 'https://www.google.com/', l: 'ko' }), headers: UA }); assert(r.status === 204, 'hit ok');
+  await call('POST', '/api/hit', { raw: JSON.stringify({ t: 'pv', p: '/services.html', ti: 'Marketplace', r: 'https://keli-aied.org/', l: 'ko' }), headers: UA });
+  await call('POST', '/api/hit', { raw: JSON.stringify({ t: 'pv', p: '/services.html?x=1#top', ti: 'Marketplace', r: 'https://m.search.naver.com/search', src: 'newsletter', med: 'email', cmp: 'nov', l: 'ko' }), headers: MOB });
+  await call('POST', '/api/hit', { raw: JSON.stringify({ t: 'click', p: '/archive-o122.html', x: 'https://keli-aied.org/content/files/a.pdf' }), headers: MOB });
+  await call('POST', '/api/hit', { raw: JSON.stringify({ t: 'pv', p: '/admin.html' }), headers: UA });                       // 관리자 화면은 집계 안 함
+  await call('POST', '/api/hit', { raw: JSON.stringify({ t: 'pv', p: '/' }), headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1)' } });   // 봇 제외
+  await call('POST', '/api/hit', { raw: JSON.stringify({ t: 'pv', p: '/' }), headers: Object.assign({}, UA, { Origin: 'https://evil.example' }) });     // 다른 사이트 제외
+  r = await call('GET', '/api/stats?days=7'); assert(r.status === 401, 'stats needs login');
+  r = await call('GET', '/api/stats?days=7', { token: tok }); d = await j(r);
+  assert(d.enabled === true && d.total.pv === 3 && d.total.uv === 2, 'stats totals ' + JSON.stringify(d.total));
+  assert(d.pages[0].path === '/services.html' && d.pages[0].pv === 2 && d.pages.some((x) => x.path === '/'), 'pages ' + JSON.stringify(d.pages));
+  assert(d.refs.some((x) => x.ref === 'google.com') && d.refs.some((x) => x.ref === 'm.search.naver.com') && d.refs.some((x) => x.ref === '' && x.n === 1), 'refs ' + JSON.stringify(d.refs));
+  assert(d.utm.length === 1 && d.utm[0].src === 'newsletter', 'utm');
+  assert(d.dev.some((x) => x.dev === 'mobile' && x.n === 1) && d.dev.some((x) => x.dev === 'desktop' && x.n === 2), 'devices ' + JSON.stringify(d.dev));
+  assert(d.clicks.length === 1 && /a\.pdf$/.test(d.clicks[0].tgt), 'clicks');
+  assert(d.daily.length === 1 && d.daily[0].pv === 3 && d.today.pv === 3, 'daily/today');
+  const dbBackup = env.DB; env.DB = null;
+  r = await call('POST', '/api/hit', { raw: '{}', headers: UA }); assert(r.status === 204, 'hit without DB is a no-op');
+  r = await call('GET', '/api/stats', { token: tok }); d = await j(r); assert(d.enabled === false, 'stats without DB'); env.DB = dbBackup;
   console.log('worker tests OK');
 }

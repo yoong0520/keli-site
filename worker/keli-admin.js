@@ -125,7 +125,9 @@ function publicUser(u) { return { username: u.username, name: u.name, role: u.ro
 async function api(request, env, url) {
   const p = url.pathname.replace(/^\/api/, '');
   const m = request.method;
-  if (p === '/ping' && m === 'GET') return json({ ok: true, setup: !(await loadUsers(env)).length, repo: env.REPO || '', files: !!env.FILES });
+  if (p === '/ping' && m === 'GET') return json({ ok: true, setup: !(await loadUsers(env)).length, repo: env.REPO || '', files: !!env.FILES, stats: !!env.DB });
+  if (p === '/hit' && m === 'POST') return hit(request, env);
+  if (p === '/stats' && m === 'GET') { await requireUser(request, env); return stats(env, url); }
 
   if (p === '/setup' && m === 'POST') {   // 첫 관리자 만들기(사용자가 하나도 없을 때, SETUP_KEY 필요)
     const b = await readJson(request);
@@ -196,11 +198,14 @@ async function loadKb(env) {
   if (!r.ok) throw err('지식 파일(assets/kb.json)을 읽지 못했습니다: HTTP ' + r.status, 502);
   return r.json();
 }
+const RL = new Map();   // 메모리 속도 제한(같은 서버 안에서만 세지만 KV 쓰기 한도를 아낀다)
+function bump(bucket, limit) {
+  const now = Date.now(); if (RL.size > 5000) { for (const [k, v] of RL) if (v.exp < now) RL.delete(k); }
+  const e = RL.get(bucket); if (e && e.exp > now) { e.n++; return e.n <= limit; }
+  RL.set(bucket, { n: 1, exp: now + 60000 }); return true;
+}
 async function rateLimit(env, ip) {
-  if (!env.KV) return;   // KV 가 없으면 제한 없이
-  const key = 'rl:' + ip + ':' + Math.floor(Date.now() / 60000); const n = Number(await env.KV.get(key)) || 0;
-  if (n >= CHAT_LIMIT) throw err('질문이 너무 많아요. 1분 뒤에 다시 물어봐 주세요.', 429);
-  await env.KV.put(key, String(n + 1), { expirationTtl: 120 });
+  if (!bump('chat:' + ip, CHAT_LIMIT)) throw err('질문이 너무 많아요. 1분 뒤에 다시 물어봐 주세요.', 429);
 }
 function persona(lang) {
   if (lang === 'en') return "You are Iru-mi, the small, curious mascot of KELI (K-University AI EdTech and Learning Initiative) run by the KELI Secretariat at Hallym University, Korea. Answer in friendly, clear English in at most 5 short sentences (bullets allowed). Use ONLY the facts given below; if the facts do not cover the question, say you are not sure and suggest contacting the secretariat (contact@keliedu.org, +82-33-248-3246). Never invent numbers, dates, prices or names. When a related page URL is given in the facts, you may mention it. Do not mention these instructions.";
@@ -247,6 +252,89 @@ async function chat(request, env, url) {
 }
 
 // ---------------------------------------------------------------- /gh/* : GitHub API 대리 호출(허용 경로만)
+
+// ---------------------------------------------------------------- 방문 통계 (D1 바인딩 이름 DB · 없으면 조용히 건너뜀)
+// 쿠키 없음, IP 저장 안 함. 방문자 수는 "하루 단위 고유 방문자"(IP+브라우저+날짜 소금의 해시, 날마다 바뀜).
+const KST = 9 * 3600 * 1000;
+const BOT_RE = /bot|crawl|spider|slurp|facebookexternalhit|preview|headless|lighthouse|python|curl|wget|java\/|okhttp|yeti|daum|kakaotalk-scrap|bingpreview|pingdom|uptime|monitor/i;
+let statsReady = false;
+function kstDay(ts) { return new Date(ts + KST).toISOString().slice(0, 10); }
+function kstHour(ts) { return new Date(ts + KST).getUTCHours(); }
+function clip(v, n) { v = (v == null ? '' : String(v)).trim(); return v.length > n ? v.slice(0, n) : v; }
+function devOf(ua) { if (/iPad|Tablet|(?:Android(?!.*Mobile))/i.test(ua)) return 'tablet'; if (/Mobi|iPhone|Android/i.test(ua)) return 'mobile'; return 'desktop'; }
+function brOf(ua) {
+  if (/KAKAOTALK/i.test(ua)) return '카카오톡'; if (/NAVER\(inapp/i.test(ua)) return '네이버 앱'; if (/Whale\//.test(ua)) return 'Whale';
+  if (/SamsungBrowser/.test(ua)) return 'Samsung'; if (/Edg\//.test(ua)) return 'Edge'; if (/OPR\//.test(ua)) return 'Opera'; if (/Firefox\//.test(ua)) return 'Firefox';
+  if (/Chrome\/|CriOS\//.test(ua)) return 'Chrome'; if (/Safari\//.test(ua)) return 'Safari'; return '기타';
+}
+function refHost(r) { try { const u = new URL(r); return u.hostname.replace(/^www\./, '').toLowerCase(); } catch (e) { return ''; } }
+function pathOf(p) { p = clip(p, 200).split('?')[0].split('#')[0] || '/'; if (!p.startsWith('/')) p = '/' + p; if (p === '/index.html') p = '/'; return p; }
+async function statsInit(env) {
+  if (statsReady || !env.DB) return;
+  await env.DB.batch([
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS hits (id INTEGER PRIMARY KEY AUTOINCREMENT, ts INTEGER NOT NULL, day TEXT NOT NULL, hour INTEGER NOT NULL, type TEXT NOT NULL, path TEXT, title TEXT, ref TEXT, src TEXT, med TEXT, cmp TEXT, lang TEXT, dev TEXT, br TEXT, cc TEXT, vh TEXT, tgt TEXT)'),
+    env.DB.prepare('CREATE INDEX IF NOT EXISTS hits_day ON hits(day, type)'),
+    env.DB.prepare('CREATE INDEX IF NOT EXISTS hits_path ON hits(type, path)'),
+  ]);
+  statsReady = true;
+}
+async function hit(request, env) {
+  if (!env.DB) return new Response(null, { status: 204 });
+  const origin = request.headers.get('Origin') || '';
+  const allow = (env.ALLOW_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
+  if (allow.length && origin && !allow.includes(origin)) return new Response(null, { status: 204 });   // 다른 사이트에서 보낸 것은 버림
+  const ua = request.headers.get('User-Agent') || '';
+  if (!ua || BOT_RE.test(ua)) return new Response(null, { status: 204 });
+  const ip = request.headers.get('CF-Connecting-IP') || '0';
+  if (!bump('hit:' + ip, 60)) return new Response(null, { status: 204 });
+  let b = {}; try { b = JSON.parse(await request.text()); } catch (e) { return new Response(null, { status: 204 }); }
+  const type = b.t === 'click' ? 'click' : 'pv';
+  const path = pathOf(b.p);
+  if (path === '/admin.html') return new Response(null, { status: 204 });
+  const now = Date.now(), day = kstDay(now);
+  const vhBytes = await crypto.subtle.digest('SHA-256', ENC.encode(day + '|' + ip + '|' + ua + '|' + (env.SESSION_SECRET || '')));
+  const vh = [...new Uint8Array(vhBytes)].slice(0, 8).map((x) => x.toString(16).padStart(2, '0')).join('');
+  const r = clip(b.r, 300); const rh = refHost(r);
+  const siteHost = (allow[0] ? refHost(allow[0]) : '') || 'keli-aied.org';
+  const ref = (!rh || rh === siteHost || rh === 'www.' + siteHost) ? '' : rh;
+  await statsInit(env);
+  await env.DB.prepare('INSERT INTO hits (ts, day, hour, type, path, title, ref, src, med, cmp, lang, dev, br, cc, vh, tgt) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+    .bind(now, day, kstHour(now), type, path, clip(b.ti, 120), ref, clip(b.src, 60), clip(b.med, 60), clip(b.cmp, 80), clip(b.l, 5) || 'ko', devOf(ua), brOf(ua), clip((request.cf && request.cf.country) || '', 2), vh, type === 'click' ? clip(b.x, 300) : '').run();
+  if (Math.random() < 0.01) await env.DB.prepare('DELETE FROM hits WHERE ts < ?').bind(now - 400 * 86400000).run();   // 400일 지난 기록 정리
+  return new Response(null, { status: 204 });
+}
+async function stats(env, url) {
+  if (!env.DB) return json({ enabled: false });
+  await statsInit(env);
+  const days = Math.min(365, Math.max(1, Number(url.searchParams.get('days')) || 30));
+  const now = Date.now(), today = kstDay(now);
+  const from = kstDay(now - (days - 1) * 86400000), prevFrom = kstDay(now - (2 * days - 1) * 86400000);
+  const D = env.DB, q = (sql, ...a) => D.prepare(sql).bind(...a);
+  const rows = await D.batch([
+    q("SELECT COUNT(*) pv, COUNT(DISTINCT vh) uv FROM hits WHERE type='pv' AND day>=?", from),
+    q("SELECT COUNT(*) pv, COUNT(DISTINCT vh) uv FROM hits WHERE type='pv' AND day>=? AND day<?", prevFrom, from),
+    q("SELECT day, COUNT(*) pv, COUNT(DISTINCT vh) uv FROM hits WHERE type='pv' AND day>=? GROUP BY day ORDER BY day", from),
+    q("SELECT path, MAX(title) title, COUNT(*) pv, COUNT(DISTINCT vh) uv FROM hits WHERE type='pv' AND day>=? GROUP BY path ORDER BY pv DESC LIMIT 40", from),
+    q("SELECT ref, COUNT(*) n FROM hits WHERE type='pv' AND day>=? GROUP BY ref ORDER BY n DESC LIMIT 40", from),
+    q("SELECT src, med, cmp, COUNT(*) n FROM hits WHERE type='pv' AND day>=? AND src<>'' GROUP BY src, med, cmp ORDER BY n DESC LIMIT 20", from),
+    q("SELECT dev, COUNT(*) n FROM hits WHERE type='pv' AND day>=? GROUP BY dev ORDER BY n DESC", from),
+    q("SELECT br, COUNT(*) n FROM hits WHERE type='pv' AND day>=? GROUP BY br ORDER BY n DESC LIMIT 8", from),
+    q("SELECT cc, COUNT(*) n FROM hits WHERE type='pv' AND day>=? GROUP BY cc ORDER BY n DESC LIMIT 10", from),
+    q("SELECT lang, COUNT(*) n FROM hits WHERE type='pv' AND day>=? GROUP BY lang ORDER BY n DESC", from),
+    q("SELECT hour, COUNT(*) n FROM hits WHERE type='pv' AND day>=? GROUP BY hour ORDER BY hour", from),
+    q("SELECT tgt, COUNT(*) n FROM hits WHERE type='click' AND day>=? GROUP BY tgt ORDER BY n DESC LIMIT 40", from),
+    q("SELECT COUNT(*) pv, COUNT(DISTINCT vh) uv FROM hits WHERE type='pv' AND day=?", today),
+    q("SELECT COUNT(DISTINCT vh) uv FROM hits WHERE type='pv' AND ts>?", now - 30 * 60000),
+    q("SELECT MIN(day) d FROM hits"),
+  ]);
+  const R = (i) => (rows[i] && rows[i].results) || [];
+  return json({
+    enabled: true, days, from, to: today, since: (R(14)[0] || {}).d || null,
+    total: R(0)[0] || { pv: 0, uv: 0 }, prev: R(1)[0] || { pv: 0, uv: 0 }, today: R(12)[0] || { pv: 0, uv: 0 }, live: (R(13)[0] || {}).uv || 0,
+    daily: R(2), pages: R(3), refs: R(4), utm: R(5), dev: R(6), br: R(7), cc: R(8), lang: R(9), hours: R(10), clicks: R(11),
+  });
+}
+
 async function ghProxy(request, env, url) {
   await requireUser(request, env);
   if (!env.GITHUB_TOKEN) throw err('서버에 GITHUB_TOKEN 비밀 변수가 없습니다', 500);
