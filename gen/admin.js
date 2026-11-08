@@ -523,10 +523,10 @@
   function vStats() {
     if (!SERVER) { view.innerHTML = head('Hallym University / Website CMS', '방문 통계', '사이트 방문 기록입니다.') + '<div class="panel"><p>관리자 서버 주소가 없습니다. 사이트 설정에서 Cloudflare 관리자 서버 주소를 넣으면 방문 통계를 모을 수 있습니다.</p></div>'; return Promise.resolve(); }
     view.innerHTML = head('Hallym University / Website CMS', '방문 통계', '누가 얼마나 들어왔고, 어디서 왔고, 무엇을 가장 많이 봤는지 봅니다. 쿠키 없이 집계하며 개인을 식별하지 않습니다.') + '<p class="muted">불러오는 중…</p>';
-    return srv('/api/stats?days=' + STATS_DAYS).then(function (d) {
+    return srv('/api/stats?days=' + STATS_DAYS).catch(function (e) { if (e.status === 404) return { enabled: false, oldCode: true }; throw e; }).then(function (d) {
       if (!d.enabled) {
         view.innerHTML = head('Hallym University / Website CMS', '방문 통계', '사이트 방문 기록입니다.') +
-          '<div class="panel"><div class="ph"><div><h3>아직 켜져 있지 않습니다</h3><p>Cloudflare 관리자 서버에 기록 창고(D1 데이터베이스)를 한 번만 붙이면 그때부터 방문이 쌓입니다. 카드 등록 없이 무료입니다.</p></div></div>' +
+          '<div class="panel"><div class="ph"><div><h3>아직 켜져 있지 않습니다</h3><p>' + (d.oldCode ? '<strong>관리자 서버가 아직 옛 코드로 돌고 있습니다.</strong> 아래 3번(새 코드 붙여 넣기)을 먼저 하고, 기록 창고(D1)도 붙이면 그때부터 방문이 쌓입니다. 카드 등록 없이 무료입니다.' : 'Cloudflare 관리자 서버에 기록 창고(D1 데이터베이스)를 한 번만 붙이면 그때부터 방문이 쌓입니다. 카드 등록 없이 무료입니다.') + '</p></div></div>' +
           '<ol style="margin:0;padding-left:20px;line-height:1.8"><li>Cloudflare 대시보드 → 왼쪽 <b>Storage &amp; Databases → D1 SQL Database</b> → <b>Create</b> → 이름 <code>keli-stats</code> → Create</li><li>Workers &amp; Pages → <b>keli-admin</b> → Settings → <b>Bindings → + Add binding → D1 database</b> → Variable name <code>DB</code>, Database <code>keli-stats</code> → Deploy</li><li>워커 코드가 2026-11-08 이후 판(worker/keli-admin.js)인지 확인(아니면 Edit code 에 새 코드를 붙여 넣고 Deploy)</li><li>이 화면을 새로고침하면 "켜짐"으로 바뀌고, 그때부터 들어오는 방문이 집계됩니다</li></ol></div>';
         return;
       }
