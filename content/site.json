@@ -1,17 +1,17 @@
 {
-  "_안내": "홈 첫 화면 문구와 상단 배너. 관리자 화면(홈 화면)에서 고칩니다. 비워 두면 기본 문구를 씁니다.",
-  "hero": {},
-  "banner": {
-    "on": false,
-    "text": "",
-    "link": "",
-    "until": ""
-  },
-  "admin": {
-    "api": "https://keli-admin.quiet-waterfall-20bb.workers.dev"
-  },
-  "seo": {
-    "google": "Uw2MEDV9OKAmqKJ8nBXUt478e_Z1PQPTIf7dK9J5Aj4",
-    "naver": "9166c8a69e220e364be41389c19abb585f7abd03"
-  }
+ "_안내": "홈 첫 화면 문구와 상단 배너. 관리자 화면(홈 화면)에서 고칩니다. 비워 두면 기본 문구를 씁니다.",
+ "hero": {},
+ "banner": {
+  "on": true,
+  "text": "2026 KELI 국제 심포지엄 및 데모데이 행사 사진을 공개했습니다.",
+  "link": "notice-n5.html",
+  "until": "2026-11-30"
+ },
+ "admin": {
+  "api": "https://keli-admin.quiet-waterfall-20bb.workers.dev"
+ },
+ "seo": {
+  "google": "Uw2MEDV9OKAmqKJ8nBXUt478e_Z1PQPTIf7dK9J5Aj4",
+  "naver": "9166c8a69e220e364be41389c19abb585f7abd03"
+ }
 }

@@ -536,6 +536,9 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .gallery .gal-item { margin: 0; } .gallery .gal-item a { display: block; border-radius: 16px; overflow: hidden; background: var(--bg2); border: 1px solid var(--line); }
 .gallery .gal-item img { display: block; width: 100%; height: auto; }
 .gallery .gal-item figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; text-align: center; }
+.gallery.album { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; } .gallery.album .gal-item figcaption { display: none; } .gallery.album .gal-item a { aspect-ratio: 4 / 3; border-radius: 10px; } .gallery.album .gal-item img { width: 100%; height: 100%; object-fit: cover; transition: transform .25s; } .gallery.album .gal-item a:hover img { transform: scale(1.03); }
+@media (max-width: 600px) { .gallery.album { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
+.lb-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 72px; border: 0; background: rgba(255,255,255,.12); color: #fff; font-size: 40px; line-height: 1; border-radius: 10px; cursor: pointer; display: none; } .lightbox.multi .lb-nav { display: block; } .lb-prev { left: 12px; } .lb-next { right: 12px; } .lb-nav:hover { background: rgba(255,255,255,.25); } .lightbox .lb-body { position: relative; }
 .art-files { margin: 24px 0; padding: 18px 22px; border-radius: 16px; background: var(--bg2); }
 .art-files a { word-break: break-all; overflow-wrap: anywhere; }
 .art-files strong { display: block; font-size: 14px; margin-bottom: 6px; } .art-files ul { margin: 0; padding-left: 18px; } .art-files li { margin: 4px 0; }
@@ -863,8 +866,6 @@ ol.art-ul { counter-reset: n; } ol.art-ul li::before { content: counter(n); coun
 .ftr .bot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-top: 1px solid #424245; padding-top: 20px; color: #a1a1a6; font-size: 13px; }
 .empty { background: var(--bg2); border-radius: 20px; padding: 40px 24px; text-align: center; color: var(--muted); }
 .sec.alt .empty { background: var(--bg); }
-.gallery { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; }
-.gallery img { height: 260px; width: auto; max-width: none; border-radius: 16px; }
 .kv { display: grid; grid-template-columns: 140px 1fr; gap: 10px 20px; font-size: 15px; }
 .kv dt { color: var(--muted); }
 .kv dd { margin: 0; }
@@ -1112,15 +1113,19 @@ JS = r"""
   // lightbox: 글 안의 그림(.art-fig img · .gallery img)을 누르면 크게 보기(한 번 더 누르면 원본 크기, 바깥 누르거나 Esc로 닫기)
   (function(){
     var imgs=qsa('.art-fig img, .gallery img, .post img'); if(!imgs.length) return;
-    var box=document.createElement('div'); box.className='lightbox'; box.innerHTML='<div class="lb-bar"><span class="lb-cap"></span><a class="lb-open" target="_blank" rel="noopener">원본 새 창 ↗</a><button type="button" class="lb-x" aria-label="닫기">✕</button></div><div class="lb-body"><img alt=""></div>'; document.body.appendChild(box);
-    var im=qs('img',box), body=qs('.lb-body',box);
+    var box=document.createElement('div'); box.className='lightbox'; box.innerHTML='<div class="lb-bar"><span class="lb-cap"></span><a class="lb-open" target="_blank" rel="noopener">원본 새 창 ↗</a><button type="button" class="lb-x" aria-label="닫기">✕</button></div><div class="lb-body"><button type="button" class="lb-nav lb-prev" aria-label="이전">‹</button><img alt=""><button type="button" class="lb-nav lb-next" aria-label="다음">›</button></div>'; document.body.appendChild(box);
+    var im=qs('img',box), body=qs('.lb-body',box), cur=0;
+    function srcOf(i){ return i.getAttribute('data-full')||i.currentSrc||i.src; }
+    function capOf(i){ var f=i.closest('figure'); var c=f&&f.querySelector('figcaption'); return c?c.textContent:(i.alt||''); }
     function close(){ box.classList.remove('on','zoom'); document.body.style.overflow=''; }
-    function open(src,cap){ im.src=src; qs('.lb-cap',box).textContent=cap||''; qs('.lb-open',box).href=src; box.classList.add('on'); box.classList.remove('zoom'); document.body.style.overflow='hidden'; }
-    imgs.forEach(function(i){ i.style.cursor='zoom-in'; i.addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation(); var f=i.closest('figure'); var c=f&&f.querySelector('figcaption'); open(i.currentSrc||i.src, c?c.textContent:(i.alt||'')); }); });
+    function show(k){ cur=(k+imgs.length)%imgs.length; var i=imgs[cur]; im.src=srcOf(i); qs('.lb-cap',box).textContent=(imgs.length>1?(cur+1)+' / '+imgs.length+'  ':'')+capOf(i); qs('.lb-open',box).href=srcOf(i); box.classList.remove('zoom'); box.classList.toggle('multi', imgs.length>1); }
+    function open(k){ show(k); box.classList.add('on'); document.body.style.overflow='hidden'; }
+    imgs.forEach(function(i,k){ i.style.cursor='zoom-in'; i.addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation(); open(k); }); });
     im.addEventListener('click',function(e){ e.stopPropagation(); box.classList.toggle('zoom'); });
+    qs('.lb-prev',box).addEventListener('click',function(e){ e.stopPropagation(); show(cur-1); }); qs('.lb-next',box).addEventListener('click',function(e){ e.stopPropagation(); show(cur+1); });
     box.addEventListener('click',function(e){ if(e.target===box||e.target===body) close(); });
     qs('.lb-x',box).addEventListener('click',close);
-    document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
+    document.addEventListener('keydown',function(e){ if(!box.classList.contains('on')) return; if(e.key==='Escape') close(); if(e.key==='ArrowLeft') show(cur-1); if(e.key==='ArrowRight') show(cur+1); });
   })();
   // search
   var si=qs('#q'); if(si){ var rows=qsa('#results [data-q]'), rc=qs('#rc'); function run(){ var v=si.value.trim().toLowerCase(), n=0; rows.forEach(function(r){ var on=!v||r.getAttribute('data-q').indexOf(v)>-1; r.hidden=!on; if(on)n++; }); if(rc) rc.textContent=n+'건'; } si.addEventListener('input',run); var q0=p.get('q'); if(q0){ si.value=q0; } run(); }
@@ -2283,19 +2288,41 @@ _IMG_RE = re.compile(r'\.(png|jpe?g|gif|webp|svg|avif)(\?.*)?$', re.I)
 def is_image_file(f):
     return bool(_IMG_RE.search(str(f.get('url', '')) or '')) or bool(_IMG_RE.search(str(f.get('name', '')) or ''))
 
+def thumb_for(url):
+    """content/files/.../x.jpg 와 같은 자리의 thumb/x.jpg 가 있으면 그것을 목록용 작은 그림으로 쓴다."""
+    u = url or ''
+    if '/' not in u or u.startswith('http'): return u
+    d, b = u.rsplit('/', 1); cand = f'{d}/thumb/{b}'
+    return cand if os.path.exists(os.path.join(OUT, cand)) else u
+
+def album_images(files, body=''):
+    return [f for f in (files or []) if is_image_file(f) and (f.get('url') or '') not in (body or '')]
+
 def file_gallery(files, body=''):
-    """첨부 가운데 그림 파일(png · jpg · gif · webp · svg)은 목록 위에 바로 보여 준다. 본문에 이미 넣은 그림은 다시 보여 주지 않는다."""
-    imgs = [f for f in (files or []) if is_image_file(f) and (f.get('url') or '') not in (body or '')]
+    """첨부 가운데 그림 파일(png · jpg · gif · webp · svg)은 목록 위에 바로 보여 준다. 본문에 이미 넣은 그림은 다시 보여 주지 않는다.
+    8장 이상이면 사진첩(앨범)형 격자로, 작은 그림(thumb/)이 있으면 그것을 쓰고 누르면 원본이 열린다."""
+    imgs = album_images(files, body)
     if not imgs:
         return ''
-    figs = ''.join(f'<figure class="art-fig gal-item"><a href="{E(f["url"])}" target="_blank" rel="noopener"><img src="{E(f["url"])}" alt="{E(f["name"])}" loading="lazy"></a><figcaption>{E(re.sub(r"\.[^.]+$", "", f["name"]))}</figcaption></figure>' for f in imgs)
-    return f'<div class="gallery{" one" if len(imgs) == 1 else ""}">{figs}</div>'
+    album = len(imgs) >= 8
+    def cap(f):
+        c = f.get('caption') or ''
+        if not c and not album: c = re.sub(r"\.[^.]+$", "", f["name"])
+        return f'<figcaption>{E(c)}</figcaption>' if c else ''
+    figs = ''.join(f'<figure class="art-fig gal-item"><a href="{E(f["url"])}" target="_blank" rel="noopener"><img src="{E(thumb_for(f["url"]))}" data-full="{E(f["url"])}" alt="{E(f.get("caption") or f["name"])}" loading="lazy"></a>{cap(f)}</figure>' for f in imgs)
+    return f'<div class="gallery{" one" if len(imgs) == 1 else ""}{" album" if album else ""}">{figs}</div>'
 
 def notice_files(n):
     fs = n.get('files') or []
     if not fs:
         return ''
-    return file_gallery(fs, n.get('body') or '') + '<div class="art-files"><strong>첨부파일</strong><ul>' + ''.join(f'<li><a href="{E(f["url"])}" target="_blank" rel="noopener" download>{E(f["name"])}</a>{(" <span class=\"muted small\">(" + E(f["size"]) + ")</span>") if f.get("size") else ""}</li>' for f in fs) + '</ul></div>'
+    imgs = album_images(fs, n.get('body') or '')
+    album = len(imgs) >= 8
+    rest = [f for f in fs if not (album and f in imgs)]
+    items = ''.join(f'<li><a href="{E(f["url"])}" target="_blank" rel="noopener" download>{E(f["name"])}</a>{(" <span class=\"muted small\">(" + E(f["size"]) + ")</span>") if f.get("size") else ""}</li>' for f in rest)
+    if album:
+        items = f'<li><span class="muted">사진 {len(imgs)}장 — 위 갤러리에서 누르면 크게 볼 수 있고, 크게 본 화면의 "원본 새 창"으로 내려받을 수 있습니다.</span></li>' + items
+    return file_gallery(fs, n.get('body') or '') + '<div class="art-files"><strong>첨부파일</strong><ul>' + items + '</ul></div>'
 
 def page_notice():
     rows = ''
@@ -2354,6 +2381,9 @@ def page_feed_event(it):
     closed = k == 'ended'
     dis = ' disabled' if closed else ''
     body_html = restyle(it.get('body_html'), 'event') or f'<div class="art"><p class="art-lead">{E(it.get("summary") or "")}</p></div>'
+    # 이 행사 페이지를 '관련 페이지'로 둔 공지(행사 사진·결과 보고 등)를 자동으로 잇는다
+    rel = ''.join(f'<a class="li" href="notice-{n["id"]}.html"><span><span class="badge" style="margin-right:8px">{E(n["cat"])}</span><span class="t">{E(n["title"])}</span></span><span class="d">{E(n.get("date", ""))}</span></a>' for n in NOTICES if (n.get('link') or '') == ev_href(it))
+    related = f'<div class="head" style="margin-top:40px"><h2>관련 소식.</h2></div><div class="list">{rel}</div>' if rel else ''
     body = crumb(('news.html', '소식'), ('events.html', '행사'), (None, it['title'])) + f'''
 <section class="hero" style="padding-top:40px;padding-bottom:40px"><div class="wrap">
 <span class="eyebrow">{E((it.get("badges") or ["행사"])[0])}</span>
@@ -2364,6 +2394,7 @@ def page_feed_event(it):
 {('<figure class="cover"><img src="' + it["thumb"] + '" alt="' + E(it["title"]) + ' 대표 사진"></figure>') if it.get('thumb') else ''}
 <dl class="kv"><dt>게시일</dt><dd>{E(posted)}</dd><dt>일시</dt><dd>{E(it.get('when') or '')}</dd><dt>장소</dt><dd>{E(it.get('place') or '')}</dd><dt>출처</dt><dd>AI교육확산센터 소식 · <a href="{it['url']}" target="_blank" rel="noopener">원문 보기</a></dd></dl>
 {body_html}
+{related}
 {('<div class="head" style="margin-top:40px"><h2>첨부파일.</h2></div><div class="list">' + files + '</div>') if files else ''}
 </div></section>
 <section class="sec alt"><div class="wrap narrow" style="max-width:900px">
