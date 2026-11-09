@@ -540,8 +540,9 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .acover img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
 .acover-ph { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; padding: 16px; text-align: center; background: linear-gradient(160deg, #0B5CFF, #4A8BFF 70%, #7FB0FF); color: #fff; font-weight: 700; font-size: 16px; line-height: 1.45; }
 .abody { display: flex; flex-direction: column; gap: 4px; } .abody .t { font-size: 15px; font-weight: 600; line-height: 1.5; } .abody .m { font-size: 13px; color: var(--muted); line-height: 1.6; }
-.arch-hero { display: grid; grid-template-columns: 1fr; gap: 0; align-items: start; text-align: left; max-width: 900px; margin: 0 auto; }
-.arch-hero .acts { justify-content: flex-start; margin-top: 16px; } .arch-hero .eyebrow { display: inline-block; }
+.arch-hero { display: grid; grid-template-columns: 1fr; gap: 0; align-items: center; justify-items: center; text-align: center; max-width: 900px; margin: 0 auto; }
+.arch-hero h1 { text-wrap: balance; }
+.arch-hero .acts { justify-content: center; margin-top: 16px; } .arch-hero .eyebrow { display: inline-block; }
 .arch-cover { border-radius: 16px; overflow: hidden; box-shadow: 0 18px 44px rgba(0,0,0,.18); border: 1px solid var(--line); background: var(--bg2); } .arch-cover img { display: block; width: 100%; }
 @media (max-width: 760px) { .arch-hero { grid-template-columns: 1fr; gap: 24px; } .arch-cover { max-width: 260px; } }
 .pdf-frame { width: 100%; height: min(78vh, 980px); min-height: 480px; border: 1px solid var(--line); border-radius: 16px; background: var(--bg2); }
@@ -2377,8 +2378,8 @@ def page_notice_detail(n):
     others = ''.join(f'<a class="li" href="notice-{o["id"]}.html"><span><span class="m">{E(o["cat"])}</span><br><span class="t">{E(o["title"])}</span></span><span class="d">{E(o.get("date", ""))}</span></a>' for o in NOTICES if o['id'] != n['id'])[:3000]
     link = f'<p><a class="btn ghost sm" href="{E(n["link"])}">관련 페이지</a></p>' if n.get('link') else ''
     body = crumb(('news.html', '소식'), ('notice.html', '공지사항'), (None, n['title'])) + f'''
-<section class="hero" style="padding-top:48px;padding-bottom:32px"><div class="wrap narrow" style="max-width:900px;text-align:left">
-<span class="eyebrow">공지사항 · {E(n["cat"])}</span><h1 style="font-size:clamp(28px,4vw,40px)">{E(n["title"])}</h1>
+<section class="hero" style="padding-top:48px;padding-bottom:32px"><div class="wrap narrow" style="max-width:900px">
+<span class="eyebrow">공지사항 · {E(n["cat"])}</span><h1 style="font-size:clamp(28px,4vw,40px);text-wrap:balance">{E(n["title"])}</h1>
 {('<p class="lead" style="margin-top:4px">' + E(n['summary']) + '</p>') if n.get('summary') else ''}<p class="muted">{E(n.get("date", ""))} · KELI 사무국</p>
 </div></section>
 <section class="sec" style="padding-top:0"><div class="wrap narrow" style="max-width:900px">
