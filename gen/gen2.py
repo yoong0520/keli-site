@@ -246,6 +246,7 @@ SITE_DEFAULT = {
              'lead': '한림대가 개발하고 수업에서 검증한 AI 교육 서비스를 <br class="d">국내외 대학·기관에 제공하고 함께 확산합니다.',
              'cta1_label': '서비스 둘러보기', 'cta1_href': 'services.html', 'cta2_label': '도입 문의', 'cta2_href': 'join.html#inquiry'},
     'banner': {'on': False, 'text': '', 'link': '', 'until': ''},
+    'brand_video': {'on': False, 'eyebrow': 'KELI Alliance 출범 · 브랜딩 영상', 'title': 'AI로 연결되는 새로운 교육.', 'lead': '', 'hd': '', 'sd': '', 'poster': '', 'duration': '', 'notice': '', 'copyright': ''},
 }
 SITE_CFG = _load_json(os.path.join(CONTENT, 'site.json'), {})
 BOT_DEFAULT = {
@@ -265,6 +266,26 @@ BOT = dict(BOT_DEFAULT); BOT.update({k: v for k, v in _load_json(os.path.join(CO
 def site_get(section, key):
     v = (SITE_CFG.get(section) or {}).get(key)
     return v if v not in (None, '') else SITE_DEFAULT[section].get(key, '')
+def brand_video_html(compact=False):
+    """홈·소개 화면의 브랜딩 영상 구역. site.json 의 brand_video 로 켜고 끈다. 영상 파일은 내려받기 단추 없이 재생만."""
+    v = SITE_CFG.get('brand_video') or {}
+    if not v.get('on') or not (v.get('hd') or v.get('sd')):
+        return ''
+    g = lambda k: v.get(k) if v.get(k) not in (None, '') else SITE_DEFAULT['brand_video'].get(k, '')
+    hd, sd, poster = E(g('hd') or g('sd')), E(g('sd') or g('hd')), E(g('poster'))
+    head = '' if compact else f'<div class="head"><span class="eyebrow">{E(g("eyebrow"))}</span><h2>{g("title")}</h2>{("<p class=" + chr(34) + "lead" + chr(34) + ">" + E(g("lead")) + "</p>") if g("lead") else ""}</div>'
+    more = f' <a href="{E(g("notice"))}">자세히 보기 ›</a>' if g('notice') else ''
+    dur = f'<span>{E(g("duration"))}</span>' if g('duration') else ''
+    return f'''<section class="sec bv" id="brand-video"><div class="wrap">
+{head}
+<div class="bvid" id="bvid"><video id="bv-video" preload="metadata" playsinline poster="{poster}" data-hd="{hd}" data-sd="{sd}" controlsList="nodownload noremoteplayback" disablepictureinpicture oncontextmenu="return false" title="{E(g("eyebrow"))}"></video>
+<button type="button" class="play" aria-label="영상 재생"><span>▶</span><em>{E(g("title"))} <small style="opacity:.75">{dur}</small></em></button><div class="wm">© Hallym University KELI</div></div>
+<div class="cap"><span class="cr"><b>© 한림대학교 KELI 사무국</b> 무단 복제·배포·전송·편집 금지(저작권법 제136조 벌칙){more}</span><span>사용 허가 문의 033-248-3242 · contact@keliedu.org</span></div>
+</div></section>
+<script>(function(){{var w=document.getElementById('bvid');if(!w)return;var v=w.querySelector('video'),b=w.querySelector('.play');function src(){{return (window.innerWidth<820||(navigator.connection&&/2g|3g/.test(navigator.connection.effectiveType||'')))?v.getAttribute('data-sd'):v.getAttribute('data-hd');}}
+v.src=src();b.addEventListener('click',function(){{w.classList.add('playing');v.controls=true;v.play().catch(function(){{}});try{{if(window.KELI_API&&navigator.sendBeacon)navigator.sendBeacon(window.KELI_API+'/api/hit',new Blob([JSON.stringify({{t:'click',p:location.pathname,x:'video:'+v.currentSrc.split('/').pop()}})],{{type:'text/plain'}}));}}catch(e){{}}}});v.addEventListener('ended',function(){{w.classList.remove('playing');v.controls=false;}});}})();</script>
+'''
+
 def banner_html():
     b = SITE_CFG.get('banner') or {}
     if not b.get('on') or not (b.get('text') or '').strip():
@@ -571,6 +592,17 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 @media (max-width: 520px) { .kchat { right: 0; bottom: 0; width: 100vw; height: 100dvh; border-radius: 0; } .kchat-fab .kc-hi { display: none; } .kchat-fab { padding: 6px; } }
 @media (prefers-reduced-motion: reduce) { .kc-typing span { animation: none; } }
 /* 사이트 배너(관리자 "홈 화면"에서 켬) */
+.bv { background: #07091a; color: #f5f5f7; position: relative; overflow: hidden; } .bv::before { content: ""; position: absolute; inset: -40% -20% auto; height: 120%; background: radial-gradient(ellipse at 50% 0%, rgba(41,151,255,.28), transparent 60%); pointer-events: none; }
+.bv .wrap { position: relative; } .bv .head { text-align: center; margin-bottom: 28px; } .bv .eyebrow { color: #7fb4ff; } .bv h2 { color: #fff; } .bv .lead { color: #c7c9d3; }
+.bvid { position: relative; max-width: 1100px; margin: 0 auto; border-radius: 20px; overflow: hidden; background: #000; box-shadow: 0 30px 90px rgba(11,92,255,.35), 0 0 0 1px rgba(255,255,255,.08); aspect-ratio: 16 / 9; }
+.bvid video { display: block; width: 100%; height: 100%; object-fit: cover; background: #000; }
+.bvid .wm { position: absolute; right: 14px; top: 12px; font-size: 11px; letter-spacing: .04em; color: rgba(255,255,255,.75); background: rgba(0,0,0,.35); padding: 4px 9px; border-radius: 999px; pointer-events: none; backdrop-filter: blur(4px); }
+.bvid .play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.45)); border: 0; cursor: pointer; color: #fff; }
+.bvid .play > span { width: 84px; height: 84px; border-radius: 50%; background: rgba(255,255,255,.14); border: 1.5px solid rgba(255,255,255,.7); display: flex; align-items: center; justify-content: center; font-size: 34px; padding-left: 6px; backdrop-filter: blur(6px); transition: transform .2s, background .2s; }
+.bvid .play:hover > span { transform: scale(1.06); background: rgba(11,92,255,.75); border-color: transparent; } .bvid .play em { position: absolute; bottom: 20px; left: 0; right: 0; text-align: center; font-style: normal; font-size: 14px; color: rgba(255,255,255,.85); }
+.bvid.playing .play { display: none; }
+.bv .cap { max-width: 1100px; margin: 16px auto 0; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; color: #a1a1a6; } .bv .cap a { color: #7fb4ff; } .bv .cap .cr { display: inline-flex; align-items: center; gap: 8px; } .bv .cap .cr b { color: #f5f5f7; font-weight: 600; }
+@media (max-width: 600px) { .bvid { border-radius: 12px; } .bvid .play > span { width: 64px; height: 64px; font-size: 26px; } .bvid .play em { display: none; } }
 .site-banner { background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; padding: 10px 0; text-align: center; } .site-banner a { color: #fff; text-decoration: underline; margin-left: 8px; }
 /* 관리자(콘텐츠 스튜디오) */
 .cms-root { padding: 0; }
@@ -1813,7 +1845,7 @@ def page_index():
 <p class="lead">{site_get('hero', 'lead')}</p>
 <div class="acts"><a class="btn" href="{E(site_get('hero', 'cta1_href'))}">{E(site_get('hero', 'cta1_label'))}</a><a class="more" href="{E(site_get('hero', 'cta2_href'))}">{E(site_get('hero', 'cta2_label'))}</a></div>
 </div></section>
-
+{brand_video_html()}
 <section class="sec alt"><div class="wrap">
 <div class="grid g3" id="stats">
 <div class="card"><span class="num" data-stat="services" data-count="{svc_n}">{svc_n}</span><h3>AI 교육 서비스</h3><p>한림대가 개발하고 수업에서 검증한 HAI Ecosystems<br><span class="small" data-stat="services_note">{svc_note}</span></p></div>
@@ -1889,7 +1921,7 @@ def page_about():
 <p class="lead">KELI는 한림대학교가 자체 개발한 고등교육 맞춤형 AI 교육 서비스 HAI Ecosystems를 국내외 대학·기관에 제공하고, 함께 검증·확산하는 고등교육 AI 공유 플랫폼입니다.</p>
 <div class="chips"><span class="chip">주관 · 한림대학교 KELI 사무국</span><span class="chip">대상 · 국내외 대학·기관·기업</span><span class="chip">제공 · 무상 시범 도입 → 유상 정식 도입</span></div>
 </div></section>
-
+{brand_video_html(compact=True)}
 <section class="sec alt" id="why"><div class="wrap">
 <div class="head"><h2>왜 함께 만드나요.</h2><p class="lead">대학마다 따로 만들면 비용과 인력이 중복됩니다. 한림대가 먼저 만들고 검증한 것을 여러 대학이 나누어 씁니다.</p></div>
 <div class="vs">

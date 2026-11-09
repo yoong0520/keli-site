@@ -27,7 +27,7 @@
 <link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="assets/site.css?v=20218f9f">
+<link rel="stylesheet" href="assets/site.css?v=70de5d6c">
 </head>
 <body>
 <header class="hdr"><div class="wrap bar">
@@ -53,6 +53,14 @@
 <p class="lead">KELI⁠는 한림대학교가 자체 개발한 고등교육 맞춤형 AI 교육 서비스 HAI Ecosystems⁠를 국내외 대학⁠·⁠기관에 제공하고, 함께 검증⁠·⁠확산하는 고등교육 AI 공유 플랫폼입니다.</p>
 <div class="chips"><span class="chip">주관 ⁠·⁠ 한림대학교 KELI 사무국</span><span class="chip">대상 ⁠·⁠ 국내외 대학⁠·⁠기관⁠·⁠기업</span><span class="chip">제공 ⁠·⁠ 무상 시범 도입 → 유상 정식 도입</span></div>
 </div></section>
+<section class="sec bv" id="brand-video"><div class="wrap">
+
+<div class="bvid" id="bvid"><video id="bv-video" preload="metadata" playsinline poster="content/files/2026/11/video/keli-alliance-brand-poster.jpg" data-hd="content/files/2026/11/video/keli-alliance-brand-1080p.mp4" data-sd="content/files/2026/11/video/keli-alliance-brand-720p.mp4" controlsList="nodownload noremoteplayback" disablepictureinpicture oncontextmenu="return false" title="KELI Alliance 출범 · 브랜딩 영상"></video>
+<button type="button" class="play" aria-label="영상 재생"><span>▶⁠</span><em>AI⁠로 연결되는 새로운 교육. <small style="opacity:.75"><span>0:41</span></small></em></button><div class="wm">© Hallym University KELI</div></div>
+<div class="cap"><span class="cr"><b>© 한림대학교 KELI 사무국</b> 무단 복제⁠·⁠배포⁠·⁠전송⁠·⁠편집 금지⁠(저작권법 제136⁠조 벌칙) <a href="notice-n6.html">자세히 보기 ›</a></span><span>사용 허가 문의 033⁠-⁠248⁠-⁠3242 ⁠·⁠ contact@keliedu.org</span></div>
+</div></section>
+<script>(function(){var w=document.getElementById('bvid');if(!w)return;var v=w.querySelector('video'),b=w.querySelector('.play');function src(){return (window.innerWidth<820||(navigator.connection&&/2g|3g/.test(navigator.connection.effectiveType||'')))?v.getAttribute('data-sd'):v.getAttribute('data-hd');}
+v.src=src();b.addEventListener('click',function(){w.classList.add('playing');v.controls=true;v.play().catch(function(){});try{if(window.KELI_API&&navigator.sendBeacon)navigator.sendBeacon(window.KELI_API+'/api/hit',new Blob([JSON.stringify({t:'click',p:location.pathname,x:'video:'+v.currentSrc.split('/').pop()})],{type:'text/plain'}));}catch(e){}});v.addEventListener('ended',function(){w.classList.remove('playing');v.controls=false;});})();</script>
 
 <section class="sec alt" id="why"><div class="wrap">
 <div class="head"><h2>왜 함께 만드나요.</h2><p class="lead">대학마다 따로 만들면 비용과 인력이 중복됩니다.<br>한림대가 먼저 만들고 검증한 것을 여러 대학이 나누어 씁니다.</p></div>
