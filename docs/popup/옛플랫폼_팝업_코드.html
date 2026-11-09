@@ -1,0 +1,40 @@
+<!-- ============================================================
+  KELI 포털(keliedu.org) 첫 화면 팝업 — "새 KELI 플랫폼 오픈" 안내
+  · 붙여 넣는 곳: 옛 플랫폼 첫 화면(index) </body> 바로 앞
+  · 그림: 새 플랫폼에 올려 둔 주소를 그대로 씁니다(아래 IMG). 옛 서버에 직접 올리려면 src 만 바꾸면 됩니다.
+  · 동작: 팝업 전체(그림)를 누르면 새 플랫폼이 새 창으로 열림, "오늘 하루 보지 않기" 체크 시 24시간 숨김(localStorage)
+  · 종료: 아래 UNTIL 날짜가 지나면 자동으로 뜨지 않음(301 이동이 끝나면 지워도 됩니다)
+  ============================================================ -->
+<div id="keli-new-popup" role="dialog" aria-modal="true" aria-label="새 KELI 플랫폼 오픈 안내" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(10,20,40,.55);backdrop-filter:blur(2px);align-items:center;justify-content:center;padding:16px;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Noto Sans KR','Malgun Gothic',sans-serif">
+  <div style="width:min(600px,100%);background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.35)">
+    <a href="https://keli-aied.org/?utm_source=keliedu&utm_medium=popup&utm_campaign=renewal" target="_blank" rel="noopener" style="display:block;line-height:0">
+      <img src="https://keli-aied.org/assets/img/popup-new-keli-600x800.png" srcset="https://keli-aied.org/assets/img/popup-new-keli-600x800.png 1x, https://keli-aied.org/assets/img/popup-new-keli-600x800@2x.png 2x" alt="KELI가 새 옷을 입었습니다. 새 주소 keli-aied.org 에서 만나 보세요." style="width:100%;height:auto;display:block;max-height:calc(100vh - 110px);object-fit:contain;background:#f3f6fd">
+    </a>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-top:1px solid #eee;font-size:14px;color:#333">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="keli-new-popup-today"> 오늘 하루 보지 않기</label>
+      <div style="display:flex;gap:8px">
+        <a href="https://keli-aied.org/?utm_source=keliedu&utm_medium=popup&utm_campaign=renewal" target="_blank" rel="noopener" style="background:#0B5CFF;color:#fff;text-decoration:none;padding:8px 14px;border-radius:999px;font-weight:700">새 플랫폼 바로 가기</a>
+        <button type="button" id="keli-new-popup-close" style="background:#f2f2f5;border:0;padding:8px 14px;border-radius:999px;cursor:pointer;font-weight:600">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var UNTIL='2026-12-31';                               // 이 날짜까지만 표시
+  var KEY='keli_new_popup_hide_until';
+  var box=document.getElementById('keli-new-popup'); if(!box) return;
+  try{
+    if(new Date()>new Date(UNTIL+'T23:59:59')) return;
+    var h=localStorage.getItem(KEY); if(h && Date.now()<Number(h)) return;
+  }catch(e){}
+  box.style.display='flex';
+  function close(){
+    try{ if(document.getElementById('keli-new-popup-today').checked) localStorage.setItem(KEY,String(Date.now()+24*60*60*1000)); }catch(e){}
+    box.style.display='none';
+  }
+  document.getElementById('keli-new-popup-close').addEventListener('click',close);
+  box.addEventListener('click',function(e){ if(e.target===box) close(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
+})();
+</script>
