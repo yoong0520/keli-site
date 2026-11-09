@@ -204,6 +204,8 @@
     triggers.forEach(function(a){ a.addEventListener('click', function(e){ if(a.closest('.srch')) return; e.preventDefault(); show(); }); });
     document.addEventListener('keydown', function(e){ if(e.key==='Escape') hide(); if((e.ctrlKey||e.metaKey)&&e.key==='k'){ e.preventDefault(); show(); } });
   })();
+  // 글 안의 영상: data-hd(1080p)·data-sd(720p)가 있으면 화면 폭·회선에 따라 하나를 고른다(좁은 화면·느린 회선 → 720p)
+  (function(){ var sd=window.innerWidth<820||(navigator.connection&&/2g|3g/.test(navigator.connection.effectiveType||'')); qsa('video[data-hd]').forEach(function(v){ if(v.getAttribute('src')) return; v.src=(sd&&v.getAttribute('data-sd'))||v.getAttribute('data-hd'); }); })();
   // lightbox: 글 안의 그림(.art-fig img · .gallery img)을 누르면 크게 보기(한 번 더 누르면 원본 크기, 바깥 누르거나 Esc로 닫기)
   (function(){
     var imgs=qsa('.art-fig img, .gallery img, .post img'); if(!imgs.length) return;
