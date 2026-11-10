@@ -1272,6 +1272,7 @@ FOOTER = f'''<footer class="ftr"><div class="wrap">
 </div></footer>'''
 
 CSS_V = hashlib.md5(CSS.encode('utf-8')).hexdigest()[:8]
+ADMIN_V = hashlib.md5(b''.join(open(os.path.join(BASE, 'gen', f), 'rb').read() for f in ('admin.js', 'templates.js'))).hexdigest()[:8]   # 관리자 화면은 admin.js·templates.js 가 바뀔 때마다 새로 받게
 JS_V = hashlib.md5((JS + open(os.path.join(BASE, 'gen', 'chat.js'), encoding='utf-8').read() + open(os.path.join(BASE, 'gen', 'track.js'), encoding='utf-8').read()).encode('utf-8')).hexdigest()[:8]   # 챗봇·통계 스크립트까지 포함한 해시
 
 def chat_widget(fname):
@@ -1374,7 +1375,7 @@ def doc(fname, title, body, desc='한림대학교 KELI 플랫폼(K-University AI
 </main>
 {'' if is_admin else FOOTER}
 {'' if is_admin or not BOT.get('enabled', True) else chat_widget(fname)}<script>window.KELI_HIDDEN={json.dumps({k: [str(x) for x in HIDDEN.get(k, [])] for k in ('events', 'press', 'videos', 'unn', 'services')}, ensure_ascii=False)};window.KELI_API={json.dumps(((SITE_CFG.get('admin') or {}).get('api') or '').strip())};</script>
-<script src="assets/site.js?v={JS_V}"></script>{'<script src="assets/templates.js?v=' + JS_V + '"></script><script src="assets/admin.js?v=' + JS_V + '"></script>' if fname == 'admin.html' else ''}"""
+<script src="assets/site.js?v={JS_V}"></script>{'<script src="assets/templates.js?v=' + ADMIN_V + '"></script><script src="assets/admin.js?v=' + ADMIN_V + '"></script>' if fname == 'admin.html' else ''}"""
     if not skeleton:
         return inner
     return f"""<!doctype html>
