@@ -539,7 +539,7 @@
           + '<dl class="kv"><dt>이메일</dt><dd>' + esc(x.email) + '</dd><dt>연락처</dt><dd>' + esc(x.tel || '-') + '</dd><dt>관심 서비스</dt><dd>' + esc(x.services || '-') + '</dd><dt>적용 교과목</dt><dd>' + esc(x.course || '-') + '</dd></dl>'
           + '<p style="white-space:pre-wrap;background:var(--bg2,#f5f5f7);padding:12px;border-radius:10px">' + esc(x.body || '-') + '</p>'
           + '<div class="row" style="gap:8px;align-items:center;flex-wrap:wrap"><select data-status>' + [['new', '새 문의'], ['read', '확인함'], ['done', '답변 완료'], ['spam', '스팸']].map(function (o) { return '<option value="' + o[0] + '"' + (x.status === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'
-          + '<input type="text" data-note placeholder="메모(예: 11/12 답장 보냄)" value="' + esc(x.note || '') + '" style="flex:1;min-width:200px"><button type="button" class="btn sm" data-save>저장</button>' + (x.updated_by ? '<span class="muted small">최근 처리: ' + esc(x.updated_by) + '</span>' : '') + '</div></div>';
+          + '<input type="text" data-note placeholder="메모(예: 11/12 답장 보냄)" value="' + esc(x.note || '') + '" style="flex:1;min-width:200px"><button type="button" class="btn sm" data-save>저장</button><button type="button" class="btn sm ghost" data-inqdel style="color:#b3261e">삭제</button>' + (x.updated_by ? '<span class="muted small">최근 처리: ' + esc(x.updated_by) + '</span>' : '') + '</div></div>';
       }).join('') || '<div class="panel"><p class="muted">이 분류에 문의가 없습니다.</p></div>';
       var csv = '<button type="button" class="btn sm ghost" id="inq-csv">CSV 내려받기</button>';
       view.innerHTML = H + '<div class="chips-row" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">' + tabs + ' ' + csv + '</div>' + warn + rows;
@@ -547,6 +547,7 @@
       qsa('.panel[data-id]', view).forEach(function (pn) {
         var id = pn.getAttribute('data-id');
         var sv = qs('[data-save]', pn); if (sv) sv.addEventListener('click', function () { sv.disabled = true; srv('/api/inquiries/' + id, { method: 'POST', body: { status: qs('[data-status]', pn).value, note: qs('[data-note]', pn).value } }).then(function () { toast('저장했습니다'); vInbox(); }).catch(function (e) { sv.disabled = false; toast('저장 실패: ' + e.message, 5000); }); });
+        var dl = qs('[data-inqdel]', pn); if (dl) dl.addEventListener('click', function () { var t = qs('h3', pn).textContent; if (!confirm('이 문의를 삭제할까요?\n' + t + '\n\n삭제하면 내용이 지워져 되돌릴 수 없습니다. (메일함에 이미 온 메일은 그대로 남습니다)')) return; dl.disabled = true; srv('/api/inquiries/' + id + '/delete', { method: 'POST' }).then(function () { toast('삭제했습니다'); vInbox(); }).catch(function (e) { dl.disabled = false; toast(/없는 요청|로그인/.test(e.message) && e.status !== 403 ? '관리자 서버 코드를 새 버전으로 바꿔야 삭제할 수 있습니다' : '삭제 실패: ' + e.message, 6000); }); });
         var rm = qs('[data-remail]', pn); if (rm) rm.addEventListener('click', function () { rm.disabled = true; rm.textContent = '보내는 중…'; srv('/api/inquiries/' + id + '/mail', { method: 'POST' }).then(function () { toast('사무국 메일로 보냈습니다'); vInbox(); }).catch(function (e) { rm.disabled = false; rm.textContent = '메일 다시 보내기'; toast(e.message, 7000); }); });
       });
       var cb = qs('#inq-csv'); if (cb) cb.addEventListener('click', function () {

@@ -137,6 +137,7 @@ async function api(request, env, url) {
   if (p === '/contact' && m === 'POST') return contact(request, env);
   if (p === '/inquiries' && m === 'GET') { await requireUser(request, env); return inquiries(env, url); }
   if (/^\/inquiries\/\d+$/.test(p) && m === 'POST') { const me = await requireUser(request, env); return inquiryUpdate(env, Number(p.split('/')[2]), await readJson(request), me); }
+  if (/^\/inquiries\/\d+\/delete$/.test(p) && m === 'POST') { const me = await requireUser(request, env); return inquiryDelete(env, Number(p.split('/')[2]), me); }
   if (/^\/inquiries\/\d+\/mail$/.test(p) && m === 'POST') { await requireUser(request, env); return inquiryMail(env, Number(p.split('/')[2])); }
 
   if (p === '/setup' && m === 'POST') {   // 첫 관리자 만들기(사용자가 하나도 없을 때, SETUP_KEY 필요)
@@ -409,7 +410,7 @@ async function contact(request, env) {
   let ref = 'KELI-' + day.replace(/-/g, '').slice(2) + '-', id = 0;
   if (env.DB) {
     await inqInit(env);
-    const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM inquiries WHERE day = ?').bind(day).first();
+    const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM inquiries WHERE day = ?').bind(day).first();   // 삭제한 문의도 번호 자리는 남아 있어 번호가 겹치지 않음
     ref += String(((n && n.n) || 0) + 1).padStart(3, '0');
     const ins = await env.DB.prepare('INSERT INTO inquiries (ref, ts, day, type, org, name, email, tel, services, course, body, page, lang, dev, cc) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
       .bind(ref, ts, day, d.type, d.org, d.name, d.email, d.tel, d.services, d.course, d.body, d.page, d.lang, devOf(ua), clip((request.cf && request.cf.country) || '', 2)).run();
@@ -425,9 +426,9 @@ async function inquiries(env, url) {
   if (!env.DB) return json({ enabled: false, items: [] });
   await inqInit(env);
   const st = clip(url.searchParams.get('status'), 10);
-  const q = st && st !== 'all' ? env.DB.prepare('SELECT * FROM inquiries WHERE status = ? ORDER BY ts DESC LIMIT 300').bind(st) : env.DB.prepare('SELECT * FROM inquiries ORDER BY ts DESC LIMIT 300');
+  const q = st && st !== 'all' ? env.DB.prepare("SELECT * FROM inquiries WHERE status = ? AND status != 'deleted' ORDER BY ts DESC LIMIT 300").bind(st) : env.DB.prepare("SELECT * FROM inquiries WHERE status != 'deleted' ORDER BY ts DESC LIMIT 300");
   const rows = (await q.all()).results || [];
-  const cnt = (await env.DB.prepare('SELECT status, COUNT(*) AS n FROM inquiries GROUP BY status').all()).results || [];
+  const cnt = (await env.DB.prepare("SELECT status, COUNT(*) AS n FROM inquiries WHERE status != 'deleted' GROUP BY status").all()).results || [];
   const counts = {}; for (const c of cnt) counts[c.status] = c.n;
   return json({ enabled: true, items: rows, counts, types: INQ_TYPES });
 }
@@ -443,10 +444,18 @@ async function inquiryUpdate(env, id, b, me) {
   await env.DB.prepare('UPDATE inquiries SET ' + sets.join(', ') + ' WHERE id = ?').bind(...vals).run();
   return json({ ok: true });
 }
+async function inquiryDelete(env, id, me) {
+  if (!env.DB) throw err('D1(DB)이 없어 문의함을 쓸 수 없습니다', 400);
+  await inqInit(env);
+  // 내용(개인정보)은 모두 지우고 접수번호 자리만 남긴다 → 같은 번호가 다시 쓰이지 않음. 목록에는 보이지 않음
+  const r = await env.DB.prepare("UPDATE inquiries SET status = 'deleted', org = '', name = '', email = '', tel = '', services = '', course = '', body = '', page = '', note = '', mail_err = '', updated = ?, updated_by = ? WHERE id = ? AND status != 'deleted'").bind(Date.now(), me.username, id).run();
+  if (!(r.meta && r.meta.changes)) throw err('문의가 없습니다', 404);
+  return json({ ok: true, deleted: id, by: me.username });
+}
 async function inquiryMail(env, id) {
   if (!env.DB) throw err('D1(DB)이 없어 문의함을 쓸 수 없습니다', 400);
   await inqInit(env);
-  const r = await env.DB.prepare('SELECT * FROM inquiries WHERE id = ?').bind(id).first();
+  const r = await env.DB.prepare("SELECT * FROM inquiries WHERE id = ? AND status != 'deleted'").bind(id).first();
   if (!r) throw err('문의가 없습니다', 404);
   const mail = await relayMail(env, r, r.ref, r.ts);
   await env.DB.prepare('UPDATE inquiries SET mailed = ?, mail_err = ? WHERE id = ?').bind(mail.ok ? 1 : 0, mail.ok ? '' : mail.message, id).run();

@@ -187,6 +187,11 @@ if (process.argv[2] === 'serve') {
   r = await call('POST', '/api/inquiries/' + okId, { token: tok, body: { status: 'done', note: '11/12 답장 보냄' } }); assert(r.status === 200, 'status update');
   r = await call('GET', '/api/inquiries?status=done', { token: tok }); d = await j(r); assert(d.items.length === 1 && d.items[0].note === '11/12 답장 보냄' && d.items[0].updated_by === 'keli', 'filter by status ' + JSON.stringify(d.items.map((x) => x.status)));
   r = await call('GET', '/api/inquiries', { token: tok }); d = await j(r); assert(d.items.find((x) => x.id === failedId).mailed === 1, 'resend marked mailed');
+  r = await call('POST', '/api/inquiries/' + failedId + '/delete'); assert(r.status === 401, 'delete needs login');
+  r = await call('POST', '/api/inquiries/' + failedId + '/delete', { token: tok }); assert(r.status === 200, 'delete ok');
+  r = await call('POST', '/api/inquiries/' + failedId + '/delete', { token: tok }); assert(r.status === 404, 'delete twice 404');
+  r = await call('GET', '/api/inquiries', { token: tok }); d = await j(r); assert(d.items.length === 1 && !d.items.find((x) => x.id === failedId), 'deleted gone');
+  r = await call('POST', '/api/contact', { raw: JSON.stringify(Object.assign({}, INQ, { org: '강원대학교' })), headers: Object.assign({}, UA, { 'CF-Connecting-IP': '7.7.7.7' }) }); d = await j(r); assert(/-003$/.test(d.ref), 'ref not reused after delete ' + d.ref);
   for (let i = 0; i < 5; i++) await call('POST', '/api/contact', { raw: JSON.stringify(INQ), headers: { 'User-Agent': UA['User-Agent'], 'CF-Connecting-IP': '9.9.9.9' } });
   r = await call('POST', '/api/contact', { raw: JSON.stringify(INQ), headers: { 'User-Agent': UA['User-Agent'], 'CF-Connecting-IP': '9.9.9.9' } }); assert(r.status === 429, 'contact rate limit');
   env.DB = null;
