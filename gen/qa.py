@@ -42,8 +42,8 @@ def check_browser():
         for f in pages:
             if f == 'admin.html':
                 continue
-            pg.goto(f'http://127.0.0.1:8899/{f}', wait_until='networkidle'); pg.wait_for_timeout(150)
-            m.goto(f'http://127.0.0.1:8899/{f}', wait_until='networkidle'); m.wait_for_timeout(150)
+            pg.goto(f'http://127.0.0.1:8899/{f}', wait_until='load'); pg.wait_for_timeout(150)
+            m.goto(f'http://127.0.0.1:8899/{f}', wait_until='load'); m.wait_for_timeout(150)
             if m.evaluate('document.documentElement.scrollWidth > document.documentElement.clientWidth + 1'):
                 hscroll.append(f)
         b.close()
