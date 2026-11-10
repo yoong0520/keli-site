@@ -545,7 +545,7 @@ ol.art-ul { counter-reset: n; } ol.art-ul li::before { content: counter(n); coun
 .chip { display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 999px; background: var(--bg2); font-size: 14px; color: var(--fg); }
 .sec.alt .chip { background: var(--bg); }
 .chip.sel { display: inline-flex; gap: 8px; cursor: pointer; }
-.chip.sel input { width: 16px; height: 16px; }
+.chip.sel input { width: 16px; height: 16px; } .chip.sel a { color: inherit; text-decoration: none; } .chip.sel a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; } .chip.sel .ext { font-size: 11px; margin-left: 3px; color: var(--muted); } .chip.sel a:hover .ext { color: var(--accent); }
 .chip.sel small { font-size: 11px; color: var(--soon); background: var(--soon-bg); border-radius: 999px; padding: 1px 7px; }
 .done { background: var(--ok-bg); color: var(--ok); border-radius: 16px; padding: 20px; font-size: 15px; display: none; }
 .done[data-show="1"] { display: block; }

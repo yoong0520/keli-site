@@ -86,6 +86,10 @@
   })();
   // 관리자가 숨긴 자동 연동 글(content/hidden.json → window.KELI_HIDDEN)은 다시 그릴 때도 뺀다
   function hid(kind, items){ var h=((window.KELI_HIDDEN||{})[kind])||[]; return items.filter(function(it){ return h.indexOf(String(it.id))<0; }); }
+  // 관심 서비스 이름 → Marketplace 설명 페이지(새 창). 체크 상자는 그대로 선택용
+  function svcName(n){ var k=String(n||'').toLowerCase().replace(/[^0-9a-z가-힣]/g,''), L=window.KELI_SVC_LINKS||[], h='';
+    for(var i=0;i<L.length;i++){ if(L[i][0]&&(k===L[i][0]||k.indexOf(L[i][0])===0)){ h='service-'+L[i][1]+'.html'; break; } }
+    return h?'<a href="'+h+'" target="_blank" rel="noopener" title="'+esc(n)+' 서비스 설명 보기(새 창)">'+esc(n)+'<span aria-hidden="true" class="ext">↗</span></a>':esc(n); }
   // 관심 서비스 체크 목록: 포털 피드(assets/services.live.json)로 다시 그림 (체크 상태 유지)
   (function(){
     var box=qs('#svc-opts'); if(!box||location.protocol==='file:') return;
@@ -93,7 +97,7 @@
       if(!d||!d.items||!d.items.length) return; var items=hid('services', d.items); var cats=d.categories||[];
       var checked={}; qsa('input[name=services]:checked', box).forEach(function(i){ checked[i.value]=1; });
       var html=''; cats.forEach(function(c){ var its=items.filter(function(i){ return i.category===c; }); if(!its.length) return;
-        html+='<div class="chipgrp"><span class="gk">'+esc(c)+'</span><div class="chips">'+its.map(function(i){ return '<label class="chip sel"><input type="checkbox" name="services" value="'+esc(i.name)+'"'+(checked[i.name]?' checked':'')+'> '+esc(i.name)+(i.status==='coming_soon'?' <small>오픈 예정</small>':'')+'</label>'; }).join('')+'</div></div>'; });
+        html+='<div class="chipgrp"><span class="gk">'+esc(c)+'</span><div class="chips">'+its.map(function(i){ return '<label class="chip sel"><input type="checkbox" name="services" value="'+esc(i.name)+'"'+(checked[i.name]?' checked':'')+'> '+svcName(i.name)+(i.status==='coming_soon'?' <small>오픈 예정</small>':'')+'</label>'; }).join('')+'</div></div>'; });
       if(html){ box.innerHTML=html; var src=qs('#svc-src'); if(src&&d.fetched_at) src.textContent='목록은 한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai)에서 매일 자동으로 가져옵니다 · '+d.fetched_at+' 기준.'; }
     }).catch(function(){});
   })();

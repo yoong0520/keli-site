@@ -889,7 +889,7 @@ ol.art-ul { counter-reset: n; } ol.art-ul li::before { content: counter(n); coun
 .chip { display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 999px; background: var(--bg2); font-size: 14px; color: var(--fg); }
 .sec.alt .chip { background: var(--bg); }
 .chip.sel { display: inline-flex; gap: 8px; cursor: pointer; }
-.chip.sel input { width: 16px; height: 16px; }
+.chip.sel input { width: 16px; height: 16px; } .chip.sel a { color: inherit; text-decoration: none; } .chip.sel a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; } .chip.sel .ext { font-size: 11px; margin-left: 3px; color: var(--muted); } .chip.sel a:hover .ext { color: var(--accent); }
 .chip.sel small { font-size: 11px; color: var(--soon); background: var(--soon-bg); border-radius: 999px; padding: 1px 7px; }
 .done { background: var(--ok-bg); color: var(--ok); border-radius: 16px; padding: 20px; font-size: 15px; display: none; }
 .done[data-show="1"] { display: block; }
@@ -1034,6 +1034,10 @@ JS = r"""
   })();
   // 관리자가 숨긴 자동 연동 글(content/hidden.json → window.KELI_HIDDEN)은 다시 그릴 때도 뺀다
   function hid(kind, items){ var h=((window.KELI_HIDDEN||{})[kind])||[]; return items.filter(function(it){ return h.indexOf(String(it.id))<0; }); }
+  // 관심 서비스 이름 → Marketplace 설명 페이지(새 창). 체크 상자는 그대로 선택용
+  function svcName(n){ var k=String(n||'').toLowerCase().replace(/[^0-9a-z가-힣]/g,''), L=window.KELI_SVC_LINKS||[], h='';
+    for(var i=0;i<L.length;i++){ if(L[i][0]&&(k===L[i][0]||k.indexOf(L[i][0])===0)){ h='service-'+L[i][1]+'.html'; break; } }
+    return h?'<a href="'+h+'" target="_blank" rel="noopener" title="'+esc(n)+' 서비스 설명 보기(새 창)">'+esc(n)+'<span aria-hidden="true" class="ext">↗</span></a>':esc(n); }
   // 관심 서비스 체크 목록: 포털 피드(assets/services.live.json)로 다시 그림 (체크 상태 유지)
   (function(){
     var box=qs('#svc-opts'); if(!box||location.protocol==='file:') return;
@@ -1041,7 +1045,7 @@ JS = r"""
       if(!d||!d.items||!d.items.length) return; var items=hid('services', d.items); var cats=d.categories||[];
       var checked={}; qsa('input[name=services]:checked', box).forEach(function(i){ checked[i.value]=1; });
       var html=''; cats.forEach(function(c){ var its=items.filter(function(i){ return i.category===c; }); if(!its.length) return;
-        html+='<div class="chipgrp"><span class="gk">'+esc(c)+'</span><div class="chips">'+its.map(function(i){ return '<label class="chip sel"><input type="checkbox" name="services" value="'+esc(i.name)+'"'+(checked[i.name]?' checked':'')+'> '+esc(i.name)+(i.status==='coming_soon'?' <small>오픈 예정</small>':'')+'</label>'; }).join('')+'</div></div>'; });
+        html+='<div class="chipgrp"><span class="gk">'+esc(c)+'</span><div class="chips">'+its.map(function(i){ return '<label class="chip sel"><input type="checkbox" name="services" value="'+esc(i.name)+'"'+(checked[i.name]?' checked':'')+'> '+svcName(i.name)+(i.status==='coming_soon'?' <small>오픈 예정</small>':'')+'</label>'; }).join('')+'</div></div>'; });
       if(html){ box.innerHTML=html; var src=qs('#svc-src'); if(src&&d.fetched_at) src.textContent='목록은 한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai)에서 매일 자동으로 가져옵니다 · '+d.fetched_at+' 기준.'; }
     }).catch(function(){});
   })();
@@ -1719,11 +1723,23 @@ def svc_groups():
         return groups, SVC_LIVE.get('fetched_at', '')
     return [(label, [(x['name'], x['status']) for x in SERVICES if x['area'] == key]) for key, label, _ in AREAS if key != 'platform' and any(x['area'] == key for x in SERVICES)], ''
 
+def _svc_n(t): return re.sub(r'[^0-9a-z가-힣]', '', str(t or '').lower())
+def svc_page_of(name):
+    """관심 서비스 이름(포털 표기)에 맞는 Marketplace 설명 페이지. 'HAI-PBL(시범 운영 서비스)' 처럼 뒤에 덧붙은 말이 있어도 앞이 맞으면 연결."""
+    n = _svc_n(name)
+    for k, slug in sorted(((_svc_n(x['name']), x['slug']) for x in SERVICES), key=lambda z: -len(z[0])):
+        if k and (n == k or n.startswith(k)): return f'service-{slug}.html'
+    return ''
+def svc_chip(n, st, checked=False):
+    href = svc_page_of(n)
+    nm = (f'<a href="{href}" target="_blank" rel="noopener" title="{E(n)} 서비스 설명 보기(새 창)">{E(n)}<span aria-hidden="true" class="ext">↗</span></a>' if href else E(n))
+    return f'<label class="chip sel"><input type="checkbox" name="services" value="{E(n)}"{" checked" if checked else ""}> {nm}{" <small>오픈 예정</small>" if st == "coming_soon" else ""}</label>'
 def svc_opts_html():
     groups, when = svc_groups()
-    out = ''
+    links = json.dumps(sorted(([_svc_n(x['name']), x['slug']] for x in SERVICES), key=lambda z: -len(z[0])), ensure_ascii=False)
+    out = f'<script>window.KELI_SVC_LINKS={links};</script>'
     for label, its in groups:
-        chips = ''.join(f'<label class="chip sel"><input type="checkbox" name="services" value="{E(n)}"> {E(n)}{" <small>오픈 예정</small>" if st == "coming_soon" else ""}</label>' for n, st in its)
+        chips = ''.join(svc_chip(n, st) for n, st in its)
         out += f'<div class="chipgrp"><span class="gk">{E(label)}</span><div class="chips">{chips}</div></div>'
     return out, when
 DEMO_ITEMS = DEMOS.get('items', [])
