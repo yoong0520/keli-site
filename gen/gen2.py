@@ -278,12 +278,20 @@ def brand_video_html(compact=False):
     dur = f'<span>{E(g("duration"))}</span>' if g('duration') else ''
     return f'''<section class="sec bv" id="brand-video"><div class="wrap">
 {head}
-<div class="bvid" id="bvid"><video id="bv-video" preload="metadata" playsinline poster="{poster}" data-hd="{hd}" data-sd="{sd}" controlsList="nodownload noremoteplayback" disablepictureinpicture oncontextmenu="return false" title="{E(g("eyebrow"))}"></video>
-<button type="button" class="play" aria-label="영상 재생"><span>▶</span><em>{E(g("title"))} <small style="opacity:.75">{dur}</small></em></button><div class="wm">© Hallym University KELI</div></div>
+<div class="bvid" id="bvid"><video id="bv-video" preload="metadata" muted playsinline loop poster="{poster}" data-hd="{hd}" data-sd="{sd}" controlsList="nodownload noremoteplayback" disablepictureinpicture oncontextmenu="return false" title="{E(g("eyebrow"))}"></video>
+<button type="button" class="play" aria-label="영상 재생"><span>▶</span><em>{E(g("title"))} <small style="opacity:.75">{dur}</small></em></button><button type="button" class="snd" aria-label="소리 켜고 처음부터 보기">🔇 소리 켜기</button><div class="wm">© Hallym University KELI</div></div>
 <div class="cap"><span class="cr"><b>© 한림대학교 KELI 사무국</b> 무단 복제·배포·전송·편집 금지(저작권법 제136조 벌칙){more}</span><span>사용 허가 문의 033-248-3242 · contact@keliedu.org</span></div>
 </div></section>
-<script>(function(){{var w=document.getElementById('bvid');if(!w)return;var v=w.querySelector('video'),b=w.querySelector('.play');function src(){{return (window.innerWidth<820||(navigator.connection&&/2g|3g/.test(navigator.connection.effectiveType||'')))?v.getAttribute('data-sd'):v.getAttribute('data-hd');}}
-v.src=src();b.addEventListener('click',function(){{w.classList.add('playing');v.controls=true;v.play().catch(function(){{}});try{{if(window.KELI_API&&navigator.sendBeacon)navigator.sendBeacon(window.KELI_API+'/api/hit',new Blob([JSON.stringify({{t:'click',p:location.pathname,x:'video:'+v.currentSrc.split('/').pop()}})],{{type:'text/plain'}}));}}catch(e){{}}}});v.addEventListener('ended',function(){{w.classList.remove('playing');v.controls=false;}});}})();</script>
+<script>(function(){{var w=document.getElementById('bvid');if(!w)return;var v=w.querySelector('video'),b=w.querySelector('.play'),sb=w.querySelector('.snd');function src(){{return (window.innerWidth<820||(navigator.connection&&/2g|3g/.test(navigator.connection.effectiveType||'')))?v.getAttribute('data-sd'):v.getAttribute('data-hd');}}
+function beacon(x){{try{{if(window.KELI_API&&navigator.sendBeacon)navigator.sendBeacon(window.KELI_API+'/api/hit',new Blob([JSON.stringify({{t:'click',p:location.pathname,x:x+':'+(v.currentSrc||'').split('/').pop()}})],{{type:'text/plain'}}));}}catch(e){{}}}}
+function withSound(){{w.classList.remove('auto');w.classList.add('playing');v.loop=false;v.muted=false;v.controls=true;try{{v.currentTime=0;}}catch(e){{}}v.play().catch(function(){{}});beacon('video');}}
+v.src=src();b.addEventListener('click',withSound);sb.addEventListener('click',withSound);
+v.addEventListener('ended',function(){{w.classList.remove('playing');v.controls=false;}});
+// 무음 자동 재생: 화면에 보일 때만 재생(벗어나면 멈춤). '동작 줄이기'·데이터 절약 설정이면 자동 재생하지 않음
+var calm=(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)||(navigator.connection&&navigator.connection.saveData);
+if(!calm){{v.muted=true;var go=function(){{if(w.classList.contains('playing'))return;v.play().then(function(){{w.classList.add('auto');}}).catch(function(){{w.classList.remove('auto');}});}};
+if('IntersectionObserver' in window){{new IntersectionObserver(function(es){{es.forEach(function(e){{if(w.classList.contains('playing'))return;if(e.isIntersecting)go();else v.pause();}});}},{{threshold:0.35}}).observe(w);}}else go();}}
+}})();</script>
 '''
 
 def banner_html():
@@ -602,6 +610,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .bvid .play > span { width: 84px; height: 84px; border-radius: 50%; background: rgba(255,255,255,.14); border: 1.5px solid rgba(255,255,255,.7); display: flex; align-items: center; justify-content: center; font-size: 34px; padding-left: 6px; backdrop-filter: blur(6px); transition: transform .2s, background .2s; }
 .bvid .play:hover > span { transform: scale(1.06); background: rgba(11,92,255,.75); border-color: transparent; } .bvid .play em { position: absolute; bottom: 20px; left: 0; right: 0; text-align: center; font-style: normal; font-size: 14px; color: rgba(255,255,255,.85); }
 .bvid.playing .play { display: none; }
+.bvid.auto .play { display: none; } .bvid .snd { display: none; position: absolute; left: 14px; bottom: 14px; border: 0; cursor: pointer; font: inherit; font-size: 13px; font-weight: 600; color: #fff; background: rgba(0,0,0,.55); padding: 8px 14px; border-radius: 999px; backdrop-filter: blur(6px); } .bvid .snd:hover { background: rgba(11,92,255,.85); } .bvid.auto .snd { display: block; }
 .bv .cap { max-width: 1100px; margin: 16px auto 0; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; color: #a1a1a6; } .bv .cap a { color: #7fb4ff; } .bv .cap .cr { display: inline-flex; align-items: center; gap: 8px; } .bv .cap .cr b { color: #f5f5f7; font-weight: 600; }
 @media (max-width: 600px) { .bvid { border-radius: 12px; } .bvid .play > span { width: 64px; height: 64px; font-size: 26px; } .bvid .play em { display: none; } }
 .site-banner { background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; padding: 10px 0; text-align: center; } .site-banner a { color: #fff; text-decoration: underline; margin-left: 8px; }
