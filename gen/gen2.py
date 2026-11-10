@@ -964,6 +964,26 @@ JS = r"""
   qsa('form[data-demo]').forEach(function(f){
     f.addEventListener('submit',function(e){ e.preventDefault(); if(!validate(f)) return; var d=qs('.done',f); var id=f.getAttribute('data-demo').toUpperCase()+'-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Math.floor(Math.random()*900)+100); if(d){ var c=qs('code',d); if(c) c.textContent=id; d.setAttribute('data-show','1'); d.scrollIntoView({block:'nearest'}); } var sub=qs('button[type=submit]',f); if(sub){ sub.disabled=true; sub.textContent='접수되었습니다'; } });
   });
+  // 도입·참여 문의: 관리자 서버(/api/contact)로 보냄 → 사무국 메일(contact@keliedu.org) 전달 + 관리자 문의함 보관. 서버가 안 되면 메일 앱으로 넘김
+  qsa('form[data-inquiry]').forEach(function(f){
+    f.addEventListener('submit',function(e){ e.preventDefault(); if(!validate(f)) return;
+      var sub=qs('button[type=submit]',f), done=qs('.done',f), fail=qs('.fail',f); if(fail){ fail.hidden=true; fail.textContent=''; }
+      function val(n){ var el=f.elements[n]; return el?String(el.value||'').trim():''; }
+      var sv=qsa('input[name="services"]:checked',f).map(function(c){ return c.value; });
+      var data={ type: val('type'), org: val('org'), name: val('name'), email: val('email'), tel: val('tel'), services: sv, course: val('course'), body: val('body'), hp: val('hp'), page: location.pathname, lang: document.documentElement.lang||'ko' };
+      function mailto(){ var t=['참여 유형: '+(qs('#f-type option:checked',f)||{}).textContent,'기관명: '+data.org,'담당자: '+data.name,'이메일: '+data.email,'연락처: '+(data.tel||'-'),'관심 서비스: '+(sv.join(', ')||'-'),'적용 교과목: '+(data.course||'-'),'','문의 내용:',data.body||'-'].join('\n'); location.href='mailto:contact@keliedu.org?subject='+encodeURIComponent('[서비스 도입 문의] '+data.org+' · '+data.name)+'&body='+encodeURIComponent(t); }
+      function bad(msg){ if(sub){ sub.disabled=false; sub.textContent='문의 보내기'; } if(fail){ fail.hidden=false; fail.innerHTML=msg; } }
+      if(!window.KELI_API){ mailto(); return; }
+      if(sub){ sub.disabled=true; sub.textContent='보내는 중…'; }
+      fetch(window.KELI_API+'/api/contact',{ method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(data) }).then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return {ok:r.ok, st:r.status, j:j}; }); }).then(function(x){
+        if(x.st===404||x.st===401){ if(sub){ sub.disabled=false; sub.textContent='문의 보내기'; } mailto(); return; }   // 서버가 아직 옛 코드 → 메일 앱으로
+        if(!x.ok||!x.j.ok){ bad((x.j&&x.j.error?x.j.error:'보내지 못했습니다.')+' <a href="mailto:contact@keliedu.org">contact@keliedu.org</a> 로 직접 보내 주셔도 됩니다.'); return; }
+        if(done){ var c=qs('code',done); if(c) c.textContent=x.j.ref; done.setAttribute('data-show','1'); done.scrollIntoView({block:'nearest'}); }
+        if(sub) sub.textContent='접수되었습니다';
+        try{ if(navigator.sendBeacon) navigator.sendBeacon(window.KELI_API+'/api/hit', new Blob([JSON.stringify({t:'click',p:location.pathname,x:'inquiry:sent'})],{type:'text/plain'})); }catch(e){}
+      }).catch(function(){ bad('네트워크 문제로 보내지 못했습니다. <a href="#" data-mailto>메일 앱으로 보내기</a> 또는 contact@keliedu.org 로 보내 주세요.'); var a=qs('[data-mailto]',f); if(a) a.addEventListener('click',function(ev){ ev.preventDefault(); mailto(); }); });
+    });
+  });
   // prefill service from ?service= or #svc=
   var p=new URLSearchParams(location.search); var svc=p.get('service');
   function nrm(t){ return String(t||'').toLowerCase().replace(/[^a-z0-9가-힣]/g,''); }
@@ -1801,7 +1821,7 @@ def page_admin():
 <a href="#press" data-view="press"><i>▣</i>보도·언론<span class="cnt" data-cnt="press"></span></a>
 <a href="#videos" data-view="videos"><i>▶</i>영상<span class="cnt" data-cnt="videos"></span></a>
 <a href="#bot" data-view="bot"><i>☺</i>챗봇</a>
-<a href="#stats" data-view="stats"><i>▥</i>방문 통계</a>
+<a href="#stats" data-view="stats"><i>▥</i>방문 통계</a><a href="#inbox" data-view="inbox"><i>✉</i>문의함</a>
 <a href="#history" data-view="history"><i>↻</i>게시 기록</a>
 <a href="#settings" data-view="settings"><i>⚙</i>사이트 설정</a>
 </nav>
@@ -2151,7 +2171,8 @@ def page_join():
 <div class="grid g2" style="gap:48px;align-items:start">
 <div class="head" style="margin:0"><h2>도입·참여 문의.</h2><p class="lead">기관명·관심 서비스·적용 교과목을 적어 보내 주세요. 사무국이 이메일로 답변드립니다.</p>
 <div class="card" style="margin-top:8px"><span class="k">이메일로 보내시려면</span><p><span class="copy">{EMAIL} <button type="button" class="btn sm ghost" data-copy="{EMAIL}">복사</button></span></p><p>메일 제목 앞에 [서비스 도입 문의]를 붙여 주시면 빠릅니다.</p><p>소식은 <a href="{INSTA}" target="_blank" rel="noopener">Instagram @hallym_keli</a>에서도 볼 수 있습니다.</p></div></div>
-<form class="form" data-demo="inq" novalidate>
+<form class="form" data-inquiry novalidate>
+<div style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden" aria-hidden="true"><label>이 칸은 비워 두세요<input type="text" name="hp" tabindex="-1" autocomplete="off"></label></div>
 <div class="field"><label for="f-type">참여 유형</label><select id="f-type" name="type" required><option value="">선택</option><option value="univ">국내 대학</option><option value="abroad">해외 대학·기관</option><option value="company">에듀테크 기업</option><option value="agency">유관기관</option></select><span class="msg">참여 유형을 선택해 주세요.</span></div>
 <div class="grid g2" style="gap:16px">
 <div class="field"><label for="f-org">기관명</label><input id="f-org" name="org" type="text" required placeholder="예) ○○대학교"><span class="msg">기관명을 입력해 주세요.</span></div>
@@ -2164,7 +2185,8 @@ def page_join():
 <div class="field"><label for="f-body">문의 내용</label><textarea id="f-body" name="body" rows="5" placeholder="원하시는 참여 방식, 일정, 궁금한 점을 적어 주세요."></textarea></div>
 <label class="chk"><input type="checkbox" id="f-agree" required><span>개인정보 수집·이용에 동의합니다. 문의 처리 목적으로만 이용하며 처리 후 파기합니다. <a href="privacy.html">개인정보처리방침</a></span></label>
 <div><button class="btn" type="submit">문의 보내기</button></div>
-<div class="done"><span>접수되었습니다. 접수번호 <code></code> · 사무국이 입력하신 이메일로 답변드립니다. (시연 화면: 실제 발송은 백엔드 연동 후 동작합니다)</span></div>
+<div class="done"><span>접수되었습니다. 접수번호 <code></code> · 한림대학교 KELI 사무국이 입력하신 이메일로 답변드립니다. 확인 메일이 곧 도착합니다.</span></div>
+<div class="fail" hidden style="padding:14px 16px;border-radius:12px;background:#fff4f2;color:#b3261e;font-size:14px"></div>
 </form>
 </div>
 </div></section>

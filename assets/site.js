@@ -25,6 +25,26 @@
   qsa('form[data-demo]').forEach(function(f){
     f.addEventListener('submit',function(e){ e.preventDefault(); if(!validate(f)) return; var d=qs('.done',f); var id=f.getAttribute('data-demo').toUpperCase()+'-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Math.floor(Math.random()*900)+100); if(d){ var c=qs('code',d); if(c) c.textContent=id; d.setAttribute('data-show','1'); d.scrollIntoView({block:'nearest'}); } var sub=qs('button[type=submit]',f); if(sub){ sub.disabled=true; sub.textContent='접수되었습니다'; } });
   });
+  // 도입·참여 문의: 관리자 서버(/api/contact)로 보냄 → 사무국 메일(contact@keliedu.org) 전달 + 관리자 문의함 보관. 서버가 안 되면 메일 앱으로 넘김
+  qsa('form[data-inquiry]').forEach(function(f){
+    f.addEventListener('submit',function(e){ e.preventDefault(); if(!validate(f)) return;
+      var sub=qs('button[type=submit]',f), done=qs('.done',f), fail=qs('.fail',f); if(fail){ fail.hidden=true; fail.textContent=''; }
+      function val(n){ var el=f.elements[n]; return el?String(el.value||'').trim():''; }
+      var sv=qsa('input[name="services"]:checked',f).map(function(c){ return c.value; });
+      var data={ type: val('type'), org: val('org'), name: val('name'), email: val('email'), tel: val('tel'), services: sv, course: val('course'), body: val('body'), hp: val('hp'), page: location.pathname, lang: document.documentElement.lang||'ko' };
+      function mailto(){ var t=['참여 유형: '+(qs('#f-type option:checked',f)||{}).textContent,'기관명: '+data.org,'담당자: '+data.name,'이메일: '+data.email,'연락처: '+(data.tel||'-'),'관심 서비스: '+(sv.join(', ')||'-'),'적용 교과목: '+(data.course||'-'),'','문의 내용:',data.body||'-'].join('\n'); location.href='mailto:contact@keliedu.org?subject='+encodeURIComponent('[서비스 도입 문의] '+data.org+' · '+data.name)+'&body='+encodeURIComponent(t); }
+      function bad(msg){ if(sub){ sub.disabled=false; sub.textContent='문의 보내기'; } if(fail){ fail.hidden=false; fail.innerHTML=msg; } }
+      if(!window.KELI_API){ mailto(); return; }
+      if(sub){ sub.disabled=true; sub.textContent='보내는 중…'; }
+      fetch(window.KELI_API+'/api/contact',{ method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(data) }).then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return {ok:r.ok, st:r.status, j:j}; }); }).then(function(x){
+        if(x.st===404||x.st===401){ if(sub){ sub.disabled=false; sub.textContent='문의 보내기'; } mailto(); return; }   // 서버가 아직 옛 코드 → 메일 앱으로
+        if(!x.ok||!x.j.ok){ bad((x.j&&x.j.error?x.j.error:'보내지 못했습니다.')+' <a href="mailto:contact@keliedu.org">contact@keliedu.org</a> 로 직접 보내 주셔도 됩니다.'); return; }
+        if(done){ var c=qs('code',done); if(c) c.textContent=x.j.ref; done.setAttribute('data-show','1'); done.scrollIntoView({block:'nearest'}); }
+        if(sub) sub.textContent='접수되었습니다';
+        try{ if(navigator.sendBeacon) navigator.sendBeacon(window.KELI_API+'/api/hit', new Blob([JSON.stringify({t:'click',p:location.pathname,x:'inquiry:sent'})],{type:'text/plain'})); }catch(e){}
+      }).catch(function(){ bad('네트워크 문제로 보내지 못했습니다. <a href="#" data-mailto>메일 앱으로 보내기</a> 또는 contact@keliedu.org 로 보내 주세요.'); var a=qs('[data-mailto]',f); if(a) a.addEventListener('click',function(ev){ ev.preventDefault(); mailto(); }); });
+    });
+  });
   // prefill service from ?service= or #svc=
   var p=new URLSearchParams(location.search); var svc=p.get('service');
   function nrm(t){ return String(t||'').toLowerCase().replace(/[^a-z0-9가-힣]/g,''); }

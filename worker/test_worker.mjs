@@ -28,7 +28,7 @@ export class FakeD1 {   // Cloudflare D1 흉내: Node 내장 SQLite 로 진짜 S
   constructor() { this.db = new DatabaseSync(':memory:'); }
   prepare(sql) {
     const db = this.db; const st = { _sql: sql, _args: [], bind(...a) { st._args = a.map((v) => (v === undefined ? null : v)); return st; },
-      async run() { const r = db.prepare(sql).run(...st._args); return { success: true, results: [], meta: { changes: r.changes } }; },
+      async run() { const r = db.prepare(sql).run(...st._args); return { success: true, results: [], meta: { changes: r.changes, last_row_id: Number(r.lastInsertRowid) } }; },
       async all() { return { success: true, results: db.prepare(sql).all(...st._args) }; },
       async first(col) { const row = db.prepare(sql).get(...st._args); return col ? (row ? row[col] : null) : (row || null); } };
     return st;
@@ -40,10 +40,12 @@ export const aiCalls = [];
 export const env = { FILES: new FakeR2(), KV: new FakeKV(), DB: new FakeD1(), GITHUB_TOKEN: 'ghp_test', SESSION_SECRET: 'secret-for-tests', SETUP_KEY: 'setup-123', REPO: 'yoong0520/keli-site', ALLOW_ORIGINS: 'https://keli-aied.org', SITE_URL: 'https://keli-aied.org/',
   AI: { async run(model, opts) { aiCalls.push({ model, opts }); const sys = opts.messages[0].content; const q = opts.messages[opts.messages.length - 1].content; return { response: (sys.startsWith('You are Iru-mi') ? 'EN answer about: ' : '이음이 답: ') + q + ' / facts=' + (sys.match(/^\[\d+\]/gm) || []).length }; } } };
 export const ghLog = [];
+export const mailLog = []; let mailMode = 'ok';
 export const ghStore = {};   // 가짜 저장소 파일: path → {sha, text}
 const realFetch = globalThis.fetch;
 globalThis.fetch = async (url, init) => {
   if (String(url) === 'https://keli-aied.org/assets/kb.json') { const fs = await import('node:fs'); return new Response(fs.readFileSync(new URL('../assets/kb.json', import.meta.url)), { status: 200, headers: { 'content-type': 'application/json' } }); }
+  if (String(url).startsWith('https://formsubmit.co/ajax/')) { mailLog.push({ url: String(url), headers: init.headers, body: JSON.parse(init.body) }); return new Response(JSON.stringify(mailMode === 'ok' ? { success: 'true', message: 'The form was submitted successfully.' } : { success: 'false', message: 'This form needs Activation.' }), { status: 200, headers: { 'Content-Type': 'application/json' } }); }
   if (!String(url).startsWith('https://api.github.com')) return realFetch(url, init);
   const u = new URL(url); const path = u.pathname; const m = (init && init.method) || 'GET';
   ghLog.push([m, path, (init && init.headers && init.headers.Authorization) || '']);
@@ -162,5 +164,33 @@ if (process.argv[2] === 'serve') {
   const dbBackup = env.DB; env.DB = null;
   r = await call('POST', '/api/hit', { raw: '{}', headers: UA }); assert(r.status === 204, 'hit without DB is a no-op');
   r = await call('GET', '/api/stats', { token: tok }); d = await j(r); assert(d.enabled === false, 'stats without DB'); env.DB = dbBackup;
+  // ---- 9) 문의 양식 · 문의함 · 메일 전달
+  const INQ = { type: 'univ', org: '강원대학교', name: '김교수', email: 'Prof@Kangwon.ac.kr', tel: '033-000-0000', services: ['HAI-LRS', 'HAI-Check'], course: '선형대수학', body: '2027-1학기 도입을 검토하고 있습니다.', page: '/join.html', lang: 'ko' };
+  r = await call('POST', '/api/contact', { raw: JSON.stringify(INQ), headers: Object.assign({}, UA, { Origin: 'https://keli-aied.org' }) }); d = await j(r);
+  assert(r.status === 200 && d.ok && /^KELI-\d{6}-001$/.test(d.ref) && d.mailed === true, 'contact ok ' + JSON.stringify(d));
+  assert(mailLog.length === 1 && mailLog[0].url === 'https://formsubmit.co/ajax/contact%40keliedu.org', 'mail relayed to office ' + JSON.stringify(mailLog[0] && mailLog[0].url));
+  assert(mailLog[0].headers.Origin === 'https://keli-aied.org' && /join\.html$/.test(mailLog[0].headers.Referer), 'relay carries site origin');
+  assert(mailLog[0].body._replyto === 'prof@kangwon.ac.kr' && mailLog[0].body._subject.indexOf(d.ref) > 0 && mailLog[0].body['관심서비스'] === 'HAI-LRS, HAI-Check' && mailLog[0].body._template === 'table', 'mail fields ' + JSON.stringify(mailLog[0].body));
+  assert(mailLog[0].body._autoresponse.indexOf(d.ref) > 0, 'autoresponse carries ref');
+  r = await call('POST', '/api/contact', { raw: JSON.stringify(Object.assign({}, INQ, { email: 'bad' })), headers: UA }); assert(r.status === 400, 'bad email rejected');
+  r = await call('POST', '/api/contact', { raw: JSON.stringify(Object.assign({}, INQ, { hp: 'x' })), headers: UA }); d = await j(r); assert(r.status === 200 && /-000$/.test(d.ref) && mailLog.length === 1, 'honeypot swallowed');
+  r = await call('POST', '/api/contact', { raw: JSON.stringify(INQ), headers: Object.assign({}, UA, { Origin: 'https://evil.example' }) }); assert(r.status === 403, 'foreign origin rejected');
+  mailMode = 'fail';
+  r = await call('POST', '/api/contact', { raw: JSON.stringify(Object.assign({}, INQ, { org: '제주대학교' })), headers: UA }); d = await j(r);
+  assert(r.status === 200 && d.ok && d.mailed === false && /-002$/.test(d.ref), 'kept even when mail relay fails ' + JSON.stringify(d));
+  mailMode = 'ok';
+  r = await call('GET', '/api/inquiries'); assert(r.status === 401, 'inbox needs login');
+  r = await call('GET', '/api/inquiries', { token: tok }); d = await j(r);
+  assert(d.enabled && d.items.length === 2 && d.counts.new === 2 && d.items[0].org === '제주대학교' && d.items[0].mailed === 0 && d.items[1].mailed === 1, 'inbox list ' + JSON.stringify(d.counts));
+  const failedId = d.items[0].id, okId = d.items[1].id;
+  r = await call('POST', '/api/inquiries/' + failedId + '/mail', { token: tok }); assert(r.status === 200, 'resend ok'); assert(mailLog.length === 3, 'resend relayed');
+  r = await call('POST', '/api/inquiries/' + okId, { token: tok, body: { status: 'done', note: '11/12 답장 보냄' } }); assert(r.status === 200, 'status update');
+  r = await call('GET', '/api/inquiries?status=done', { token: tok }); d = await j(r); assert(d.items.length === 1 && d.items[0].note === '11/12 답장 보냄' && d.items[0].updated_by === 'keli', 'filter by status ' + JSON.stringify(d.items.map((x) => x.status)));
+  r = await call('GET', '/api/inquiries', { token: tok }); d = await j(r); assert(d.items.find((x) => x.id === failedId).mailed === 1, 'resend marked mailed');
+  for (let i = 0; i < 5; i++) await call('POST', '/api/contact', { raw: JSON.stringify(INQ), headers: { 'User-Agent': UA['User-Agent'], 'CF-Connecting-IP': '9.9.9.9' } });
+  r = await call('POST', '/api/contact', { raw: JSON.stringify(INQ), headers: { 'User-Agent': UA['User-Agent'], 'CF-Connecting-IP': '9.9.9.9' } }); assert(r.status === 429, 'contact rate limit');
+  env.DB = null;
+  r = await call('POST', '/api/contact', { raw: JSON.stringify(INQ), headers: { 'User-Agent': UA['User-Agent'], 'CF-Connecting-IP': '8.8.8.8' } }); d = await j(r); assert(r.status === 200 && d.ok && /^KELI-\d{6}-[0-9A-F]{4}$/.test(d.ref), 'contact without DB still mails ' + JSON.stringify(d));
+  env.DB = dbBackup;
   console.log('worker tests OK');
 }

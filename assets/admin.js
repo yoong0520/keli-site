@@ -154,7 +154,7 @@
 
   // ---------------------------------------------------------------- 라우터
   var view = qs('#view');
-  var TITLES = { home: '대시보드', site: '홈 화면', notices: '소식·공지', archive: '아카이브', services: '서비스', events: '행사', press: '보도·언론', videos: '영상', bot: '챗봇', stats: '방문 통계', history: '게시 기록', settings: '사이트 설정' };
+  var TITLES = { home: '대시보드', site: '홈 화면', notices: '소식·공지', archive: '아카이브', services: '서비스', events: '행사', press: '보도·언론', videos: '영상', bot: '챗봇', stats: '방문 통계', inbox: '문의함', history: '게시 기록', settings: '사이트 설정' };
   function buildSubnav() {   // 메뉴 아래에 분류를 세로로: 소식·공지(분류) · 아카이브(분류) · 서비스(포털 분류) · 보도·언론(출처)
     function sub(view, items) { var a = qs('.cms-nav a[data-view="' + view + '"]'); if (!a) return; var old = a.nextElementSibling; if (old && old.classList.contains('sub')) old.remove(); if (!items.length) return; var d = document.createElement('div'); d.className = 'sub'; d.innerHTML = items.map(function (it) { return '<a href="#' + view + '/c/' + encodeURIComponent(it[0]) + '" data-sub="' + esc(it[0]) + '">' + esc(it[1]) + (it[2] != null ? '<span class="cnt">' + it[2] + '</span>' : '') + '</a>'; }).join(''); a.insertAdjacentElement('afterend', d); }
     var nc = {}, ac = {}; ((state.notices || {}).items || []).forEach(function (n) { nc[n.cat] = (nc[n.cat] || 0) + 1; }); ((state.archive || {}).items || []).forEach(function (x) { ac[x.cat] = (ac[x.cat] || 0) + 1; });
@@ -172,7 +172,7 @@
     var subKey = (h[1] === 'c' && h[2]) ? decodeURIComponent(h[2]) : ''; markSub(v, subKey);
     qs('#top-title').textContent = TITLES[v] || '대시보드'; qs('#top-actions').innerHTML = '';
     view.innerHTML = '<p class="muted">불러오는 중…</p>';
-    var fn = { home: vHome, site: vSite, notices: vNotices, archive: vArchive, services: vServices, events: vEvents, press: vPress, videos: vVideos, bot: vBot, stats: vStats, history: vHistory, settings: vSettings }[v] || vHome;
+    var fn = { home: vHome, site: vSite, notices: vNotices, archive: vArchive, services: vServices, events: vEvents, press: vPress, videos: vVideos, bot: vBot, stats: vStats, inbox: vInbox, history: vHistory, settings: vSettings }[v] || vHome;
     Promise.resolve(fn(h.slice(1))).then(function () { counts(); buildSubnav(); }).catch(function (e) { view.innerHTML = '<div class="panel"><p>불러오지 못했습니다: ' + esc(e.message) + '</p><p class="small muted">토큰 권한(Contents: Read and write)과 저장소 이름을 확인해 주세요.</p></div>'; });
   }
   window.addEventListener('hashchange', route);
@@ -520,6 +520,42 @@
 
   // ---------------------------------------------------------------- 방문 통계: 누가 얼마나, 어디서 와서, 무엇을 봤나 (관리자 서버 D1)
   var STATS_DAYS = 30;
+  var INBOX_ST = 'new';
+  function vInbox() {
+    var H = head('Hallym University / Website CMS', '문의함', '사이트 "도입·참여 문의" 양식으로 들어온 문의입니다. 접수와 동시에 사무국 메일(contact@keliedu.org)로도 전달됩니다.');
+    if (!SERVER) { view.innerHTML = H + '<div class="panel"><p>관리자 서버 주소가 없습니다.</p></div>'; return; }
+    view.innerHTML = H + '<p class="muted">불러오는 중…</p>';
+    return srv('/api/inquiries' + (INBOX_ST === 'all' ? '' : '?status=' + INBOX_ST)).catch(function (e) { if (e.status === 404) return { enabled: false, oldCode: true }; throw e; }).then(function (d) {
+      if (!d.enabled) { view.innerHTML = H + '<div class="panel"><h3>아직 켜져 있지 않습니다</h3><p>' + (d.oldCode ? '관리자 서버가 옛 코드입니다. Cloudflare → keli-admin → Edit code 에 새 코드(worker/keli-admin.js)를 붙여 넣고 Deploy 해 주세요.' : 'D1(DB) 바인딩이 없습니다. 방문 통계와 같은 DB 를 쓰므로 통계가 켜져 있으면 자동으로 켜집니다.') + '</p></div>'; return; }
+      var c = d.counts || {}, T = d.types || {};
+      var tabs = [['new', '새 문의'], ['read', '확인함'], ['done', '답변 완료'], ['spam', '스팸'], ['all', '전체']].map(function (t) { var n = t[0] === 'all' ? Object.keys(c).reduce(function (a, k) { return a + c[k]; }, 0) : (c[t[0]] || 0); return '<button type="button" class="chip' + (INBOX_ST === t[0] ? ' on' : '') + '" data-st="' + t[0] + '">' + t[1] + ' ' + n + '</button>'; }).join('');
+      var unmailed = (d.items || []).filter(function (x) { return !x.mailed; }).length;
+      var warn = unmailed ? '<div class="panel" style="border-left:4px solid #e8a000"><p><b>메일로 전달되지 않은 문의 ' + unmailed + '건</b> — 처음이라면 contact@keliedu.org 메일함에서 FormSubmit 이 보낸 <b>"Activate Form"</b> 메일의 단추를 한 번 눌러 주세요(스팸함도 확인). 그 뒤 각 문의의 "메일 다시 보내기"를 누르면 됩니다. 문의 자체는 여기 안전하게 보관되어 있습니다.</p></div>' : '';
+      var rows = (d.items || []).map(function (x) {
+        var when = new Date(x.ts + 9 * 3600000).toISOString().slice(0, 16).replace('T', ' ');
+        var mailBadge = x.mailed ? '<span class="badge">메일 전달됨</span>' : '<span class="badge" style="background:#fff4e0;color:#8a5a00" title="' + esc(x.mail_err || '') + '">메일 미전달</span>';
+        return '<div class="panel" data-id="' + x.id + '"><div class="ph"><div><h3>' + esc(x.org) + ' · ' + esc(x.name) + '</h3><p class="muted">' + esc(x.ref) + ' · ' + when + ' · ' + esc(T[x.type] || x.type) + ' ' + mailBadge + '</p></div>'
+          + '<div class="row" style="gap:6px"><a class="btn sm" href="mailto:' + esc(x.email) + '?subject=' + encodeURIComponent('[KELI 사무국 답변] ' + x.ref + ' 문의 회신') + '">답장 쓰기</a>' + (x.mailed ? '' : '<button type="button" class="btn sm ghost" data-remail>메일 다시 보내기</button>') + '</div></div>'
+          + '<dl class="kv"><dt>이메일</dt><dd>' + esc(x.email) + '</dd><dt>연락처</dt><dd>' + esc(x.tel || '-') + '</dd><dt>관심 서비스</dt><dd>' + esc(x.services || '-') + '</dd><dt>적용 교과목</dt><dd>' + esc(x.course || '-') + '</dd></dl>'
+          + '<p style="white-space:pre-wrap;background:var(--bg2,#f5f5f7);padding:12px;border-radius:10px">' + esc(x.body || '-') + '</p>'
+          + '<div class="row" style="gap:8px;align-items:center;flex-wrap:wrap"><select data-status>' + [['new', '새 문의'], ['read', '확인함'], ['done', '답변 완료'], ['spam', '스팸']].map(function (o) { return '<option value="' + o[0] + '"' + (x.status === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'
+          + '<input type="text" data-note placeholder="메모(예: 11/12 답장 보냄)" value="' + esc(x.note || '') + '" style="flex:1;min-width:200px"><button type="button" class="btn sm" data-save>저장</button>' + (x.updated_by ? '<span class="muted small">최근 처리: ' + esc(x.updated_by) + '</span>' : '') + '</div></div>';
+      }).join('') || '<div class="panel"><p class="muted">이 분류에 문의가 없습니다.</p></div>';
+      var csv = '<button type="button" class="btn sm ghost" id="inq-csv">CSV 내려받기</button>';
+      view.innerHTML = H + '<div class="chips-row" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">' + tabs + ' ' + csv + '</div>' + warn + rows;
+      qsa('[data-st]', view).forEach(function (b) { b.addEventListener('click', function () { INBOX_ST = b.getAttribute('data-st'); vInbox(); }); });
+      qsa('.panel[data-id]', view).forEach(function (pn) {
+        var id = pn.getAttribute('data-id');
+        var sv = qs('[data-save]', pn); if (sv) sv.addEventListener('click', function () { sv.disabled = true; srv('/api/inquiries/' + id, { method: 'POST', body: { status: qs('[data-status]', pn).value, note: qs('[data-note]', pn).value } }).then(function () { toast('저장했습니다'); vInbox(); }).catch(function (e) { sv.disabled = false; toast('저장 실패: ' + e.message, 5000); }); });
+        var rm = qs('[data-remail]', pn); if (rm) rm.addEventListener('click', function () { rm.disabled = true; rm.textContent = '보내는 중…'; srv('/api/inquiries/' + id + '/mail', { method: 'POST' }).then(function () { toast('사무국 메일로 보냈습니다'); vInbox(); }).catch(function (e) { rm.disabled = false; rm.textContent = '메일 다시 보내기'; toast(e.message, 7000); }); });
+      });
+      var cb = qs('#inq-csv'); if (cb) cb.addEventListener('click', function () {
+        var cols = ['ref', 'ts', 'type', 'org', 'name', 'email', 'tel', 'services', 'course', 'body', 'status', 'note', 'mailed'];
+        var lines = [cols.join(',')].concat((d.items || []).map(function (x) { return cols.map(function (k) { var v = k === 'ts' ? new Date(x.ts + 9 * 3600000).toISOString().slice(0, 16).replace('T', ' ') : k === 'type' ? (T[x.type] || x.type) : (x[k] == null ? '' : x[k]); return '"' + String(v).replace(/"/g, '""') + '"'; }).join(','); }));
+        var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\n')], { type: 'text/csv' })); a.download = 'KELI_문의함_' + new Date().toISOString().slice(0, 10) + '.csv'; a.click();
+      });
+    }).catch(function (e) { view.innerHTML = H + '<div class="panel"><p>불러오지 못했습니다: ' + esc(e.message) + '</p></div>'; });
+  }
   function vStats() {
     if (!SERVER) { view.innerHTML = head('Hallym University / Website CMS', '방문 통계', '사이트 방문 기록입니다.') + '<div class="panel"><p>관리자 서버 주소가 없습니다. 사이트 설정에서 Cloudflare 관리자 서버 주소를 넣으면 방문 통계를 모을 수 있습니다.</p></div>'; return Promise.resolve(); }
     view.innerHTML = head('Hallym University / Website CMS', '방문 통계', '누가 얼마나 들어왔고, 어디서 왔고, 무엇을 가장 많이 봤는지 봅니다. 쿠키 없이 집계하며 개인을 식별하지 않습니다.') + '<p class="muted">불러오는 중…</p>';

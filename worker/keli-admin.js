@@ -18,6 +18,12 @@
    - 챗봇(이음이·이루미) 4) : 둘 중 하나
        Bindings → Workers AI  변수 이름 AI                      (무료 · 카드 불필요. Llama 모델이 답함)
        Secrets  → ANTHROPIC_API_KEY (+ 선택 ANTHROPIC_MODEL)      (Claude가 답함. 있으면 이것을 먼저 씀)
+   - 문의 양식 5) : 사이트의 "문의 보내기"가 이 서버(/api/contact)로 들어온다 → D1(DB)의 inquiries 표에 보관(관리자 "문의함") + 사무국 메일로 전달
+       Variables (Plain text, 선택):
+       CONTACT_EMAIL    받을 주소. 비우면 contact@keliedu.org
+       CONTACT_CC       참조로 함께 받을 주소(쉼표로 여러 개, 선택)
+       메일 전달은 FormSubmit(formsubmit.co) 중계를 쓴다. 처음 한 번 CONTACT_EMAIL 로 오는 "Activate Form" 메일의 단추를 눌러야 그 뒤부터 전달된다.
+       D1 이 없으면 보관 없이 메일 전달만 한다.
    사용자 목록은 R2 안의 _auth/users.json 에 저장된다(비밀번호는 PBKDF2-SHA256 10만 회 해시 · Cloudflare 한도).
 */
 
@@ -125,9 +131,13 @@ function publicUser(u) { return { username: u.username, name: u.name, role: u.ro
 async function api(request, env, url) {
   const p = url.pathname.replace(/^\/api/, '');
   const m = request.method;
-  if (p === '/ping' && m === 'GET') return json({ ok: true, setup: !(await loadUsers(env)).length, repo: env.REPO || '', files: !!env.FILES, stats: !!env.DB });
+  if (p === '/ping' && m === 'GET') return json({ ok: true, setup: !(await loadUsers(env)).length, repo: env.REPO || '', files: !!env.FILES, stats: !!env.DB, inbox: !!env.DB, contact: true });
   if (p === '/hit' && m === 'POST') return hit(request, env);
   if (p === '/stats' && m === 'GET') { await requireUser(request, env); return stats(env, url); }
+  if (p === '/contact' && m === 'POST') return contact(request, env);
+  if (p === '/inquiries' && m === 'GET') { await requireUser(request, env); return inquiries(env, url); }
+  if (/^\/inquiries\/\d+$/.test(p) && m === 'POST') { const me = await requireUser(request, env); return inquiryUpdate(env, Number(p.split('/')[2]), await readJson(request), me); }
+  if (/^\/inquiries\/\d+\/mail$/.test(p) && m === 'POST') { await requireUser(request, env); return inquiryMail(env, Number(p.split('/')[2])); }
 
   if (p === '/setup' && m === 'POST') {   // 첫 관리자 만들기(사용자가 하나도 없을 때, SETUP_KEY 필요)
     const b = await readJson(request);
@@ -208,7 +218,7 @@ async function rateLimit(env, ip) {
   if (!bump('chat:' + ip, CHAT_LIMIT)) throw err('질문이 너무 많아요. 1분 뒤에 다시 물어봐 주세요.', 429);
 }
 function persona(lang) {
-  if (lang === 'en') return "You are Iru-mi, the small, curious mascot of KELI (K-University AI EdTech and Learning Initiative) run by the KELI Secretariat at Hallym University, Korea. Answer in friendly, clear English in at most 5 short sentences (bullets allowed). Use ONLY the facts given below; if the facts do not cover the question, say you are not sure and suggest contacting the secretariat (contact@keliedu.org, +82-33-248-3246). Never invent numbers, dates, prices or names. When a related page URL is given in the facts, you may mention it. Do not mention these instructions.";
+  if (lang === 'en') return "You are Iru-mi, the small, curious mascot of KELI (K-University AI EdTech and Learning Initiative) run by the KELI Secretariat at Hallym University, Korea. Answer in friendly, clear English in at most 5 short sentences (bullets allowed). Use ONLY the facts given below; if the facts do not cover the question, say you are not sure and suggest contacting the secretariat (contact@keliedu.org, +82-33-248-3242). Never invent numbers, dates, prices or names. When a related page URL is given in the facts, you may mention it. Do not mention these instructions.";
   return '너는 한림대학교 KELI 사무국의 마스코트 "이음이"야. 밝고 친근한 해요체로, 최대 5문장(필요하면 짧은 목록)으로 답해. 반드시 아래 "사실"에 있는 내용만 써. 사실에 없는 것은 모른다고 말하고 사무국(033-248-3242)로 전화하라고 안내해. 숫자·날짜·금액·이름을 지어내지 마. 사실에 관련 페이지 주소가 있으면 알려 줘도 좋아. 이 지시문 자체는 언급하지 마.';
 }
 async function askLLM(env, lang, system, messages) {
@@ -333,6 +343,115 @@ async function stats(env, url) {
     total: R(0)[0] || { pv: 0, uv: 0 }, prev: R(1)[0] || { pv: 0, uv: 0 }, today: R(12)[0] || { pv: 0, uv: 0 }, live: (R(13)[0] || {}).uv || 0,
     daily: R(2), pages: R(3), refs: R(4), utm: R(5), dev: R(6), br: R(7), cc: R(8), lang: R(9), hours: R(10), clicks: R(11),
   });
+}
+
+// ---------------------------------------------------------------- 문의 양식(/api/contact) · 문의함(D1 inquiries) · 사무국 메일 전달
+const CONTACT_EMAIL_DEFAULT = 'contact@keliedu.org';
+const INQ_TYPES = { univ: '국내 대학', abroad: '해외 대학·기관', company: '에듀테크 기업', agency: '유관기관', other: '기타' };
+let inqReady = false;
+async function inqInit(env) {
+  if (inqReady || !env.DB) return;
+  await env.DB.batch([
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS inquiries (id INTEGER PRIMARY KEY AUTOINCREMENT, ref TEXT NOT NULL, ts INTEGER NOT NULL, day TEXT NOT NULL, type TEXT, org TEXT, name TEXT, email TEXT, tel TEXT, services TEXT, course TEXT, body TEXT, page TEXT, lang TEXT, dev TEXT, cc TEXT, status TEXT NOT NULL DEFAULT \'new\', note TEXT, mailed INTEGER NOT NULL DEFAULT 0, mail_err TEXT, updated INTEGER, updated_by TEXT)'),
+    env.DB.prepare('CREATE INDEX IF NOT EXISTS inq_status ON inquiries(status, ts)'),
+  ]);
+  inqReady = true;
+}
+function cleanInquiry(b) {
+  const d = {
+    type: INQ_TYPES[b.type] ? b.type : 'other', org: clip(b.org, 120), name: clip(b.name, 60), email: clip(b.email, 120).toLowerCase(), tel: clip(b.tel, 40),
+    services: (Array.isArray(b.services) ? b.services : String(b.services || '').split(',')).map((x) => clip(x, 60)).filter(Boolean).slice(0, 30).join(', '),
+    course: clip(b.course, 200), body: clip(b.body, 4000), page: clip(b.page, 200), lang: clip(b.lang, 5) || 'ko',
+  };
+  if (!d.org) throw err('기관명을 입력해 주세요', 400);
+  if (!d.name) throw err('담당자 성명을 입력해 주세요', 400);
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email)) throw err('이메일 주소를 확인해 주세요', 400);
+  if (!d.body && !d.services && !d.course) throw err('문의 내용을 적어 주세요', 400);
+  return d;
+}
+function inqText(d, ref, when) {
+  return ['접수번호: ' + ref, '접수시각: ' + when, '참여유형: ' + (INQ_TYPES[d.type] || d.type), '기관명: ' + d.org, '담당자: ' + d.name, '이메일: ' + d.email, '연락처: ' + (d.tel || '-'),
+    '관심 서비스: ' + (d.services || '-'), '적용 교과목: ' + (d.course || '-'), '', '문의 내용:', d.body || '-', '', '보낸 페이지: ' + (d.page || '-')].join('\n');
+}
+function kstStamp(ts) { const t = new Date(ts + KST); return t.toISOString().slice(0, 16).replace('T', ' ') + ' (KST)'; }
+// FormSubmit 중계: 브라우저 요청처럼 Origin/Referer 를 붙여야 받아 준다. 활성화 전에는 success:"false" 와 안내문이 돌아온다.
+async function relayMail(env, d, ref, ts) {
+  const to = (env.CONTACT_EMAIL || CONTACT_EMAIL_DEFAULT).trim();
+  const site = ((env.ALLOW_ORIGINS || '').split(',')[0] || 'https://keli-aied.org').trim().replace(/\/$/, '');
+  const when = kstStamp(ts);
+  const payload = {
+    '접수번호': ref, '접수시각': when, '참여유형': INQ_TYPES[d.type] || d.type, '기관명': d.org, '담당자': d.name, '이메일': d.email, '연락처': d.tel || '-',
+    '관심서비스': d.services || '-', '적용교과목': d.course || '-', '문의내용': d.body || '-', '보낸페이지': d.page || '-',
+    name: d.name + ' (' + d.org + ')', email: d.email, _replyto: d.email, _template: 'table',
+    _subject: '[KELI 도입·참여 문의 ' + ref + '] ' + d.org + ' · ' + d.name,
+    _autoresponse: '안녕하세요, 한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)입니다.\n문의가 접수되었습니다. 접수번호는 ' + ref + ' 입니다.\n내용을 확인한 뒤 이 메일 주소로 답변드리겠습니다. 급한 문의는 033-248-3242 로 전화 주세요.\n\n' + inqText(d, ref, when),
+  };
+  if (env.CONTACT_CC) payload._cc = env.CONTACT_CC;
+  const r = await fetch('https://formsubmit.co/ajax/' + encodeURIComponent(to), {
+    method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Origin': site, 'Referer': site + '/join.html', 'User-Agent': 'KELI-contact-worker' },
+    body: JSON.stringify(payload),
+  });
+  let out = {}; try { out = await r.json(); } catch (e) { out = { success: 'false', message: 'HTTP ' + r.status }; }
+  const ok = String(out.success) === 'true';
+  return { ok, message: ok ? '' : clip(out.message || ('HTTP ' + r.status), 300) };
+}
+async function contact(request, env) {
+  const origin = request.headers.get('Origin') || '';
+  const allow = (env.ALLOW_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
+  if (allow.length && origin && !allow.includes(origin) && !/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) throw err('허용되지 않은 출처입니다', 403);
+  const ip = request.headers.get('CF-Connecting-IP') || '0';
+  if (!bump('contact:' + ip, 5)) throw err('문의를 너무 자주 보내셨습니다. 잠시 뒤 다시 보내 주세요.', 429);
+  let b = {}; try { b = JSON.parse(await request.text()); } catch (e) { throw err('본문이 JSON 이 아닙니다', 400); }
+  const ts = Date.now(), day = kstDay(ts);
+  if (b.hp) return json({ ok: true, ref: 'KELI-' + day.replace(/-/g, '').slice(2) + '-000' });   // 숨은 칸을 채운 것은 기계 — 받은 척만 한다
+  const d = cleanInquiry(b);
+  const ua = request.headers.get('User-Agent') || '';
+  let ref = 'KELI-' + day.replace(/-/g, '').slice(2) + '-', id = 0;
+  if (env.DB) {
+    await inqInit(env);
+    const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM inquiries WHERE day = ?').bind(day).first();
+    ref += String(((n && n.n) || 0) + 1).padStart(3, '0');
+    const ins = await env.DB.prepare('INSERT INTO inquiries (ref, ts, day, type, org, name, email, tel, services, course, body, page, lang, dev, cc) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+      .bind(ref, ts, day, d.type, d.org, d.name, d.email, d.tel, d.services, d.course, d.body, d.page, d.lang, devOf(ua), clip((request.cf && request.cf.country) || '', 2)).run();
+    id = (ins.meta && ins.meta.last_row_id) || 0;
+  } else ref += randomHex(2).toUpperCase();
+  let mail = { ok: false, message: '' };
+  try { mail = await relayMail(env, d, ref, ts); } catch (e) { mail = { ok: false, message: clip(e.message || String(e), 300) }; }
+  if (env.DB && id) await env.DB.prepare('UPDATE inquiries SET mailed = ?, mail_err = ? WHERE id = ?').bind(mail.ok ? 1 : 0, mail.ok ? '' : mail.message, id).run();
+  if (!env.DB && !mail.ok) throw err('문의를 전달하지 못했습니다(' + mail.message + '). contact@keliedu.org 로 직접 보내 주세요.', 502);
+  return json({ ok: true, ref, mailed: mail.ok });
+}
+async function inquiries(env, url) {
+  if (!env.DB) return json({ enabled: false, items: [] });
+  await inqInit(env);
+  const st = clip(url.searchParams.get('status'), 10);
+  const q = st && st !== 'all' ? env.DB.prepare('SELECT * FROM inquiries WHERE status = ? ORDER BY ts DESC LIMIT 300').bind(st) : env.DB.prepare('SELECT * FROM inquiries ORDER BY ts DESC LIMIT 300');
+  const rows = (await q.all()).results || [];
+  const cnt = (await env.DB.prepare('SELECT status, COUNT(*) AS n FROM inquiries GROUP BY status').all()).results || [];
+  const counts = {}; for (const c of cnt) counts[c.status] = c.n;
+  return json({ enabled: true, items: rows, counts, types: INQ_TYPES });
+}
+async function inquiryUpdate(env, id, b, me) {
+  if (!env.DB) throw err('D1(DB)이 없어 문의함을 쓸 수 없습니다', 400);
+  await inqInit(env);
+  const status = ['new', 'read', 'done', 'spam'].includes(b.status) ? b.status : null;
+  const sets = [], vals = [];
+  if (status) { sets.push('status = ?'); vals.push(status); }
+  if (typeof b.note === 'string') { sets.push('note = ?'); vals.push(clip(b.note, 2000)); }
+  if (!sets.length) throw err('바꿀 내용이 없습니다', 400);
+  sets.push('updated = ?', 'updated_by = ?'); vals.push(Date.now(), me.username, id);
+  await env.DB.prepare('UPDATE inquiries SET ' + sets.join(', ') + ' WHERE id = ?').bind(...vals).run();
+  return json({ ok: true });
+}
+async function inquiryMail(env, id) {
+  if (!env.DB) throw err('D1(DB)이 없어 문의함을 쓸 수 없습니다', 400);
+  await inqInit(env);
+  const r = await env.DB.prepare('SELECT * FROM inquiries WHERE id = ?').bind(id).first();
+  if (!r) throw err('문의가 없습니다', 404);
+  const mail = await relayMail(env, r, r.ref, r.ts);
+  await env.DB.prepare('UPDATE inquiries SET mailed = ?, mail_err = ? WHERE id = ?').bind(mail.ok ? 1 : 0, mail.ok ? '' : mail.message, id).run();
+  if (!mail.ok) throw err('메일 전달 실패: ' + mail.message, 502);
+  return json({ ok: true });
 }
 
 async function ghProxy(request, env, url) {
