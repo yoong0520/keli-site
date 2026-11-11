@@ -1,388 +1,388 @@
 {
-  "_안내": "KELI 사무국 관리자 화면(admin.html)이 고치는 파일입니다. 직접 편집해도 됩니다. 저장하면 1~2분 뒤 사이트에 반영됩니다.",
-  "items": [
+ "_안내": "KELI 사무국 관리자 화면(admin.html)이 고치는 파일입니다. 직접 편집해도 됩니다. 저장하면 1~2분 뒤 사이트에 반영됩니다.",
+ "items": [
+  {
+   "id": "nmwbobw3j",
+   "cat": "행사 안내",
+   "title": "2026-2학기 전공박람회 KELI 사무국 체험 이벤트 「나에게 딱 맞는 한림 AI 찾기」",
+   "date": "2026.11.11",
+   "summary": "11월 18일(수) 전공박람회 KELI 사무국 부스에서 이음이·이루미와 함께 1분 만에 나에게 맞는 한림 AI 서비스를 찾아보세요. 참여하신 분께는 소정의 상품을 드립니다.",
+   "body": "<div class=\"art-sum\"><span class=\"k\">핵심 요약</span><ul class=\"art-ul\"><li>2026. 11. 18.(수) 10:00–16:30, 레크리에이션센터 3층 전공박람회 KELI 사무국 부스에서 체험 이벤트를 운영합니다</li><li>KELI 마스코트 이음이·이루미의 질문 5개에 답하면 나에게 맞는 한림 AI 서비스를 1분 만에 추천해 드립니다</li><li>사전 신청 없이 현장에서 바로 참여할 수 있으며, 참여하신 분께는 소정의 상품을 드립니다(1인 1회)</li></ul></div><dl class=\"art-kv\"><dt>일시</dt><dd>2026. 11. 18.(수) 10:00–16:30</dd><dt>장소</dt><dd>한림대학교 레크리에이션센터 3층, 전공박람회 행정부스 KELI 사무국(AI교육확산센터) 부스</dd><dt>대상</dt><dd>한림대학교 신·편입생, 재학생, 휴학생</dd><dt>참여</dt><dd><strong>사전 신청 없이 부스 현장에서 바로 참여</strong> · 약 1분 소요</dd><dt>문의</dt><dd>KELI 사무국 033-248-3242 / contact@keliedu.org</dd></dl><p class=\"art-lead\">한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)이 융합교육지원센터가 주관하는 2026학년도 2학기 전공박람회에 참가해, 한림대학교가 직접 개발하고 실제 수업에서 활용하는 AI 교육 서비스 <a href=\"services.html\">HAI Ecosystems</a>를 재학생 여러분께 소개합니다.</p><p>부스에서는 KELI 마스코트 이음이와 이루미가 진행하는 터치스크린 체험 「나에게 딱 맞는 한림 AI 찾기」가 운영됩니다. 다섯 가지 질문에 답하면 <a href=\"service-hai-tutor.html\">HAI-Tutor</a>, <a href=\"service-hai-gpt.html\">HAI-GPT</a>, <a href=\"service-hai-way.html\">HAI-Way</a> 등 한림 AI 서비스 가운데 나에게 맞는 서비스를 추천해 드립니다. 공강 시간에 가볍게 들러 주세요.</p><figure class=\"art-fig\"><img src=\"content/files/2026/11/majorfair/keli-mascots.jpg\" alt=\"KELI 마스코트 이음이와 이루미\"><figcaption>체험을 함께할 KELI 마스코트 이음이(EUM-I)와 이루미(IRU-MI)</figcaption></figure><h2 class=\"art-h\">참여 방법</h2><ol class=\"art-ol\"><li><strong>학번 입력</strong> — 부스 화면에서 학번을 입력하고 개인정보 수집·이용에 동의합니다.</li><li><strong>질문 5개 응답</strong> — 이음이·이루미의 질문에 답하면 나에게 맞는 한림 AI 유형과 추천 서비스가 나타납니다.</li><li><strong>인스타그램 팔로우</strong> — 결과 화면의 QR로 KELI 인스타그램(@hallym_keli)을 팔로우합니다.</li><li><strong>상품 수령</strong> — 결과 화면과 팔로우 화면을 부스 스태프에게 보여 주시면 소정의 상품을 드립니다(1인 1회).</li></ol><p><a class=\"art-btn\" href=\"https://www.instagram.com/hallym_keli/\" target=\"_blank\" rel=\"noopener\">KELI 인스타그램 미리 팔로우하기 ›</a></p><div class=\"art-note\">※ 상품은 준비된 수량이 소진되면 조기 마감될 수 있습니다.<br>· 수집한 학번은 참여 확인, 상품 지급(중복 수령 방지), 참여 통계에만 사용하며 행사 종료 후 1개월 이내 파기합니다.<br>· 이번 체험 상품은 전공박람회 공식 기념품(전공 상담 4회 및 설문조사 완료 시 지급)과 별도로 KELI 사무국 부스에서 드립니다.<br>· 전공박람회 전체 안내: 한림대학교 홈페이지 공지 「2026학년도 2학기 전공박람회 개최 안내」(2026. 11. 5.)<br>· HAI Ecosystems 서비스 소개와 데모 영상: <a href=\"services.html\">KELI Marketplace</a><br>· 일정과 내용은 주최 측 사정에 따라 변경될 수 있습니다.<br>· 문의: KELI 사무국 033-248-3242 / contact@keliedu.org</div>",
+   "link": "",
+   "pinned": true,
+   "published": true,
+   "files": [],
+   "updated": "2026. 11. 11. 14시 30분 18초"
+  },
+  {
+   "id": "n6",
+   "cat": "일반",
+   "title": "KELI Alliance 출범 · 브랜딩 영상 공개",
+   "date": "2026.11.09",
+   "summary": "KELI 사무국이 제작한 KELI Alliance 출범 브랜딩 영상(41초)을 공개합니다. 허가 없는 복제·배포·편집은 저작권법에 따라 금지됩니다.",
+   "body": "<figure class=\"art-fig\"><video data-hd=\"content/files/2026/11/video/keli-alliance-brand-1080p.mp4\" data-sd=\"content/files/2026/11/video/keli-alliance-brand-720p.mp4\" controls=\"\" preload=\"metadata\" playsinline=\"\" poster=\"content/files/2026/11/video/keli-alliance-brand-poster.jpg\" controlslist=\"nodownload noremoteplayback\" disablepictureinpicture=\"\" oncontextmenu=\"return false\" style=\"width:100%;aspect-ratio:16/9;background:#000;border-radius:16px\" title=\"KELI Alliance 출범 · 브랜딩 영상\">이 브라우저는 동영상 재생을 지원하지 않습니다.</video><figcaption>KELI Alliance 출범 · 브랜딩 영상 (0:41, 1080p) — © 한림대학교 KELI 사무국</figcaption></figure><div class=\"art-sum\"><span class=\"k\">핵심 요약</span><ul class=\"art-ul\"><li>2026년 10월 20일 KELI Alliance 출범에 맞추어 KELI 사무국이 기획·제작한 브랜딩 영상(41초)을 공개합니다</li><li>\"한림대학교의 AI 교육 경험이 다른 대학으로 이어지는 AI 교육 플랫폼, 더 넓은 세상으로\" — KELI가 지향하는 연결과 확산의 비전을 담았습니다</li><li>이 영상은 저작권법으로 보호되는 영상저작물입니다 — 허가 없는 복제·배포·전송·편집은 금지되며, 사용을 원하시면 사무국에 사전 허가를 받아 주세요</li></ul></div><dl class=\"art-kv\"><dt>제목</dt><dd>KELI Alliance 출범 · 브랜딩 영상</dd><dt>기획·제작</dt><dd>한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)</dd><dt>길이·규격</dt><dd>41초 · 1920×1080(16:9) · 국문 자막</dd><dt>공개일</dt><dd>2026. 11. 9.</dd><dt>저작권</dt><dd>© 2026 한림대학교. All rights reserved.</dd></dl><h2 class=\"art-h\">영상 소개</h2><p class=\"art-lead\">\"AI로 새로운 교육 — 한림대학교의 AI 교육 경험이 다른 대학으로 이어지는 AI 교육 플랫폼, 더 넓은 세상으로.\" 영상은 한림대학교가 개발해 수업에서 검증한 HAI Ecosystems가 강원을 넘어 전국의 대학으로, 다시 세계로 연결되는 과정을 빛의 네트워크로 표현했습니다. 마지막 장면의 KELI 로고와 \"AI로 연결되는 새로운 교육(CONNECT)\"은 KELI Alliance가 함께 만들어 갈 AI 기반 고등교육 혁신 생태계를 뜻합니다.</p><p>영상은 <a href=\"index.html#brand-video\">KELI 플랫폼 첫 화면</a>과 <a href=\"about.html#brand-video\">KELI 소개</a> 화면에서도 볼 수 있습니다. 심포지엄 현장 사진은 <a href=\"notice-n5.html\">행사 사진 공지</a>를 참고해 주세요.</p><h2 class=\"art-h\">저작권 안내 및 무단 사용 금지 경고</h2><div class=\"art-note\" id=\"copyright\"><strong>1. 권리 귀속</strong><br>이 영상은 한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)이 기획·제작하여 한림대학교 명의로 공표한 업무상저작물로서, 「저작권법」 제4조 제1항 제7호의 영상저작물에 해당하며 저작권(저작재산권 및 저작인격권)은 같은 법 제9조에 따라 한림대학교에 있습니다.<br><br><strong>2. 금지되는 행위</strong><br>저작권자의 사전 서면 허가 없이 이 영상의 전부 또는 일부를 다음과 같이 이용하는 행위는 「저작권법」이 정한 저작재산권(제16조 복제권, 제17조 공연권, 제18조 공중송신권, 제19조 전시권, 제20조 배포권, 제22조 2차적저작물작성권)과 저작인격권(제12조 성명표시권, 제13조 동일성유지권)의 침해로서 금지됩니다.<br>· 내려받기·화면 녹화 등 복제, 다른 사이트·SNS·동영상 플랫폼 업로드 등 전송·배포<br>· 자르기, 로고·자막·워터마크 제거, 음악·내레이션 교체, 다른 영상과 합성 등 변경·편집(2차적저작물 작성)<br>· 광고·홍보·강의 상품 등 영리 목적 이용, 타 기관·기업의 명의로 사용<br>· AI 모델 학습 데이터 등으로의 수집·이용<br><br><strong>3. 위반 시 책임</strong><br>위 행위를 한 자는 「저작권법」 제136조 제1항에 따라 5년 이하의 징역 또는 5천만 원 이하의 벌금에 처해지거나 이를 병과할 수 있으며, 저작인격권 침해는 같은 조 제2항에 따라 3년 이하의 징역 또는 3천만 원 이하의 벌금에 처해질 수 있습니다. 아울러 같은 법 제123조(침해의 정지 등 청구) 및 제125조(손해배상의 청구)에 따른 민사상 책임을 집니다. 한림대학교는 무단 사용을 확인하는 경우 게시 중단 요청, 형사 고소, 손해배상 청구 등 법적 조치를 취할 수 있습니다.<br><br><strong>4. 허용 범위와 이용 허가 신청</strong><br>개인이 이 페이지에서 시청하는 것과, 이 페이지의 주소(https://keli-aied.org/notice-n6.html)를 공유하는 것은 허용됩니다. 교육·보도·학술 등 목적으로 영상 파일이 필요하시면 KELI 사무국(033-248-3242, contact@keliedu.org)에 사용 목적·범위·기간을 적어 사전 허가를 신청해 주시기 바랍니다. 허가를 받은 경우에도 출처(\"한림대학교 KELI\")를 표기하고 영상을 변경 없이 사용해야 합니다.</div><div class=\"art-note\" lang=\"en\"><strong>Copyright Notice (English)</strong><br>© 2026 Hallym University. All rights reserved. This video was planned and produced by the KELI Office (Center for AI Education Diffusion, Institute for AI Education Innovation, Hallym University) and is a cinematographic work protected under the Copyright Act of the Republic of Korea (Article 4(1)(vii); authorship vests in Hallym University under Article 9). Without the prior written permission of the copyright holder, reproduction (including downloading or screen recording), distribution, transmission or uploading to any website or platform, public performance, alteration or editing (including removal of logos, captions or watermarks), commercial use, or use as AI training data of all or any part of this video is prohibited. Infringement may be punished by imprisonment of up to five years or a fine of up to KRW 50 million (Article 136), and is subject to civil remedies including injunction and damages (Articles 123 and 125). Viewing on this page and sharing its URL are permitted. For permission, contact the KELI Office at +82-33-248-3242 or contact@keliedu.org.<br><span class=\"muted small\">(국문 요지: 이 영상은 한림대학교의 저작물로, 허가 없는 복제·배포·전송·편집·영리 이용·AI 학습 이용을 금지하며, 위반 시 저작권법에 따른 형사·민사 책임이 따릅니다. 이 페이지에서 보기와 주소 공유는 가능하며, 사용 허가는 사무국에 신청합니다.)</span></div><div class=\"art-note\">· 문의: KELI 사무국 033-248-3242 / contact@keliedu.org</div>",
+   "link": "",
+   "pinned": true,
+   "published": true,
+   "files": [],
+   "updated": "2026. 11. 9. 23시 49분 33초"
+  },
+  {
+   "id": "n5",
+   "cat": "행사 안내",
+   "title": "2026 KELI 국제 심포지엄 및 데모데이 — 스케치 영상 · 행사 사진",
+   "date": "2026.11.09",
+   "summary": "10월 20일 서울드래곤시티에서 열린 KELI 국제 심포지엄 및 데모데이의 스케치 영상(2분)과 현장 사진 55장을 공개합니다.",
+   "body": "<figure class=\"art-fig\"><video data-hd=\"content/files/2026/11/video/keli-sympo-sketch-1080p.mp4\" data-sd=\"content/files/2026/11/video/keli-sympo-sketch-720p.mp4\" controls preload=\"metadata\" playsinline poster=\"content/files/2026/11/video/keli-sympo-sketch-poster.jpg\" controlsList=\"nodownload noremoteplayback\" disablepictureinpicture oncontextmenu=\"return false\" style=\"width:100%;aspect-ratio:16/9;background:#000;border-radius:16px\" title=\"2026 KELI 국제 심포지엄 및 데모데이 스케치 영상\">이 브라우저는 동영상 재생을 지원하지 않습니다.</video><figcaption>2026 KELI 국제 심포지엄 및 데모데이 스케치 영상 (2:05, 1080p) — © 한림대학교 KELI 사무국 · 무단 복제·배포·편집 금지 · <a href=\"notice-n6.html#copyright\">저작권 안내</a></figcaption></figure><div class=\"art-sum\"><span class=\"k\">핵심 요약</span><ul class=\"art-ul\"><li>2026년 10월 20일(화) 서울드래곤시티 그랜드볼룸에서 「2026 KELI 국제 심포지엄 및 데모데이」가 열렸습니다</li><li>개막식과 KELI Alliance 발대식, 기조연설, 세션 발표, HAI Ecosystems 데모데이가 하루 동안 이어졌습니다</li><li>행사 전체를 2분으로 담은 스케치 영상과 현장 사진 55장을 올렸습니다 — 사진은 누르면 크게 보고 원본을 내려받을 수 있습니다</li></ul></div><dl class=\"art-kv\"><dt>일시</dt><dd>2026. 10. 20.(화) 09:30–17:00</dd><dt>장소</dt><dd>서울드래곤시티 3층 그랜드볼룸(서울 용산구 청파로20길 95)</dd><dt>주최·주관</dt><dd>한림대학교 · 주관 KELI 사무국(AI교육혁신원 AI교육확산센터) · AI에듀테크센터</dd><dt>주제</dt><dd>AI로 연결하는 고등교육 혁신 생태계</dd><dt>문의</dt><dd>KELI 사무국 033-248-3242 / contact@keliedu.org</dd></dl><p class=\"art-lead\">한림대학교가 글로컬대학30 사업으로 추진하는 KELI(K-University AI EdTech and Learning Initiative)의 공식 출범을 알리고, AI 기반 고등교육 혁신의 비전을 국내외 대학·기관·기업과 함께 나눈 자리였습니다. 행사 내용과 자료를 외부에서도 볼 수 있도록 스케치 영상과 현장 사진을 공개합니다.</p><h2 class=\"art-h\">행사 진행</h2><ol class=\"art-ol\"><li><strong>개막식</strong> — 개회사(고영웅 한림대학교 AI교육혁신원장), 환영사(최양희 한림대학교 총장), 축사(윤희성 학교법인 일송학원 이사장)</li><li><strong>KELI Alliance 발대식</strong> — KELI 비전 발표와 KELI Alliance 출범 선포, 참여 기관 기념 촬영</li><li><strong>기조연설</strong> — The Future of the University · 오세정 서울대학교 前총장</li><li><strong>세션 발표</strong> — HAI Ecosystems 소개, 국내외 수업 혁신 사례, Global EdTech 혁신 사례(동시통역)</li><li><strong>데모데이</strong> — HAI Ecosystems 시연·체험, KELI Marketplace 매칭 상담(10:00–17:00 상시 운영)</li></ol><figure class=\"art-fig\"><img src=\"content/files/2026/11/sympo/hero_alliance.jpg\" alt=\"KELI Alliance 발대식 기념 촬영\"><figcaption>KELI Alliance 발대식 기념 촬영 — 2026. 10. 20. 서울드래곤시티 그랜드볼룸</figcaption></figure><div class=\"art-note\">※ 영상과 사진은 한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)이 제작·촬영한 공식 기록물입니다. 보도·홍보 목적으로 쓰실 때는 출처(한림대학교 KELI)를 표기해 주시고, 영상의 복제·배포·편집은 허가 없이 할 수 없으며(<a href=\"notice-n6.html#copyright\">저작권 안내</a>), 본인이 나온 장면·사진의 삭제를 원하시면 사무국으로 알려 주시기 바랍니다.<br>· 프로그램과 발표 자료: <a href=\"event-9.html\">행사 페이지</a> · 행사 전 안내: <a href=\"notice-n4.html\">개최 안내 공지</a><br>· 문의: KELI 사무국 033-248-3242 / contact@keliedu.org</div><h2 class=\"art-h\">행사 사진</h2><p>행사 순서대로 정리했습니다. 사진을 누르면 크게 볼 수 있고, 좌우 화살표(키보드 ←→)로 넘겨 볼 수 있습니다. 크게 본 화면의 \"원본 새 창\"을 누르면 큰 그림을 내려받을 수 있습니다.</p>",
+   "link": "event-9.html",
+   "pinned": true,
+   "published": true,
+   "files": [
     {
-      "id": "nmwbobw3j",
-      "cat": "행사 안내",
-      "title": "2026-2학기 전공박람회 KELI 사무국 체험 이벤트 「나에게 딱 맞는 한림 AI 찾기」",
-      "date": "2026.11.11",
-      "summary": "한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)이 2026. 11. 18.(수) 2026학년도 2학기 전공박람회에서 이음이·이루미와 함께하는 체험 이벤트 「나에게 딱 맞는 한림 AI 찾기」를 운영합니다. 참여하신 분께는 소정의 상품을 드립니다.",
-      "body": "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%; max-width:760px; margin:0 auto; border-collapse:collapse; background-color:#ffffff;\">\n<!-- 분류·게시정보 -->\n<tbody><tr><td style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; padding:0 0 10px 0; font-size:13px; line-height:20px; color:#1682c4; font-weight:bold;\"><span style=\"display:inline-block; padding:2px 10px; border:1px solid #1682c4; border-radius:999px; font-size:12px; line-height:18px; color:#1682c4;\">행사 안내</span>&nbsp; 한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)&nbsp; <span style=\"color:#8a99ad; font-weight:normal;\">|&nbsp; 2026. 11. 11.</span></td></tr>\n<!-- 제목 -->\n<tr><td style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; padding:0 0 6px 0; font-size:24px; line-height:34px; color:#173c68; font-weight:bold;\">2026-2학기 전공박람회 KELI 사무국 체험 이벤트 「나에게 딱 맞는 한림 AI 찾기」</td></tr>\n<tr><td style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; padding:0 0 16px 0; font-size:15px; line-height:24px; color:#5b6b7f;\">KELI 마스코트 이음이·이루미와 함께 1분 만에 나와 찰떡인 한림 AI 서비스를 찾아보세요. 참여하신 분께는 소정의 상품을 드립니다.</td></tr>\n<!-- 브랜드 띠 -->\n<tr><td style=\"padding:0 0 22px 0;\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse;\"><tbody><tr><td width=\"8\" height=\"3\" style=\"width:8px; height:3px; background-color:#0B3473; font-size:0; line-height:0;\">&nbsp;</td><td width=\"8\" height=\"3\" style=\"width:8px; height:3px; background-color:#0A4691; font-size:0; line-height:0;\">&nbsp;</td><td width=\"8\" height=\"3\" style=\"width:8px; height:3px; background-color:#0658A2; font-size:0; line-height:0;\">&nbsp;</td><td width=\"8\" height=\"3\" style=\"width:8px; height:3px; background-color:#0079B2; font-size:0; line-height:0;\">&nbsp;</td><td width=\"8\" height=\"3\" style=\"width:8px; height:3px; background-color:#009BB0; font-size:0; line-height:0;\">&nbsp;</td><td width=\"8\" height=\"3\" style=\"width:8px; height:3px; background-color:#00B6AD; font-size:0; line-height:0;\">&nbsp;</td></tr></tbody></table></td></tr>\n<!-- 핵심 정보 박스 -->\n<tr><td style=\"padding:0 0 22px 0;\"><table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%; border-collapse:collapse;\"><tbody><tr><td style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; padding:16px 18px; background-color:#f4f8fb; border-left:4px solid #1682c4; font-size:15px; line-height:26px; color:#333333;\"><b style=\"color:#173c68;\">일시</b>&nbsp; 2026. 11. 18.(수) 10:00–16:30<br><b style=\"color:#173c68;\">장소</b>&nbsp; 한림대학교 레크리에이션센터 3층, 전공박람회 행정부스 AI교육확산센터(KELI 사무국) 부스<br><b style=\"color:#173c68;\">대상</b>&nbsp; 한림대학교 신·편입생, 재학생, 휴학생<br><b style=\"color:#173c68;\">참여</b>&nbsp; <b style=\"color:#3a32c3;\">사전 신청 없이 부스 현장에서 바로 참여</b> · 약 1분 소요<br><b style=\"color:#173c68;\">문의</b>&nbsp; KELI 사무국 033-248-3242 / contact@keliedu.org</td></tr></tbody></table></td></tr>\n<!-- 본문 -->\n<tr><td style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; padding:0 0 14px 0; font-size:15px; line-height:26px; color:#333333;\">안녕하십니까. 한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)입니다.</td></tr>\n<tr><td style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; padding:0 0 14px 0; font-size:15px; line-height:26px; color:#333333;\">KELI 사무국이 한림대학교 융합교육지원센터가 주관하는 2026학년도 2학기 전공박람회에 참가하여, 한림대학교가 직접 개발하고 실제 수업에서 활용하는 AI 교육 서비스 HAI Ecosystems를 재학생 여러분께 소개합니다.</td></tr>\n<tr><td style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; padding:0 0 10px 0; font-size:15px; line-height:26px; color:#333333;\">부스에서는 KELI 마스코트 이음이와 이루미가 진행하는 터치스크린 체험 「나에게 딱 맞는 한림 AI 찾기」가 운영됩니다. 다섯 가지 질문에 답하면 HAI-Tutor, HAI-GPT, HAI-Way 등 한림 AI 서비스 가운데 나에게 맞는 서비스를 추천해 드립니다. 공강 시간에 가볍게 들러 주세요.</td></tr>\n<!-- 소제목 + 2열 표 -->\n<tr><td style=\"padding:14px 0 0 0;\"><table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse;\"><tbody><tr><td height=\"1\" style=\"height:1px; background-color:#e5e5e5; font-size:0; line-height:0;\">&nbsp;</td></tr></tbody></table></td></tr>\n<tr><td style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; padding:20px 0 10px 0; font-size:17px; line-height:26px; color:#173c68; font-weight:bold;\">참여 방법</td></tr>\n<tr><td style=\"padding:0 0 22px 0;\"><table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%; border-collapse:collapse; border:1px solid #d9e3ec;\">\n<tbody><tr><td width=\"150\" valign=\"top\" style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; width:150px; padding:9px 14px; background-color:#f4f8fb; border-right:1px solid #d9e3ec; border-bottom:1px solid #d9e3ec; font-size:14px; line-height:22px; font-weight:bold; color:#173c68;\">1. 학번 입력</td><td valign=\"top\" style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; padding:9px 14px; border-bottom:1px solid #d9e3ec; font-size:14px; line-height:22px; color:#444444;\">부스 화면에서 학번을 입력하고 개인정보 수집·이용에 동의합니다.</td></tr>\n<tr><td width=\"150\" valign=\"top\" style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; width:150px; padding:9px 14px; background-color:#f4f8fb; border-right:1px solid #d9e3ec; border-bottom:1px solid #d9e3ec; font-size:14px; line-height:22px; font-weight:bold; color:#173c68;\">2. 질문 5개 응답</td><td valign=\"top\" style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; padding:9px 14px; border-bottom:1px solid #d9e3ec; font-size:14px; line-height:22px; color:#444444;\">이음이·이루미의 질문에 답하면 나에게 맞는 한림 AI 유형과 추천 서비스가 나타납니다.</td></tr>\n<tr><td width=\"150\" valign=\"top\" style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; width:150px; padding:9px 14px; background-color:#f4f8fb; border-right:1px solid #d9e3ec; border-bottom:1px solid #d9e3ec; font-size:14px; line-height:22px; font-weight:bold; color:#173c68;\">3. 인스타그램 팔로우</td><td valign=\"top\" style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; padding:9px 14px; border-bottom:1px solid #d9e3ec; font-size:14px; line-height:22px; color:#444444;\">결과 화면의 QR로 KELI 인스타그램(@hallym_keli)을 팔로우합니다.</td></tr>\n<tr><td width=\"150\" valign=\"top\" style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; width:150px; padding:9px 14px; background-color:#f4f8fb; border-right:1px solid #d9e3ec; font-size:14px; line-height:22px; font-weight:bold; color:#173c68;\">4. 상품 수령</td><td valign=\"top\" style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; padding:9px 14px; font-size:14px; line-height:22px; color:#444444;\">결과 화면과 팔로우 화면을 부스 스태프에게 보여 주시면 소정의 상품을 드립니다(1인 1회).</td></tr>\n</tbody></table></td></tr>\n<!-- 이미지 + 캡션 -->\n<tr><td align=\"center\" style=\"padding:0 0 6px 0;\"><img src=\"https://yoong0520.github.io/keli-aied.org-fair/img/keli_mascots_event.jpg\" alt=\"KELI 마스코트 이음이와 이루미\" width=\"720\" style=\"display:block; width:100%; max-width:720px; height:auto; border:1px solid #d9e3ec;\"></td></tr>\n<tr><td align=\"center\" style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; padding:0 0 22px 0; font-size:13px; line-height:20px; color:#666666;\">▲ 체험을 함께할 KELI 마스코트 이음이(EUM-I)와 이루미(IRU-MI)</td></tr>\n<!-- 버튼 (1개만) -->\n<tr><td align=\"center\" style=\"padding:0 0 24px 0;\"><a href=\"https://www.instagram.com/hallym_keli/\" target=\"_blank\" style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; display:inline-block; padding:10px 22px; background-color:#1682c4; color:#ffffff; font-size:14px; line-height:20px; font-weight:bold; text-decoration:none; border-radius:4px;\">KELI 인스타그램 미리 팔로우하기</a></td></tr>\n<!-- 참고 박스 -->\n<tr><td style=\"padding:0 0 22px 0;\"><table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%; border-collapse:collapse;\"><tbody><tr><td style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; padding:14px 16px; background-color:#f8fafc; font-size:13px; line-height:23px; color:#666666;\">· 상품은 준비된 수량이 소진되면 조기 마감될 수 있습니다.<br>· 수집한 학번은 참여 확인, 상품 지급(중복 수령 방지), 참여 통계에만 사용하며 행사 종료 후 1개월 이내 파기합니다.<br>· HAI Ecosystems 서비스 소개와 데모 영상: https://keli-aied.org<br>· 이번 체험 상품은 전공박람회 공식 기념품(전공 상담 4회 및 설문조사 완료 시 지급)과 별도로 KELI 사무국 부스에서 드립니다.<br>· 전공박람회 전체 안내: 한림대학교 홈페이지 공지 「2026학년도 2학기 전공박람회 개최 안내」(2026. 11. 5.)<br>· 일정과 내용은 주최 측 사정에 따라 변경될 수 있습니다.<br>· 문의: KELI 사무국 033-248-3242 / contact@keliedu.org</td></tr></tbody></table></td></tr>\n<!-- 서명 -->\n<tr><td style=\"padding:0 0 14px 0;\"><table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse;\"><tbody><tr><td height=\"1\" style=\"height:1px; background-color:#d9e3ec; font-size:0; line-height:0;\">&nbsp;</td></tr></tbody></table></td></tr>\n<tr><td style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; font-size:14px; line-height:22px; color:#173c68; font-weight:bold;\">한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)</td></tr>\n<tr><td style=\"font-family:'Pretendard','Noto Sans KR','나눔고딕','NanumGothic','Apple SD Gothic Neo',sans-serif; font-size:12px; line-height:20px; color:#70809A;\">KELI (K-University AI EduTech and Learning Initiative) Secretariat · Hallym University<br>E. contact@keliedu.org &nbsp;|&nbsp; W. keli-aied.org</td></tr>\n</tbody></table>",
-      "link": "",
-      "pinned": false,
-      "published": true,
-      "files": [],
-      "updated": "2026. 11. 11. 14시 30분 18초"
+     "name": "01_DSC_4995.jpg",
+     "url": "content/files/2026/11/sympo/01_DSC_4995.jpg",
+     "size": "171 KB",
+     "caption": "행사장 입구 — 2026 KELI 국제 심포지엄 및 데모데이(서울드래곤시티 그랜드볼룸)"
     },
     {
-      "id": "n6",
-      "cat": "일반",
-      "title": "KELI Alliance 출범 · 브랜딩 영상 공개",
-      "date": "2026.11.09",
-      "summary": "KELI 사무국이 제작한 KELI Alliance 출범 브랜딩 영상(41초)을 공개합니다. 허가 없는 복제·배포·편집은 저작권법에 따라 금지됩니다.",
-      "body": "<figure class=\"art-fig\"><video data-hd=\"content/files/2026/11/video/keli-alliance-brand-1080p.mp4\" data-sd=\"content/files/2026/11/video/keli-alliance-brand-720p.mp4\" controls=\"\" preload=\"metadata\" playsinline=\"\" poster=\"content/files/2026/11/video/keli-alliance-brand-poster.jpg\" controlslist=\"nodownload noremoteplayback\" disablepictureinpicture=\"\" oncontextmenu=\"return false\" style=\"width:100%;aspect-ratio:16/9;background:#000;border-radius:16px\" title=\"KELI Alliance 출범 · 브랜딩 영상\">이 브라우저는 동영상 재생을 지원하지 않습니다.</video><figcaption>KELI Alliance 출범 · 브랜딩 영상 (0:41, 1080p) — © 한림대학교 KELI 사무국</figcaption></figure><div class=\"art-sum\"><span class=\"k\">핵심 요약</span><ul class=\"art-ul\"><li>2026년 10월 20일 KELI Alliance 출범에 맞추어 KELI 사무국이 기획·제작한 브랜딩 영상(41초)을 공개합니다</li><li>\"한림대학교의 AI 교육 경험이 다른 대학으로 이어지는 AI 교육 플랫폼, 더 넓은 세상으로\" — KELI가 지향하는 연결과 확산의 비전을 담았습니다</li><li>이 영상은 저작권법으로 보호되는 영상저작물입니다 — 허가 없는 복제·배포·전송·편집은 금지되며, 사용을 원하시면 사무국에 사전 허가를 받아 주세요</li></ul></div><dl class=\"art-kv\"><dt>제목</dt><dd>KELI Alliance 출범 · 브랜딩 영상</dd><dt>기획·제작</dt><dd>한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)</dd><dt>길이·규격</dt><dd>41초 · 1920×1080(16:9) · 국문 자막</dd><dt>공개일</dt><dd>2026. 11. 9.</dd><dt>저작권</dt><dd>© 2026 한림대학교. All rights reserved.</dd></dl><h2 class=\"art-h\">영상 소개</h2><p class=\"art-lead\">\"AI로 새로운 교육 — 한림대학교의 AI 교육 경험이 다른 대학으로 이어지는 AI 교육 플랫폼, 더 넓은 세상으로.\" 영상은 한림대학교가 개발해 수업에서 검증한 HAI Ecosystems가 강원을 넘어 전국의 대학으로, 다시 세계로 연결되는 과정을 빛의 네트워크로 표현했습니다. 마지막 장면의 KELI 로고와 \"AI로 연결되는 새로운 교육(CONNECT)\"은 KELI Alliance가 함께 만들어 갈 AI 기반 고등교육 혁신 생태계를 뜻합니다.</p><p>영상은 <a href=\"index.html#brand-video\">KELI 플랫폼 첫 화면</a>과 <a href=\"about.html#brand-video\">KELI 소개</a> 화면에서도 볼 수 있습니다. 심포지엄 현장 사진은 <a href=\"notice-n5.html\">행사 사진 공지</a>를 참고해 주세요.</p><h2 class=\"art-h\">저작권 안내 및 무단 사용 금지 경고</h2><div class=\"art-note\" id=\"copyright\"><strong>1. 권리 귀속</strong><br>이 영상은 한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)이 기획·제작하여 한림대학교 명의로 공표한 업무상저작물로서, 「저작권법」 제4조 제1항 제7호의 영상저작물에 해당하며 저작권(저작재산권 및 저작인격권)은 같은 법 제9조에 따라 한림대학교에 있습니다.<br><br><strong>2. 금지되는 행위</strong><br>저작권자의 사전 서면 허가 없이 이 영상의 전부 또는 일부를 다음과 같이 이용하는 행위는 「저작권법」이 정한 저작재산권(제16조 복제권, 제17조 공연권, 제18조 공중송신권, 제19조 전시권, 제20조 배포권, 제22조 2차적저작물작성권)과 저작인격권(제12조 성명표시권, 제13조 동일성유지권)의 침해로서 금지됩니다.<br>· 내려받기·화면 녹화 등 복제, 다른 사이트·SNS·동영상 플랫폼 업로드 등 전송·배포<br>· 자르기, 로고·자막·워터마크 제거, 음악·내레이션 교체, 다른 영상과 합성 등 변경·편집(2차적저작물 작성)<br>· 광고·홍보·강의 상품 등 영리 목적 이용, 타 기관·기업의 명의로 사용<br>· AI 모델 학습 데이터 등으로의 수집·이용<br><br><strong>3. 위반 시 책임</strong><br>위 행위를 한 자는 「저작권법」 제136조 제1항에 따라 5년 이하의 징역 또는 5천만 원 이하의 벌금에 처해지거나 이를 병과할 수 있으며, 저작인격권 침해는 같은 조 제2항에 따라 3년 이하의 징역 또는 3천만 원 이하의 벌금에 처해질 수 있습니다. 아울러 같은 법 제123조(침해의 정지 등 청구) 및 제125조(손해배상의 청구)에 따른 민사상 책임을 집니다. 한림대학교는 무단 사용을 확인하는 경우 게시 중단 요청, 형사 고소, 손해배상 청구 등 법적 조치를 취할 수 있습니다.<br><br><strong>4. 허용 범위와 이용 허가 신청</strong><br>개인이 이 페이지에서 시청하는 것과, 이 페이지의 주소(https://keli-aied.org/notice-n6.html)를 공유하는 것은 허용됩니다. 교육·보도·학술 등 목적으로 영상 파일이 필요하시면 KELI 사무국(033-248-3242, contact@keliedu.org)에 사용 목적·범위·기간을 적어 사전 허가를 신청해 주시기 바랍니다. 허가를 받은 경우에도 출처(\"한림대학교 KELI\")를 표기하고 영상을 변경 없이 사용해야 합니다.</div><div class=\"art-note\" lang=\"en\"><strong>Copyright Notice (English)</strong><br>© 2026 Hallym University. All rights reserved. This video was planned and produced by the KELI Office (Center for AI Education Diffusion, Institute for AI Education Innovation, Hallym University) and is a cinematographic work protected under the Copyright Act of the Republic of Korea (Article 4(1)(vii); authorship vests in Hallym University under Article 9). Without the prior written permission of the copyright holder, reproduction (including downloading or screen recording), distribution, transmission or uploading to any website or platform, public performance, alteration or editing (including removal of logos, captions or watermarks), commercial use, or use as AI training data of all or any part of this video is prohibited. Infringement may be punished by imprisonment of up to five years or a fine of up to KRW 50 million (Article 136), and is subject to civil remedies including injunction and damages (Articles 123 and 125). Viewing on this page and sharing its URL are permitted. For permission, contact the KELI Office at +82-33-248-3242 or contact@keliedu.org.<br><span class=\"muted small\">(국문 요지: 이 영상은 한림대학교의 저작물로, 허가 없는 복제·배포·전송·편집·영리 이용·AI 학습 이용을 금지하며, 위반 시 저작권법에 따른 형사·민사 책임이 따릅니다. 이 페이지에서 보기와 주소 공유는 가능하며, 사용 허가는 사무국에 신청합니다.)</span></div><div class=\"art-note\">· 문의: KELI 사무국 033-248-3242 / contact@keliedu.org</div>",
-      "link": "",
-      "pinned": true,
-      "published": true,
-      "files": [],
-      "updated": "2026. 11. 9. 23시 49분 33초"
+     "name": "02_DSC_5680.jpg",
+     "url": "content/files/2026/11/sympo/02_DSC_5680.jpg",
+     "size": "197 KB",
+     "caption": "등록·입장(그랜드볼룸 한라 로비)"
     },
     {
-      "id": "n5",
-      "cat": "행사 안내",
-      "title": "2026 KELI 국제 심포지엄 및 데모데이 — 스케치 영상 · 행사 사진",
-      "date": "2026.11.09",
-      "summary": "10월 20일 서울드래곤시티에서 열린 KELI 국제 심포지엄 및 데모데이의 스케치 영상(2분)과 현장 사진 55장을 공개합니다.",
-      "body": "<figure class=\"art-fig\"><video data-hd=\"content/files/2026/11/video/keli-sympo-sketch-1080p.mp4\" data-sd=\"content/files/2026/11/video/keli-sympo-sketch-720p.mp4\" controls preload=\"metadata\" playsinline poster=\"content/files/2026/11/video/keli-sympo-sketch-poster.jpg\" controlsList=\"nodownload noremoteplayback\" disablepictureinpicture oncontextmenu=\"return false\" style=\"width:100%;aspect-ratio:16/9;background:#000;border-radius:16px\" title=\"2026 KELI 국제 심포지엄 및 데모데이 스케치 영상\">이 브라우저는 동영상 재생을 지원하지 않습니다.</video><figcaption>2026 KELI 국제 심포지엄 및 데모데이 스케치 영상 (2:05, 1080p) — © 한림대학교 KELI 사무국 · 무단 복제·배포·편집 금지 · <a href=\"notice-n6.html#copyright\">저작권 안내</a></figcaption></figure><div class=\"art-sum\"><span class=\"k\">핵심 요약</span><ul class=\"art-ul\"><li>2026년 10월 20일(화) 서울드래곤시티 그랜드볼룸에서 「2026 KELI 국제 심포지엄 및 데모데이」가 열렸습니다</li><li>개막식과 KELI Alliance 발대식, 기조연설, 세션 발표, HAI Ecosystems 데모데이가 하루 동안 이어졌습니다</li><li>행사 전체를 2분으로 담은 스케치 영상과 현장 사진 55장을 올렸습니다 — 사진은 누르면 크게 보고 원본을 내려받을 수 있습니다</li></ul></div><dl class=\"art-kv\"><dt>일시</dt><dd>2026. 10. 20.(화) 09:30–17:00</dd><dt>장소</dt><dd>서울드래곤시티 3층 그랜드볼룸(서울 용산구 청파로20길 95)</dd><dt>주최·주관</dt><dd>한림대학교 · 주관 KELI 사무국(AI교육혁신원 AI교육확산센터) · AI에듀테크센터</dd><dt>주제</dt><dd>AI로 연결하는 고등교육 혁신 생태계</dd><dt>문의</dt><dd>KELI 사무국 033-248-3242 / contact@keliedu.org</dd></dl><p class=\"art-lead\">한림대학교가 글로컬대학30 사업으로 추진하는 KELI(K-University AI EdTech and Learning Initiative)의 공식 출범을 알리고, AI 기반 고등교육 혁신의 비전을 국내외 대학·기관·기업과 함께 나눈 자리였습니다. 행사 내용과 자료를 외부에서도 볼 수 있도록 스케치 영상과 현장 사진을 공개합니다.</p><h2 class=\"art-h\">행사 진행</h2><ol class=\"art-ol\"><li><strong>개막식</strong> — 개회사(고영웅 한림대학교 AI교육혁신원장), 환영사(최양희 한림대학교 총장), 축사(윤희성 학교법인 일송학원 이사장)</li><li><strong>KELI Alliance 발대식</strong> — KELI 비전 발표와 KELI Alliance 출범 선포, 참여 기관 기념 촬영</li><li><strong>기조연설</strong> — The Future of the University · 오세정 서울대학교 前총장</li><li><strong>세션 발표</strong> — HAI Ecosystems 소개, 국내외 수업 혁신 사례, Global EdTech 혁신 사례(동시통역)</li><li><strong>데모데이</strong> — HAI Ecosystems 시연·체험, KELI Marketplace 매칭 상담(10:00–17:00 상시 운영)</li></ol><figure class=\"art-fig\"><img src=\"content/files/2026/11/sympo/hero_alliance.jpg\" alt=\"KELI Alliance 발대식 기념 촬영\"><figcaption>KELI Alliance 발대식 기념 촬영 — 2026. 10. 20. 서울드래곤시티 그랜드볼룸</figcaption></figure><div class=\"art-note\">※ 영상과 사진은 한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)이 제작·촬영한 공식 기록물입니다. 보도·홍보 목적으로 쓰실 때는 출처(한림대학교 KELI)를 표기해 주시고, 영상의 복제·배포·편집은 허가 없이 할 수 없으며(<a href=\"notice-n6.html#copyright\">저작권 안내</a>), 본인이 나온 장면·사진의 삭제를 원하시면 사무국으로 알려 주시기 바랍니다.<br>· 프로그램과 발표 자료: <a href=\"event-9.html\">행사 페이지</a> · 행사 전 안내: <a href=\"notice-n4.html\">개최 안내 공지</a><br>· 문의: KELI 사무국 033-248-3242 / contact@keliedu.org</div><h2 class=\"art-h\">행사 사진</h2><p>행사 순서대로 정리했습니다. 사진을 누르면 크게 볼 수 있고, 좌우 화살표(키보드 ←→)로 넘겨 볼 수 있습니다. 크게 본 화면의 \"원본 새 창\"을 누르면 큰 그림을 내려받을 수 있습니다.</p>",
-      "link": "event-9.html",
-      "pinned": true,
-      "published": true,
-      "files": [
-        {
-          "name": "01_DSC_4995.jpg",
-          "url": "content/files/2026/11/sympo/01_DSC_4995.jpg",
-          "size": "171 KB",
-          "caption": "행사장 입구 — 2026 KELI 국제 심포지엄 및 데모데이(서울드래곤시티 그랜드볼룸)"
-        },
-        {
-          "name": "02_DSC_5680.jpg",
-          "url": "content/files/2026/11/sympo/02_DSC_5680.jpg",
-          "size": "197 KB",
-          "caption": "등록·입장(그랜드볼룸 한라 로비)"
-        },
-        {
-          "name": "03_DSC_4997.jpg",
-          "url": "content/files/2026/11/sympo/03_DSC_4997.jpg",
-          "size": "304 KB",
-          "caption": "HAI Ecosystems 데모데이 부스 전경"
-        },
-        {
-          "name": "04_DSC_4998.jpg",
-          "url": "content/files/2026/11/sympo/04_DSC_4998.jpg",
-          "size": "268 KB",
-          "caption": "데모데이 부스 — HAI-LENS"
-        },
-        {
-          "name": "05_DSC_4999.jpg",
-          "url": "content/files/2026/11/sympo/05_DSC_4999.jpg",
-          "size": "271 KB",
-          "caption": "데모데이 부스 — HAI-Check"
-        },
-        {
-          "name": "06_DSC_5000.jpg",
-          "url": "content/files/2026/11/sympo/06_DSC_5000.jpg",
-          "size": "156 KB",
-          "caption": "데모데이 부스 시연"
-        },
-        {
-          "name": "07_DSC_5010.jpg",
-          "url": "content/files/2026/11/sympo/07_DSC_5010.jpg",
-          "size": "128 KB",
-          "caption": "데모데이 부스 시연 — AI 학습 코칭"
-        },
-        {
-          "name": "08_DSC_5011.jpg",
-          "url": "content/files/2026/11/sympo/08_DSC_5011.jpg",
-          "size": "205 KB",
-          "caption": "데모데이 부스 — HAI-LENS 시연"
-        },
-        {
-          "name": "09_DSC_5021.jpg",
-          "url": "content/files/2026/11/sympo/09_DSC_5021.jpg",
-          "size": "198 KB",
-          "caption": "개막식 사회"
-        },
-        {
-          "name": "10_DSC_5025.jpg",
-          "url": "content/files/2026/11/sympo/10_DSC_5025.jpg",
-          "size": "320 KB",
-          "caption": "개막식 전경"
-        },
-        {
-          "name": "11_DSC_5030.jpg",
-          "url": "content/files/2026/11/sympo/11_DSC_5030.jpg",
-          "size": "268 KB",
-          "caption": "내빈 소개"
-        },
-        {
-          "name": "12_DSC_5106.jpg",
-          "url": "content/files/2026/11/sympo/12_DSC_5106.jpg",
-          "size": "232 KB",
-          "caption": "개회사 — 고영웅 한림대학교 AI교육혁신원장"
-        },
-        {
-          "name": "13_DSC_5154.jpg",
-          "url": "content/files/2026/11/sympo/13_DSC_5154.jpg",
-          "size": "172 KB",
-          "caption": "개회사 — 고영웅 한림대학교 AI교육혁신원장"
-        },
-        {
-          "name": "14_DSC_5194.jpg",
-          "url": "content/files/2026/11/sympo/14_DSC_5194.jpg",
-          "size": "159 KB",
-          "caption": "환영사 — 최양희 한림대학교 총장"
-        },
-        {
-          "name": "15_DSC_5197.jpg",
-          "url": "content/files/2026/11/sympo/15_DSC_5197.jpg",
-          "size": "226 KB",
-          "caption": "환영사 — 최양희 한림대학교 총장"
-        },
-        {
-          "name": "16_DSC_5201.jpg",
-          "url": "content/files/2026/11/sympo/16_DSC_5201.jpg",
-          "size": "230 KB",
-          "caption": "환영사 전경"
-        },
-        {
-          "name": "17_DSC_5289.jpg",
-          "url": "content/files/2026/11/sympo/17_DSC_5289.jpg",
-          "size": "199 KB",
-          "caption": "축사 — 윤희성 학교법인 일송학원 이사장"
-        },
-        {
-          "name": "18_DSC_5307.jpg",
-          "url": "content/files/2026/11/sympo/18_DSC_5307.jpg",
-          "size": "175 KB",
-          "caption": "축사 — 윤희성 학교법인 일송학원 이사장"
-        },
-        {
-          "name": "19_DSC_5367.jpg",
-          "url": "content/files/2026/11/sympo/19_DSC_5367.jpg",
-          "size": "288 KB",
-          "caption": "행사장 전경"
-        },
-        {
-          "name": "20_DSC_5436.jpg",
-          "url": "content/files/2026/11/sympo/20_DSC_5436.jpg",
-          "size": "349 KB",
-          "caption": "행사장 전경(무대에서 본 객석)"
-        },
-        {
-          "name": "21_DSC_5371.jpg",
-          "url": "content/files/2026/11/sympo/21_DSC_5371.jpg",
-          "size": "248 KB",
-          "caption": "KELI Alliance 출범 선포(2026. 10. 20.)"
-        },
-        {
-          "name": "22_DSC_5412.jpg",
-          "url": "content/files/2026/11/sympo/22_DSC_5412.jpg",
-          "size": "242 KB",
-          "caption": "KELI Alliance 발대식"
-        },
-        {
-          "name": "23_DSC_5463.jpg",
-          "url": "content/files/2026/11/sympo/23_DSC_5463.jpg",
-          "size": "289 KB",
-          "caption": "KELI Alliance 발대식 기념 촬영"
-        },
-        {
-          "name": "24_DSC_5483.jpg",
-          "url": "content/files/2026/11/sympo/24_DSC_5483.jpg",
-          "size": "109 KB",
-          "caption": "기조연설 — 오세정 서울대학교 前총장"
-        },
-        {
-          "name": "25_DSC_5486.jpg",
-          "url": "content/files/2026/11/sympo/25_DSC_5486.jpg",
-          "size": "191 KB",
-          "caption": "기조연설 — 오세정 서울대학교 前총장 「The Future of the University」"
-        },
-        {
-          "name": "26_DSC_5494.jpg",
-          "url": "content/files/2026/11/sympo/26_DSC_5494.jpg",
-          "size": "140 KB",
-          "caption": "기조연설 — 오세정 서울대학교 前총장"
-        },
-        {
-          "name": "27_DSC_5518.jpg",
-          "url": "content/files/2026/11/sympo/27_DSC_5518.jpg",
-          "size": "201 KB",
-          "caption": "기조연설"
-        },
-        {
-          "name": "28_DSC_5527.jpg",
-          "url": "content/files/2026/11/sympo/28_DSC_5527.jpg",
-          "size": "189 KB",
-          "caption": "기조연설 — 생성형 AI의 확산과 대학"
-        },
-        {
-          "name": "29_DSC_5534.jpg",
-          "url": "content/files/2026/11/sympo/29_DSC_5534.jpg",
-          "size": "321 KB",
-          "caption": "기조연설 전경"
-        },
-        {
-          "name": "30_DSC_5536.jpg",
-          "url": "content/files/2026/11/sympo/30_DSC_5536.jpg",
-          "size": "173 KB",
-          "caption": "언론 인터뷰"
-        },
-        {
-          "name": "31_DSC_5548.jpg",
-          "url": "content/files/2026/11/sympo/31_DSC_5548.jpg",
-          "size": "187 KB",
-          "caption": "언론 인터뷰"
-        },
-        {
-          "name": "32_DSC_5553.jpg",
-          "url": "content/files/2026/11/sympo/32_DSC_5553.jpg",
-          "size": "273 KB",
-          "caption": "데모데이 부스 관람"
-        },
-        {
-          "name": "33_DSC_5560.jpg",
-          "url": "content/files/2026/11/sympo/33_DSC_5560.jpg",
-          "size": "228 KB",
-          "caption": "데모데이 부스 관람"
-        },
-        {
-          "name": "34_DSC_5573.jpg",
-          "url": "content/files/2026/11/sympo/34_DSC_5573.jpg",
-          "size": "139 KB",
-          "caption": "데모데이 부스 설명"
-        },
-        {
-          "name": "35_DSC_5584.jpg",
-          "url": "content/files/2026/11/sympo/35_DSC_5584.jpg",
-          "size": "197 KB",
-          "caption": "데모데이 부스 관람"
-        },
-        {
-          "name": "36_DSC_5595.jpg",
-          "url": "content/files/2026/11/sympo/36_DSC_5595.jpg",
-          "size": "142 KB",
-          "caption": "내빈 부스 투어"
-        },
-        {
-          "name": "37_DSC_5612.jpg",
-          "url": "content/files/2026/11/sympo/37_DSC_5612.jpg",
-          "size": "217 KB",
-          "caption": "내빈 부스 투어 — HAI-LRS"
-        },
-        {
-          "name": "38_DSC_5616.jpg",
-          "url": "content/files/2026/11/sympo/38_DSC_5616.jpg",
-          "size": "175 KB",
-          "caption": "내빈 부스 투어 — HAI-LRS"
-        },
-        {
-          "name": "39_DSC_5625.jpg",
-          "url": "content/files/2026/11/sympo/39_DSC_5625.jpg",
-          "size": "108 KB",
-          "caption": "내빈 부스 투어"
-        },
-        {
-          "name": "40_DSC_5635.jpg",
-          "url": "content/files/2026/11/sympo/40_DSC_5635.jpg",
-          "size": "195 KB",
-          "caption": "참가자 부스 체험 — HAI-LRS · HAI-LENS"
-        },
-        {
-          "name": "41_DSC_5652.jpg",
-          "url": "content/files/2026/11/sympo/41_DSC_5652.jpg",
-          "size": "103 KB",
-          "caption": "데모데이 부스 시연 — HAI-Check"
-        },
-        {
-          "name": "42_DSC_5694.jpg",
-          "url": "content/files/2026/11/sympo/42_DSC_5694.jpg",
-          "size": "213 KB",
-          "caption": "행사장 로비"
-        },
-        {
-          "name": "43_DSC_5705.jpg",
-          "url": "content/files/2026/11/sympo/43_DSC_5705.jpg",
-          "size": "262 KB",
-          "caption": "세션 발표 — HAI Ecosystems 소개"
-        },
-        {
-          "name": "44_DSC_5720.jpg",
-          "url": "content/files/2026/11/sympo/44_DSC_5720.jpg",
-          "size": "217 KB",
-          "caption": "세션 발표 — HAI-Research"
-        },
-        {
-          "name": "45_DSC_5721.jpg",
-          "url": "content/files/2026/11/sympo/45_DSC_5721.jpg",
-          "size": "259 KB",
-          "caption": "세션 발표 — HAI-Prof"
-        },
-        {
-          "name": "46_DSC_5722.jpg",
-          "url": "content/files/2026/11/sympo/46_DSC_5722.jpg",
-          "size": "321 KB",
-          "caption": "세션 발표 — 공통기반 플랫폼(LMS 중심 연동)"
-        },
-        {
-          "name": "47_DSC_5736.jpg",
-          "url": "content/files/2026/11/sympo/47_DSC_5736.jpg",
-          "size": "286 KB",
-          "caption": "세션 발표"
-        },
-        {
-          "name": "48_DSC_5759.jpg",
-          "url": "content/files/2026/11/sympo/48_DSC_5759.jpg",
-          "size": "161 KB",
-          "caption": "세션 발표"
-        },
-        {
-          "name": "49_DSC_5778.jpg",
-          "url": "content/files/2026/11/sympo/49_DSC_5778.jpg",
-          "size": "132 KB",
-          "caption": "세션 발표"
-        },
-        {
-          "name": "50_DSC_5816.jpg",
-          "url": "content/files/2026/11/sympo/50_DSC_5816.jpg",
-          "size": "114 KB",
-          "caption": "세션 발표"
-        },
-        {
-          "name": "51_DSC_5827.jpg",
-          "url": "content/files/2026/11/sympo/51_DSC_5827.jpg",
-          "size": "120 KB",
-          "caption": "세션 발표 — 의학교육 AI 모듈(Virtual Patient · Q-bank)"
-        },
-        {
-          "name": "52_DSC_5837.jpg",
-          "url": "content/files/2026/11/sympo/52_DSC_5837.jpg",
-          "size": "212 KB",
-          "caption": "세션 발표 — 역량중심 교육과정과 AI 모듈"
-        },
-        {
-          "name": "53_DSC_5921.jpg",
-          "url": "content/files/2026/11/sympo/53_DSC_5921.jpg",
-          "size": "95 KB",
-          "caption": "세션 발표"
-        },
-        {
-          "name": "54_DSC_5938.jpg",
-          "url": "content/files/2026/11/sympo/54_DSC_5938.jpg",
-          "size": "175 KB",
-          "caption": "무대 발표 — 고영웅 한림대학교 AI교육혁신원장"
-        },
-        {
-          "name": "55_DSC_5966.jpg",
-          "url": "content/files/2026/11/sympo/55_DSC_5966.jpg",
-          "size": "155 KB",
-          "caption": "무대 발표 — 고영웅 한림대학교 AI교육혁신원장"
-        }
-      ],
-      "updated": "2026-11-09T15:19:37+09:00"
+     "name": "03_DSC_4997.jpg",
+     "url": "content/files/2026/11/sympo/03_DSC_4997.jpg",
+     "size": "304 KB",
+     "caption": "HAI Ecosystems 데모데이 부스 전경"
     },
     {
-      "id": "n4",
-      "cat": "행사 안내",
-      "title": "2026 KELI 국제 심포지엄 개최 안내",
-      "date": "2026.09.10",
-      "body": "<dl class=\"art-kv\"><dt>일시</dt><dd>2026. 10. 20.(화) 09:30–17:00</dd><dt>장소</dt><dd>서울드래곤시티 3층 그랜드볼룸 (서울 용산구 청파로20길 95)</dd><dt>대상</dt><dd>대학 교원·교육 관계자, 에듀테크 기업·기관, 정부·공공, 학생</dd><dt>주최</dt><dd>한림대학교 · 주관 KELI 사무국(AI교육혁신원 AI교육확산센터)</dd><dt>참가</dt><dd><strong>참가비 무료</strong> · 사전 등록 후 현장 등록 가능</dd><dt>문의</dt><dd>KELI 사무국 033-248-3242 / contact@keliedu.org</dd></dl><p class=\"art-lead\">글로컬대학30 사업의 일환으로 KELI를 공식 론칭하고, AI 기반 고등교육 혁신의 비전과 추진 방향을 국내외 전문가와 함께 나누는 자리입니다.</p><p>안녕하십니까. 한림대학교 AI교육혁신원 KELI 사무국입니다.</p><p>「2026 KELI 국제 심포지엄 및 데모데이」는 'AI로 연결하는 고등교육 혁신 생태계'를 주제로 열립니다. 기조연설과 국내외 사례 발표를 통해 AI 시대 고등교육의 새로운 방향을 논의하고, 한림대학교가 직접 개발해 수업에서 검증한 AI 교육 서비스 HAI Ecosystems를 소개합니다. 여러 대학과 기관이 함께하는 KELI Alliance의 출범도 이날 선포됩니다.</p><h2 class=\"art-h\">프로그램</h2><div class=\"tbl-wrap\"><table class=\"tbl\"><thead><tr><th>구분</th><th>내용</th></tr></thead><tbody><tr><td>KELI Alliance 발대식</td><td>KELI 비전 발표 및 KELI Alliance 출범 선포</td></tr><tr><td>기조연설</td><td>The Future of the University · 오세정 서울대학교 전 총장</td></tr><tr><td>세션 발표</td><td>HAI Ecosystems 소개와 국내외 수업 혁신 사례, Global EdTech 혁신 사례(동시통역)</td></tr><tr><td>데모데이</td><td>HAI Ecosystems 시연·체험, KELI Marketplace 매칭 상담 (10:00–17:00 상시 운영)</td></tr></tbody></table></div><h2 class=\"art-h\">참가 안내</h2><p>데모데이는 하루 종일 자유롭게 둘러보실 수 있으며, 서비스별 담당자가 현장에서 직접 시연하고 도입을 상담합니다. 프로그램과 발표 자료는 행사 페이지에서 볼 수 있습니다.</p><p><a class=\"art-btn\" href=\"event-9.html\">행사 페이지 · 프로그램과 발표 자료</a></p><div class=\"art-note\">※ 일정과 발표 주제·발표자는 주최 측 사정에 따라 바뀔 수 있습니다.<br>· 행사 전 데모 영상 미리 보기: <a href=\"demos.html\">전체 데모 영상</a><br>· 문의: KELI 사무국 033-248-3242 / contact@keliedu.org</div>",
-      "link": "",
-      "pinned": false,
-      "published": true,
-      "files": [],
-      "summary": "AI로 연결하는 고등교육 혁신 생태계 — KELI 공식 론칭과 HAI Ecosystems 데모데이",
-      "updated": "2026. 11. 03. 21:17"
+     "name": "04_DSC_4998.jpg",
+     "url": "content/files/2026/11/sympo/04_DSC_4998.jpg",
+     "size": "268 KB",
+     "caption": "데모데이 부스 — HAI-LENS"
+    },
+    {
+     "name": "05_DSC_4999.jpg",
+     "url": "content/files/2026/11/sympo/05_DSC_4999.jpg",
+     "size": "271 KB",
+     "caption": "데모데이 부스 — HAI-Check"
+    },
+    {
+     "name": "06_DSC_5000.jpg",
+     "url": "content/files/2026/11/sympo/06_DSC_5000.jpg",
+     "size": "156 KB",
+     "caption": "데모데이 부스 시연"
+    },
+    {
+     "name": "07_DSC_5010.jpg",
+     "url": "content/files/2026/11/sympo/07_DSC_5010.jpg",
+     "size": "128 KB",
+     "caption": "데모데이 부스 시연 — AI 학습 코칭"
+    },
+    {
+     "name": "08_DSC_5011.jpg",
+     "url": "content/files/2026/11/sympo/08_DSC_5011.jpg",
+     "size": "205 KB",
+     "caption": "데모데이 부스 — HAI-LENS 시연"
+    },
+    {
+     "name": "09_DSC_5021.jpg",
+     "url": "content/files/2026/11/sympo/09_DSC_5021.jpg",
+     "size": "198 KB",
+     "caption": "개막식 사회"
+    },
+    {
+     "name": "10_DSC_5025.jpg",
+     "url": "content/files/2026/11/sympo/10_DSC_5025.jpg",
+     "size": "320 KB",
+     "caption": "개막식 전경"
+    },
+    {
+     "name": "11_DSC_5030.jpg",
+     "url": "content/files/2026/11/sympo/11_DSC_5030.jpg",
+     "size": "268 KB",
+     "caption": "내빈 소개"
+    },
+    {
+     "name": "12_DSC_5106.jpg",
+     "url": "content/files/2026/11/sympo/12_DSC_5106.jpg",
+     "size": "232 KB",
+     "caption": "개회사 — 고영웅 한림대학교 AI교육혁신원장"
+    },
+    {
+     "name": "13_DSC_5154.jpg",
+     "url": "content/files/2026/11/sympo/13_DSC_5154.jpg",
+     "size": "172 KB",
+     "caption": "개회사 — 고영웅 한림대학교 AI교육혁신원장"
+    },
+    {
+     "name": "14_DSC_5194.jpg",
+     "url": "content/files/2026/11/sympo/14_DSC_5194.jpg",
+     "size": "159 KB",
+     "caption": "환영사 — 최양희 한림대학교 총장"
+    },
+    {
+     "name": "15_DSC_5197.jpg",
+     "url": "content/files/2026/11/sympo/15_DSC_5197.jpg",
+     "size": "226 KB",
+     "caption": "환영사 — 최양희 한림대학교 총장"
+    },
+    {
+     "name": "16_DSC_5201.jpg",
+     "url": "content/files/2026/11/sympo/16_DSC_5201.jpg",
+     "size": "230 KB",
+     "caption": "환영사 전경"
+    },
+    {
+     "name": "17_DSC_5289.jpg",
+     "url": "content/files/2026/11/sympo/17_DSC_5289.jpg",
+     "size": "199 KB",
+     "caption": "축사 — 윤희성 학교법인 일송학원 이사장"
+    },
+    {
+     "name": "18_DSC_5307.jpg",
+     "url": "content/files/2026/11/sympo/18_DSC_5307.jpg",
+     "size": "175 KB",
+     "caption": "축사 — 윤희성 학교법인 일송학원 이사장"
+    },
+    {
+     "name": "19_DSC_5367.jpg",
+     "url": "content/files/2026/11/sympo/19_DSC_5367.jpg",
+     "size": "288 KB",
+     "caption": "행사장 전경"
+    },
+    {
+     "name": "20_DSC_5436.jpg",
+     "url": "content/files/2026/11/sympo/20_DSC_5436.jpg",
+     "size": "349 KB",
+     "caption": "행사장 전경(무대에서 본 객석)"
+    },
+    {
+     "name": "21_DSC_5371.jpg",
+     "url": "content/files/2026/11/sympo/21_DSC_5371.jpg",
+     "size": "248 KB",
+     "caption": "KELI Alliance 출범 선포(2026. 10. 20.)"
+    },
+    {
+     "name": "22_DSC_5412.jpg",
+     "url": "content/files/2026/11/sympo/22_DSC_5412.jpg",
+     "size": "242 KB",
+     "caption": "KELI Alliance 발대식"
+    },
+    {
+     "name": "23_DSC_5463.jpg",
+     "url": "content/files/2026/11/sympo/23_DSC_5463.jpg",
+     "size": "289 KB",
+     "caption": "KELI Alliance 발대식 기념 촬영"
+    },
+    {
+     "name": "24_DSC_5483.jpg",
+     "url": "content/files/2026/11/sympo/24_DSC_5483.jpg",
+     "size": "109 KB",
+     "caption": "기조연설 — 오세정 서울대학교 前총장"
+    },
+    {
+     "name": "25_DSC_5486.jpg",
+     "url": "content/files/2026/11/sympo/25_DSC_5486.jpg",
+     "size": "191 KB",
+     "caption": "기조연설 — 오세정 서울대학교 前총장 「The Future of the University」"
+    },
+    {
+     "name": "26_DSC_5494.jpg",
+     "url": "content/files/2026/11/sympo/26_DSC_5494.jpg",
+     "size": "140 KB",
+     "caption": "기조연설 — 오세정 서울대학교 前총장"
+    },
+    {
+     "name": "27_DSC_5518.jpg",
+     "url": "content/files/2026/11/sympo/27_DSC_5518.jpg",
+     "size": "201 KB",
+     "caption": "기조연설"
+    },
+    {
+     "name": "28_DSC_5527.jpg",
+     "url": "content/files/2026/11/sympo/28_DSC_5527.jpg",
+     "size": "189 KB",
+     "caption": "기조연설 — 생성형 AI의 확산과 대학"
+    },
+    {
+     "name": "29_DSC_5534.jpg",
+     "url": "content/files/2026/11/sympo/29_DSC_5534.jpg",
+     "size": "321 KB",
+     "caption": "기조연설 전경"
+    },
+    {
+     "name": "30_DSC_5536.jpg",
+     "url": "content/files/2026/11/sympo/30_DSC_5536.jpg",
+     "size": "173 KB",
+     "caption": "언론 인터뷰"
+    },
+    {
+     "name": "31_DSC_5548.jpg",
+     "url": "content/files/2026/11/sympo/31_DSC_5548.jpg",
+     "size": "187 KB",
+     "caption": "언론 인터뷰"
+    },
+    {
+     "name": "32_DSC_5553.jpg",
+     "url": "content/files/2026/11/sympo/32_DSC_5553.jpg",
+     "size": "273 KB",
+     "caption": "데모데이 부스 관람"
+    },
+    {
+     "name": "33_DSC_5560.jpg",
+     "url": "content/files/2026/11/sympo/33_DSC_5560.jpg",
+     "size": "228 KB",
+     "caption": "데모데이 부스 관람"
+    },
+    {
+     "name": "34_DSC_5573.jpg",
+     "url": "content/files/2026/11/sympo/34_DSC_5573.jpg",
+     "size": "139 KB",
+     "caption": "데모데이 부스 설명"
+    },
+    {
+     "name": "35_DSC_5584.jpg",
+     "url": "content/files/2026/11/sympo/35_DSC_5584.jpg",
+     "size": "197 KB",
+     "caption": "데모데이 부스 관람"
+    },
+    {
+     "name": "36_DSC_5595.jpg",
+     "url": "content/files/2026/11/sympo/36_DSC_5595.jpg",
+     "size": "142 KB",
+     "caption": "내빈 부스 투어"
+    },
+    {
+     "name": "37_DSC_5612.jpg",
+     "url": "content/files/2026/11/sympo/37_DSC_5612.jpg",
+     "size": "217 KB",
+     "caption": "내빈 부스 투어 — HAI-LRS"
+    },
+    {
+     "name": "38_DSC_5616.jpg",
+     "url": "content/files/2026/11/sympo/38_DSC_5616.jpg",
+     "size": "175 KB",
+     "caption": "내빈 부스 투어 — HAI-LRS"
+    },
+    {
+     "name": "39_DSC_5625.jpg",
+     "url": "content/files/2026/11/sympo/39_DSC_5625.jpg",
+     "size": "108 KB",
+     "caption": "내빈 부스 투어"
+    },
+    {
+     "name": "40_DSC_5635.jpg",
+     "url": "content/files/2026/11/sympo/40_DSC_5635.jpg",
+     "size": "195 KB",
+     "caption": "참가자 부스 체험 — HAI-LRS · HAI-LENS"
+    },
+    {
+     "name": "41_DSC_5652.jpg",
+     "url": "content/files/2026/11/sympo/41_DSC_5652.jpg",
+     "size": "103 KB",
+     "caption": "데모데이 부스 시연 — HAI-Check"
+    },
+    {
+     "name": "42_DSC_5694.jpg",
+     "url": "content/files/2026/11/sympo/42_DSC_5694.jpg",
+     "size": "213 KB",
+     "caption": "행사장 로비"
+    },
+    {
+     "name": "43_DSC_5705.jpg",
+     "url": "content/files/2026/11/sympo/43_DSC_5705.jpg",
+     "size": "262 KB",
+     "caption": "세션 발표 — HAI Ecosystems 소개"
+    },
+    {
+     "name": "44_DSC_5720.jpg",
+     "url": "content/files/2026/11/sympo/44_DSC_5720.jpg",
+     "size": "217 KB",
+     "caption": "세션 발표 — HAI-Research"
+    },
+    {
+     "name": "45_DSC_5721.jpg",
+     "url": "content/files/2026/11/sympo/45_DSC_5721.jpg",
+     "size": "259 KB",
+     "caption": "세션 발표 — HAI-Prof"
+    },
+    {
+     "name": "46_DSC_5722.jpg",
+     "url": "content/files/2026/11/sympo/46_DSC_5722.jpg",
+     "size": "321 KB",
+     "caption": "세션 발표 — 공통기반 플랫폼(LMS 중심 연동)"
+    },
+    {
+     "name": "47_DSC_5736.jpg",
+     "url": "content/files/2026/11/sympo/47_DSC_5736.jpg",
+     "size": "286 KB",
+     "caption": "세션 발표"
+    },
+    {
+     "name": "48_DSC_5759.jpg",
+     "url": "content/files/2026/11/sympo/48_DSC_5759.jpg",
+     "size": "161 KB",
+     "caption": "세션 발표"
+    },
+    {
+     "name": "49_DSC_5778.jpg",
+     "url": "content/files/2026/11/sympo/49_DSC_5778.jpg",
+     "size": "132 KB",
+     "caption": "세션 발표"
+    },
+    {
+     "name": "50_DSC_5816.jpg",
+     "url": "content/files/2026/11/sympo/50_DSC_5816.jpg",
+     "size": "114 KB",
+     "caption": "세션 발표"
+    },
+    {
+     "name": "51_DSC_5827.jpg",
+     "url": "content/files/2026/11/sympo/51_DSC_5827.jpg",
+     "size": "120 KB",
+     "caption": "세션 발표 — 의학교육 AI 모듈(Virtual Patient · Q-bank)"
+    },
+    {
+     "name": "52_DSC_5837.jpg",
+     "url": "content/files/2026/11/sympo/52_DSC_5837.jpg",
+     "size": "212 KB",
+     "caption": "세션 발표 — 역량중심 교육과정과 AI 모듈"
+    },
+    {
+     "name": "53_DSC_5921.jpg",
+     "url": "content/files/2026/11/sympo/53_DSC_5921.jpg",
+     "size": "95 KB",
+     "caption": "세션 발표"
+    },
+    {
+     "name": "54_DSC_5938.jpg",
+     "url": "content/files/2026/11/sympo/54_DSC_5938.jpg",
+     "size": "175 KB",
+     "caption": "무대 발표 — 고영웅 한림대학교 AI교육혁신원장"
+    },
+    {
+     "name": "55_DSC_5966.jpg",
+     "url": "content/files/2026/11/sympo/55_DSC_5966.jpg",
+     "size": "155 KB",
+     "caption": "무대 발표 — 고영웅 한림대학교 AI교육혁신원장"
     }
-  ]
+   ],
+   "updated": "2026-11-09T15:19:37+09:00"
+  },
+  {
+   "id": "n4",
+   "cat": "행사 안내",
+   "title": "2026 KELI 국제 심포지엄 개최 안내",
+   "date": "2026.09.10",
+   "body": "<dl class=\"art-kv\"><dt>일시</dt><dd>2026. 10. 20.(화) 09:30–17:00</dd><dt>장소</dt><dd>서울드래곤시티 3층 그랜드볼룸 (서울 용산구 청파로20길 95)</dd><dt>대상</dt><dd>대학 교원·교육 관계자, 에듀테크 기업·기관, 정부·공공, 학생</dd><dt>주최</dt><dd>한림대학교 · 주관 KELI 사무국(AI교육혁신원 AI교육확산센터)</dd><dt>참가</dt><dd><strong>참가비 무료</strong> · 사전 등록 후 현장 등록 가능</dd><dt>문의</dt><dd>KELI 사무국 033-248-3242 / contact@keliedu.org</dd></dl><p class=\"art-lead\">글로컬대학30 사업의 일환으로 KELI를 공식 론칭하고, AI 기반 고등교육 혁신의 비전과 추진 방향을 국내외 전문가와 함께 나누는 자리입니다.</p><p>안녕하십니까. 한림대학교 AI교육혁신원 KELI 사무국입니다.</p><p>「2026 KELI 국제 심포지엄 및 데모데이」는 'AI로 연결하는 고등교육 혁신 생태계'를 주제로 열립니다. 기조연설과 국내외 사례 발표를 통해 AI 시대 고등교육의 새로운 방향을 논의하고, 한림대학교가 직접 개발해 수업에서 검증한 AI 교육 서비스 HAI Ecosystems를 소개합니다. 여러 대학과 기관이 함께하는 KELI Alliance의 출범도 이날 선포됩니다.</p><h2 class=\"art-h\">프로그램</h2><div class=\"tbl-wrap\"><table class=\"tbl\"><thead><tr><th>구분</th><th>내용</th></tr></thead><tbody><tr><td>KELI Alliance 발대식</td><td>KELI 비전 발표 및 KELI Alliance 출범 선포</td></tr><tr><td>기조연설</td><td>The Future of the University · 오세정 서울대학교 전 총장</td></tr><tr><td>세션 발표</td><td>HAI Ecosystems 소개와 국내외 수업 혁신 사례, Global EdTech 혁신 사례(동시통역)</td></tr><tr><td>데모데이</td><td>HAI Ecosystems 시연·체험, KELI Marketplace 매칭 상담 (10:00–17:00 상시 운영)</td></tr></tbody></table></div><h2 class=\"art-h\">참가 안내</h2><p>데모데이는 하루 종일 자유롭게 둘러보실 수 있으며, 서비스별 담당자가 현장에서 직접 시연하고 도입을 상담합니다. 프로그램과 발표 자료는 행사 페이지에서 볼 수 있습니다.</p><p><a class=\"art-btn\" href=\"event-9.html\">행사 페이지 · 프로그램과 발표 자료</a></p><div class=\"art-note\">※ 일정과 발표 주제·발표자는 주최 측 사정에 따라 바뀔 수 있습니다.<br>· 행사 전 데모 영상 미리 보기: <a href=\"demos.html\">전체 데모 영상</a><br>· 문의: KELI 사무국 033-248-3242 / contact@keliedu.org</div>",
+   "link": "",
+   "pinned": false,
+   "published": true,
+   "files": [],
+   "summary": "AI로 연결하는 고등교육 혁신 생태계 — KELI 공식 론칭과 HAI Ecosystems 데모데이",
+   "updated": "2026. 11. 03. 21:17"
+  }
+ ]
 }
