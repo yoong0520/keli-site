@@ -1,0 +1,30 @@
+{
+ "board": "archive-policy",
+ "board_label": "아카이브 · 정책 연구",
+ "seq": "116",
+ "title": "2026년 7월 선형대수학 AI 튜터 분석 보고서 _신범주",
+ "date": "2026-07-23",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<div class=\"boGalleryView\">\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t<button type=\"button\" class=\"boGalleryView-btnPrev\">이미지 이전보기</button>\r\n\t\t\t\t\t\t\t<button type=\"button\" class=\"boGalleryView-btnNext\">이미지 다음보기</button>\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t<ul class=\"boGalleryView-view\">\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t\t\t\t<img src=\"/upload/board/BDKELI07/0e6e78be-2d18-41cb-81a6-b7300661e703.png\" alt=\"표지\" />\r\n\t\t\t\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t\t\t\t<img src=\"\" alt=\"\" />\r\n\t\t\t\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<p>선형대수학 튜터 학습 데이터를 활용한 AI 튜터 성능 향상 연구 보고서입니다.</p>\r\n\t\t",
+ "body_text": "이미지 이전보기 이미지 다음보기 선형대수학 튜터 학습 데이터를 활용한 AI 튜터 성능 향상 연구 보고서입니다.",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI07/0e6e78be-2d18-41cb-81a6-b7300661e703.png",
+   "file": "0e6e78be-2d18-41cb-81a6-b7300661e703.png"
+  }
+ ],
+ "files": [
+  {
+   "name": "Image.png",
+   "file": "Image.png",
+   "size": 1507278
+  },
+  {
+   "name": "2026KELI_신범주_에듀테크 솔루션 분석 보고서_202607_v01.pdf",
+   "file": "2026KELI_신범주_에듀테크_솔루션_분석_보고서_202607_v01.pdf",
+   "size": 504857
+  }
+ ],
+ "thumb": "thumb_0e6e78be-2d18-41cb-81a6-b7300661e703.png",
+ "source": "https://keliedu.org/keli/contents/archive/policy (articleSeq 116)"
+}

@@ -1,0 +1,30 @@
+{
+ "board": "archive-technic",
+ "board_label": "아카이브 · 기술 동향",
+ "seq": "119",
+ "title": "Vol.02 — 2026년 7월분 · 적응형 학습 시스템_김슬기",
+ "date": "2026-07-31",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<div class=\"boGalleryView\">\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t<button type=\"button\" class=\"boGalleryView-btnPrev\">이미지 이전보기</button>\r\n\t\t\t\t\t\t\t<button type=\"button\" class=\"boGalleryView-btnNext\">이미지 다음보기</button>\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t<ul class=\"boGalleryView-view\">\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t\t\t\t<img src=\"/upload/board/BDKELI06/90eeabc3-a6a8-49d6-b596-b47b25d1bbcb.png\" alt=\"표지\" />\r\n\t\t\t\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t\t\t\t<img src=\"\" alt=\"\" />\r\n\t\t\t\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<p data-pm-slice=\"1 1 []\"><strong><span>■ 연구 개요</span></strong></p>\r\n<ul data-spread=\"false\">\r\n<li>\r\n<p><strong><span>연구책임자:</span></strong><span> 김슬기</span></p>\r\n</li>\r\n<li>\r\n<p><strong><span>과제명:</span></strong><span> 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</span></p>\r\n</li>\r\n<li>\r\n<p><strong><span>산출물 유형:</span></strong><span> 기술 동향</span></p>\r\n</li>\r\n<li>\r\n<p><strong><span>대상 월:</span></strong><span> 2026년 7월</span></p>\r\n</li>\r\n<li>\r\n<p><strong><span>보고서명:</span></strong><span> 월간 에듀테크 솔루션 분석 보고서 Vol.02</span></p>\r\n</li>\r\n</ul>\r\n<p> </p>\r\n<p><strong><span>■ 보고서 소개</span></strong></p>\r\n<p><span>「월간 에듀테크 솔루션 분석 보고서」 Vol.02(2026년 7월분)은 적응형 학습 시스템을 기술 구조·시장·교육적 적용·한계의 네 측면에서 분석했다.</span></p>\r\n<p><span>전용 엔진은 미리 만든 도메인 모델로 숙달을 추정하고 Gemini 학습 노트북은 목표를 세부 목표로 나눠 진단 퀴즈로 출발점을 잡는다(산출 기준 미공개).</span></p>\r\n<p><span>고등교육의 효과는 K-12보다 작게 보고되었고 제품 단위 독립 근거는 부족했다.</span></p>\r\n<p><span>ALEKS와 학습 노트북은 공개 문서로 판정한 필수 항목이 적어 모두 판정 유보였다.</span></p>\r\n<p><span>대학은 학습 지원과 배치·성적 반영을 구분하고 시범 운영과 효과 측정을 거쳐 넓힐 수 있다.</span></p>\r\n<p> </p>\r\n<p><strong><span>■ 키워드</span></strong></p>\r\n<p><span>적응형 학습, 지식 추적, 생성형 개인화, 고등교육, AI 디지털교과서</span></p>\r\n\t\t",
+ "body_text": "이미지 이전보기 이미지 다음보기 ■ 연구 개요 연구책임자: 김슬기 과제명: 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육 산출물 유형: 기술 동향 대상 월: 2026년 7월 보고서명: 월간 에듀테크 솔루션 분석 보고서 Vol.02 ■ 보고서 소개 「월간 에듀테크 솔루션 분석 보고서」 Vol.02(2026년 7월분)은 적응형 학습 시스템을 기술 구조·시장·교육적 적용·한계의 네 측면에서 분석했다. 전용 엔진은 미리 만든 도메인 모델로 숙달을 추정하고 Gemini 학습 노트북은 목표를 세부 목표로 나눠 진단 퀴즈로 출발점을 잡는다(산출 기준 미공개). 고등교육의 효과는 K-12보다 작게 보고되었고 제품 단위 독립 근거는 부족했다. ALEKS와 학습 노트북은 공개 문서로 판정한 필수 항목이 적어 모두 판정 유보였다. 대학은 학습 지원과 배치·성적 반영을 구분하고 시범 운영과 효과 측정을 거쳐 넓힐 수 있다. ■ 키워드 적응형 학습, 지식 추적, 생성형 개인화, 고등교육, AI 디지털교과서",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI06/90eeabc3-a6a8-49d6-b596-b47b25d1bbcb.png",
+   "file": "90eeabc3-a6a8-49d6-b596-b47b25d1bbcb.png"
+  }
+ ],
+ "files": [
+  {
+   "name": "Vol02_적응형학습시스템_표지.png",
+   "file": "Vol02_적응형학습시스템_표지.png",
+   "size": 173147
+  },
+  {
+   "name": "2026KELI_김슬기_월간 에듀테크 솔루션 분석 보고서_202607_v01.pdf",
+   "file": "2026KELI_김슬기_월간_에듀테크_솔루션_분석_보고서_202607_v01.pdf",
+   "size": 2493186
+  }
+ ],
+ "thumb": "thumb_90eeabc3-a6a8-49d6-b596-b47b25d1bbcb.png",
+ "source": "https://keliedu.org/keli/contents/archive/technic (articleSeq 119)"
+}

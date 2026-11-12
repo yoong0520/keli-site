@@ -2598,6 +2598,10 @@ def page_videos():
 
 def extra_videos_html():
     out = ''
+    if DEMODAY:
+        out += ('<section class="sec alt" id="demoday"><div class="wrap narrow" style="max-width:900px">'
+                f'<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">데모데이 시연 영상</h2><span class="muted small">HAI Ecosystems 개발 기업 시연 {len(DEMODAY)}건</span></div>'
+                '<div class="grid g2">' + ''.join(f'<div>{_mp4_player(m["mp4"][0], m["title"])}<p style="margin-top:6px"><a class="more" href="{legacy_href(m)}">자료 보기 ›</a></p></div>' for m in DEMODAY) + '</div></div></section>')
     for i, (vs, ttl, sub, anchor) in enumerate(((VIDEOS_SEMINAR, '한림지식공유세미나', '한림대학교 교수진의 AI·융합 연구 강연', 'seminar'), (VIDEOS_PARTNER, '파트너 · 서비스 소개 영상', 'HAI Ecosystems 개발 기업과 서비스 소개', 'partner'))):
         if not vs: continue
         out += (f'<section class="sec{"" if i % 2 == 0 else " alt"}" id="{anchor}"><div class="wrap narrow" style="max-width:900px">'
@@ -2619,6 +2623,9 @@ def _legacy_items():
             mp = os.path.join(bd, sq, 'meta.json')
             if os.path.exists(mp):
                 m = _load_json(mp, {}); m['dir'] = f'old-keli/{b}/{sq}'
+                vp = os.path.join(bd, sq, 'view.html')
+                m['mp4'] = list(dict.fromkeys(re.findall(r'/page/keli/demoday/([\w.-]+)\.mp4', open(vp, encoding='utf-8').read()))) if os.path.exists(vp) else []
+                m['mp4'] = [x for x in m['mp4'] if os.path.exists(os.path.join(LEGACY_DIR, 'demoday', x + '.mp4'))]
                 if m.get('title'): out.append(m)
     return sorted(out, key=dkey, reverse=True)
 LEGACY = _legacy_items()
@@ -2645,6 +2652,7 @@ def page_legacy():
 <section class="hero" style="padding-top:48px;padding-bottom:32px"><div class="wrap narrow" style="max-width:900px"><span class="eyebrow">구 KELI 플랫폼 · {E(labels[m["board"]])}</span><h1 style="font-size:clamp(26px,3.6vw,36px);text-wrap:balance">{E(m["title"])}</h1><p class="muted">{E((m.get("date") or "").replace("-", "."))} · 구 KELI 플랫폼(keliedu.org)에서 옮겨 보관한 글</p></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap narrow" style="max-width:900px"><article class="art">
 {('<div class="grid g1 vids" style="margin-bottom:24px">' + vids + '</div>') if vids else ''}
+{''.join(_mp4_player(x, m['title']) for x in m.get('mp4') or [])}
 {_legacy_body(m)}
 {('<h2 class="art-h">첨부파일</h2><div class="list">' + files + '</div>') if files else ''}
 <div class="art-note">※ 이 글은 구 KELI 플랫폼이 닫혀도 볼 수 있도록 원문과 첨부파일을 그대로 옮겨 보관한 것입니다. 내용은 게시 당시 기준입니다.<br>· 문의: KELI 사무국 033-248-3242 / contact@keliedu.org</div>
@@ -2664,6 +2672,10 @@ def page_legacy():
 <p class="note" style="margin-top:24px">총 {len(LEGACY)}건 · 2026. 11. 12. 백업. 정리된 아카이브(실증 사례집·기술 동향·매뉴얼)는 <a href="archive.html">아카이브</a>에서 볼 수 있습니다.</p>
 </div></section>'''
     write('legacy.html', '구 KELI 플랫폼 자료 · KELI 아카이브', body, desc='구 KELI 플랫폼(keliedu.org)의 공지·뉴스·칼럼·자료·영상을 원문 그대로 보관한 아카이브.')
+def _mp4_player(x, title):
+    return (f'<figure class="art-fig"><video controls preload="metadata" playsinline poster="old-keli/demoday/{x}.jpg" controlsList="nodownload" style="width:100%;aspect-ratio:16/9;background:#000;border-radius:16px" title="{E(title)}">'
+            f'<source src="old-keli/demoday/{x}.mp4" type="video/mp4"></video><figcaption>{E(title)} — 데모데이 시연 영상</figcaption></figure>')
+DEMODAY = [m for m in LEGACY if m.get('mp4')]
 def _fmt_bytes(b):
     try: b = int(b)
     except Exception: return ''

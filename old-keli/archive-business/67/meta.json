@@ -1,0 +1,30 @@
+{
+ "board": "archive-business",
+ "board_label": "아카이브 · 실증 사례집",
+ "seq": "67",
+ "title": "[AI 활용 수업 사례집] 원가관리회계 - 한림대학교",
+ "date": "2026-06-16",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<div class=\"boGalleryView\">\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t<ul class=\"boGalleryView-view\">\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t\t<img src=\"/upload/board/BDKELI08/7751e8d5-3292-4868-830d-4c4fc62f3cc2.jpg\" alt=\"AI활용수업사례_박주형\" />\r\n\t\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<ul>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">교과목명 : <strong>원가관리회계</strong></span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">교수명 : <strong>박주형</strong></span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">대학명 : 한림대학교</span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">전공명 : 경영학과</span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">목 차</span><br><span style=\"font-family: nanumgothic;\">01 AI 활용 수업 계획서</span><br><span style=\"font-family: nanumgothic;\">02 AI 활용 수업 주차별 세부 계획서</span><br><span style=\"font-family: nanumgothic;\">03 AI 활용 수업 결과보고서</span></li>\r\n</ul>\r\n\t\t",
+ "body_text": "교과목명 : 원가관리회계 교수명 : 박주형 대학명 : 한림대학교 전공명 : 경영학과 목 차 01 AI 활용 수업 계획서 02 AI 활용 수업 주차별 세부 계획서 03 AI 활용 수업 결과보고서",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI08/7751e8d5-3292-4868-830d-4c4fc62f3cc2.jpg",
+   "file": "7751e8d5-3292-4868-830d-4c4fc62f3cc2.jpg"
+  }
+ ],
+ "files": [
+  {
+   "name": "AI활용수업사례_박주형.jpg",
+   "file": "AI활용수업사례_박주형.jpg",
+   "size": 619171
+  },
+  {
+   "name": "AI활용수업사례_박주형 (2).pdf",
+   "file": "AI활용수업사례_박주형_(2).pdf",
+   "size": 1182559
+  }
+ ],
+ "thumb": "thumb_7751e8d5-3292-4868-830d-4c4fc62f3cc2.jpg",
+ "source": "https://keliedu.org/keli/contents/archive/business (articleSeq 67)"
+}

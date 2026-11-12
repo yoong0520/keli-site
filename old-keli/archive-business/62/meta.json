@@ -1,0 +1,30 @@
+{
+ "board": "archive-business",
+ "board_label": "아카이브 · 실증 사례집",
+ "seq": "62",
+ "title": "[AI 활용 수업 사례집] 인공지능 기초 - 한림대학교",
+ "date": "2026-06-16",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<div class=\"boGalleryView\">\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t<ul class=\"boGalleryView-view\">\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t\t<img src=\"/upload/board/BDKELI08/cffe9ad6-5af6-49aa-b674-1da2cd75a256.png\" alt=\"AI활용수업사례_김병정\" />\r\n\t\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<ul>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">교과목명 : <strong>인공지능 기초</strong></span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">교수명 : <strong>김병정</strong></span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">대학명 : 한림대학교</span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">전공명 : 소프트웨어학부 스마트IoT</span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">목 차</span><br><span style=\"font-family: nanumgothic;\">01 AI 활용 수업 계획서</span><br><span style=\"font-family: nanumgothic;\">02 AI 활용 수업 주차별 세부 계획서</span><br><span style=\"font-family: nanumgothic;\">03 AI 활용 수업 결과보고서</span></li>\r\n</ul>\r\n\t\t",
+ "body_text": "교과목명 : 인공지능 기초 교수명 : 김병정 대학명 : 한림대학교 전공명 : 소프트웨어학부 스마트IoT 목 차 01 AI 활용 수업 계획서 02 AI 활용 수업 주차별 세부 계획서 03 AI 활용 수업 결과보고서",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI08/cffe9ad6-5af6-49aa-b674-1da2cd75a256.png",
+   "file": "cffe9ad6-5af6-49aa-b674-1da2cd75a256.png"
+  }
+ ],
+ "files": [
+  {
+   "name": "AI활용수업사례_김병정.png",
+   "file": "AI활용수업사례_김병정.png",
+   "size": 1275295
+  },
+  {
+   "name": "AI활용수업사례_김병정 (2).pdf",
+   "file": "AI활용수업사례_김병정_(2).pdf",
+   "size": 1233575
+  }
+ ],
+ "thumb": "thumb_cffe9ad6-5af6-49aa-b674-1da2cd75a256.png",
+ "source": "https://keliedu.org/keli/contents/archive/business (articleSeq 62)"
+}

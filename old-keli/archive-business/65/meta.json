@@ -1,0 +1,30 @@
+{
+ "board": "archive-business",
+ "board_label": "아카이브 · 실증 사례집",
+ "seq": "65",
+ "title": "[AI 활용 수업 사례집] 창의코딩-모두의SW리터러시 - 한림대학교",
+ "date": "2026-06-16",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<div class=\"boGalleryView\">\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t<ul class=\"boGalleryView-view\">\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t\t<img src=\"/upload/board/BDKELI08/97a4c3d2-9c28-49d6-88fc-355f5d1f33a6.jpg\" alt=\"AI활용수업사례_정연진\" />\r\n\t\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<ul>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">교과목명 : <strong>창의코딩-모두의SW리터러시</strong></span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">교수명 : <strong>정연진</strong></span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">대학명 : 한림대학교</span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">전공명 : 법학과</span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">목 차</span><br><span style=\"font-family: nanumgothic;\">01 AI 활용 수업 계획서</span><br><span style=\"font-family: nanumgothic;\">02 AI 활용 수업 주차별 세부 계획서</span><br><span style=\"font-family: nanumgothic;\">03 AI 활용 수업 결과보고서</span></li>\r\n</ul>\r\n\t\t",
+ "body_text": "교과목명 : 창의코딩-모두의SW리터러시 교수명 : 정연진 대학명 : 한림대학교 전공명 : 법학과 목 차 01 AI 활용 수업 계획서 02 AI 활용 수업 주차별 세부 계획서 03 AI 활용 수업 결과보고서",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI08/97a4c3d2-9c28-49d6-88fc-355f5d1f33a6.jpg",
+   "file": "97a4c3d2-9c28-49d6-88fc-355f5d1f33a6.jpg"
+  }
+ ],
+ "files": [
+  {
+   "name": "AI활용수업사례_정연진.jpg",
+   "file": "AI활용수업사례_정연진.jpg",
+   "size": 626458
+  },
+  {
+   "name": "AI활용수업사례_정연진 (2).pdf",
+   "file": "AI활용수업사례_정연진_(2).pdf",
+   "size": 1661176
+  }
+ ],
+ "thumb": "thumb_97a4c3d2-9c28-49d6-88fc-355f5d1f33a6.jpg",
+ "source": "https://keliedu.org/keli/contents/archive/business (articleSeq 65)"
+}

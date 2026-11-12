@@ -1,0 +1,30 @@
+{
+ "board": "archive-technic",
+ "board_label": "아카이브 · 기술 동향",
+ "seq": "118",
+ "title": "Vol.01 — 2026년 6월분 · LLM 기반 학습 도구_김슬기",
+ "date": "2026-06-01",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<div class=\"boGalleryView\">\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t<button type=\"button\" class=\"boGalleryView-btnPrev\">이미지 이전보기</button>\r\n\t\t\t\t\t\t\t<button type=\"button\" class=\"boGalleryView-btnNext\">이미지 다음보기</button>\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t<ul class=\"boGalleryView-view\">\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t\t\t\t<img src=\"/upload/board/BDKELI06/3e264d88-329e-4e48-8b87-2cb16101c3cc.png\" alt=\"표지\" />\r\n\t\t\t\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t\t\t\t<img src=\"\" alt=\"\" />\r\n\t\t\t\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<p data-pm-slice=\"1 1 []\"><strong><span>■ 연구 개요</span></strong></p>\r\n<ul data-spread=\"false\">\r\n<li>\r\n<p><strong><span>연구책임자:</span></strong><span> 김슬기</span></p>\r\n</li>\r\n<li>\r\n<p><strong><span>과제명:</span></strong><span> 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</span></p>\r\n</li>\r\n<li>\r\n<p><strong><span>산출물 유형:</span></strong><span> 기술 동향</span></p>\r\n</li>\r\n<li>\r\n<p><strong><span>대상 월:</span></strong><span> 2026년 6월</span></p>\r\n</li>\r\n<li>\r\n<p><strong><span>보고서명:</span></strong><span> 월간 에듀테크 솔루션 분석 보고서 Vol.01</span><span></span></p>\r\n</li>\r\n</ul>\r\n<p> </p>\r\n<p><strong><span>■ 보고서 소개</span></strong></p>\r\n<p><span>「월간 에듀테크 솔루션 분석 보고서」 Vol.01(2026년 6월분)은 LLM 기반 학습 도구를 </span></p>\r\n<p><span>기술 구조, 시장 동향, 교육적 적용, 한계·논쟁점의 4분면으로 분석했다.</span></p>\r\n<p> </p>\r\n<p><span>학습 모드는 정답 보류를 보장하지 않고 메타분석의 큰 효과는 신중히 읽어야 하며 상용 학습 모드의 대학 실험 근거는 확인되지 않았다.</span></p>\r\n<p><span>ChatGPT 학습 모드와 Gemini 가이드 학습은 기준일까지 공개된 문서로 판정해 둘 다 판정 유보였다.</span></p>\r\n<p><span>기관 도입에는 AI 기본법과 개인정보 안내서에 맞춘 데이터 조건과 과제·평가 설계가 필요하다.</span></p>\r\n<p> </p>\r\n<p><strong><span>■ 키워드</span></strong></p>\r\n<p><span>LLM 기반 학습 도구, 학습 모드, 고등교육, 기관 도입, 데이터 보호</span></p>\r\n<div id=\"hwpEditorBoardContent\" class=\"hwp_editor_board_content\" data-hjsonver=\"1.0\" data-jsonlen=\"7300\"></div>\r\n<div id=\"hwpEditorBoardContent\" class=\"hwp_editor_board_content\" data-hjsonver=\"1.0\" data-jsonlen=\"7845\"></div>\r\n\t\t",
+ "body_text": "이미지 이전보기 이미지 다음보기 ■ 연구 개요 연구책임자: 김슬기 과제명: 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육 산출물 유형: 기술 동향 대상 월: 2026년 6월 보고서명: 월간 에듀테크 솔루션 분석 보고서 Vol.01 ■ 보고서 소개 「월간 에듀테크 솔루션 분석 보고서」 Vol.01(2026년 6월분)은 LLM 기반 학습 도구를 기술 구조, 시장 동향, 교육적 적용, 한계·논쟁점의 4분면으로 분석했다. 학습 모드는 정답 보류를 보장하지 않고 메타분석의 큰 효과는 신중히 읽어야 하며 상용 학습 모드의 대학 실험 근거는 확인되지 않았다. ChatGPT 학습 모드와 Gemini 가이드 학습은 기준일까지 공개된 문서로 판정해 둘 다 판정 유보였다. 기관 도입에는 AI 기본법과 개인정보 안내서에 맞춘 데이터 조건과 과제·평가 설계가 필요하다. ■ 키워드 LLM 기반 학습 도구, 학습 모드, 고등교육, 기관 도입, 데이터 보호",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI06/3e264d88-329e-4e48-8b87-2cb16101c3cc.png",
+   "file": "3e264d88-329e-4e48-8b87-2cb16101c3cc.png"
+  }
+ ],
+ "files": [
+  {
+   "name": "Vol01_LLM기반학습도구_표지.png",
+   "file": "Vol01_LLM기반학습도구_표지.png",
+   "size": 157014
+  },
+  {
+   "name": "2026KELI_김슬기_월간 에듀테크 솔루션 분석 보고서_202606_v01.pdf",
+   "file": "2026KELI_김슬기_월간_에듀테크_솔루션_분석_보고서_202606_v01.pdf",
+   "size": 2442481
+  }
+ ],
+ "thumb": "thumb_3e264d88-329e-4e48-8b87-2cb16101c3cc.png",
+ "source": "https://keliedu.org/keli/contents/archive/technic (articleSeq 118)"
+}

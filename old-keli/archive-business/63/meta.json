@@ -1,0 +1,30 @@
+{
+ "board": "archive-business",
+ "board_label": "아카이브 · 실증 사례집",
+ "seq": "63",
+ "title": "[AI 활용 수업 사례집] 데이터로 소통하기 - 한림대학교",
+ "date": "2026-06-16",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<div class=\"boGalleryView\">\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t<ul class=\"boGalleryView-view\">\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t\t<img src=\"/upload/board/BDKELI08/cf63ad3c-d809-420c-9d4c-e6ae9b0d5aae.jpg\" alt=\"AI활용수업사례_이은정\" />\r\n\t\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<ul>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">교과목명 : <strong>데이터로 소통하기</strong></span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">교수명 : <strong>이은정</strong></span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">대학명 : 한림대학교</span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">전공명 : 교양대학</span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">목 차</span><br><span style=\"font-family: nanumgothic;\">01 AI 활용 수업 계획서</span><br><span style=\"font-family: nanumgothic;\">02 AI 활용 수업 주차별 세부 계획서</span><br><span style=\"font-family: nanumgothic;\">03 AI 활용 수업 결과보고서</span></li>\r\n</ul>\r\n\t\t",
+ "body_text": "교과목명 : 데이터로 소통하기 교수명 : 이은정 대학명 : 한림대학교 전공명 : 교양대학 목 차 01 AI 활용 수업 계획서 02 AI 활용 수업 주차별 세부 계획서 03 AI 활용 수업 결과보고서",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI08/cf63ad3c-d809-420c-9d4c-e6ae9b0d5aae.jpg",
+   "file": "cf63ad3c-d809-420c-9d4c-e6ae9b0d5aae.jpg"
+  }
+ ],
+ "files": [
+  {
+   "name": "AI활용수업사례_이은정.jpg",
+   "file": "AI활용수업사례_이은정.jpg",
+   "size": 620895
+  },
+  {
+   "name": "AI활용수업사례__이은정 (2).pdf",
+   "file": "AI활용수업사례_이은정_(2).pdf",
+   "size": 1195480
+  }
+ ],
+ "thumb": "thumb_cf63ad3c-d809-420c-9d4c-e6ae9b0d5aae.jpg",
+ "source": "https://keliedu.org/keli/contents/archive/business (articleSeq 63)"
+}

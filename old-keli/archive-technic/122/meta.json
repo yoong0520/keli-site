@@ -1,0 +1,30 @@
+{
+ "board": "archive-technic",
+ "board_label": "아카이브 · 기술 동향",
+ "seq": "122",
+ "title": "Vol.05 — 2026년 10월분 · AI 평가·피드백 도구_김슬기",
+ "date": "2026-10-16",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<div class=\"boGalleryView\">\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t<button type=\"button\" class=\"boGalleryView-btnPrev\">이미지 이전보기</button>\r\n\t\t\t\t\t\t\t<button type=\"button\" class=\"boGalleryView-btnNext\">이미지 다음보기</button>\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t<ul class=\"boGalleryView-view\">\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t\t\t\t<img src=\"/upload/board/BDKELI06/8ed59cf6-4a1e-4ba1-babe-c268f8e7dc76.png\" alt=\"표지\" />\r\n\t\t\t\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t\t\t\t<img src=\"\" alt=\"\" />\r\n\t\t\t\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<p><strong><span>■ 연구 개요</span></strong></p>\r\n<ul>\r\n<li>\r\n<p><strong><span>연구책임자:</span></strong><span> 김슬기</span></p>\r\n</li>\r\n<li>\r\n<p><strong><span>과제명:</span></strong><span> 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육</span></p>\r\n</li>\r\n<li>\r\n<p><strong><span>산출물 유형:</span></strong><span> 기술 동향</span></p>\r\n</li>\r\n<li>\r\n<p><strong><span>대상 월:</span></strong><span> 2026년 10월</span></p>\r\n</li>\r\n<li>\r\n<p><strong><span>보고서명:</span></strong><span> 월간 에듀테크 솔루션 분석 보고서 Vol.05</span></p>\r\n</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<p><strong><span>■ 보고서 소개</span></strong></p>\r\n<p><span>「월간 에듀테크 솔루션 분석 보고서」 Vol.05(2026년 10월분)는 글&middot;코드&middot;풀이를 채점하거나 형성 피드백을 만드는 AI 평가&middot;피드백 도구를 분석했다.</span></p>\r\n<p><span>LLM 채점은 조건이 갖춰지면 인간 채점에 가까워지지만 과제와 실행 조건에 따라 크게 흔들렸고 AI 피드백은 수정 결과를 높였으나 학습 전이로 이어진다고 보기는 어려웠다.</span></p>\r\n<p><span>Gradescope(체험 강좌, 과업 6개)와 Grammarly for Education AI Grader(무료 계정, 채점 결과 1건)는 측정 범위가 달랐고 둘 다 신중 검토였다.</span></p>\r\n<p><span>평가 재설계에는 실 확인 지점&middot;이의 제기 경로 점검표도 실었다.</span></p>\r\n<p>&nbsp;</p>\r\n<p><strong><span>■ 키워드</span></strong></p>\r\n<p><span>AI 채점, 형성 피드백, 학습 전이, 인간 감독, 평가 재설계</span></p>\r\n\t\t",
+ "body_text": "이미지 이전보기 이미지 다음보기 ■ 연구 개요 연구책임자: 김슬기 과제명: 고등교육 AI에듀테크의 통합적 발전 방안 연구 - 전공 운영 모델, 연구 방향성 정립, 기초 교양 AI 리터러시 교육 산출물 유형: 기술 동향 대상 월: 2026년 10월 보고서명: 월간 에듀테크 솔루션 분석 보고서 Vol.05 ■ 보고서 소개 「월간 에듀테크 솔루션 분석 보고서」 Vol.05(2026년 10월분)는 글·코드·풀이를 채점하거나 형성 피드백을 만드는 AI 평가·피드백 도구를 분석했다. LLM 채점은 조건이 갖춰지면 인간 채점에 가까워지지만 과제와 실행 조건에 따라 크게 흔들렸고 AI 피드백은 수정 결과를 높였으나 학습 전이로 이어진다고 보기는 어려웠다. Gradescope(체험 강좌, 과업 6개)와 Grammarly for Education AI Grader(무료 계정, 채점 결과 1건)는 측정 범위가 달랐고 둘 다 신중 검토였다. 평가 재설계에는 실 확인 지점·이의 제기 경로 점검표도 실었다. ■ 키워드 AI 채점, 형성 피드백, 학습 전이, 인간 감독, 평가 재설계",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI06/8ed59cf6-4a1e-4ba1-babe-c268f8e7dc76.png",
+   "file": "8ed59cf6-4a1e-4ba1-babe-c268f8e7dc76.png"
+  }
+ ],
+ "files": [
+  {
+   "name": "Vol05_AI평가피드백도구_표지.png",
+   "file": "Vol05_AI평가피드백도구_표지.png",
+   "size": 151504
+  },
+  {
+   "name": "2026KELI_김슬기_월간 에듀테크 솔루션 분석 보고서_202610_v01.pdf",
+   "file": "2026KELI_김슬기_월간_에듀테크_솔루션_분석_보고서_202610_v01.pdf",
+   "size": 2702797
+  }
+ ],
+ "thumb": "thumb_8ed59cf6-4a1e-4ba1-babe-c268f8e7dc76.png",
+ "source": "https://keliedu.org/keli/contents/archive/technic (articleSeq 122)"
+}

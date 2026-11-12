@@ -1,0 +1,30 @@
+{
+ "board": "column-khighedu",
+ "board_label": "칼럼 · K-고등교육",
+ "seq": "60",
+ "title": "[2026년 5월 월례보고서] 2026년 5월, K고등교육모델연구회의 한 달",
+ "date": "2026-06-01",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<div class=\"boGalleryView\">\r\n\t\t\t\t\t\t<ul class=\"boGalleryView-view\">\r\n\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t<img src=\"/upload/board/BDKELI19/bc19baa2-4a25-4a8a-bb06-0da0bab75802.jpg\" alt=\"\" />\r\n\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<p>자세한 사항은 PDF 첨부문서를 확인해주세요!</p>\r\n\t\t",
+ "body_text": "자세한 사항은 PDF 첨부문서를 확인해주세요!",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI19/bc19baa2-4a25-4a8a-bb06-0da0bab75802.jpg",
+   "file": "bc19baa2-4a25-4a8a-bb06-0da0bab75802.jpg"
+  }
+ ],
+ "files": [
+  {
+   "name": "khigh_monthly2605.jpg",
+   "file": "khigh_monthly2605.jpg",
+   "size": 161489
+  },
+  {
+   "name": "K고등교육모델연구회_5월_KELI_월례보고서(최종)_.pdf",
+   "file": "K고등교육모델연구회_5월_KELI_월례보고서(최종)_.pdf",
+   "size": 1415308
+  }
+ ],
+ "thumb": "thumb_bc19baa2-4a25-4a8a-bb06-0da0bab75802.jpg",
+ "source": "https://keliedu.org/keli/board/column/K-highedu (articleSeq 60)"
+}

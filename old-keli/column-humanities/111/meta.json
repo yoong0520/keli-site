@@ -1,0 +1,30 @@
+{
+ "board": "column-humanities",
+ "board_label": "칼럼 · 인문",
+ "seq": "111",
+ "title": "[서평] 『넥서스』: 정보 네트워크로 보는 인류 역사",
+ "date": "2026-10-07",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<div class=\"boGalleryView\">\r\n\t\t\t\t\t\t<ul class=\"boGalleryView-view\">\r\n\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t<img src=\"/upload/board/BDKELI22/d2d20f74-99b2-4960-8b3a-65ae1d19a2e4.png\" alt=\"표지\" />\r\n\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<p>유발 하라리의 『넥서스』를 바탕으로 정보 네트워크의 역사와 AI 시대의 위험, 민주적 정보 네트워크의 자정 장치가 갖는 의미를 살펴봅니다.</p>\r\n\t\t",
+ "body_text": "유발 하라리의 『넥서스』를 바탕으로 정보 네트워크의 역사와 AI 시대의 위험, 민주적 정보 네트워크의 자정 장치가 갖는 의미를 살펴봅니다.",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI22/d2d20f74-99b2-4960-8b3a-65ae1d19a2e4.png",
+   "file": "d2d20f74-99b2-4960-8b3a-65ae1d19a2e4.png"
+  }
+ ],
+ "files": [
+  {
+   "name": "[서평] 『넥서스』 정보 네트워크로 보는 인류 역사.png",
+   "file": "[서평]_『넥서스』_정보_네트워크로_보는_인류_역사.png",
+   "size": 250001
+  },
+  {
+   "name": "2026_KELI_서평_넥서스_양태근_202609.pdf",
+   "file": "2026_KELI_서평_넥서스_양태근_202609.pdf",
+   "size": 140152
+  }
+ ],
+ "thumb": "thumb_d2d20f74-99b2-4960-8b3a-65ae1d19a2e4.png",
+ "source": "https://keliedu.org/keli/board/column/humanities (articleSeq 111)"
+}

@@ -1,0 +1,30 @@
+{
+ "board": "archive-business",
+ "board_label": "아카이브 · 실증 사례집",
+ "seq": "68",
+ "title": "[AI 활용 수업 사례집] C 프로그래밍 - 한림대학교",
+ "date": "2026-06-16",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<div class=\"boGalleryView\">\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t<ul class=\"boGalleryView-view\">\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t\t<img src=\"/upload/board/BDKELI08/44b94a70-7f7b-4705-8bbf-2f9cd254d4bb.jpg\" alt=\"AI활용수업사례_김진환\" />\r\n\t\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<ul>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">교과목명 : <strong>C 프로그래밍</strong></span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">교수명 : <strong>김진환</strong></span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">대학명 : 한림대학교</span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">전공명 : 소프트웨어학부</span></li>\r\n<li style=\"font-family: nanumgothic;\"><span style=\"font-family: nanumgothic;\">목 차</span><br><span style=\"font-family: nanumgothic;\">01 AI 활용 수업 계획서</span><br><span style=\"font-family: nanumgothic;\">02 AI 활용 수업 주차별 세부 계획서</span><br><span style=\"font-family: nanumgothic;\">03 AI 활용 수업 결과보고서</span></li>\r\n</ul>\r\n\t\t",
+ "body_text": "교과목명 : C 프로그래밍 교수명 : 김진환 대학명 : 한림대학교 전공명 : 소프트웨어학부 목 차 01 AI 활용 수업 계획서 02 AI 활용 수업 주차별 세부 계획서 03 AI 활용 수업 결과보고서",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI08/44b94a70-7f7b-4705-8bbf-2f9cd254d4bb.jpg",
+   "file": "44b94a70-7f7b-4705-8bbf-2f9cd254d4bb.jpg"
+  }
+ ],
+ "files": [
+  {
+   "name": "AI활용수업사례_김진환.jpg",
+   "file": "AI활용수업사례_김진환.jpg",
+   "size": 620527
+  },
+  {
+   "name": "AI활용수업사례_김진환 (2).pdf",
+   "file": "AI활용수업사례_김진환_(2).pdf",
+   "size": 1196719
+  }
+ ],
+ "thumb": "thumb_44b94a70-7f7b-4705-8bbf-2f9cd254d4bb.jpg",
+ "source": "https://keliedu.org/keli/contents/archive/business (articleSeq 68)"
+}
