@@ -1319,6 +1319,8 @@ FOOTER = f'''<footer class="ftr"><div class="wrap">
 
 CSS_V = hashlib.md5(CSS.encode('utf-8')).hexdigest()[:8]
 ADMIN_V = hashlib.md5(b''.join(open(os.path.join(BASE, 'gen', f), 'rb').read() for f in ('admin.js', 'templates.js'))).hexdigest()[:8]   # 관리자 화면은 admin.js·templates.js 가 바뀔 때마다 새로 받게
+import time as _time
+BUILD = hex(int(_time.time()))[2:]   # 배포(생성) 시각 → 브라우저에 저장된 옛 페이지를 새 버전으로 바꾸는 데 씀
 JS_V = hashlib.md5((JS + open(os.path.join(BASE, 'gen', 'chat.js'), encoding='utf-8').read() + open(os.path.join(BASE, 'gen', 'track.js'), encoding='utf-8').read()).encode('utf-8')).hexdigest()[:8]   # 챗봇·통계 스크립트까지 포함한 해시
 
 def chat_widget(fname):
@@ -1404,6 +1406,11 @@ def seo_head(fname, title, desc):
         bits += [f'<link rel="alternate" hreflang="ko" href="{SITE_URL}">', f'<link rel="alternate" hreflang="en" href="{SITE_URL}en.html">', f'<link rel="alternate" hreflang="x-default" href="{SITE_URL}">']
     return '\n'.join(bits) + jsonld(fname, desc)
 
+# 새로 배포했는데 브라우저가 저장해 둔 옛 페이지(최대 10분)를 보여 주면, 한 번만 새 버전으로 다시 불러온다
+STALE_JS = ("<script>(function(){var B='" + BUILD + "';try{fetch('/assets/build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''})"
+            ".then(function(t){t=(t||'').trim();if(!/^[0-9a-f]{6,12}$/.test(t)||t<=B)return;var k='keli-rl-'+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){return}"
+            "fetch(location.href,{cache:'reload'}).then(function(){location.reload()})}).catch(function(){})}catch(e){}})();</script>")
+
 def doc(fname, title, body, desc='한림대학교 KELI 플랫폼(K-University AI EdTech and Learning Initiative)은 한림대가 개발하고 수업에서 검증한 AI 교육 서비스 HAI Ecosystems를 국내외 대학·기관에 제공하고 함께 확산하는 고등교육 AI 공유 플랫폼입니다.', skeleton=True):
     title = seo_title(fname, title)
     head_bits = f"""<title>{E(title)}</title>
@@ -1412,7 +1419,7 @@ def doc(fname, title, body, desc='한림대학교 KELI 플랫폼(K-University AI
 <meta name="description" content="{E(desc)}">
 {seo_head(fname, title, desc)}
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="assets/site.css?v={CSS_V}">"""
+<link rel="stylesheet" href="assets/site.css?v={CSS_V}">{'' if fname == 'admin.html' else STALE_JS}"""
     is_admin = fname == 'admin.html'
     inner = f"""{head_bits}
 {'' if is_admin else header(fname)}
@@ -2868,6 +2875,7 @@ def main():
     page_newsletter(); page_search(); page_en(); build_kb()
     page_privacy()
     page_admin()
+    open(os.path.join(OUT, 'assets', 'build.txt'), 'w').write(BUILD)
     n = write_sitemap()
     print('pages', len([f for f in os.listdir(OUT) if f.endswith('.html')]), 'sitemap urls', n)
 
