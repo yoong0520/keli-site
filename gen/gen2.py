@@ -236,10 +236,14 @@ _NOTICE_KEY = {c['label']: c['key'] for c in _cats('notices')}
 def _load_notices():
     items = _load_json(os.path.join(CONTENT, 'notices.json'), {}).get('items', [])
     items = [n for n in items if n.get('published', True) and n.get('title')]
-    items.sort(key=lambda n: (not n.get('pinned'), ''), reverse=False)
-    items.sort(key=lambda n: n.get('date', ''), reverse=True)
+    items.sort(key=dkey, reverse=True)   # 최신순(날짜 표기가 달라도 바르게)
     items.sort(key=lambda n: 0 if n.get('pinned') else 1)
     return items
+def dkey(x):
+    """게시물 날짜 → 정렬 키. '2026.11.12' · '2026-11-12' · '2026.10' · '2026' 같은 표기를 모두 (연, 월, 일)로 맞춘다."""
+    v = (x.get('date') or x.get('start') or x.get('posted') or x.get('period') or '') if isinstance(x, dict) else x
+    n = [int(t) for t in re.findall(r'\d+', str(v))[:3]]
+    return tuple((n + [0, 0, 0])[:3]) if n and n[0] > 1900 else (0, 0, 0)
 NOTICES = _load_notices()
 SITE_DEFAULT = {
     'hero': {'eyebrow': '한림대학교 KELI · K-University AI EdTech and Learning Initiative', 'title': '대학이 함께 만드는<br>AI 기반 고등교육 혁신 생태계.',
@@ -312,7 +316,7 @@ def banner_html():
     return f'<div class="site-banner" role="status"><div class="wrap">{inner}</div></div>'
 def _load_archive():
     items = _load_json(os.path.join(CONTENT, 'archive.json'), {}).get('items', [])
-    return [a for a in items if a.get('published', True) and a.get('title')]
+    return sorted([a for a in items if a.get('published', True) and a.get('title')], key=dkey, reverse=True)   # 최신순
 ARCHIVE = _load_archive()
 def _auto_covers():
     """표지가 없고 PDF 첨부가 있으면 첫 장을 표지로 만든다(pdftoppm, 있을 때만)"""
@@ -1630,7 +1634,7 @@ def restyle(body_html, kind='event'):
 def _load_feed():
     return _load_json(os.path.join(OUT, 'assets', 'events.live.json'), {"source": "https://aiadvcenter.csedu4all.com/news/stories", "fetched_at": "", "items": []})
 FEED = _load_feed()
-FEED_ITEMS = _not_hidden('events', FEED.get('items', []))
+FEED_ITEMS = sorted(_not_hidden('events', FEED.get('items', [])), key=dkey, reverse=True)
 FEED_IDS = ','.join(str(i['id']) for i in FEED_ITEMS)
 
 def ev_status(it):
@@ -1670,7 +1674,7 @@ UNN = _load_json(os.path.join(OUT, 'assets', 'unn.live.json'), {"source": "https
 UNN_ITEMS = _not_hidden('unn', UNN.get('items', []))
 for _u in UNN_ITEMS:
     _u['src'] = 'unn'
-PRESS_ALL = sorted(PRESS_ITEMS + UNN_ITEMS, key=lambda x: x.get('date') or '', reverse=True)   # 한림대 보도자료 + 한국대학신문, 최신순
+PRESS_ALL = sorted(PRESS_ITEMS + UNN_ITEMS, key=dkey, reverse=True)   # 한림대 보도자료 + 한국대학신문, 최신순
 
 def pr_href(it):
     return it['url'] if it.get('src') == 'unn' else f'press-{it["id"]}.html'
@@ -1693,7 +1697,7 @@ PRESS_NOTE = f'한림대학교 보도자료(hallym.ac.kr › 홍보 › 보도�
 def _load_videos():
     return _load_json(os.path.join(OUT, 'assets', 'videos.live.json'), {"source": "https://www.youtube.com/@HALLYMNEWS", "fetched_at": "", "items": []})
 VIDEOS = _load_videos()
-VIDEO_ITEMS = _not_hidden('videos', VIDEOS.get('items', []))
+VIDEO_ITEMS = sorted(_not_hidden('videos', VIDEOS.get('items', [])), key=lambda v: v.get('age_days') if isinstance(v.get('age_days'), (int, float)) else 99999)   # 최신 영상부터
 VIDEOS_KELI = [v for v in VIDEO_ITEMS if v.get('group') == 'keli']
 VIDEOS_REL = [v for v in VIDEO_ITEMS if v.get('group') != 'keli']
 

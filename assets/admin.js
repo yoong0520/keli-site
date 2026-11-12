@@ -146,7 +146,8 @@
   function toIso(s) { var m = String(s || '').match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? m[1] + '-' + m[2].padStart(2, '0') + '-' + m[3].padStart(2, '0') : ''; }
   function fromIso(s) { var m = String(s || '').match(/(\d{4})-(\d{2})-(\d{2})/); return m ? m[1] + '.' + m[2] + '.' + m[3] : (s || today()); }
   function newId(p) { return p + Date.now().toString(36); }
-  function sortNotices(items) { return items.slice().sort(function (a, b) { if (!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1; return (b.date || '').localeCompare(a.date || ''); }); }
+  function dk(x) { var n = String((x && (x.date || x.start || x.posted || x.period)) || '').match(/\d+/g) || []; return n.length && +n[0] > 1900 ? (+n[0]) * 10000 + (+(n[1] || 0)) * 100 + (+(n[2] || 0)) : 0; }
+  function sortNotices(items) { return items.slice().sort(function (a, b) { if (!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1; return dk(b) - dk(a); }); }
   function fail(e) { toast('저장 실패: ' + e.message, 6000); }
   function head(eyebrow, title, desc, metaHtml) {
     return '<div class="cms-head"><div><p class="eyebrow">' + esc(eyebrow) + '</p><h2>' + esc(title) + '</h2>' + (desc ? '<p>' + esc(desc) + '</p>' : '') + '</div>' + (metaHtml ? '<div class="meta">' + metaHtml + '</div>' : '') + '</div>';
@@ -410,7 +411,8 @@
   function vArchive(args) {
     return Promise.all([ensure('archive'), ensure('cats')]).then(function () {
       ACATS = cats('archive').map(function (c) { return [c.key, c.label]; });
-      var items = state.archive.items || []; var cur = null, isNew = false, chip = 'all';
+      var items = state.archive.items || []; items.sort(function (x, y) { return dk(y) - dk(x); });   // 최신순(저장할 때도 이 순서)
+      var cur = null, isNew = false, chip = 'all';
       if (args[0] === 'new') isNew = true;
       else if (args[0] === 'c' && args[1]) { chip = decodeURIComponent(args[1]); cur = items.filter(function (x) { return x.cat === chip; })[0] || null; }
       else if (args[0]) cur = items.filter(function (x) { return x.id === args[0]; })[0];
