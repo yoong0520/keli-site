@@ -607,5 +607,9 @@ ol.art-ul { counter-reset: n; } ol.art-ul li::before { content: counter(n); coun
 .vs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 @media (max-width: 640px) { .vs { grid-template-columns: 1fr; } }
 .note { font-size: 13px; color: var(--muted); }
+.mkt-notice { margin: 20px auto 0; max-width: 980px; display: flex; justify-content: center; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 14px 18px; border-radius: 14px; background: color-mix(in srgb, var(--accent, #0B5CFF) 7%, transparent); border: 1px solid color-mix(in srgb, var(--accent, #0B5CFF) 22%, transparent); font-size: 14px; line-height: 1.6; text-align: left; }
+.mkt-notice > b { color: var(--accent, #0B5CFF); }
+.mkt-notice .mkt-acts { display: inline-flex; gap: 14px; flex-wrap: wrap; }
+.mkt-notice .mkt-acts a { font-weight: 600; color: var(--accent, #0B5CFF); text-decoration: underline; text-underline-offset: 3px; }
 br.d { display: none; }
 @media (min-width: 761px) { br.d { display: inline; } }

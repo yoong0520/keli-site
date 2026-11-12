@@ -956,6 +956,10 @@ ol.art-ul { counter-reset: n; } ol.art-ul li::before { content: counter(n); coun
 .vs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 @media (max-width: 640px) { .vs { grid-template-columns: 1fr; } }
 .note { font-size: 13px; color: var(--muted); }
+.mkt-notice { margin: 20px auto 0; max-width: 980px; display: flex; justify-content: center; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 14px 18px; border-radius: 14px; background: color-mix(in srgb, var(--accent, #0B5CFF) 7%, transparent); border: 1px solid color-mix(in srgb, var(--accent, #0B5CFF) 22%, transparent); font-size: 14px; line-height: 1.6; text-align: left; }
+.mkt-notice > b { color: var(--accent, #0B5CFF); }
+.mkt-notice .mkt-acts { display: inline-flex; gap: 14px; flex-wrap: wrap; }
+.mkt-notice .mkt-acts a { font-weight: 600; color: var(--accent, #0B5CFF); text-decoration: underline; text-underline-offset: 3px; }
 br.d { display: none; }
 @media (min-width: 761px) { br.d { display: inline; } }
 """
@@ -1260,6 +1264,11 @@ for _s in SERVICES:
 
 # 구 KELI 플랫폼(keliedu.org) = 솔루션 거래(Marketplace)·데모 신청 / 새 플랫폼 = 정보 제공 (2026-11-12 이원화)
 OLD_MARKET = 'https://keliedu.org/keli/solution/collection'
+OLD_SIGNUP = 'https://keliedu.org/keli/service/signup'
+# HAI Ecosystems 도입·구독은 KELI Marketplace(구 포털) 회원가입 후 이용 — 서비스 관련 게시판마다 같은 안내
+MKT_NOTICE = ('<div class="mkt-notice"><b>도입·구독 안내</b><span>HAI Ecosystems 서비스의 데모 신청과 도입·구독은 '
+              '<b>KELI Marketplace에서 회원가입 후</b> 이용할 수 있습니다.</span>'
+              f'<span class="mkt-acts"><a href="{OLD_SIGNUP}">Marketplace 회원가입</a><a href="{OLD_MARKET}">Marketplace 바로가기</a></span></div>')
 OLD_SOLUTION = {'hai-way': 3, 'hai-tutor': 7, 'hai-sync': 18, 'hai-security': 17, 'hai-research': 8, 'hai-prof': 20, 'hai-pbl': 16,
                 'hai-medlearn-x': 5, 'hai-mathtutor': 9, 'hai-mate': 15, 'hai-lrs': 11, 'hai-lens': 10, 'hai-korean': 21, 'hai-forum': 2,
                 'hai-fist': 14, 'hai-epilearn': 4, 'hai-docs': 13, 'hai-coder': 12, 'hai-check': 19}
@@ -2108,6 +2117,7 @@ def page_services():
 <h1>한림대학교가 수업에서 써 온<br>AI 교육 서비스.</h1>
 <p class="lead">직접 개발해 수업에서 검증한 뒤 KELI Marketplace에 먼저 올린 서비스입니다. 다른 대학과 기관도 도입할 수 있습니다.</p>
 <div class="acts"><a class="btn ghost" href="demos.html">전체 데모 영상</a><a class="btn ghost" href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a><a class="more" href="curriculum.html">수업에 결합하는 방법</a></div>
+{MKT_NOTICE}
 </div></section>
 <section class="sec glass" style="padding-top:48px"><div class="wrap">
 <div class="row" style="margin-bottom:20px">{tabs('svc', [(a[0], a[1]) for a in AREAS])}<span class="muted small"><span data-count="svc">{len(SERVICES)}개</span> 서비스</span></div>
@@ -2153,6 +2163,7 @@ def page_service(s):
 <h1>{E(s['name'])}{(' <small style="font-size:.5em;font-weight:500;color:var(--muted)">' + E(s['note']) + '</small>') if s.get('note') else ''}</h1>
 <p class="lead">{E(s['head'])}</p>
 <div class="acts">{(f'<a class="btn" href="{demo_url(s["slug"])}">데모 신청하기</a>') if demo_url(s["slug"]) else ''}<a class="btn{' ghost' if demo_url(s['slug']) else ''}" href="join.html?service={s['slug']}#inquiry">도입 문의</a>{links}</div>
+{MKT_NOTICE}
 </div></section>
 <section class="sec" style="padding-top:24px"><div class="wrap">
 <div class="grid g2" style="gap:48px;align-items:start">
@@ -2261,6 +2272,7 @@ def page_join():
 <section class="sec alt" id="inquiry"><div class="wrap">
 <div class="grid g2" style="gap:48px;align-items:start">
 <div class="head" style="margin:0"><h2>도입·참여 문의.</h2><p class="lead">기관명·관심 서비스·적용 교과목을 적어 보내 주세요. 사무국이 이메일로 답변드립니다.</p>
+{MKT_NOTICE}
 <div class="card" style="margin-top:8px"><span class="k">이메일로 보내시려면</span><p><span class="copy">{EMAIL} <button type="button" class="btn sm ghost" data-copy="{EMAIL}">복사</button></span></p><p>메일 제목 앞에 [서비스 도입 문의]를 붙여 주시면 빠릅니다.</p><p>소식은 <a href="{INSTA}" target="_blank" rel="noopener">Instagram @hallym_keli</a>에서도 볼 수 있습니다.</p></div></div>
 <form class="form" data-inquiry novalidate>
 <div style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden" aria-hidden="true"><label>이 칸은 비워 두세요<input type="text" name="hp" tabindex="-1" autocomplete="off"></label></div>
@@ -2620,7 +2632,7 @@ def page_demos():
 </div></section>'''
     body = crumb(('services.html', 'HAI Ecosystems'), (None, '전체 데모 영상')) + f'''
 <section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap"><span class="eyebrow">HAI Ecosystems · 데모 영상</span><h1>서비스를 먼저<br>영상으로 봅니다.</h1><p class="lead">한림 AI 교육 포털에 등록된 서비스별 데모 영상을 한곳에 모았습니다. 썸네일을 누르면 이 자리에서 바로 재생됩니다.</p>
-<div class="acts"><a class="btn ghost" href="services.html">서비스 목록</a><a class="btn ghost" href="{PORTAL_DEMOS}" target="_blank" rel="noopener">한림 AI 교육 포털</a><a class="more" href="join.html#inquiry">도입 문의</a></div></div></section>{secs}
+<div class="acts"><a class="btn ghost" href="services.html">서비스 목록</a><a class="btn ghost" href="{PORTAL_DEMOS}" target="_blank" rel="noopener">한림 AI 교육 포털</a><a class="more" href="join.html#inquiry">도입 문의</a></div>{MKT_NOTICE}</div></section>{secs}
 <section class="sec" style="padding-top:0"><div class="wrap"><p class="note">{DEMO_NOTE} 영상 저작권은 한림대학교에 있습니다.</p></div></section>
 '''
     write('demos.html', '전체 데모 영상 · KELI', body)
