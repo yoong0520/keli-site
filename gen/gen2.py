@@ -2624,11 +2624,9 @@ def _legacy_items():
 LEGACY = _legacy_items()
 def legacy_href(m): return f'legacy-{m["board"]}-{m["seq"]}.html'
 def _legacy_body(m):
-    import importlib.util
-    try:
-        from fetch_events import clean_html as _ch
-    except Exception:
-        sys.path.insert(0, os.path.join(OUT, 'scripts')); from fetch_events import clean_html as _ch
+    import sys as _sys
+    if os.path.join(OUT, 'scripts') not in _sys.path: _sys.path.insert(0, os.path.join(OUT, 'scripts'))
+    from fetch_events import clean_html as _ch
     b = m.get('body_html') or ''
     for im in m.get('images') or []:
         b = b.replace(im['src'], f'{m["dir"]}/{im["file"]}')
