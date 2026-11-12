@@ -1,0 +1,30 @@
+{
+ "board": "column-khighedu",
+ "board_label": "칼럼 · K-고등교육",
+ "seq": "76",
+ "title": "AI가 다 해주는 시대, 우리는 왜 배우고, 왜 대학에 남아 있는가",
+ "date": "2026-07-23",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<div class=\"boGalleryView\">\r\n\t\t\t\t\t\t<ul class=\"boGalleryView-view\">\r\n\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t<img src=\"/upload/board/BDKELI19/7e30ca50-f445-4ac2-b4fe-addee5b48152.JPG\" alt=\"카드뉴스_0622\" />\r\n\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<p>자세한 사항은 PDF 첨부문서를 확인해주세요!</p>\r\n\t\t",
+ "body_text": "자세한 사항은 PDF 첨부문서를 확인해주세요!",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI19/7e30ca50-f445-4ac2-b4fe-addee5b48152.JPG",
+   "file": "7e30ca50-f445-4ac2-b4fe-addee5b48152.JPG"
+  }
+ ],
+ "files": [
+  {
+   "name": "캡처.JPG",
+   "file": "캡처.JPG",
+   "size": 156010
+  },
+  {
+   "name": "K고등교육모델연구회_카드뉴스_0622_연구배경편.pdf",
+   "file": "K고등교육모델연구회_카드뉴스_0622_연구배경편.pdf",
+   "size": 1033334
+  }
+ ],
+ "thumb": "thumb_7e30ca50-f445-4ac2-b4fe-addee5b48152.JPG",
+ "source": "https://keliedu.org/keli/board/column/K-highedu (articleSeq 76)"
+}

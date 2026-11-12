@@ -1,0 +1,16 @@
+{
+ "board": "partner-video",
+ "board_label": "파트너 영상",
+ "seq": "89",
+ "title": "[ONYUL] HAI-Docs | 대학 행정문서를 읽고 답하는 근거 기반 AI",
+ "date": "2026-09-14",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t\t<div class=\"iframe-bx\">\r\n\t\t\t\t\t<iframe width=\"640\" height=\"360\" src=\"https://www.youtube.com/embed/FtGWSRDa7mw\" frameborder=\"0\" title=\"[ONYUL] HAI-Docs | 대학 행정문서를 읽고 답하는 근거 기반 AI\"></iframe>\r\n\t\t\t\t</div>\r\n\t\t\t\r\n\r\n\t\t\t\r\n\t\t</div>\r\n\t",
+ "body_text": "",
+ "youtube": [
+  "FtGWSRDa7mw"
+ ],
+ "images": [],
+ "files": [],
+ "thumb": "https://i.ytimg.com/vi/FtGWSRDa7mw/hqdefault.jpg",
+ "source": "https://keliedu.org/keli/partners/video (articleSeq 89)"
+}

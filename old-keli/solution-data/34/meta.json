@@ -1,0 +1,27 @@
+{
+ "board": "solution-data",
+ "board_label": "솔루션 자료실",
+ "seq": "34",
+ "title": "[엘렉시] AI조교",
+ "date": "2026-04-15",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<img src=\"/upload/board/BDKELI15/c55acc35-44b6-4e86-ae86-d88d3ba46473.jpg\" alt=\"\" />\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<p><br><br></p>\r\n<h5 class=\"titLv2\">데모영상</h5>\r\n<div id=\"demoday_youtube\"></div>\r\n<p><br><br></p>\r\n<h5 class=\"titLv2\">자료 다운로드</h5>\r\n<div class=\"file-list skinMt-small\"><a href=\"https://docs.google.com/presentation/d/1GR-2swG43SkKNs1uHNLTkC0CbTb45WxsvwJct-n7kJY/edit?usp=sharing\" target=\"_blank\" title=\"새창으로이동\" download=\"\" rel=\"noopener\"> <span>AI 조교 홍보 및 사용법 동영상 콘티</span> <img src=\"/page/keli/images/sub/download02.png\" alt=\"\"> </a></div>\r\n\t\t",
+ "body_text": "데모영상 자료 다운로드 AI 조교 홍보 및 사용법 동영상 콘티",
+ "youtube": [
+  "AEvWOuZaZyc"
+ ],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI15/c55acc35-44b6-4e86-ae86-d88d3ba46473.jpg",
+   "file": "c55acc35-44b6-4e86-ae86-d88d3ba46473.jpg"
+  }
+ ],
+ "files": [
+  {
+   "name": "ellexi_ai-assistant_img01.jpg",
+   "file": "ellexi_ai-assistant_img01.jpg",
+   "size": 1523330
+  }
+ ],
+ "thumb": "thumb_c55acc35-44b6-4e86-ae86-d88d3ba46473.jpg",
+ "source": "https://keliedu.org/keli/solution/data (articleSeq 34)"
+}

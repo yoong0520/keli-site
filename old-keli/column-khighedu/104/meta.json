@@ -1,0 +1,30 @@
+{
+ "board": "column-khighedu",
+ "board_label": "칼럼 · K-고등교육",
+ "seq": "104",
+ "title": "AI시대, 대학교육이 필요한가?",
+ "date": "2026-08-10",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<div class=\"boGalleryView\">\r\n\t\t\t\t\t\t<ul class=\"boGalleryView-view\">\r\n\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t<img src=\"/upload/board/BDKELI19/560bed43-ac51-4d49-838b-5071c6ba0044.png\" alt=\"표지\" />\r\n\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<p><span>자세한 사항은 PDF 첨부문서를 확인해주세요!</span></p>\r\n\t\t",
+ "body_text": "자세한 사항은 PDF 첨부문서를 확인해주세요!",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI19/560bed43-ac51-4d49-838b-5071c6ba0044.png",
+   "file": "560bed43-ac51-4d49-838b-5071c6ba0044.png"
+  }
+ ],
+ "files": [
+  {
+   "name": "8월 10일 카드뉴스.png",
+   "file": "8월_10일_카드뉴스.png",
+   "size": 181099
+  },
+  {
+   "name": "KELI 카드뉴스(8월 10일) - AI시대 대학교육이 필요한가.pdf",
+   "file": "KELI_카드뉴스(8월_10일)_-_AI시대_대학교육이_필요한가.pdf",
+   "size": 734496
+  }
+ ],
+ "thumb": "thumb_560bed43-ac51-4d49-838b-5071c6ba0044.png",
+ "source": "https://keliedu.org/keli/board/column/K-highedu (articleSeq 104)"
+}

@@ -1,0 +1,25 @@
+{
+ "board": "solution-data",
+ "board_label": "솔루션 자료실",
+ "seq": "39",
+ "title": "[클라썸] 입학·학사도우미",
+ "date": "2026-04-15",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<img src=\"/upload/board/BDKELI15/0b9117ff-4840-4170-8b7c-6f30a33427bd.jpg\" alt=\"\" />\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<p><br><br></p>\r\n<h5 class=\"titLv2\">서비스 구조도</h5>\r\n<p><img src=\"/page/keli/demoday/classum_ai-helper_img02.jpg\" alt=\"서비스 구조도\"> <br><br></p>\r\n<h5 class=\"titLv2\">자료 다운로드</h5>\r\n<div class=\"file-list skinMt-small\"><a href=\"/page/keli/demoday/classum_ai-helper_seanario.pdf\" download=\"\"> <span>입학·학사도우미 시나리오(차별점)</span> <img src=\"/page/keli/images/sub/download02.png\" alt=\"\"> </a></div>\r\n\t\t",
+ "body_text": "서비스 구조도 자료 다운로드 입학·학사도우미 시나리오(차별점)",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI15/0b9117ff-4840-4170-8b7c-6f30a33427bd.jpg",
+   "file": "0b9117ff-4840-4170-8b7c-6f30a33427bd.jpg"
+  }
+ ],
+ "files": [
+  {
+   "name": "classum_ai-helper_img01.jpg",
+   "file": "classum_ai-helper_img01.jpg",
+   "size": 530595
+  }
+ ],
+ "thumb": "thumb_0b9117ff-4840-4170-8b7c-6f30a33427bd.jpg",
+ "source": "https://keliedu.org/keli/solution/data (articleSeq 39)"
+}

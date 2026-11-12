@@ -1,0 +1,30 @@
+{
+ "board": "column-khighedu",
+ "board_label": "칼럼 · K-고등교육",
+ "seq": "82",
+ "title": "교육용철학AI편",
+ "date": "2026-08-13",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t<div class=\"boGalleryView\">\r\n\t\t\t\t\t\t<ul class=\"boGalleryView-view\">\r\n\t\t\t\t\t\t\t<li>\r\n\t\t\t\t\t\t\t\t<img src=\"/upload/board/BDKELI19/6f913eb2-a05e-456a-8e32-26eb49dfcd60.png\" alt=\"표지\" />\r\n\t\t\t\t\t\t\t</li>\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t<p><span>자세한 사항은 PDF 첨부문서를 확인해주세요!</span></p>\r\n\t\t",
+ "body_text": "자세한 사항은 PDF 첨부문서를 확인해주세요!",
+ "youtube": [],
+ "images": [
+  {
+   "src": "/upload/board/BDKELI19/6f913eb2-a05e-456a-8e32-26eb49dfcd60.png",
+   "file": "6f913eb2-a05e-456a-8e32-26eb49dfcd60.png"
+  }
+ ],
+ "files": [
+  {
+   "name": "7월카드뉴스2.png",
+   "file": "7월카드뉴스2.png",
+   "size": 149444
+  },
+  {
+   "name": "(7월 20일) K고등교육모델연구회_카드뉴스_교육용철학AI편.pdf",
+   "file": "(7월_20일)_K고등교육모델연구회_카드뉴스_교육용철학AI편.pdf",
+   "size": 784658
+  }
+ ],
+ "thumb": "thumb_6f913eb2-a05e-456a-8e32-26eb49dfcd60.png",
+ "source": "https://keliedu.org/keli/board/column/K-highedu (articleSeq 82)"
+}

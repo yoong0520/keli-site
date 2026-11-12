@@ -1,0 +1,1932 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	
+
+
+
+
+
+
+
+
+
+<title>KELI 솔루션 자료</title>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+<meta name="robots" content="index,follow">
+<meta name="Keywords" content="KELI, 켈리, KELI 플랫폼, 대학과 에듀테크 기업의 AI 공유 플랫폼, AI 기반 고등교육 혁신 생태계" />
+<meta name="Description" content="KELI의 비전과 철학, 그리고 운영 체계를 투명하게 공개하여 K-University 모델의 방향성을 제시하는 공간입니다." />
+<meta name="Author" content="KELI 플랫폼" />
+<meta name="format-detection" content="telephone=no" />
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KELI 플랫폼" />
+<meta property="og:title" itemprop="name" content="KELI 솔루션 자료" />
+<meta property="og:description" name="Description" content="KELI의 비전과 철학, 그리고 운영 체계를 투명하게 공개하여 K-University 모델의 방향성을 제시하는 공간입니다." />
+
+
+    <meta property="og:url" content="https://keliedu.org/keli/solution/data">
+
+<meta property="og:image" content="https://keliedu.org/page/keli/images/common/logo_color.png">
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "KELI 플랫폼",
+        "url": "https://keliedu.org",
+        "logo": "https://keliedu.org/page/keli/images/common/logo_color.png",
+        "sameAs": [
+            "https://www.youtube.com/@KELIHallym",
+            "https://www.instagram.com/keli_hallym"
+        ],
+        "provider": {
+            "@type": "Organization",
+            "name": "한림대학교 KELI 사무국"
+        }
+    }
+</script>
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+        
+    
+    
+
+
+<link rel="stylesheet" href="/page/common/css/jquery-ui.min.css?v=2026111213" />
+<link rel="stylesheet" href="/page/common/css/fonts.css?v=2026111213" />
+<link rel="stylesheet" href="/page/common/css/common.css?v=2026111213" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"/>
+
+
+	
+		
+			<script src="https://haitag.k-university.ai/haitag/tag.js"></script>
+		
+		
+	
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+        
+    
+    
+
+
+<script src="/page/common/js/jquery-3.7.1.min.js?v=2026111213"></script>
+<script src="/page/common/js/jquery-ui.min.js?v=2026111213"></script>
+<script src="/page/common/js/jquery.cookie.js?v=2026111213"></script>
+<script src="/page/common/js/common.js?v=2026111213"></script>
+<script src="/page/common/js/puble_common.js?v=2026111213"></script>
+<script src="/page/common/js/util.js?v=2026111213"></script>
+<script src="/page/common/js/slick.min.js?v=2026111213"></script>
+<script src="/page/common/js/clipboard.js?v=2026111213"></script>
+
+<script>
+    // csrf token - add by YJ.SON :: 2021-05-16
+    // var csrf_token = $("meta[name='_csrf']").attr("content");
+    // var csrf_token_header = $("meta[name='_csrf_header']").attr("content");
+    // push test
+    $(document).ready(function() {
+        // page hit
+        var pageUrl  = '/keli/solution/data';
+        var pageTitle = 'KELI 솔루션 자료';
+        if ('/keli/solution/data') {
+            $.ajax({
+                type : 'POST'
+                , url  : '/egf/insertPageHit'
+                , data :{
+                    'pageUrl'  : pageUrl
+                    , 'pageTitle' : pageTitle
+                }
+                , dataType:'json'
+                // , beforeSend : function (xhr) {
+                //     // add csrf token - add by YJ.SON :: 2021-05-16
+                //     xhr.setRequestHeader(csrf_token_header, csrf_token);
+                // }
+            });
+        }
+
+        // logout
+        $(".btn-logout").click(function (event) {
+            fnLogout();
+        });
+
+        $(".btn-program-qna").click(function () {
+            location.href = '/keli/board/qna?mode=write';
+        });
+
+        $(".not-login-btn").click(function () {
+            alert("로그인 후에 이용가능합니다.");
+            return false;
+        });
+
+        // 게시글 바로가기
+        $(".btn-board-view").click(function() {
+            let $form = $("form[name='boardForm']");
+            $form.attr("action", $(this).data("url"));
+            $form.find("input[name='articleSeq']").val($(this).data("seq"));
+            $form[0].submit();
+        });
+
+        $(".board-more-view").click(function () {
+            let $form = $("form[name='boardForm']");
+            $form.attr("action", $(this).data("url"));
+            $form[0].submit();
+        });
+
+        
+        $(".preparing-btn").click(function () {
+            alert("현재 준비중인 메뉴입니다.");
+            return false;
+        });
+        
+    });
+
+    // logout
+    function fnLogout() {
+        fetch("/others/member/logout", {
+            method: "post",
+            cache: "no-cache"
+        })
+        .then(response => {
+            if (!response.ok){
+                throw new Error("서버에러");
+            }
+            return response.json();
+        })
+        .then(json => {
+            // HaiTag.clearUser();
+            location.href = "/keli";
+        })
+        .catch(error => {
+            // 요청실패.
+            alert(json.message);
+        })
+        .finally(() => {
+            fnEndLoading();
+        });
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+<script>
+$(document).ready(function() {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	
+	ga('create', 'GTM-KTMJ3WVJ', 'auto');
+	ga('send', 'pageview');
+});
+</script>
+
+
+	
+	
+		
+			
+		
+		
+	
+
+	
+		
+		<link rel="stylesheet" href="/page/keli/css/app.css?v=2026111213">
+		<link rel="stylesheet" href="/page/keli/css/swiper-bundle.min.css?v=2026111213">
+		<script src="/page/keli/js/app.js?v=2026111213"></script>
+		<script src="/page/keli/js/swiper-bundle.min.js?v=2026111213"></script>
+
+		
+		
+			<link rel="stylesheet" href="/page/keli/css/sub.css?v=2026111213">
+			<script src="/page/keli/js/708e424f8f.js?v=2026111213"></script>
+			<script src="/page/keli/js/jquery.panzoom.min.js?v=2026111213"></script>
+			<script src="/page/keli/js/sub.js?v=2026111213"></script>
+		
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+	<div id="wrapper" class="page-wrap">
+		<ul class="skipnav">
+			<li><a href="#sub">본문 바로가기</a></li>
+		</ul>
+
+		
+
+
+
+
+
+
+
+
+
+<header id="header">
+	<div class="hearder-top inner">
+		
+			
+				<a href="/keli/service/login">로그인</a>
+				<a href="/keli/service/signup" class="preparing-btn">회원가입</a>
+			
+			
+		
+	</div>
+	<div class="header-wrap inner">
+		<h1>
+			<a href="/keli">
+				<img src="/page/keli/images/common/logo_color.png" alt="한림대학교 keli">
+			</a>
+		</h1>
+		<div class="nav-bx" data-lenis-prevent>
+			<nav>
+				<ul class="Hdepth01">
+					
+						
+					
+						
+							
+								
+							
+							
+
+							<li>
+								<div class="Htlv01">
+									<a href="/keli/solution" target="_self"  >
+										<span>솔루션 마켓</span>
+									</a>
+								</div>
+								<!-- two depth -->
+								
+									
+									
+										
+											
+										
+									
+										
+											
+										
+									
+										
+											
+										
+									
+									
+										<ul class="Hdepth02">
+											
+												
+													
+														
+													
+													
+
+													<li>
+														<div class="Htlv02">
+															<a href="/keli/solution/data" target="_self"  >
+																<span>KELI 솔루션 자료</span>
+															</a>
+														</div>
+														<!-- three depth -->
+														
+													</li>
+												
+											
+												
+													
+														
+													
+													
+
+													<li>
+														<div class="Htlv02">
+															<a href="/keli/solution/collection" target="_self"  >
+																<span>KELI 컬렉션</span>
+															</a>
+														</div>
+														<!-- three depth -->
+														
+													</li>
+												
+											
+												
+													
+														
+													
+													
+
+													<li>
+														<div class="Htlv02">
+															<a href="/keli/solution/guide" target="_self"  >
+																<span>이용안내</span>
+															</a>
+														</div>
+														<!-- three depth -->
+														
+													</li>
+												
+											
+										</ul>
+										<!-- //depth2 -->
+									
+								
+							</li>
+						
+					
+						
+					
+						
+					
+						
+					
+						
+					
+						
+							
+								
+							
+							
+
+							<li>
+								<div class="Htlv01">
+									<a href="/keli/service" target="_self"  >
+										<span>서비스</span>
+									</a>
+								</div>
+								<!-- two depth -->
+								
+									
+									
+										
+											
+										
+									
+										
+											
+										
+									
+										
+											
+										
+									
+										
+											
+										
+									
+										
+											
+										
+									
+										
+											
+										
+									
+										
+											
+										
+									
+									
+										<ul class="Hdepth02">
+											
+												
+													
+														
+													
+													
+
+													<li>
+														<div class="Htlv02">
+															<a href="/keli/service/login" target="_self"  >
+																<span>로그인</span>
+															</a>
+														</div>
+														<!-- three depth -->
+														
+													</li>
+												
+											
+												
+													
+														
+													
+													
+
+													<li>
+														<div class="Htlv02">
+															<a href="/keli/service/signup" target="_self"  >
+																<span>회원가입</span>
+															</a>
+														</div>
+														<!-- three depth -->
+														
+													</li>
+												
+											
+												
+													
+														
+													
+													
+
+													<li>
+														<div class="Htlv02">
+															<a href="/keli/service/mypage" target="_self"  >
+																<span>마이페이지</span>
+															</a>
+														</div>
+														<!-- three depth -->
+														
+															
+															
+																
+															
+															
+														
+													</li>
+												
+											
+												
+													
+														
+													
+													
+
+													<li>
+														<div class="Htlv02">
+															<a href="/keli/service/search" target="_self"  >
+																<span>통합검색</span>
+															</a>
+														</div>
+														<!-- three depth -->
+														
+													</li>
+												
+											
+												
+													
+														
+													
+													
+
+													<li>
+														<div class="Htlv02">
+															<a href="/keli/service/privacy" target="_self"  >
+																<span>개인정보처리방침</span>
+															</a>
+														</div>
+														<!-- three depth -->
+														
+													</li>
+												
+											
+												
+													
+														
+													
+													
+
+													<li>
+														<div class="Htlv02">
+															<a href="/keli/service/terms" target="_self"  >
+																<span>이용약관</span>
+															</a>
+														</div>
+														<!-- three depth -->
+														
+													</li>
+												
+											
+												
+													
+														
+													
+													
+
+													<li>
+														<div class="Htlv02">
+															<a href="/keli/service/email" target="_self"  >
+																<span>이메일무단수집거부</span>
+															</a>
+														</div>
+														<!-- three depth -->
+														
+													</li>
+												
+											
+										</ul>
+										<!-- //depth2 -->
+									
+								
+							</li>
+						
+					
+				</ul>
+			</nav>
+		</div>
+		<div class="gnb-bg"></div>
+		<div class="search-bg"></div>
+		<div class="btn-bx">
+			<button type="button" class="search">
+				<img src="/page/keli/images/common/utils_search.png" alt="검색">
+			</button>
+			<div class="language-bx">
+				<div id="google_translate_element" style="display:none;"></div>
+				<button type="button" class="language">
+					<img src="/page/keli/images/common/utils_language.png" alt="언어">
+				</button>
+				<div class="lang-view translation-links">
+					<a href="javascript:void(0)" data-lang="kr">KR</a>
+					<a href="javascript:void(0)" data-lang="en">EN</a>
+				</div>
+			</div>
+			<button type="button" class="">
+				<img src="/page/keli/images/common/utils_notification.png" alt="알람">
+				
+			</button>
+			<div class="alram-pop">
+				<div class="slick-wrap">
+					<div class="slick">
+						
+					</div>
+					<div class="control">
+						<button type="button" class="prev"></button>
+						<button type="button" class="next"></button>
+					</div>
+				</div>
+				<div class="close-bx">
+					<span>팝업건수 : 총 0건</span>
+					<a href="#" class="alram-close">
+						닫기 <img src="/page/keli/images/main/popupzone_button_close.png" alt="">
+					</a>
+				</div>
+			</div>
+			<button type="button" class="sitemap">
+				<img src="/page/keli/images/common/utils_menu.png" alt="사이트맵">
+			</button>
+		</div>
+		<div class="modal-search">
+			<div class="bx">
+				<form name="totalSearchForm" id="totalSearchForm" method="post" action="/keli/service/search">
+					<div class="search-form">
+						<label for="search-header" class="blind">검색</label>
+						<input type="search" name="searchKeyword" id="search-header" placeholder="검색어를 입력해주세요.">
+						<span class="place-holder">
+							검색어를 입력해주세요.
+						</span>
+						<button type="submit" class="total-search-btn">
+							<img src="/page/keli/images/sub/search-icon.png" alt="검색">
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#totalSearchForm").submit(function () {
+					const searchWord = $("#search-header").val().trim();
+
+					if(!searchWord) {
+						alert("검색어가 입력되지 않았습니다.");
+						return false;
+					}
+				});
+			});
+		</script>
+	</div>
+</header>
+
+		<main id="sub">
+			<a href="#A-Contents-focus" id="A-Contents-focus" class="blind">본문 시작</a>
+			
+
+
+
+
+
+
+
+
+
+<div id="sub-visual">
+    <div class="visual-img-bx">
+        <img src="/page/keli/images/sub/sub-visual.png" alt="" class="visual-img">
+    </div>
+    <div class="inner">
+        <h2>KELI 솔루션 자료</h2>
+        <div class="bread-btn-bx">
+            <div id="breadcrumb">
+                <a href="#" class="home">
+                    홈
+                </a>
+                <a href="/keli/solution">솔루션 마켓</a>
+                <a href="/keli/solution/data">KELI 솔루션 자료</a>
+                <a href=""></a>
+            </div>
+            <div class="btn-group">
+                <div class="sns-bx">
+                    <button type="button" class="sns-btn">
+                        <img src="/page/keli/images/sub/share_social.png" alt="sns공유">
+                    </button>
+                    <div>
+                        <a href="javascript:fnShareSNS('naver');" class="blog" target="_blank" title="새창열림" rel="noopener noreferrer">
+                            블로그
+                        </a>
+                        <a href="javascript:fnShareSNS('x');" class="twitter" target="_blank" title="새창열림" rel="noopener noreferrer">
+                            트위터
+                        </a>
+                        <a href="javascript:fnShareSNS('facebook');" class="facebook" target="_blank" title="새창열림" rel="noopener noreferrer">
+                            페이스북
+                        </a>
+                    </div>
+                </div>
+                <button type="button" class="copy-btn" id="copyUrlBtn">
+                    <img src="/page/keli/images/sub/share_link.png" alt="주소복사">
+                </button>
+                <button type="button" class="print-btn" onclick="fnPrint();">
+                    <img src="/page/keli/images/sub/share_print.png" alt="프린트">
+                </button>
+                <script>
+                    document.getElementById('copyUrlBtn').addEventListener('click', function() {
+                        const url = window.location.href;
+                        navigator.clipboard.writeText(url).then(() => {
+                            alert('현재 페이지 주소가 복사되었습니다!');
+                        }).catch(err => {
+                            console.error('주소 복사 실패:', err);
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <div id="depth-tab">
+        <div class="inner">
+            <ul>
+                
+            </ul>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+<div id="content" class="inner">
+	<div class="contsArea skinContainer" id="contentsArea">
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+		
+
+		
+			
+				
+					
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="skinBtnBo_box2 skinTxa-right">
+	<a href="#nolink"
+	   data-clipboard-text=""
+	   data-article-seq="38"
+	   class="skinBtnBo skinBtnBo-data-pos contsBtnSmall2 btn-clipboard">
+		바로가기 복사
+	</a>
+</div>
+
+<div class="skinTb skinMb-small skinTb-data-resList skinTb-data-bgSbj">
+
+	<form name="pageForm" method="post" action="/keli/solution/data" autocomplete="off">
+		
+		<input type="hidden" name="pageIndex" value="1" />
+		<input type="hidden" name="searchKeyword" value="" />
+		<input type="hidden" name="searchCondition" value="" />
+		<input type="hidden" name="articleSeq" value="38" />
+	</form>
+
+	<form name="replayForm" method="post" action="/keli/solution/data" autocomplete="off">
+		
+		<input type="hidden" name="mode" />
+		<input type="hidden" name="articleSeq" value="38" />
+	</form>
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+	<div class="skinTb-tr">
+		<div class="skinTb-th col2 skinTxa-center" data-hidden="mob">제목 </div>
+		<div class="skinTb-td skinTb-sbj board-title"> [THE CAT KOREA] 맞춤형 학생 진단평가</div>
+	</div>
+	<div class="skinTb-tr">
+		<div class="skinTb-th col2 skinTxa-center" data-hidden="mob">작성자</div>
+		<div class="skinTb-td col2 skinTb-name">관리자</div>
+
+		<div class="skinTb-th col2 skinTxa-center" data-hidden="mob">등록일 </div>
+		<div class="skinTb-td col2 skinTb-date">2026-04-15</div>
+
+		<div class="skinTb-th col2 skinTxa-center" data-hidden="mob">조회수</div>
+		<div class="skinTb-td skinTb-hiddenMob" data-hidden="mob">46</div>
+	</div>
+
+	
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+	<div class="skinTb-tr">
+		<div class="skinTb-td skinTb-conts">
+			
+				
+					<img src="/upload/board/BDKELI15/2f44ca65-11d8-448d-9193-43ec3e708201.jpg" alt="" />
+				
+				
+			
+
+			<p><br><br></p>
+<h5 class="titLv2">서비스 구조도</h5>
+<p><img src="/page/keli/demoday/thecatkorea_CAT_img02.jpg" alt="서비스 구조도"> <br><br></p>
+<h5 class="titLv2">데모영상</h5>
+<div class="video-bx"><embed width="640" height="360" src="/page/keli/demoday/the_cat_korea_.mp4" autostart="0" type="video/mp4"></div>
+<p><br><br></p>
+		</div>
+	</div>
+
+	
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+	<!-- 첨부파일표시  -->
+	
+
+
+
+
+
+
+
+
+
+
+	
+		<style>
+			.btn-file-ezview {
+				margin-left: 5px;display: inline-block;width: 81px;height: 24px;border: 3px solid #c1c1c1;border-radius: 10px/50%;line-height: 18px;vertical-align: middle;padding-left: 3px;background: 95% 50% no-repeat url(/page/common/images/ico-preview.gif);color:#000;
+			}
+		</style>
+		<div class="skinTb-tr">
+			
+			<div class="skinTb-th col2 skinTxa-center" data-hidden="mob">첨부파일</div>
+			<div class="skinTb-td col10">
+				
+					<div class="attachFile ">
+
+						<a href="/egf/bp/common/front/44/download">
+							<span class="icoFile icoFile-data-jpg skinMr-small" data-hidden="mob"></span>
+							thecatkorea_CAT_img01.jpg
+						</a>
+
+						
+						
+
+						<span class="attachFile-txt" data-hidden="mob">(다운로드 수: 4)</span>
+					</div>
+				
+			</div>
+		</div>
+	
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+			
+			
+				
+					<script type="text/javascript">
+						let youtubeFrame = "<div class='iframe-bx'><iframe width='100%' height='100%' frameborder='0' allowfullscreen='allowfullscreen' src='https://www.youtube.com/embed/'></iframe></div>";
+
+
+						$("#demoday_youtube").append(youtubeFrame);
+					</script>
+				
+				
+			
+		
+	
+
+
+
+</div>
+
+<!-- 버튼표시 -->
+
+
+
+
+
+
+
+
+
+<div class="skinBtnBo_box skinTxa-right">
+	
+	
+	<a href="/keli/solution/data" class="skinBtnBo skinBtnBo-data-pos">목록</a>
+</div>
+
+
+<!-- 이전글/다음글 -->
+
+
+	<div class="skinTb skinTxa-left v2">
+		<div class="skinTb-tr">
+			<div class="skinTb-td">
+				<div>
+					
+						<a href="#nolink" class="btnBoPrev btn-board-previous-view" data-seq="37">
+							<span></span>
+							PREV
+						</a>
+						<a href="#nolink" class="btn-board-previous-view" data-seq="37">
+							[유비온]AI기반 학습플랫폼 스마트리드(SmartLead)
+						</a>
+					
+					
+				</div>
+			</div>
+			<div class="skinTb-td skinTxa-right">
+				<div>
+					
+						<a href="#nolink" class="btn-board-next-view" data-seq="39">
+							[클라썸] 입학·학사도우미
+						</a>
+						<a href="#nolink" class="btnBoNext btn-board-next-view" data-seq="39">
+							NEXT
+							<span></span>
+						</a>
+					
+					
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+<!-- 댓글 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="popAlert popAlert-data-passConfirm skinTxa-center" data-alert-name="passConfirm" style="display: none;" id="passConfirmContainer">
+	<div class="popAlert-inner">
+		<div class="popAlert-tit">
+			비밀번호 확인
+		</div>
+
+		<form id="confirmFormCopy" method="post" autocomplete="off">
+			
+		</form>
+
+		<form id="confirmForm" name="confirmForm" method="post" autocomplete="off">
+			
+			<input type="hidden" name="returnUrl" value="/keli/solution/data">
+			<input type="hidden" name="boardCode" value="BDKELI15" />
+			<input type="hidden" name="articleSeq" value="38" />
+			<label for="PassWord" class="skinMb-small">글 작성 시 입력한 비밀번호를 입력해주세요.</label>
+			<input type="password" id="PassWord" name="password" class="skinIptPass col7 skinMb-small passFormEnterPress"  maxlength="10" autocomplete="off"/>
+		</form>
+
+		<div>
+			<a href="#nolink" class="col5 skinFont-bold skinTxa-center skinBtnBo skinBtnBo-data-neg btn-alert-password-confirm">확인</a>
+			<a href="#nolink" class="col5 skinFont-bold skinTxa-center skinBtnBo skinBtnBo-data-pos btn-alert-password-cancel">취소</a>
+		</div>
+	</div>
+</div>
+
+<script>
+	var userMode = '';
+	var seq = 0;
+	$(document).ready(function() {
+		$('.passFormEnterPress').on('keypress', function(e) {
+			var charCode = (e.which) ? e.which : e.keyCode;
+			if (charCode == 13) {
+				confirmFormCheck();
+				return false;
+			}
+		});
+
+		// password confirm
+		$(".btn-alert-password-confirm").click(function(event) {
+			confirmFormCheck();
+		});
+
+		// password cancel
+		$(".btn-alert-password-cancel").click(function(event) {
+			passConfirmContainerClose();
+		});
+	});
+
+	function showPassConfirmContainer(mode, articleSeq) {
+		var $container = $('#passConfirmContainer');
+		var style = { 'position': 'fixed'
+					, 'top' : '50%'
+					, 'left' : '50%'
+					, 'margin-top' : -$container.outerHeight() / 2 + 'px'
+					, 'margin-left' : -$container.outerWidth() / 2 + 'px'
+					, 'z-index' : 99999};
+		
+		$container.css(style).show();
+		
+		var initCss = {
+			position: 'static' 
+		}
+		$('#Sub').css(initCss);
+		$('#Ftr').css(initCss);
+		
+		userMode = mode;
+		seq = articleSeq;
+		
+	}
+	
+	function passConfirmContainerClose() {
+		var $container = $('#passConfirmContainer');
+		$container.find('input[name="password"]').val('');
+		$container.hide();
+		var initCss = {
+			position: 'relative' 
+		}
+		$('#Sub').css(initCss);
+		$('#Ftr').css(initCss);
+		
+	}
+	
+	function confirmFormCheck() {
+		var $form = $('#confirmForm');
+		
+		if (!$form.find('input[name="password"]').val()) {
+			alert('비밀번호를 입력해주세요.')
+			return;
+		}
+		
+		if (seq > 0) {
+			$form.find('input[name="articleSeq"]').val(seq);
+		}
+		
+		$.ajax({
+			cache: false,
+			type: "post",
+			url: "/egf/bp/board/article/passconfirm",
+			data: $form.serialize(),
+			dataType: "json",
+			// beforeSend : function (xhr) {
+			// 	// add csrf token - add by YJ.SON :: 2021-05-16
+			// 	xhr.setRequestHeader(csrf_token_header, csrf_token);
+			// },
+			success: function(data, textStatus, jqXHR) {
+				seq = data.articleSeq;
+				if (data.result == 'success') {
+					if (userMode == 'edit') {
+						$form.attr('action', '/keli/solution/data?mode=edit').submit();
+					}
+					else if (userMode == 'delete') {
+						if (confirm("정말 지우겠습니까?")) {
+							$form.attr('action', '/egf/bp/board/article/actionDelete').submit();
+						}
+					}
+					else if (userMode == 'read') {
+						$form.attr('action', '/keli/solution/data').submit();
+					}
+				}
+				else {
+					alert(data.msg);
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+			}
+		});
+	}
+</script>
+			
+
+				
+				
+				
+				
+				
+			
+		
+
+		
+			
+
+
+
+
+
+
+
+
+
+
+		
+	</div>
+</div>
+
+		</main>
+
+		
+
+
+
+
+
+
+
+
+<footer id="footer" class="clearfix">
+
+	<div class="address-home-bx inner">
+		<div class="address_wrap">
+			<div class="address-inner">
+				<div class="info-bx">
+					<a href="/keli/service/privacy">개인정보처리방침</a>
+					<a href="/keli/service/terms">이용약관</a>
+					<a href="/keli/service/email">이메일무답수집거부</a>
+				</div>
+				<div class="address-bx">
+					<p>
+						<span><strong>Address.</strong>  [24252] 강원특별자치도 춘천시 한림대학길 1 한림대학교</span>
+						<span><strong>TEL.</strong> KELI 사무국 033)248-3041, 3044, 3246</span>
+					</p>
+				</div>
+			</div>
+			<div class="link-wrap">
+				<div class="family-bx">
+					<div class="youtube-bx">
+						<a href="https://www.youtube.com/@KELI_official-h8v" target="_blank" rel="noopener noreferrer" title="새창열림">
+							<img src="/page/keli/images/common/youtube.png" alt="">
+						</a>
+						<a href="https://www.instagram.com/keli_hallym" target="_blank" rel="noopener noreferrer" title="새창열림">
+							<img src="/page/keli/images/common/instagram.png" alt="">
+						</a>
+					</div>
+					<div class="view-wrap item">
+						<button type="button" class="view-btn">
+							관련사이트
+						</button>
+						<div class="view-bx">
+							
+								
+							
+								
+							
+								
+									
+										<a href="https://www.moe.go.kr/" target="_blank" title="새창이동" rel="noopener noreferrer">
+											교육부
+										</a>
+									
+										<a href="https://www.msit.go.kr" target="_blank" title="새창이동" rel="noopener noreferrer">
+											과학기술정보통신부
+										</a>
+									
+										<a href="https://www.hallym.ac.kr" target="_blank" title="새창이동" rel="noopener noreferrer">
+											한림대학교
+										</a>
+									
+								
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="copy_right">
+			<p>copyright (C) HALLYM University All rights reserved. | 글로컬대학30 지원</p>
+		</div>
+	</div>
+
+
+</footer>
+
+		<a href="#" id="btn-top" role="button"></a>
+	</div>
+
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+			
+
+
+
+
+
+
+
+
+
+
+<script>
+
+	$(document).ready(function() {
+		// ezview
+		$(".btn-file-ezview").click(function (event) {
+			let fileSeq = $(this).data("file-seq");
+			if (fileSeq == undefined) {
+				viewEzview($(this).data("url"));
+			} else {
+				loadEzview($(this).data("url"), fileSeq);
+			}
+		});
+	});
+
+	function EzView() {
+
+		// 상태값
+		this.STATUS_WAIT = '0';
+		this.STATUS_PDFCONVERTING = '2';
+		this.STATUS_IMAGECONVERTING = '3';
+		this.STATUS_COMPLETE = '4';
+		this.STATUS_ERROR = '-1';
+
+		this.refreshTime= 3000; // 변환 체크 시간 3초
+		this.call = true; // 변환여부 체크
+		this.instance = ""; //인스턴스명
+		this.url; // 파일 다운로드 주소
+		this.fileDate; // 파일 생성 날짜 (선택사항: yyyyMMddHHmmss 형식)
+		this.progressUrl = '/ezview/progress.do';
+		this.viewpageUrl = '{이지뷰주소가들어갑니다}/ezview/task'; // 미리보기 페이지 주소
+		this.outObj; // 결과 출력 엘리먼트
+		this.formObj; // 내부 요청용 폼 엘리먼드
+
+		this.toggleUI = 0; // 진행상태 UI반전
+
+		// 페이지 미리보기
+		this.view = function(fileDate) {
+
+			fileDate = fileDate || '';
+
+			var url = this.viewpageUrl + "?url=" + encodeURIComponent(this.url) + "&fileDate=" + fileDate;
+			var width = 1100;
+			var height = 880;
+			var left = (screen.availWidth / 2) - (width / 2);
+			if (left < 0) left = 0;
+			var top = (screen.availHeight / 2) - (height / 2);
+			if (top < 0) top = 0;
+
+			var popup = jf_popupWindowEx(
+					url, // url
+					'미리보기', // name
+					width, height, left, top, // width, height, left, top
+					'yes', 'yes' // isResizable, isScrollable
+			);
+		}
+
+		// 이벤트 처리
+		this.viewProc = function(responseXML) {
+
+			var xml = responseXML.getElementsByTagName("result");
+
+			// 접속 에러
+			if (xml[0] == null) {
+				this.error(404);
+				return;
+			}
+
+			var defaultStyle = 'margin-left: 5px;'
+					+ 'display: inline-block;'
+					+ 'width: 81px;'
+					+ 'height: 24px;'
+					+ 'border: 3px solid #c1c1c1;'
+					+ 'border-radius: 10px/50%;'
+					+ 'line-height: 18px;'
+					+ 'vertical-align: middle;'
+					+ 'padding-left: 3px;';
+			var style;
+
+			var result = xml[0].childNodes[0].nodeValue;
+
+			//console.log("result = " + result);
+
+			if (result == '4') {
+				var fileSeq = this.instance.replace('ezview_', '');
+				var url = this.url;
+				$.ajax({
+					//async: false,
+					cache: false,
+					type: "post",
+					url: '/egf/bp/ezview/insertAction',
+					data: {
+						'url' : url
+						, 'fileSeq' : fileSeq
+					},
+					dataType: "json",
+					// beforeSend : function (xhr) {
+					// 	// add csrf token - add by YJ.SON :: 2021-05-16
+					// 	xhr.setRequestHeader(csrf_token_header, csrf_token);
+					// },
+					success: function(data, textStatus, jqXHR) {
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+					}
+				});
+			}
+
+			var out;
+			switch (result) {
+				case this.STATUS_WAIT:
+					style = defaultStyle + 'background: 95% 50% no-repeat url(/page/common/images/ico-ezview-download.png);color:#197b30;';
+					out = "<span style='" + style + "'>다운로드중</span>";
+					break;
+				case this.STATUS_PDFCONVERTING:
+				case this.STATUS_IMAGECONVERTING:
+					if (this.toggleUI == 0) {
+						this.toggleUI = 1;
+						style = defaultStyle + 'background: 95% 50% no-repeat url(/page/common/images/ico-ezview-change.png);color:#0054a6;';
+						out = "<span style='" + style + "'>변환중</span>";
+					} else {
+						this.toggleUI = 0;
+						style = defaultStyle + 'background: 95% 50% no-repeat url(/page/common/images/ico-ezview-change-b.png);color:#0054a6;font-weight:bold;';
+						out = "<span style='" + style + "'>변환중</span>";
+					}
+					break;
+				case this.STATUS_COMPLETE:
+					style = defaultStyle + 'background: 95% 50% no-repeat url(/page/common/images/ico-preview.gif);color:#000;';
+					out = "<a href=\"#\" onclick=\"";
+					if (this.fileDate == null)
+						out += this.instance + ".view();";
+					else
+						out += this.instance + ".view('" + this.fileDate + "');";
+					out += "return false;\" onkeypress=''"
+							+ "style='" + style + "'>미리보기</a>";
+
+					this.call = false;
+					break;
+				case this.STATUS_ERROR:
+					style = defaultStyle + 'background: 95% 50% no-repeat url(/page/common/images/ico-ezview-error.png);color:#ed1c24;';
+					out = "<span style='" + style + "'>변환오류</span>";
+					this.call = false;
+					break;
+			}
+
+			if (this.outObj != null && result == this.STATUS_COMPLETE)
+				this.outObj.innerHTML = out;
+		}
+
+		this.error = function(status) {
+			var defaultStyle = 'margin-left: 5px;'
+					+ 'display: inline-block;'
+					+ 'width: 81px;'
+					+ 'height: 24px;'
+					+ 'border: 3px solid #c1c1c1;'
+					+ 'border-radius: 10px/50%;'
+					+ 'line-height: 18px;'
+					+ 'vertical-align: middle;'
+					+ 'padding-left: 3px;';
+			var style = defaultStyle + 'background: 95% 50% no-repeat url(/page/common/images/ico-convert-error.png);color:#ed1c24;';
+			var out = "<span style='" + style + "'>" + status + "</span>";
+			//this.outObj.innerHTML = out;
+			this.call = false;
+		}
+
+		this.refresh = function() {
+
+			if (this.call) {
+
+				var param = "url=" + encodeURIComponent(this.url) + "&fileDate=" + this.fileDate;
+				var result = jf_xmlHttpPostUserError(this.progressUrl,
+						param, // submitParameter
+						this.instance + ".viewProc", // resultFunction
+						this.instance + ".error", // errFunction
+						true // isXML
+				);
+
+				if (result == -1) {
+					//alert("접속 에러");
+					console.log("접속 에러");
+					this.call = false;
+				} else {
+					setTimeout(this.instance + ".refresh()", this.refreshTime);
+				}
+
+			}
+
+		}
+	}
+
+
+	function jf_xmlHttpPostUserError(actionUrl,
+									 submitParameter,
+									 resultFunction,
+									 errFunction,
+									 isXML) {
+
+		var xmlHttpRequest = false;
+
+		if (window.ActiveXObject) {
+			xmlHttpRequest = new ActiveXObject('Microsoft.XMLHTTP');
+		} else {
+			xmlHttpRequest = new XMLHttpRequest();
+			xmlHttpRequest.overrideMimeType('text/xml');
+		}
+
+		xmlHttpRequest.open('POST', actionUrl, true);
+		xmlHttpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+		xmlHttpRequest.onreadystatechange = function() {
+
+			if (xmlHttpRequest.readyState == 4) {
+
+				switch (xmlHttpRequest.status) {
+					case 200: // 사용자 이벤트 처리 함수 지정
+						if (isXML) {
+							eval(resultFunction + '(xmlHttpRequest.responseXML);');
+						} else{
+							eval(resultFunction + '(xmlHttpRequest.responseText);');
+						}
+						break;
+
+					default:
+						eval(errFunction + '(xmlHttpRequest.status);');
+						break;
+				}
+			}
+		}
+		xmlHttpRequest.send(submitParameter);
+	}
+
+	function jf_popupWindowEx(url, name, width, height, left, top, isResizable, isScrollable, useStatus) {
+		var optArray = new Array();
+		var idx = 0;
+		if (width) optArray[idx++] = "width=" + width;
+		if (height) optArray[idx++] = "height=" + height;
+		if (left) optArray[idx++] = "left=" + left;
+		if (top) optArray[idx++] = "top=" + top;
+		if (isResizable) optArray[idx++] = "resizable=" + isResizable;
+		if (isScrollable) optArray[idx++] = "scrollbars=" + isScrollable;
+		if (useStatus) optArray[idx++] = "status=" + useStatus;
+
+		var opts = "";
+		for (idx = 0; idx < optArray.length; idx++) {
+			if (idx > 0)
+				opts += ",";
+			opts += optArray[idx];
+		}
+
+		return window.open(url, name, opts);
+	}
+
+	function jf_popupWindowCenter(url, name, width, height, isResizable, isScrollable, useStatus) {
+		var x = (screen.availWidth / 2) - (width / 2);
+		if (x < 0) x = 0;
+		var y = (screen.availHeight / 2) - (height / 2);
+		if (y < 0) y = 0;
+		return jf_popupWindowEx(url, name, width, height, x, y, isResizable, isScrollable, useStatus);
+	}
+
+	function viewEzview(url) {
+		var targetPath = (url.includes("http") ? '' : window.location.origin) + url;
+
+		var url = '{이지뷰주소가들어갑니다}/ezview/task' + "/viewer?url=" + encodeURIComponent(targetPath);
+		var width = 1100;
+		var height = 880;
+		var left = (screen.availWidth / 2) - (width / 2);
+		if (left < 0) left = 0;
+		var top = (screen.availHeight / 2) - (height / 2);
+		if (top < 0) top = 0;
+
+		var popup = pop(
+				url, // url
+				'미리보기', // name
+				width, height, left, top, // width, height, left, top
+				'yes', 'yes' // isResizable, isScrollable
+		);
+	}
+
+	function loadEzview(url,fileSeq) {
+		var fullPath = (url.includes("http") ? '' : window.location.origin) + url;
+
+		var eaviewUrl = '{이지뷰주소가들어갑니다}/ezview/task' + "/request?url=" + encodeURIComponent(fullPath);
+		$.ajax({
+			url: eaviewUrl,
+			dataType: "json",
+			success: function(data, textStatus, jqXHR) {
+
+				var width = 1100;
+				var height = 880;
+				var left = (screen.availWidth / 2) - (width / 2);
+				if (left < 0) left = 0;
+				var top = (screen.availHeight / 2) - (height / 2);
+				if (top < 0) top = 0;
+
+				if((data[0].message).indexOf('완료')>0 ){
+					var popup = pop(
+							'{이지뷰주소가들어갑니다}/ezview/task'+"/viewer?url=" + (url.includes("http") ? '' : window.location.origin) + encodeURIComponent(url),
+							'미리보기', // name
+							width, height, left, top, // width, height, left, top
+							'yes', 'yes' // isResizable, isScrollable
+					);
+				}
+				else {
+					setTimeout(function (){
+						var popup = pop(
+								'{이지뷰주소가들어갑니다}/ezview/task'+"/viewer?url=" + (url.includes("http") ? '' : window.location.origin) + encodeURIComponent(url),
+								'미리보기', // name
+								width, height, left, top, // width, height, left, top
+								'yes', 'yes' // isResizable, isScrollable
+						);
+					},2000);
+				}
+
+				$.ajax({
+					url: "/egf/bp/ezview/insertAction",
+					data: {"fileSeq" : fileSeq, "url":url },
+					dataType: "json",
+					success: function(data, textStatus, jqXHR) {
+						/*console.log(data)*/
+					}
+				});
+			}
+		});
+	}
+
+	function pop(url, name, width, height, left, top, isResizable, isScrollable, useStatus) {
+		var optArray = new Array();
+		var idx = 0;
+		if (width) optArray[idx++] = "width=" + width;
+		if (height) optArray[idx++] = "height=" + height;
+		if (left) optArray[idx++] = "left=" + left;
+		if (top) optArray[idx++] = "top=" + top;
+		if (isResizable) optArray[idx++] = "resizable=" + isResizable;
+		if (isScrollable) optArray[idx++] = "scrollbars=" + isScrollable;
+		if (useStatus) optArray[idx++] = "status=" + useStatus;
+
+		var opts = "";
+		for (idx = 0; idx < optArray.length; idx++) {
+			if (idx > 0)
+				opts += ",";
+			opts += optArray[idx];
+		}
+
+		return window.open(url, name, opts);
+	}
+</script>
+
+
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+
+
+<script>
+    $(document).ready(function() {
+
+        // modify
+        $(".btn-board-modify").click(function(event) {
+            showPassConfirmContainer("edit", 0);
+        });
+
+        // delete
+        $(".btn-board-delete").click(function(event) {
+            showPassConfirmContainer("delete", 0);
+        });
+
+        // reply
+        $(".btn-board-reply").click(function(event) {
+            fncReplyForm($(this).data("seq"));
+        });
+
+        // previous or next view
+        $(".btn-board-previous-view, .btn-board-next-view").click(function(event) {
+            goPage($(this).data("seq"));
+        });
+
+        // previous or next view with password confirm
+        $(".btn-board-previous-view-pass-confirm, .btn-board-next-view-pass-confirm").click(function(event) {
+            showPassConfirmContainer("read", $(this).data("seq"));
+        });
+
+        // certification
+        $(".btn-board-certification").click(function(event) {
+            authForm.submit();
+        });
+
+        // board comment delete
+        $(".btn-board-comment-delete").click(function(event) {
+            fncDeleteCommentProc($(this).data("comment-seq"), $(this).data("comment-index"));
+        });
+    });
+
+	//삭제플래그
+	function fncDeleteFlag() {
+		var f = document.confirmForm;
+		
+		f.action = "/egf/bp/board/article/actionDelete";
+		if (confirm("정말 지우겠습니까?")) {
+			f.submit();
+		}
+	}
+
+    // 코멘트 등록
+    function fncWriteCommentProc() {
+
+        var varForm = document.boardArticle;
+        
+        
+        if (!recaptchaCheck()) {
+            return;
+        }
+
+        if (!varForm.name.value) {
+            alert('“작성자”를 입력해주세요.');
+            varForm.name.focus();
+            return;
+        }
+        
+
+        if (!$('#comment_pass').val()) {
+            alert('“비밀번호”를 입력해주세요.');
+            $('#comment_pass').focus();
+            return;
+        }
+
+        if(!$('#comment_pass').val().match(/^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!,@,#,$,%,^,&,*,?,_,~,+,-]).{6,10}$/)) {
+            alert("영문, 숫자, 특수 문자 1자 이상 혼합하여 6~10자 이내로 등록해주세요.");
+            $('#comment_pass').focus();
+            return;
+        }
+
+        if (!varForm.comment_content.value) {
+            alert('“내용”을 입력해주세요.');
+            varForm.comment_content.focus();
+            return;
+        }
+
+        varForm.parentSeq.value = 0;
+        varForm.password.value = $('#comment_pass').val();
+        varForm.content.value = $("#comment_content").val();
+        varForm.action = "/egf/bp/board/comment/actionWrite";
+        if (confirm("댓글을 등록하시겠습니까?")) {
+            varForm.submit();
+        }
+    }
+
+    // 코멘트 삭제
+    function fncDeleteCommentProc(commentSeq, index) {
+
+        var varForm = document.boardArticle;
+        var $commentForm = $('.id-comment').eq(index);
+        var $pass = $commentForm.find(':input[name="pass"]');
+
+        if (!$pass.val()) {
+            alert('비밀번호를 입력해주세요.');
+            $pass.focus();
+            return;
+        }
+
+        varForm.password.value = $pass.val();
+        varForm.commentSeq.value = commentSeq;
+        varForm.action = "/egf/bp/board/comment/actionDelete";
+        if (confirm("등록한 댓글을 삭제합니다.\n정말 삭제하시겠습니까?")) {
+            varForm.submit();
+        }
+    }
+
+    // 댓글 폼(reply)
+    function fncReplyForm(articleSeq) {
+        var varForm = document.replayForm;
+        varForm.mode.value = "reply";
+        varForm.articleSeq.value = articleSeq;
+		varForm.submit();
+	}
+
+    function goPage(articleSeq) {
+        var f = document.pageForm;
+        f.articleSeq.value = articleSeq;
+        f.target = '';
+        f.submit();
+    }
+
+    var maxCount = 500;
+    function textCounter() {
+        var $content = $('#comment_content');
+        if ($content.val().length > maxCount) {
+            alert('500자 이내로 등록해 주세요');
+            $content.val($content.val().substring(0, maxCount));
+        }
+        $('#comment_content_count').text('(' + $content.val().length + ' / ' + maxCount + ')')
+    }
+    // 캡챠 체크
+    function recaptchaCheck() {
+        if (typeof(grecaptcha) != 'undefined') {
+            if(grecaptcha.getResponse() == "") {
+                alert("자동입력방지를 인증해주세요.");
+                return false;
+            }
+        }
+        return true;
+    }
+</script>
+		
+	
+	
+	
+	
+
+
+	<form name="boardForm" id="boardForm" method="post" action="about:blank" autocomplete="off">
+		<input type="hidden" name="articleSeq" value="0" />
+		<input type="hidden" name="memberID" value="" />
+	</form>
+
+	<script type="text/javascript">
+		const script = document.createElement('script');
+		script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit&t=" + new Date().getTime();
+		document.head.appendChild(script);
+		function googleTranslateElementInit() {
+
+			new google.translate.TranslateElement({
+				pageLanguage: 'ko',
+				includedLanguages: 'en',
+				autoDisplay: true
+			}, 'google_translate_element');
+
+			// 페이지 이동 후 번역 상태 복원
+			const timer = setInterval(function () {
+
+				const combo = document.querySelector('.goog-te-combo');
+
+				if (!combo) return;
+
+				if (document.cookie.indexOf('googtrans=/ko/en') > -1) {
+					combo.value = 'en';
+					combo.dispatchEvent(new Event('change'));
+				}
+
+				clearInterval(timer);
+
+			}, 300);
+		}
+	</script>
+	<script type="text/javascript">
+		document.querySelector('.translation-links').addEventListener('click', function(event) {
+
+			let el = event.target;
+
+			while (el && el.nodeName === 'FONT') {
+				el = el.parentElement;
+			}
+
+			if (!el || !el.dataset.lang) {
+				return false;
+			}
+
+			const tolang = el.dataset.lang;
+
+			// 한국어 복귀
+			if (tolang === 'kr') {
+
+				document.cookie = "googtrans=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+				document.cookie = "googtrans=;path=/;domain=" + location.hostname + ";expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+				location.href = location.pathname + location.search;
+
+				return false;
+			}
+
+			// 영어 번역
+			document.cookie = "googtrans=/ko/en;path=/";
+			document.cookie = "googtrans=/ko/en;path=/;domain=" + location.hostname;
+
+			const gtcombo = document.querySelector('.goog-te-combo');
+
+			if (!gtcombo) {
+				alert("Google Translate is not ready.");
+				return false;
+			}
+
+			gtcombo.value = 'en';
+			gtcombo.dispatchEvent(new Event('change'));
+
+			return false;
+		});
+
+		document.querySelector('form').addEventListener('submit', function(e) {
+			// 1. 구글 번역 요소 찾기 (번역된 텍스트 원상복구용)
+			const translateFrame = document.querySelector('.goog-te-combo');
+
+			if (translateFrame) {
+				// 2. 번역 언어를 '원본(영어 등 선택 언어)'으로 변경하여 텍스트 복구
+				translateFrame.value = ''; // 기본 언어로 초기화
+				translateFrame.dispatchEvent(new Event('change'));
+
+				// 3. 잠시 대기하여 DOM이 원본 텍스트로 돌아올 시간을 준 뒤 전송 진행
+				// (필요에 따라 지연 시간 조정)
+				setTimeout(() => {
+					this.submit();
+				}, 300);
+			}
+		});
+	</script>
+</body>
+</html>

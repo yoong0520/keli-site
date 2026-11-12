@@ -1,0 +1,16 @@
+{
+ "board": "partner-video",
+ "board_label": "파트너 영상",
+ "seq": "96",
+ "title": "[한림대학교] HAI-AI | 한림대학교 AI 교육 통합 포털",
+ "date": "2026-09-14",
+ "body_html": "\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t\t<div class=\"iframe-bx\">\r\n\t\t\t\t\t<iframe width=\"640\" height=\"360\" src=\"https://www.youtube.com/embed/uqXfu5n3dAE\" frameborder=\"0\" title=\"[한림대학교] HAI-AI | 한림대학교 AI 교육 통합 포털\"></iframe>\r\n\t\t\t\t</div>\r\n\t\t\t\r\n\r\n\t\t\t\r\n\t\t</div>\r\n\t",
+ "body_text": "",
+ "youtube": [
+  "uqXfu5n3dAE"
+ ],
+ "images": [],
+ "files": [],
+ "thumb": "https://i.ytimg.com/vi/uqXfu5n3dAE/hqdefault.jpg",
+ "source": "https://keliedu.org/keli/partners/video (articleSeq 96)"
+}
