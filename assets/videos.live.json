@@ -1,35 +1,47 @@
 {
   "source": "https://www.youtube.com/@HALLYMNEWS",
   "filter": "채널 내 검색: 제목·설명에 KELI 또는 켈리 (관련: HAI Ecosystems · 에듀테크 소프트랩)",
-  "fetched_at": "2026. 10. 29.",
-  "fetched_iso": "2026-10-29T16:37+09:00",
-  "count": 7,
+  "fetched_at": "2026. 11. 12.",
+  "fetched_iso": "2026-11-12T15:13+09:00",
+  "count": 8,
   "items": [
+    {
+      "id": "DvOYjsZQd-8",
+      "title": "AI가 대학 교육을 어디까지 바꿀까? | 2026 KELI 국제 심포지엄 및 데모데이",
+      "published_text": "13일 전",
+      "length": "0:58",
+      "views": "조회수 436회",
+      "group": "keli",
+      "url": "https://www.youtube.com/watch?v=DvOYjsZQd-8",
+      "embed": "https://www.youtube-nocookie.com/embed/DvOYjsZQd-8?autoplay=1&rel=0",
+      "is_live_recording": false,
+      "age_days": 13,
+      "thumb": "media/youtube/DvOYjsZQd-8.jpg"
+    },
     {
       "id": "89r5tccN3Eo",
       "title": "2026 KELI 국제 심포지엄 및 데모데이(LIVE)",
-      "published_text": "8일 전",
+      "published_text": "3주 전",
       "length": "7:27:22",
-      "views": "조회수 1,539회",
+      "views": "조회수 1,619회",
       "group": "keli",
       "url": "https://www.youtube.com/watch?v=89r5tccN3Eo",
       "embed": "https://www.youtube-nocookie.com/embed/89r5tccN3Eo?autoplay=1&rel=0",
       "is_live_recording": true,
-      "published": "2026.10.20",
-      "age_days": 8,
+      "age_days": 21,
       "thumb": "media/youtube/89r5tccN3Eo.jpg"
     },
     {
       "id": "ZM-sy8WK4H8",
       "title": "KELI 국제 심포지엄(KELI International Symposium)",
-      "published_text": "11개월 전",
+      "published_text": "1년 전",
       "length": "7:20:36",
-      "views": "조회수 861회",
+      "views": "조회수 862회",
       "group": "keli",
       "url": "https://www.youtube.com/watch?v=ZM-sy8WK4H8",
       "embed": "https://www.youtube-nocookie.com/embed/ZM-sy8WK4H8?autoplay=1&rel=0",
       "is_live_recording": true,
-      "age_days": 330,
+      "age_days": 365,
       "thumb": "media/youtube/ZM-sy8WK4H8.jpg"
     },
     {
@@ -37,7 +49,7 @@
       "title": "[HAI 참교육] 에코시스템 편 💎",
       "published_text": "2개월 전",
       "length": "0:54",
-      "views": "조회수 936,096회",
+      "views": "조회수 936,103회",
       "group": "related",
       "url": "https://www.youtube.com/watch?v=7Vg-kGNUU58",
       "embed": "https://www.youtube-nocookie.com/embed/7Vg-kGNUU58?autoplay=1&rel=0",
@@ -50,7 +62,7 @@
       "title": "[HAI 참교육] HAI-Tutor 편 👨🏻‍🏫👩🏻‍🏫",
       "published_text": "2개월 전",
       "length": "0:45",
-      "views": "조회수 605,228회",
+      "views": "조회수 605,243회",
       "group": "related",
       "url": "https://www.youtube.com/watch?v=uTt06VKwX9E",
       "embed": "https://www.youtube-nocookie.com/embed/uTt06VKwX9E?autoplay=1&rel=0",
@@ -63,26 +75,13 @@
       "title": "🐈 한림대 냥터뷰로 알아보는 HAI-GPT 🐈",
       "published_text": "6개월 전",
       "length": "0:43",
-      "views": "조회수 387회",
+      "views": "조회수 398회",
       "group": "related",
       "url": "https://www.youtube.com/watch?v=3XIEdiiP9JQ",
       "embed": "https://www.youtube-nocookie.com/embed/3XIEdiiP9JQ?autoplay=1&rel=0",
       "is_live_recording": false,
       "age_days": 180,
       "thumb": "media/youtube/3XIEdiiP9JQ.jpg"
-    },
-    {
-      "id": "G5EeLDfvqx0",
-      "title": "2024년 고등교육 에듀테크 소프트랩 성과포럼",
-      "published_text": "1년 전",
-      "length": "3:54:33",
-      "views": "조회수 400회",
-      "group": "related",
-      "url": "https://www.youtube.com/watch?v=G5EeLDfvqx0",
-      "embed": "https://www.youtube-nocookie.com/embed/G5EeLDfvqx0?autoplay=1&rel=0",
-      "is_live_recording": true,
-      "age_days": 365,
-      "thumb": "media/youtube/G5EeLDfvqx0.jpg"
     },
     {
       "id": "LHCBxj31PTQ",
@@ -96,6 +95,19 @@
       "is_live_recording": true,
       "age_days": 365,
       "thumb": "media/youtube/LHCBxj31PTQ.jpg"
+    },
+    {
+      "id": "G5EeLDfvqx0",
+      "title": "2024년 고등교육 에듀테크 소프트랩 성과포럼",
+      "published_text": "1년 전",
+      "length": "3:54:33",
+      "views": "조회수 400회",
+      "group": "related",
+      "url": "https://www.youtube.com/watch?v=G5EeLDfvqx0",
+      "embed": "https://www.youtube-nocookie.com/embed/G5EeLDfvqx0?autoplay=1&rel=0",
+      "is_live_recording": true,
+      "age_days": 365,
+      "thumb": "media/youtube/G5EeLDfvqx0.jpg"
     }
   ]
 }

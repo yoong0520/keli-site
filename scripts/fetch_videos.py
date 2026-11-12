@@ -25,12 +25,28 @@ def get(url):
     with urllib.request.urlopen(req, timeout=40) as r:
         return r.read().decode('utf-8', 'ignore')
 
-def search(q):
-    h = get(f'{CHANNEL_URL}/search?query={urllib.parse.quote(q)}')
-    m = re.search(r'var ytInitialData = (\{.*?\});</script>', h, flags=re.S)
-    if not m:
-        return []
-    d = json.loads(m.group(1))
+def search(q, tries=3):
+    for i in range(tries):   # 서버(데이터센터) 접속에서는 검색 결과가 가끔 비거나 줄어든다 → 다시 시도
+        try:
+            h = get(f'{CHANNEL_URL}/search?query={urllib.parse.quote(q)}&hl=ko&gl=KR')
+        except Exception:
+            continue
+        m = re.search(r'var ytInitialData = (\{.*?\});</script>', h, flags=re.S)
+        if m:
+            r = _parse(json.loads(m.group(1)))
+            if r:
+                return r
+    return []
+
+def still_public(vid):
+    """oEmbed가 응답하면 공개 영상(비공개·삭제 영상은 401/404)"""
+    try:
+        get(f'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={vid}&format=json')
+        return True
+    except Exception:
+        return False
+
+def _parse(d):
     out = []
     def walk(o):
         if isinstance(o, dict):
@@ -80,6 +96,14 @@ def main():
                     if group == 'related' and (not RELATED_OK.search(v['title']) or RELATED_NO.search(v['title'])):
                         continue
                     seen.add(v['id']); v['group'] = group; items.append(v)
+        # 이번 검색에서 빠진 기존 영상은, 유튜브에 아직 공개되어 있으면 그대로 유지(검색이 일시적으로 덜 나와도 영상이 사라지지 않게)
+        try:
+            prev = json.load(open(OUT, encoding='utf-8')).get('items', [])
+        except Exception:
+            prev = []
+        for v in prev:
+            if v.get('id') and v['id'] not in seen and still_public(v['id']):
+                seen.add(v['id']); v = dict(v); v.setdefault('desc', ''); items.append(v)
         if not items:
             raise RuntimeError('no videos found')
         dates = rss_dates()
