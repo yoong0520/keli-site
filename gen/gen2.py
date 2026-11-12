@@ -1281,7 +1281,7 @@ FOOTER = f'''<footer class="ftr"><div class="wrap">
 <div class="col"><strong>바로가기</strong><a href="services.html">Marketplace</a><a href="join.html#inquiry">도입 문의</a><a href="archive.html">아카이브</a><a href="newsletter.html">뉴스레터 구독</a></div>
 <div class="col"><strong>관련 사이트</strong><a href="https://www.hallym.ac.kr" target="_blank" rel="noopener">한림대학교</a><a href="https://hallym-ai-next.foamymole15.chatgpt.site/#services" target="_blank" rel="noopener">AI교육혁신원</a><a href="https://aiadvcenter.csedu4all.com" target="_blank" rel="noopener">AI교육확산센터</a><a href="https://ai.hallym.ac.kr" target="_blank" rel="noopener">한림 AI 교육 포털</a><a href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a></div>
 </div>
-<div class="bot"><span>주관 한림대학교 · 후원 교육부 글로컬대학30 · © Hallym University</span><span><a href="privacy.html">개인정보처리방침</a> · <a href="terms.html">이용약관</a> · <a href="en.html">English</a> · <a href="admin.html">관리자</a></span></div>
+<div class="bot"><span>주관 한림대학교 · 후원 교육부 글로컬대학30 · © Hallym University</span><span><a href="privacy.html"><strong>개인정보처리방침</strong></a> · <a href="en.html">English</a> · <a href="admin.html">관리자</a></span></div>
 </div></footer>'''
 
 CSS_V = hashlib.md5(CSS.encode('utf-8')).hexdigest()[:8]
@@ -2650,6 +2650,38 @@ def page_en():
     html_ = doc('en.html', 'KELI — English', body, desc='KELI is a national-level shared AI platform for higher education led by Hallym University.')
     open(os.path.join(OUT, 'en.html'), 'w', encoding='utf-8').write(nb(html_.replace('<html lang="ko">', '<html lang="en">'), en=True))
 
+def page_privacy():
+    """개인정보처리방침 — 새 플랫폼이 실제로 받는 것(도입·참여 문의 양식)만 담는다. 회원가입·로그인 없음."""
+    T = '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>구분</th><th>수집 항목</th><th>목적</th><th>보유 기간</th></tr></thead><tbody>'
+    T += '<tr><td>도입·참여 문의(필수)</td><td>기관명, 성명, 이메일</td><td>문의 접수 확인, 회신, 서비스 도입·협의체 참여 상담</td><td rowspan="2">접수일로부터 1년 뒤 자동 파기(문의자가 삭제를 요청하면 즉시 파기)</td></tr>'
+    T += '<tr><td>도입·참여 문의(선택)</td><td>연락처, 관심 서비스, 적용 교과목, 문의 내용</td><td>상담 내용 파악과 회신</td></tr>'
+    T += '<tr><td>자동 생성 정보</td><td>문의를 보낸 화면 주소, 기기 종류, 접속 국가</td><td>스팸·악용 방지, 문의 경로 파악</td><td>문의 기록과 함께 파기</td></tr></tbody></table></div>'
+    U = '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>수탁자</th><th>위탁 업무</th></tr></thead><tbody>'
+    U += '<tr><td>FormSubmit (formsubmit.co)</td><td>문의 내용을 사무국 메일(contact@keliedu.org)로 전달, 접수 확인 메일 발송</td></tr>'
+    U += '<tr><td>Cloudflare, Inc.</td><td>문의 기록 보관 서버(관리자 문의함), 방문 통계 집계</td></tr>'
+    U += '<tr><td>GitHub, Inc.</td><td>사이트 게시(개인정보는 저장하지 않음)</td></tr></tbody></table></div>'
+    body = crumb((None, '개인정보처리방침')) + f'''
+<section class="hero" style="padding-top:48px;padding-bottom:32px"><div class="wrap narrow" style="max-width:900px"><span class="eyebrow">Privacy Policy</span><h1 style="font-size:clamp(28px,4vw,40px)">개인정보처리방침</h1><p class="lead">한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)은 KELI 플랫폼(keli-aied.org)에서 필요한 최소한의 개인정보만 받고, 「개인정보 보호법」에 따라 안전하게 처리합니다.</p></div></section>
+<section class="sec" style="padding-top:0"><div class="wrap narrow"><article class="art">
+<div class="art-sum"><span class="k">한눈에 보기</span><ul class="art-ul">
+<li>회원가입·로그인 없이 이용합니다 — 개인정보는 도입·참여 문의를 보낼 때만 받습니다</li>
+<li>받는 것은 기관명·성명·이메일(필수)과 연락처·문의 내용(선택)이며, 문의 회신에만 씁니다</li>
+<li>문의 기록은 1년 뒤 자동으로 지우고, 방문 통계는 쿠키 없이 개인을 알아볼 수 없는 방식으로 셉니다</li></ul></div>
+<h2 class="art-h">1. 처리하는 개인정보와 목적·보유 기간</h2>{T}
+<p>문의 양식의 "개인정보 수집·이용 동의"에 체크한 경우에만 접수하며, 동의하지 않으면 문의를 보낼 수 없습니다. 이 경우 contact@keliedu.org로 직접 메일을 보내 문의하실 수 있습니다.</p>
+<h2 class="art-h">2. 개인정보의 제3자 제공</h2><p>KELI 사무국은 문의자의 개인정보를 제3자에게 제공하지 않습니다. 다만 법령에 따라 요구되는 경우는 예외로 합니다.</p>
+<h2 class="art-h">3. 개인정보 처리의 위탁</h2><p>원활한 문의 접수와 회신을 위해 아래와 같이 처리 업무를 위탁합니다. 수탁자의 서버는 국외(미국 등)에 있을 수 있으며, 문의를 보내는 시점에 암호화된 통신(HTTPS)으로 전송됩니다.</p>{U}
+<h2 class="art-h">4. 개인정보의 파기</h2><ul class="art-ul"><li>보유 기간(접수일로부터 1년)이 지난 문의 기록은 관리자 서버에서 자동으로 지웁니다.</li><li>문의자가 삭제를 요청하거나 처리 목적이 끝난 문의는 사무국이 관리자 문의함에서 바로 지웁니다.</li><li>사무국 메일함에 전달된 문의 메일도 같은 기준으로 지웁니다.</li></ul>
+<h2 class="art-h">5. 방문 통계와 쿠키</h2><ul class="art-ul"><li>KELI 플랫폼은 쿠키를 쓰지 않습니다.</li><li>어떤 페이지를, 어디서 와서(유입 경로), 어떤 기기로 봤는지만 집계합니다. IP 주소는 저장하지 않고, 날마다 바뀌는 해시값으로 방문자 수만 셉니다. 이 값으로는 개인을 알아볼 수 없습니다.</li><li>통계 기록은 400일 뒤 자동으로 지웁니다. 브라우저의 "추적 안 함(Do Not Track)"을 켜면 집계하지 않습니다.</li><li>챗봇(이음이·이루미)에 입력한 질문은 답변을 만드는 데에만 쓰고 저장하지 않습니다. 언어 설정만 이용자 브라우저에 남습니다.</li></ul>
+<h2 class="art-h">6. 정보주체의 권리와 행사 방법</h2><p>문의자는 언제든지 자신의 개인정보 열람·정정·삭제·처리정지를 요구할 수 있습니다. contact@keliedu.org로 접수번호(예: KELI-261111-001)와 함께 요청하시면 지체 없이 처리하고 결과를 알려 드립니다.</p>
+<h2 class="art-h">7. 개인정보의 안전성 확보 조치</h2><ul class="art-ul"><li>관리자 문의함은 로그인한 사무국 담당자만 볼 수 있습니다.</li><li>모든 전송은 암호화(HTTPS)되며, 스팸 방지를 위해 같은 곳에서 1분에 5번까지만 접수합니다.</li></ul>
+<h2 class="art-h">8. 개인정보 보호 담당</h2><dl class="art-kv"><dt>담당 부서</dt><dd>한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)</dd><dt>연락처</dt><dd>033-248-3242 / contact@keliedu.org</dd><dt>개인정보 보호책임자</dt><dd>한림대학교 개인정보 보호책임자(한림대학교 개인정보처리방침에 따름)</dd></dl>
+<p>개인정보 침해에 대한 신고·상담은 개인정보침해신고센터(privacy.kisa.or.kr, 국번 없이 118), 개인정보분쟁조정위원회(www.kopico.go.kr, 1833-6972), 대검찰청(www.spo.go.kr, 1301), 경찰청(ecrm.police.go.kr, 182)에 하실 수 있습니다.</p>
+<h2 class="art-h">9. 처리방침의 변경</h2><p>이 처리방침은 2026년 11월 12일부터 적용합니다. 내용이 바뀌면 시행 7일 전에 이 화면과 공지사항으로 알립니다.</p>
+</article></div></section>
+'''
+    write('privacy.html', '개인정보처리방침 · KELI', body, desc='한림대학교 KELI 플랫폼 개인정보처리방침 — 도입·참여 문의 양식으로 받는 개인정보의 항목, 목적, 보유 기간, 위탁, 파기, 방문 통계 방식.')
+
 def page_policy(fname, title, en):
     body = crumb((None, title)) + f'''
 <section class="hero" style="padding-top:48px;padding-bottom:32px"><div class="wrap"><span class="eyebrow">{en}</span><h1>{title}.</h1></div></section>
@@ -2691,7 +2723,7 @@ def main():
     for it in PRESS_ITEMS: page_press(it)
     page_videos(); page_demos()
     page_newsletter(); page_search(); page_en(); build_kb()
-    page_policy('privacy.html', '개인정보처리방침', 'Privacy'); page_policy('terms.html', '이용약관', 'Terms')
+    page_privacy()
     page_admin()
     n = write_sitemap()
     print('pages', len([f for f in os.listdir(OUT) if f.endswith('.html')]), 'sitemap urls', n)

@@ -412,6 +412,8 @@ async function contact(request, env) {
     await inqInit(env);
     const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM inquiries WHERE day = ?').bind(day).first();   // 삭제한 문의도 번호 자리는 남아 있어 번호가 겹치지 않음
     ref += String(((n && n.n) || 0) + 1).padStart(3, '0');
+    // 개인정보처리방침: 접수일로부터 1년 지난 문의는 내용을 지움(접수번호 자리만 남김)
+    if (Math.random() < 0.2) await env.DB.prepare("UPDATE inquiries SET status = 'deleted', org = '', name = '', email = '', tel = '', services = '', course = '', body = '', page = '', note = '', mail_err = '' WHERE ts < ? AND status != 'deleted'").bind(Date.now() - 365 * 86400000).run();
     const ins = await env.DB.prepare('INSERT INTO inquiries (ref, ts, day, type, org, name, email, tel, services, course, body, page, lang, dev, cc) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
       .bind(ref, ts, day, d.type, d.org, d.name, d.email, d.tel, d.services, d.course, d.body, d.page, d.lang, devOf(ua), clip((request.cf && request.cf.country) || '', 2)).run();
     id = (ins.meta && ins.meta.last_row_id) || 0;
