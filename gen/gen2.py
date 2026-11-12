@@ -1250,7 +1250,7 @@ MEGA = [
     ('about.html', 'KELI 소개', [('about.html#vision', '비전'), ('about.html#consortium', 'KELI 협의체'), ('about.html#org', '조직도')]),
     ('services.html', 'HAI Ecosystems', [('services.html', 'HAI Ecosystems', [(f'services.html#{k}', lb) for k, lb, _ in AREAS] + [('demos.html', '전체 데모 영상')]), (OLD_MARKET, 'Marketplace ↗')]),
     ('join.html', 'KELI 협의체 참여', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의')]),
-    ('archive.html', '아카이브', [(f'archive-{k}.html', l.replace('·', ' · ')) for k, l in ARCH_CATS] + [('legacy.html', '구 KELI 플랫폼 자료')]),
+    ('archive.html', '아카이브', [(f'archive-{k}.html', l.replace('·', ' · ')) for k, l in ARCH_CATS]),
     ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료')]),
 ]
 
@@ -1710,7 +1710,7 @@ VIDEO_ITEMS = sorted(_not_hidden('videos', VIDEOS.get('items', [])), key=lambda 
 # 구 KELI 플랫폼에서 옮겨 온 영상(한림지식공유세미나 · 파트너 영상) — content/videos_extra.json, 자동 수집 영상과 겹치면 뺀다
 _VX = _load_json(os.path.join(CONTENT, 'videos_extra.json'), {}).get('items', [])
 _seen = {v.get('id') for v in VIDEO_ITEMS}
-VIDEOS_EXTRA = sorted([v for v in _not_hidden('videos', _VX) if v.get('id') not in _seen], key=dkey, reverse=True)
+VIDEOS_EXTRA = sorted([v for v in _not_hidden('videos', _VX) if v.get('id') not in _seen and v.get('group') == 'seminar'], key=dkey, reverse=True)   # 사이트에는 한림지식공유세미나만
 VIDEOS_SEMINAR = [v for v in VIDEOS_EXTRA if v.get('group') == 'seminar']
 VIDEOS_PARTNER = [v for v in VIDEOS_EXTRA if v.get('group') == 'partner']
 VIDEOS_KELI = [v for v in VIDEO_ITEMS if v.get('group') == 'keli']
@@ -2598,11 +2598,11 @@ def page_videos():
 
 def extra_videos_html():
     out = ''
-    if DEMODAY:
+    if False and DEMODAY:   # 데모데이 시연 영상은 사이트에 싣지 않음
         out += ('<section class="sec alt" id="demoday"><div class="wrap narrow" style="max-width:900px">'
                 f'<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">데모데이 시연 영상</h2><span class="muted small">HAI Ecosystems 개발 기업 시연 {len(DEMODAY)}건</span></div>'
                 '<div class="grid g2">' + ''.join(f'<div>{_mp4_player(m["mp4"][0], m["title"])}<p style="margin-top:6px"><a class="more" href="{legacy_href(m)}">자료 보기 ›</a></p></div>' for m in DEMODAY) + '</div></div></section>')
-    for i, (vs, ttl, sub, anchor) in enumerate(((VIDEOS_SEMINAR, '한림지식공유세미나', '한림대학교 교수진의 AI·융합 연구 강연', 'seminar'), (VIDEOS_PARTNER, '파트너 · 서비스 소개 영상', 'HAI Ecosystems 개발 기업과 서비스 소개', 'partner'))):
+    for i, (vs, ttl, sub, anchor) in enumerate(((VIDEOS_SEMINAR, '한림지식공유세미나', '한림대학교 교수진의 AI·융합 연구 강연', 'seminar'),)):
         if not vs: continue
         out += (f'<section class="sec{"" if i % 2 == 0 else " alt"}" id="{anchor}"><div class="wrap narrow" style="max-width:900px">'
                 f'<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">{ttl}</h2><span class="muted small">{E(sub)} {len(vs)}건</span></div>'
@@ -2687,7 +2687,6 @@ def search_index():
     idx += [(ev_href(it), it['title'], '행사 · ' + (it.get('when') or '')) for it in FEED_ITEMS]
     idx += [(pr_href(it), it['title'], ('언론 보도 · ' if it.get('src') == 'unn' else '보도자료 · ') + (it.get('date') or '')) for it in PRESS_ALL]
     idx += [('videos.html', v['title'], '영상 · ' + (v.get('published') or v.get('published_text') or '')) for v in VIDEO_ITEMS]
-    idx += [(legacy_href(m), m['title'], '구 KELI 플랫폼 자료 · ' + (m.get('board_label') or '')) for m in LEGACY]
     idx += [(f'videos.html#{v["group"]}', v['title'], '영상 · ' + (v.get('date') or '')) for v in VIDEOS_EXTRA]
     idx += [(f'demos.html#demo-{d["id"]}', d['name'] + ' 데모 영상' + (' (' + d['audience'] + ')' if d.get('audience') else ''), '데모 영상 · ' + d.get('category', '')) for d in DEMO_ITEMS]
     idx += [(arch_href(a)[0], a['title'], '아카이브 · ' + dict(ARCH_CATS).get(a.get('cat'), '')) for a in ARCHIVE]
@@ -2827,7 +2826,7 @@ def main():
     page_curriculum(); page_join(); page_archive(); page_news_hub(); page_notice(); page_events()
     for it in FEED_ITEMS: page_feed_event(it)
     for it in PRESS_ITEMS: page_press(it)
-    page_videos(); page_demos(); page_legacy()
+    page_videos(); page_demos()   # 구 플랫폼 백업(old-keli)은 사이트에 싣지 않고 별도 보관(2026-11-12 유은님 지시)
     page_newsletter(); page_search(); page_en(); build_kb()
     page_privacy()
     page_admin()
