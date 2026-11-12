@@ -1205,7 +1205,7 @@ JS = r"""
 """
 
 # ------------------------------------------------------------------ 공통 조각
-NAV = [('about.html', 'KELI 소개'), ('services.html', 'Marketplace'), ('join.html', 'KELI 협의체 참여'), ('archive.html', '아카이브'), ('news.html', '소식')]
+NAV = [('about.html', 'KELI 소개'), ('services.html', 'HAI Ecosystems'), ('join.html', 'KELI 협의체 참여'), ('archive.html', '아카이브'), ('news.html', '소식')]
 NEWS_PAGES = {'news.html', 'notice.html', 'events.html', 'newsletter.html', 'videos.html'}
 # 상단 메뉴를 누르거나 올리면 펼쳐지는 전체 메뉴(메가 메뉴). 각 메뉴 아래 게시판·섹션 바로가기
 # ---- 서비스 목록(포털 피드 기준)과 수업 6단계 배치: 메뉴(MEGA)보다 먼저 계산
@@ -1237,9 +1237,18 @@ for _s in SERVICES:
     else:
         _s['stage_src'] = 'office' if _s['stage'] else 'none'
 
+# 구 KELI 플랫폼(keliedu.org) = 솔루션 거래(Marketplace)·데모 신청 / 새 플랫폼 = 정보 제공 (2026-11-12 이원화)
+OLD_MARKET = 'https://keliedu.org/keli/solution/collection'
+OLD_SOLUTION = {'hai-way': 3, 'hai-tutor': 7, 'hai-sync': 18, 'hai-security': 17, 'hai-research': 8, 'hai-prof': 20, 'hai-pbl': 16,
+                'hai-medlearn-x': 5, 'hai-mathtutor': 9, 'hai-mate': 15, 'hai-lrs': 11, 'hai-lens': 10, 'hai-korean': 21, 'hai-forum': 2,
+                'hai-fist': 14, 'hai-epilearn': 4, 'hai-docs': 13, 'hai-coder': 12, 'hai-check': 19}
+def demo_url(slug):
+    n = OLD_SOLUTION.get(slug)
+    return f'{OLD_MARKET}?mode=view&sltnSn={n}' if n else ''
+def _ext(h): return ' target="_blank" rel="noopener"' if str(h).startswith('http') else ''
 MEGA = [
     ('about.html', 'KELI 소개', [('about.html#vision', '비전'), ('about.html#consortium', 'KELI 협의체'), ('about.html#org', '조직도')]),
-    ('services.html', 'Marketplace', [('services.html', 'HAI Ecosystems', [(f'services.html#{k}', lb) for k, lb, _ in AREAS] + [('demos.html', '전체 데모 영상')])]),
+    ('services.html', 'HAI Ecosystems', [('services.html', 'HAI Ecosystems', [(f'services.html#{k}', lb) for k, lb, _ in AREAS] + [('demos.html', '전체 데모 영상')]), (OLD_MARKET, 'Marketplace ↗')]),
     ('join.html', 'KELI 협의체 참여', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의')]),
     ('archive.html', '아카이브', [(f'archive-{k}.html', l.replace('·', ' · ')) for k, l in ARCH_CATS]),
     ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료')]),
@@ -1253,10 +1262,10 @@ def header(current):
     links = ''.join(f'<a href="{h}"{on(h)} data-menu="{h}">{t}</a>' for h, t in NAV)
     def _sub_m(it):
         sh, st = it[0], it[1]; kids = it[2] if len(it) > 2 else []
-        return f'<a href="{sh}">{st}</a>' + (('<div class="msub2">' + ''.join(f'<a href="{kh}">{kt}</a>' for kh, kt in kids) + '</div>') if kids else '')
+        return f'<a href="{sh}"{_ext(sh)}>{st}</a>' + (('<div class="msub2">' + ''.join(f'<a href="{kh}">{kt}</a>' for kh, kt in kids) + '</div>') if kids else '')
     def _sub_c(it):
         sh, st = it[0], it[1]; kids = it[2] if len(it) > 2 else []
-        return f'<li class="{"has-sub" if kids else ""}"><a href="{sh}">{st}</a>' + (('<ul>' + ''.join(f'<li><a href="{kh}">{kt}</a></li>' for kh, kt in kids) + '</ul>') if kids else '') + '</li>'
+        return f'<li class="{"has-sub" if kids else ""}"><a href="{sh}"{_ext(sh)}>{st}</a>' + (('<ul>' + ''.join(f'<li><a href="{kh}">{kt}</a></li>' for kh, kt in kids) + '</ul>') if kids else '') + '</li>'
     mlinks = ''.join(f'<div class="mgrp"><a class="mtop" href="{h}">{t}</a><div class="msub">' + ''.join(_sub_m(it) for it in subs) + '</div></div>' for h, t, subs in MEGA) + '<div class="mgrp"><div class="msub"><a href="search.html">검색</a><a href="en.html">English</a><a href="join.html#inquiry">도입 문의</a></div></div>'
     cols = ''.join(f'<div class="mega-col" data-menu="{h}"><a class="mega-col-title" href="{h}">{t}</a><ul>' + ''.join(_sub_c(it) for it in subs) + '</ul></div>' for h, t, subs in MEGA)
     mega = f'''<div class="mega" id="mega" aria-hidden="true"><div class="wrap mega-inner">
@@ -1282,7 +1291,7 @@ FOOTER = f'''<footer class="ftr"><div class="wrap">
 <span class="copy">{EMAIL} <button type="button" data-copy="{EMAIL}">복사</button></span>
 <span>(24252) 강원특별자치도 춘천시 한림대학길 1</span>
 <a href="{INSTA}" target="_blank" rel="noopener">Instagram @hallym_keli</a></div>
-<div class="col"><strong>바로가기</strong><a href="services.html">Marketplace</a><a href="join.html#inquiry">도입 문의</a><a href="archive.html">아카이브</a><a href="newsletter.html">뉴스레터 구독</a></div>
+<div class="col"><strong>바로가기</strong><a href="services.html">HAI Ecosystems</a><a href="{OLD_MARKET}" target="_blank" rel="noopener">Marketplace ↗</a><a href="join.html#inquiry">도입 문의</a><a href="archive.html">아카이브</a><a href="newsletter.html">뉴스레터 구독</a></div>
 <div class="col"><strong>관련 사이트</strong><a href="https://www.hallym.ac.kr" target="_blank" rel="noopener">한림대학교</a><a href="https://hallym-ai-next.foamymole15.chatgpt.site/#services" target="_blank" rel="noopener">AI교육혁신원</a><a href="https://aiadvcenter.csedu4all.com" target="_blank" rel="noopener">AI교육확산센터</a><a href="https://ai.hallym.ac.kr" target="_blank" rel="noopener">한림 AI 교육 포털</a><a href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a></div>
 </div>
 <div class="bot"><span>주관 한림대학교 · 후원 교육부 글로컬대학30 · © Hallym University</span><span><a href="privacy.html"><strong>개인정보처리방침</strong></a> · <a href="en.html">English</a> · <a href="admin.html">관리자</a></span></div>
@@ -2041,7 +2050,7 @@ def svc_source_note():
 
 def page_services():
     cards = ''.join(svc_card(s) for s in SERVICES)
-    body = crumb((None, 'Marketplace')) + f'''
+    body = crumb((None, 'HAI Ecosystems')) + f'''
 <section class="hero" style="padding-top:48px"><div class="wrap">
 <span class="eyebrow">HAI Ecosystems · Hallym AI</span>
 <h1>한림대학교가 수업에서 써 온<br>AI 교육 서비스.</h1>
@@ -2086,12 +2095,12 @@ def page_service(s):
     src = f'<dt>등록 정보</dt><dd><a href="{PORTAL_DEMOS}" target="_blank" rel="noopener">한림 AI 교육 포털</a>에 등록된 정보를 자동으로 가져옵니다{(" (" + E((SVC_LIVE or {}).get("fetched_at", "")) + " 기준)") if SVC_LIVE else ""}.</dd>' if s.get('portal_id') else ''
     siblings = [x for x in SERVICES if x['area'] == s['area'] and x['slug'] != s['slug']]
     sib = ''.join(svc_card(x) for x in siblings[:3])
-    body = crumb(('services.html', 'Marketplace'), (None, s['name'])) + f'''
+    body = crumb(('services.html', 'HAI Ecosystems'), (None, s['name'])) + f'''
 <section class="hero" style="padding-top:40px;padding-bottom:40px"><div class="wrap">
 <span class="eyebrow">{E(area)}</span>
 <h1>{E(s['name'])}{(' <small style="font-size:.5em;font-weight:500;color:var(--muted)">' + E(s['note']) + '</small>') if s.get('note') else ''}</h1>
 <p class="lead">{E(s['head'])}</p>
-<div class="acts"><a class="btn" href="join.html?service={s['slug']}#inquiry">도입 문의</a>{links}</div>
+<div class="acts">{(f'<a class="btn" href="{demo_url(s["slug"])}" target="_blank" rel="noopener">데모 신청하기 ↗</a>') if demo_url(s["slug"]) else ''}<a class="btn{' ghost' if demo_url(s['slug']) else ''}" href="join.html?service={s['slug']}#inquiry">도입 문의</a>{links}</div>
 </div></section>
 <section class="sec" style="padding-top:24px"><div class="wrap">
 <div class="grid g2" style="gap:48px;align-items:start">
@@ -2119,7 +2128,7 @@ def page_curriculum():
         items = [s for s in SERVICES if k in s['stage']]
         chips = ''.join(f'<a class="chip{" src-manual" if s["stage_src"] == "manual" else ""}" href="service-{s["slug"]}.html">{E(s["name"])}</a>' for s in items) or '<span class="chip muted">배치 예정</span>'
         cols += f'<div class="flow-step {STAGE_CLS[k]}"><div class="fs-head"><span class="no">{STAGE_NO[k]}</span><span class="lb">{v}</span></div><div class="fs-list">{chips}</div></div>'
-    body = crumb(('services.html', 'Marketplace'), (None, 'AI 융합교육과정')) + f'''
+    body = crumb(('services.html', 'HAI Ecosystems'), (None, 'AI 융합교육과정')) + f'''
 <section class="hero" style="padding-top:48px"><div class="wrap">
 <span class="eyebrow">AI 융합교육과정</span>
 <h1>수업 설계부터 평가·분석까지,<br>AI를 수업에 결합합니다.</h1>
@@ -2557,7 +2566,7 @@ def page_demos():
 <div class="row" style="margin-bottom:16px"><h2 style="font-size:26px">{E(cat)}</h2><span class="muted small">{len(items)}건</span></div>
 <div class="grid g3 vids">{''.join(demo_card(d) for d in items)}</div>
 </div></section>'''
-    body = crumb(('services.html', 'Marketplace'), (None, '전체 데모 영상')) + f'''
+    body = crumb(('services.html', 'HAI Ecosystems'), (None, '전체 데모 영상')) + f'''
 <section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap"><span class="eyebrow">HAI Ecosystems · 데모 영상</span><h1>서비스를 먼저<br>영상으로 봅니다.</h1><p class="lead">한림 AI 교육 포털에 등록된 서비스별 데모 영상을 한곳에 모았습니다. 썸네일을 누르면 이 자리에서 바로 재생됩니다.</p>
 <div class="acts"><a class="btn ghost" href="services.html">서비스 목록</a><a class="btn ghost" href="{PORTAL_DEMOS}" target="_blank" rel="noopener">한림 AI 교육 포털</a><a class="more" href="join.html#inquiry">도입 문의</a></div></div></section>{secs}
 <section class="sec" style="padding-top:0"><div class="wrap"><p class="note">{DEMO_NOTE} 영상 저작권은 한림대학교에 있습니다.</p></div></section>
@@ -2583,7 +2592,7 @@ def page_videos():
 
 def search_index():
     idx = [(f'service-{s["slug"]}.html', s['name'], s['one'] + ' · ' + AREA_LABEL.get(s['area'], s['area'])) for s in SERVICES]
-    idx += [('about.html', 'KELI 소개', '정의 · 비전 · 구조 · 사무국'), ('services.html', 'Marketplace', f'HAI Ecosystems {len(SERVICES)}'), ('curriculum.html', 'AI 융합교육과정', '수업 6단계와 서비스'), ('join.html', 'KELI 협의체 참여', '도입 절차 · 이용 방식 · 참여 기관 · 문의'), ('archive.html', '아카이브', '사례집 · 기술 동향 · 매뉴얼'), ('notice.html', '공지사항', '소식'), ('events.html', '행사', '심포지엄 · 데모데이 · 매칭데이'), ('newsletter.html', '뉴스레터', '구독')]
+    idx += [('about.html', 'KELI 소개', '정의 · 비전 · 구조 · 사무국'), ('services.html', 'HAI Ecosystems', f'서비스 {len(SERVICES)}'), ('curriculum.html', 'AI 융합교육과정', '수업 6단계와 서비스'), ('join.html', 'KELI 협의체 참여', '도입 절차 · 이용 방식 · 참여 기관 · 문의'), ('archive.html', '아카이브', '사례집 · 기술 동향 · 매뉴얼'), ('notice.html', '공지사항', '소식'), ('events.html', '행사', '심포지엄 · 데모데이 · 매칭데이'), ('newsletter.html', '뉴스레터', '구독')]
     idx += [(ev_href(it), it['title'], '행사 · ' + (it.get('when') or '')) for it in FEED_ITEMS]
     idx += [(pr_href(it), it['title'], ('언론 보도 · ' if it.get('src') == 'unn' else '보도자료 · ') + (it.get('date') or '')) for it in PRESS_ALL]
     idx += [('videos.html', v['title'], '영상 · ' + (v.get('published') or v.get('published_text') or '')) for v in VIDEO_ITEMS]
