@@ -34,7 +34,7 @@ AREAS = AREAS_FIXED   # build_services() 뒤에 포털 분류로 바뀐다
 AREA_LABEL = {a[0]: a[1] for a in AREAS}
 DRIVE = 'https://drive.google.com/file/d/%s/view'
 GUIDE = 'https://ai.hallym.ac.kr/media/uploads/guides/%s.pdf'
-DEMO_ALL = 'https://keliedu.org/keli/partners/video'
+DEMO_ALL = 'demos.html'   # 옛 포털(keliedu.org/keli/partners/video) 폐쇄 대비 — 새 플랫폼 데모 영상 화면
 MANUAL_SITE = 'https://haimanual.csedu4all.com'
 
 # 사무국 보강 정보: 포털 피드(assets/services.live.json)의 서비스와 이름으로 맞춰 화면 그림·머리글·핵심 기능·활용 방식을 덧붙인다.
@@ -46,7 +46,7 @@ CURATED = [
          desc='대학·기업·기관이 교육 과제와 기술을 연결하고 실제 교육환경에서 적용 가능성을 함께 검증하는 고등교육 특화 협력 플랫폼입니다.',
          features=['대학 수요와 교육 과제 발굴', '기술 파트너 및 솔루션 연결', '실제 수업 기반 PoC 실증'],
          usage='대학별 회원과 권한을 관리하고 자료·서비스·협업 정보를 한 곳에서 공유합니다.',
-         status='live', url='https://keliedu.org/keli', img='keli-logo.png', video=None, manual=None, stage=[]),
+         status='live', url='https://keli-aied.org/', img='keli-logo.png', video=None, manual=None, stage=[]),
     dict(slug='hai-ai', name='HAI-AI', area='platform', one='AI 서비스 통합 포털',
          head='한림 AI 교육 서비스와 활용 정보를 연결하는 통합 포털.',
          desc='대학 구성원이 여러 AI 서비스를 한 번에 탐색하고 자신의 역할에 맞는 기능으로 빠르게 연결되도록 설계된 통합 접근 플랫폼입니다.',
@@ -2019,7 +2019,7 @@ def page_about():
 <div class="grid g2" style="align-items:center;gap:48px">
 <div class="head" style="margin:0"><h2>KELI 사무국.</h2><p class="lead">한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)이 플랫폼 운영을 맡고 있습니다. 궁금한 점은 언제든 연락 주세요.</p></div>
 <div class="card">
-<dl class="kv"><dt>이메일</dt><dd><span class="copy">{EMAIL} <button type="button" class="btn sm ghost" data-copy="{EMAIL}">복사</button></span></dd><dt>주소</dt><dd>(24252) 강원특별자치도 춘천시 한림대학길 1 한림대학교</dd><dt>포털</dt><dd>keliedu.org/keli</dd><dt>Instagram</dt><dd><a href="{INSTA}" target="_blank" rel="noopener">@hallym_keli</a></dd></dl>
+<dl class="kv"><dt>이메일</dt><dd><span class="copy">{EMAIL} <button type="button" class="btn sm ghost" data-copy="{EMAIL}">복사</button></span></dd><dt>주소</dt><dd>(24252) 강원특별자치도 춘천시 한림대학길 1 한림대학교</dd><dt>플랫폼</dt><dd><a href="https://keli-aied.org/">keli-aied.org</a></dd><dt>Instagram</dt><dd><a href="{INSTA}" target="_blank" rel="noopener">@hallym_keli</a></dd></dl>
 <a class="btn" href="join.html#inquiry" style="align-self:flex-start;margin-top:8px">도입 문의</a>
 </div>
 </div>
@@ -2066,7 +2066,7 @@ def page_service(s):
         shot = f'<div class="svc"><div class="thumb"><span class="word">{E(s["name"])}</span></div></div><p class="note" style="margin-top:8px">서비스 화면은 등록 예정입니다.</p>'
     links = ''
     if s['url']: links += f'<a class="more" href="{s["url"]}" target="_blank" rel="noopener">서비스 바로가기</a>'
-    links += f'<a class="more" href="{s["video"] or DEMO_ALL}" target="_blank" rel="noopener">데모 영상</a>'
+    links += (f'<a class="more" href="{s["video"]}" target="_blank" rel="noopener">데모 영상</a>' if s["video"] else f'<a class="more" href="{DEMO_ALL}">데모 영상</a>')
     links += f'<a class="more" href="{s["manual"] or MANUAL_SITE}" target="_blank" rel="noopener">매뉴얼</a>'
     feats = ''.join(f'<div class="card"><h3>{E(f)}</h3></div>' for f in s['features']) if s['features'] else ('' if s.get('portal_id') else '<div class="card"><h3>핵심 기능</h3><p>사무국 확정 후 반영됩니다.</p></div>')
     usage = f'<p class="lead" style="max-width:760px">{E(s["usage"])}</p>' if s['usage'] else ''
