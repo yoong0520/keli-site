@@ -147,7 +147,18 @@
     });
   })();
   // videos: 클릭하면 그 자리에서 YouTube 재생 (처음엔 썸네일만 → 데이터 절약)
-  function wirePlay(root){ qsa('.vid-play', root||document).forEach(function(b){ if(b._wired) return; b._wired=true; b.addEventListener('click',function(){ var v=b.closest('.vid'); var f=document.createElement('iframe'); f.src=v.getAttribute('data-embed'); f.title=b.getAttribute('aria-label')||'영상'; f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'; f.setAttribute('allowfullscreen',''); b.replaceWith(f); }); }); }
+  // 영상 보기 팝업(HAI 활용 매뉴얼 사이트와 같은 방식): [data-vmodal] 을 누르면 가운데 창에서 재생
+  (function(){ var m=null, fr=null, tt=null, last=null;
+    function close(){ if(!m) return; m.hidden=true; fr.src='about:blank'; document.body.style.overflow=''; if(last) last.focus(); }
+    function open(src, title, from){ if(!m){ m=document.createElement('div'); m.className='vmodal'; m.hidden=true; m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
+        m.innerHTML='<div class="vmodal-bg" data-vclose></div><div class="vmodal-panel"><div class="vmodal-head"><h2 class="vmodal-title"></h2><button type="button" class="vmodal-x" data-vclose aria-label="닫기">&times;</button></div><div class="vmodal-body"><iframe src="about:blank" title="영상" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe></div></div>';
+        document.body.appendChild(m); fr=m.querySelector('iframe'); tt=m.querySelector('.vmodal-title');
+        m.addEventListener('click', function(e){ if(e.target.closest('[data-vclose]')) close(); }); }
+      last=from; tt.textContent=title||'영상'; fr.title=title||'영상'; fr.src=src; m.hidden=false; document.body.style.overflow='hidden'; m.querySelector('.vmodal-x').focus(); }
+    document.addEventListener('click', function(e){ var b=e.target.closest('[data-vmodal]'); if(!b) return; e.preventDefault(); open(b.getAttribute('data-vmodal'), b.getAttribute('data-vtitle'), b); }, true);
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
+  })();
+  function wirePlay(root){ qsa('.vid-play', root||document).forEach(function(b){ if(b._wired||b.hasAttribute('data-vmodal')) return; b._wired=true; b.addEventListener('click',function(){ var v=b.closest('.vid'); var f=document.createElement('iframe'); f.src=v.getAttribute('data-embed'); f.title=b.getAttribute('aria-label')||'영상'; f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'; f.setAttribute('allowfullscreen',''); b.replaceWith(f); }); }); }
   wirePlay();
   (function(){
     var boxes=qsa('[data-videos]'); if(!boxes.length||location.protocol==='file:') return;

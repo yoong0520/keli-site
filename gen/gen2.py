@@ -540,6 +540,15 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .vid-play .play::after { content: ""; position: absolute; left: 26px; top: 20px; border-style: solid; border-width: 12px 0 12px 20px; border-color: transparent transparent transparent var(--accent); }
 .vid-play .len { position: absolute; right: 10px; bottom: 10px; padding: 2px 8px; border-radius: 6px; background: rgba(0,0,0,.72); color: #fff; font-size: 12px; font-weight: 600; }
 .vid iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 18px; display: block; background: #000; }
+.vmodal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; } .vmodal[hidden] { display: none; }
+.vmodal-bg { position: absolute; inset: 0; background: rgba(0,0,0,.6); }
+.vmodal-panel { position: relative; width: min(960px, 100%); background: #fff; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.35); overflow: hidden; }
+.vmodal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px 12px 22px; border-bottom: 1px solid var(--line); }
+.vmodal-title { font-size: 17px; font-weight: 700; color: var(--accent); margin: 0; }
+.vmodal-x { width: 40px; height: 40px; border: 0; border-radius: 8px; background: transparent; font-size: 30px; line-height: 1; cursor: pointer; color: var(--ink); } .vmodal-x:hover, .vmodal-x:focus-visible { background: var(--bg2, #f2f2f5); outline: none; }
+.vmodal-body { position: relative; aspect-ratio: 16 / 9; background: #000; } .vmodal-body iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.vbtns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; } button.more.vlink { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
+@media (max-width: 600px) { .vmodal { padding: 8px; } .vmodal-panel { border-radius: 12px; } }
 .vid-body { display: flex; flex-direction: column; gap: 6px; } .vid-body .m { font-size: 13px; color: var(--muted); } .vid-body .t { font-size: 17px; font-weight: 600; line-height: 1.5; } .vid-body .more { font-size: 14px; }
 .vids { gap: 28px 24px; }
 .vid-ph { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: linear-gradient(135deg, #0B5CFF, #4A8BFF 60%, #7FB0FF); color: #fff; font-weight: 700; font-size: 22px; letter-spacing: .02em; }
@@ -1099,7 +1108,18 @@ JS = r"""
     });
   })();
   // videos: 클릭하면 그 자리에서 YouTube 재생 (처음엔 썸네일만 → 데이터 절약)
-  function wirePlay(root){ qsa('.vid-play', root||document).forEach(function(b){ if(b._wired) return; b._wired=true; b.addEventListener('click',function(){ var v=b.closest('.vid'); var f=document.createElement('iframe'); f.src=v.getAttribute('data-embed'); f.title=b.getAttribute('aria-label')||'영상'; f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'; f.setAttribute('allowfullscreen',''); b.replaceWith(f); }); }); }
+  // 영상 보기 팝업(HAI 활용 매뉴얼 사이트와 같은 방식): [data-vmodal] 을 누르면 가운데 창에서 재생
+  (function(){ var m=null, fr=null, tt=null, last=null;
+    function close(){ if(!m) return; m.hidden=true; fr.src='about:blank'; document.body.style.overflow=''; if(last) last.focus(); }
+    function open(src, title, from){ if(!m){ m=document.createElement('div'); m.className='vmodal'; m.hidden=true; m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
+        m.innerHTML='<div class="vmodal-bg" data-vclose></div><div class="vmodal-panel"><div class="vmodal-head"><h2 class="vmodal-title"></h2><button type="button" class="vmodal-x" data-vclose aria-label="닫기">&times;</button></div><div class="vmodal-body"><iframe src="about:blank" title="영상" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe></div></div>';
+        document.body.appendChild(m); fr=m.querySelector('iframe'); tt=m.querySelector('.vmodal-title');
+        m.addEventListener('click', function(e){ if(e.target.closest('[data-vclose]')) close(); }); }
+      last=from; tt.textContent=title||'영상'; fr.title=title||'영상'; fr.src=src; m.hidden=false; document.body.style.overflow='hidden'; m.querySelector('.vmodal-x').focus(); }
+    document.addEventListener('click', function(e){ var b=e.target.closest('[data-vmodal]'); if(!b) return; e.preventDefault(); open(b.getAttribute('data-vmodal'), b.getAttribute('data-vtitle'), b); }, true);
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
+  })();
+  function wirePlay(root){ qsa('.vid-play', root||document).forEach(function(b){ if(b._wired||b.hasAttribute('data-vmodal')) return; b._wired=true; b.addEventListener('click',function(){ var v=b.closest('.vid'); var f=document.createElement('iframe'); f.src=v.getAttribute('data-embed'); f.title=b.getAttribute('aria-label')||'영상'; f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'; f.setAttribute('allowfullscreen',''); b.replaceWith(f); }); }); }
   wirePlay();
   (function(){
     var boxes=qsa('[data-videos]'); if(!boxes.length||location.protocol==='file:') return;
@@ -1761,21 +1781,39 @@ def svc_opts_html():
         chips = ''.join(svc_chip(n, st) for n, st in its)
         out += f'<div class="chipgrp"><span class="gk">{E(label)}</span><div class="chips">{chips}</div></div>'
     return out, when
-DEMO_ITEMS = DEMOS.get('items', [])
+# 서비스 영상 = HAI 활용 매뉴얼 사이트의 '영상 보기'(assets/manual_videos.json). 영상이 없는 서비스는 버튼을 숨긴다(포털의 지워진 Drive 파일 제외).
+MANUAL_VIDEOS = _load_json(os.path.join(OUT, 'assets', 'manual_videos.json'), {}).get('items', [])
+def videos_for(name):
+    n = _svc_n(name)
+    for mv in sorted(MANUAL_VIDEOS, key=lambda x: -len(_svc_n(x.get('portalName') or x['name']))):
+        for k in {_svc_n(mv.get('portalName') or ''), _svc_n(mv['name'])}:
+            if k and (n == k or n.startswith(k) or k.startswith(n)): return mv['videos']
+    return []
+def vbtn(name, v, cls='btn ghost sm', label=None):
+    return f'<button type="button" class="{cls}" data-vmodal="{E(v["embed"])}" data-vtitle="{E(name + " · " + v["label"])}">▶ {E(label or v["label"])}</button>'
+_portal_demo = {}
+for _d in DEMOS.get('items', []): _portal_demo.setdefault(_svc_n(_d['name']), _d)
+DEMO_ITEMS = []
+for _d in DEMOS.get('items', []):
+    if any(_svc_n(_d['name']) == _svc_n(x['name']) for x in DEMO_ITEMS): continue
+    _v = videos_for(_d['name'])
+    if _v: DEMO_ITEMS.append(dict(_d, videos=_v, embed=_v[0]['embed']))
 DEMO_CATS = []
 for _d in DEMO_ITEMS:
     if _d.get('category') not in DEMO_CATS: DEMO_CATS.append(_d.get('category'))
 
 def demo_card(d):
     st = '<span class="badge live">운영 중</span>' if d.get('status') == 'live' else '<span class="badge soon">준비 중</span>'
-    name = E(d['name']) + (f' <span class="muted" style="font-weight:500">· {E(d["audience"])}</span>' if d.get('audience') else '')
+    name = E(d['name'])
     media = f'<img src="{d["thumb"]}" alt="" loading="lazy">' if d.get('thumb') else f'<span class="vid-ph"><span>{E(d["name"])}</span></span>'
-    return (f'<div class="vid" id="demo-{d["id"]}" data-embed="{E(d["embed"])}">'
-            f'<button type="button" class="vid-play" aria-label="{E(d["name"])} 데모 영상 재생">{media}<span class="play"></span></button>'
+    vs = d.get('videos') or []
+    btns = ''.join(vbtn(d['name'], v, label=('영상 보기' if len(vs) == 1 else v['label'])) for v in vs)
+    return (f'<div class="vid" id="demo-{d["id"]}">'
+            f'<button type="button" class="vid-play" data-vmodal="{E(vs[0]["embed"])}" data-vtitle="{E(d["name"] + " · " + vs[0]["label"])}" aria-label="{E(d["name"])} 영상 보기">{media}<span class="play"></span></button>'
             f'<div class="vid-body"><span class="m">{E(d.get("category", ""))} {st}</span><strong class="t">{name}</strong>'
-            f'<span class="small muted">{E(d.get("summary", ""))}</span></div></div>')
+            f'<span class="small muted">{E(d.get("summary", ""))}</span><div class="vbtns">{btns}</div></div></div>')
 
-DEMO_NOTE = f'한림 AI 교육 포털의 「한림 AI」 화면(ai.hallym.ac.kr/hallym-ai)에 등록된 서비스별 데모 영상을 자동으로 가져옵니다. <span data-demo-date>{E(DEMOS.get("fetched_at", ""))}</span> 기준 {len({d["service_id"] for d in DEMO_ITEMS})}개 서비스 · 영상 {len(DEMO_ITEMS)}건.'
+DEMO_NOTE = f'서비스별 영상은 HAI 활용 매뉴얼 사이트(haimanual.csedu4all.com)의 「영상 보기」와 같은 영상을 매일 자동으로 가져오며, 서비스 정보는 한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai)에서 가져옵니다. <span data-demo-date>{E(DEMOS.get("fetched_at", ""))}</span> 기준 {len({d["service_id"] for d in DEMO_ITEMS})}개 서비스 · 영상 {len(DEMO_ITEMS)}건.'
 
 # ------------------------------------------------------------------ 홈 숫자 3 (관리자 입력 + 포털 자동 수집)
 STATS = _load_json(os.path.join(OUT, 'assets', 'stats.json'), {
@@ -2085,7 +2123,7 @@ def page_service(s):
         shot = f'<div class="svc"><div class="thumb"><span class="word">{E(s["name"])}</span></div></div><p class="note" style="margin-top:8px">서비스 화면은 등록 예정입니다.</p>'
     links = ''
     if s['url']: links += f'<a class="more" href="{s["url"]}" target="_blank" rel="noopener">서비스 바로가기</a>'
-    links += (f'<a class="more" href="{s["video"]}" target="_blank" rel="noopener">데모 영상</a>' if s["video"] else f'<a class="more" href="{DEMO_ALL}">데모 영상</a>')
+    links += ''.join(vbtn(s['name'], v, cls='more vlink', label=('영상 보기' if len(videos_for(s['name'])) == 1 else v['label'])) for v in videos_for(s['name']))
     links += f'<a class="more" href="{s["manual"] or MANUAL_SITE}" target="_blank" rel="noopener">매뉴얼</a>'
     feats = ''.join(f'<div class="card"><h3>{E(f)}</h3></div>' for f in s['features']) if s['features'] else ('' if s.get('portal_id') else '<div class="card"><h3>핵심 기능</h3><p>사무국 확정 후 반영됩니다.</p></div>')
     usage = f'<p class="lead" style="max-width:760px">{E(s["usage"])}</p>' if s['usage'] else ''

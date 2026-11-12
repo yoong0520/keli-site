@@ -192,6 +192,15 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .vid-play .play::after { content: ""; position: absolute; left: 26px; top: 20px; border-style: solid; border-width: 12px 0 12px 20px; border-color: transparent transparent transparent var(--accent); }
 .vid-play .len { position: absolute; right: 10px; bottom: 10px; padding: 2px 8px; border-radius: 6px; background: rgba(0,0,0,.72); color: #fff; font-size: 12px; font-weight: 600; }
 .vid iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 18px; display: block; background: #000; }
+.vmodal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; } .vmodal[hidden] { display: none; }
+.vmodal-bg { position: absolute; inset: 0; background: rgba(0,0,0,.6); }
+.vmodal-panel { position: relative; width: min(960px, 100%); background: #fff; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.35); overflow: hidden; }
+.vmodal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px 12px 22px; border-bottom: 1px solid var(--line); }
+.vmodal-title { font-size: 17px; font-weight: 700; color: var(--accent); margin: 0; }
+.vmodal-x { width: 40px; height: 40px; border: 0; border-radius: 8px; background: transparent; font-size: 30px; line-height: 1; cursor: pointer; color: var(--ink); } .vmodal-x:hover, .vmodal-x:focus-visible { background: var(--bg2, #f2f2f5); outline: none; }
+.vmodal-body { position: relative; aspect-ratio: 16 / 9; background: #000; } .vmodal-body iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.vbtns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; } button.more.vlink { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
+@media (max-width: 600px) { .vmodal { padding: 8px; } .vmodal-panel { border-radius: 12px; } }
 .vid-body { display: flex; flex-direction: column; gap: 6px; } .vid-body .m { font-size: 13px; color: var(--muted); } .vid-body .t { font-size: 17px; font-weight: 600; line-height: 1.5; } .vid-body .more { font-size: 14px; }
 .vids { gap: 28px 24px; }
 .vid-ph { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: linear-gradient(135deg, #0B5CFF, #4A8BFF 60%, #7FB0FF); color: #fff; font-weight: 700; font-size: 22px; letter-spacing: .02em; }

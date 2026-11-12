@@ -37,6 +37,8 @@ jobs:
         run: python3 scripts/fetch_videos.py
       - name: Fetch service demo videos from ai.hallym.ac.kr/hallym-ai
         run: python3 scripts/fetch_demos.py
+      - name: Fetch per-service videos from HAI manual site (haimanual.csedu4all.com) — 영상 보기 팝업
+        run: python3 scripts/fetch_manual_videos.py
       - name: Fetch service list + screenshots + manual stage map from ai.hallym.ac.kr/hallym-ai (Marketplace cards, service pages, home, interest checklist)
         run: python3 scripts/fetch_services.py
       - name: Build site from content/*.json and live feeds (gen/gen2.py)
