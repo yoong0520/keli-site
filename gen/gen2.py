@@ -18,6 +18,7 @@ E = html.escape
 SITE = 'KELI'
 EMAIL = 'contact@keliedu.org'
 INSTA = 'https://www.instagram.com/hallym_keli/'
+YOUTUBE_KELI = 'https://www.youtube.com/@KELI_official-h8v'   # KELI 사무국 유튜브 채널
 PHONE = '033-248-3242'
 STAFF = '전형준'
 
@@ -1310,7 +1311,7 @@ FOOTER = f'''<footer class="ftr"><div class="wrap">
 <div class="col"><strong>한림대학교 KELI 사무국</strong><span>AI교육혁신원 AI교육확산센터</span>
 <span class="copy">{EMAIL} <button type="button" data-copy="{EMAIL}">복사</button></span>
 <span>(24252) 강원특별자치도 춘천시 한림대학길 1</span>
-<a href="{INSTA}" target="_blank" rel="noopener">Instagram @hallym_keli</a></div>
+<a href="{INSTA}" target="_blank" rel="noopener">Instagram @hallym_keli</a><a href="{YOUTUBE_KELI}" target="_blank" rel="noopener">YouTube KELI 사무국</a></div>
 <div class="col"><strong>바로가기</strong><a href="services.html">HAI Ecosystems</a><a href="{OLD_MARKET}">Marketplace</a><a href="join.html#inquiry">도입 문의</a><a href="archive.html">아카이브</a><a href="newsletter.html">뉴스레터 구독</a></div>
 <div class="col"><strong>관련 사이트</strong><a href="https://www.hallym.ac.kr" target="_blank" rel="noopener">한림대학교</a><a href="https://hallym-ai-next.foamymole15.chatgpt.site/#services" target="_blank" rel="noopener">AI교육혁신원</a><a href="https://aiadvcenter.csedu4all.com" target="_blank" rel="noopener">AI교육확산센터</a><a href="https://ai.hallym.ac.kr" target="_blank" rel="noopener">한림 AI 교육 포털</a><a href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a></div>
 </div>
@@ -1364,7 +1365,7 @@ def jsonld(fname, desc):
         'email': EMAIL, 'telephone': '+82-33-248-3242',
         'address': {'@type': 'PostalAddress', 'streetAddress': '한림대학길 1', 'addressLocality': '춘천시', 'addressRegion': '강원특별자치도', 'postalCode': '24252', 'addressCountry': 'KR'},
         'parentOrganization': {'@type': 'CollegeOrUniversity', 'name': 'Hallym University' if en else '한림대학교', 'url': 'https://www.hallym.ac.kr'},
-        'sameAs': [INSTA],
+        'sameAs': [INSTA, YOUTUBE_KELI],
     }
     site = {
         '@context': 'https://schema.org', '@type': 'WebSite',
@@ -1752,7 +1753,7 @@ def vid_card(v):
             f'<div class="vid-body"><span class="m">{E(meta)}</span>{live}<strong class="t">{E(v["title"])}</strong>'
             f'<a class="more" href="{v["url"]}" target="_blank" rel="noopener">YouTube에서 보기</a></div></div>')
 
-VIDEO_NOTE = f'한림대학교 유튜브 채널(youtube.com/@HALLYMNEWS)에서 제목이나 설명에 KELI 또는 켈리가 들어간 영상을 자동으로 가져옵니다. <span data-video-date>{E(VIDEOS.get("fetched_at", ""))}</span> 기준 KELI 영상 {len(VIDEOS_KELI)}건, 관련 영상 {len(VIDEOS_REL)}건.'
+VIDEO_NOTE = f'한림대학교 유튜브 채널(youtube.com/@HALLYMNEWS)에서 제목이나 설명에 KELI 또는 켈리가 들어간 영상을 자동으로 가져옵니다. <span data-video-date>{E(VIDEOS.get("fetched_at", ""))}</span> 기준 KELI 영상 {len(VIDEOS_KELI)}건, 관련 영상 {len(VIDEOS_REL)}건. 서비스별 소개 영상은 <a href="{YOUTUBE_KELI}" target="_blank" rel="noopener">KELI 사무국 유튜브 채널</a>에서도 볼 수 있습니다.'
 
 # ------------------------------------------------------------------ 데모 영상: 한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai) 서비스별 영상 연동
 PORTAL_DEMOS = 'https://ai.hallym.ac.kr/hallym-ai'
@@ -2083,7 +2084,7 @@ def page_about():
 <div class="grid g2" style="align-items:center;gap:48px">
 <div class="head" style="margin:0"><h2>KELI 사무국.</h2><p class="lead">한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)이 플랫폼 운영을 맡고 있습니다. 궁금한 점은 언제든 연락 주세요.</p></div>
 <div class="card">
-<dl class="kv"><dt>이메일</dt><dd><span class="copy">{EMAIL} <button type="button" class="btn sm ghost" data-copy="{EMAIL}">복사</button></span></dd><dt>주소</dt><dd>(24252) 강원특별자치도 춘천시 한림대학길 1 한림대학교</dd><dt>플랫폼</dt><dd><a href="https://keli-aied.org/">keli-aied.org</a></dd><dt>Instagram</dt><dd><a href="{INSTA}" target="_blank" rel="noopener">@hallym_keli</a></dd></dl>
+<dl class="kv"><dt>이메일</dt><dd><span class="copy">{EMAIL} <button type="button" class="btn sm ghost" data-copy="{EMAIL}">복사</button></span></dd><dt>주소</dt><dd>(24252) 강원특별자치도 춘천시 한림대학길 1 한림대학교</dd><dt>플랫폼</dt><dd><a href="https://keli-aied.org/">keli-aied.org</a></dd><dt>Instagram</dt><dd><a href="{INSTA}" target="_blank" rel="noopener">@hallym_keli</a></dd><dt>YouTube</dt><dd><a href="{YOUTUBE_KELI}" target="_blank" rel="noopener">KELI 사무국 채널</a></dd></dl>
 <a class="btn" href="join.html#inquiry" style="align-self:flex-start;margin-top:8px">도입 문의</a>
 </div>
 </div>
