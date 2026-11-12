@@ -1289,7 +1289,7 @@ def header(current):
     mlinks = ''.join(f'<div class="mgrp"><a class="mtop" href="{h}">{t}</a><div class="msub">' + ''.join(_sub_m(it) for it in subs) + '</div></div>' for h, t, subs in MEGA) + '<div class="mgrp"><div class="msub"><a href="search.html">검색</a><a href="en.html">English</a><a href="join.html#inquiry">도입 문의</a></div></div>'
     cols = ''.join(f'<div class="mega-col" data-menu="{h}"><a class="mega-col-title" href="{h}">{t}</a><ul>' + ''.join(_sub_c(it) for it in subs) + '</ul></div>' for h, t, subs in MEGA)
     mega = f'''<div class="mega" id="mega" aria-hidden="true"><div class="wrap mega-inner">
-<div class="mega-intro"><span class="eyebrow">한림대학교 KELI</span><strong>고등교육 AI<br>공유 플랫폼</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="more" href="join.html#inquiry">도입 문의</a><a class="more" href="demos.html">전체 데모 영상</a></div>
+<div class="mega-intro"><span class="eyebrow">한림대학교 KELI</span><strong>고등교육 AI<br>공유 플랫폼</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="more" href="join.html#inquiry">도입 문의</a><a class="more" href="demos.html">전체 데모 영상</a><a class="more" href="{OLD_MARKET}">Marketplace</a></div>
 <div class="mega-cols">{cols}</div>
 </div></div>'''
     return f'''<header class="hdr"><div class="wrap bar">
