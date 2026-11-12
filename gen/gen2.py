@@ -1245,10 +1245,10 @@ OLD_SOLUTION = {'hai-way': 3, 'hai-tutor': 7, 'hai-sync': 18, 'hai-security': 17
 def demo_url(slug):
     n = OLD_SOLUTION.get(slug)
     return f'{OLD_MARKET}?mode=view&sltnSn={n}' if n else ''
-def _ext(h): return ' target="_blank" rel="noopener"' if str(h).startswith('http') else ''
+def _ext(h): return ' target="_blank" rel="noopener"' if str(h).startswith('http') and 'keliedu.org' not in str(h) else ''   # 구 플랫폼(Marketplace)은 현재 창
 MEGA = [
     ('about.html', 'KELI 소개', [('about.html#vision', '비전'), ('about.html#consortium', 'KELI 협의체'), ('about.html#org', '조직도')]),
-    ('services.html', 'HAI Ecosystems', [('services.html', 'HAI Ecosystems', [(f'services.html#{k}', lb) for k, lb, _ in AREAS] + [('demos.html', '전체 데모 영상')]), (OLD_MARKET, 'Marketplace ↗')]),
+    ('services.html', 'HAI Ecosystems', [('services.html', 'HAI Ecosystems', [(f'services.html#{k}', lb) for k, lb, _ in AREAS] + [('demos.html', '전체 데모 영상')]), (OLD_MARKET, 'Marketplace')]),
     ('join.html', 'KELI 협의체 참여', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의')]),
     ('archive.html', '아카이브', [(f'archive-{k}.html', l.replace('·', ' · ')) for k, l in ARCH_CATS]),
     ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료')]),
@@ -1291,7 +1291,7 @@ FOOTER = f'''<footer class="ftr"><div class="wrap">
 <span class="copy">{EMAIL} <button type="button" data-copy="{EMAIL}">복사</button></span>
 <span>(24252) 강원특별자치도 춘천시 한림대학길 1</span>
 <a href="{INSTA}" target="_blank" rel="noopener">Instagram @hallym_keli</a></div>
-<div class="col"><strong>바로가기</strong><a href="services.html">HAI Ecosystems</a><a href="{OLD_MARKET}" target="_blank" rel="noopener">Marketplace ↗</a><a href="join.html#inquiry">도입 문의</a><a href="archive.html">아카이브</a><a href="newsletter.html">뉴스레터 구독</a></div>
+<div class="col"><strong>바로가기</strong><a href="services.html">HAI Ecosystems</a><a href="{OLD_MARKET}">Marketplace</a><a href="join.html#inquiry">도입 문의</a><a href="archive.html">아카이브</a><a href="newsletter.html">뉴스레터 구독</a></div>
 <div class="col"><strong>관련 사이트</strong><a href="https://www.hallym.ac.kr" target="_blank" rel="noopener">한림대학교</a><a href="https://hallym-ai-next.foamymole15.chatgpt.site/#services" target="_blank" rel="noopener">AI교육혁신원</a><a href="https://aiadvcenter.csedu4all.com" target="_blank" rel="noopener">AI교육확산센터</a><a href="https://ai.hallym.ac.kr" target="_blank" rel="noopener">한림 AI 교육 포털</a><a href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a></div>
 </div>
 <div class="bot"><span>주관 한림대학교 · 후원 교육부 글로컬대학30 · © Hallym University</span><span><a href="privacy.html"><strong>개인정보처리방침</strong></a> · <a href="en.html">English</a> · <a href="admin.html">관리자</a></span></div>
@@ -2106,7 +2106,7 @@ def page_service(s):
 <span class="eyebrow">{E(area)}</span>
 <h1>{E(s['name'])}{(' <small style="font-size:.5em;font-weight:500;color:var(--muted)">' + E(s['note']) + '</small>') if s.get('note') else ''}</h1>
 <p class="lead">{E(s['head'])}</p>
-<div class="acts">{(f'<a class="btn" href="{demo_url(s["slug"])}" target="_blank" rel="noopener">데모 신청하기 ↗</a>') if demo_url(s["slug"]) else ''}<a class="btn{' ghost' if demo_url(s['slug']) else ''}" href="join.html?service={s['slug']}#inquiry">도입 문의</a>{links}</div>
+<div class="acts">{(f'<a class="btn" href="{demo_url(s["slug"])}">데모 신청하기</a>') if demo_url(s["slug"]) else ''}<a class="btn{' ghost' if demo_url(s['slug']) else ''}" href="join.html?service={s['slug']}#inquiry">도입 문의</a>{links}</div>
 </div></section>
 <section class="sec" style="padding-top:24px"><div class="wrap">
 <div class="grid g2" style="gap:48px;align-items:start">
