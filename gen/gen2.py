@@ -1250,7 +1250,7 @@ MEGA = [
     ('about.html', 'KELI 소개', [('about.html#vision', '비전'), ('about.html#consortium', 'KELI 협의체'), ('about.html#org', '조직도')]),
     ('services.html', 'HAI Ecosystems', [('services.html', 'HAI Ecosystems', [(f'services.html#{k}', lb) for k, lb, _ in AREAS] + [('demos.html', '전체 데모 영상')]), (OLD_MARKET, 'Marketplace ↗')]),
     ('join.html', 'KELI 협의체 참여', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의')]),
-    ('archive.html', '아카이브', [(f'archive-{k}.html', l.replace('·', ' · ')) for k, l in ARCH_CATS]),
+    ('archive.html', '아카이브', [(f'archive-{k}.html', l.replace('·', ' · ')) for k, l in ARCH_CATS] + [('legacy.html', '구 KELI 플랫폼 자료')]),
     ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료')]),
 ]
 
@@ -1707,11 +1707,17 @@ def _load_videos():
     return _load_json(os.path.join(OUT, 'assets', 'videos.live.json'), {"source": "https://www.youtube.com/@HALLYMNEWS", "fetched_at": "", "items": []})
 VIDEOS = _load_videos()
 VIDEO_ITEMS = sorted(_not_hidden('videos', VIDEOS.get('items', [])), key=lambda v: v.get('age_days') if isinstance(v.get('age_days'), (int, float)) else 99999)   # 최신 영상부터
+# 구 KELI 플랫폼에서 옮겨 온 영상(한림지식공유세미나 · 파트너 영상) — content/videos_extra.json, 자동 수집 영상과 겹치면 뺀다
+_VX = _load_json(os.path.join(CONTENT, 'videos_extra.json'), {}).get('items', [])
+_seen = {v.get('id') for v in VIDEO_ITEMS}
+VIDEOS_EXTRA = sorted([v for v in _not_hidden('videos', _VX) if v.get('id') not in _seen], key=dkey, reverse=True)
+VIDEOS_SEMINAR = [v for v in VIDEOS_EXTRA if v.get('group') == 'seminar']
+VIDEOS_PARTNER = [v for v in VIDEOS_EXTRA if v.get('group') == 'partner']
 VIDEOS_KELI = [v for v in VIDEO_ITEMS if v.get('group') == 'keli']
 VIDEOS_REL = [v for v in VIDEO_ITEMS if v.get('group') != 'keli']
 
 def vid_card(v):
-    meta = ' · '.join(x for x in [('KELI 영상' if v.get('group') == 'keli' else 'HAI · 소프트랩'), v.get('published') or v.get('published_text') or '', v.get('views') or ''] if x)
+    meta = ' · '.join(x for x in [{'keli': 'KELI 영상', 'seminar': '한림지식공유세미나', 'partner': '파트너 영상'}.get(v.get('group'), 'HAI · 소프트랩'), v.get('published') or v.get('date') or v.get('published_text') or '', v.get('views') or ''] if x)
     live = '<span class="badge" style="margin-left:6px">실시간 녹화</span>' if v.get('is_live_recording') else ''
     return (f'<div class="vid" data-vid="{v["id"]}" data-embed="{E(v["embed"])}">'
             f'<button type="button" class="vid-play" aria-label="{E(v["title"])} 재생"><img src="{v["thumb"]}" alt="" loading="lazy"><span class="play"></span>'
@@ -2587,8 +2593,83 @@ def page_videos():
 <div class="grid g2 vids" data-videos="related">{rel}</div>
 <p class="note" style="margin-top:16px">{VIDEO_NOTE} <a href="{VIDEOS.get("source", "https://www.youtube.com/@HALLYMNEWS")}" target="_blank" rel="noopener">채널 바로가기</a></p>
 </div></section>
-'''
+{extra_videos_html()}'''
     write('videos.html', '영상 · KELI', body)
+
+def extra_videos_html():
+    out = ''
+    for i, (vs, ttl, sub, anchor) in enumerate(((VIDEOS_SEMINAR, '한림지식공유세미나', '한림대학교 교수진의 AI·융합 연구 강연', 'seminar'), (VIDEOS_PARTNER, '파트너 · 서비스 소개 영상', 'HAI Ecosystems 개발 기업과 서비스 소개', 'partner'))):
+        if not vs: continue
+        out += (f'<section class="sec{"" if i % 2 == 0 else " alt"}" id="{anchor}"><div class="wrap narrow" style="max-width:900px">'
+                f'<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">{ttl}</h2><span class="muted small">{E(sub)} {len(vs)}건</span></div>'
+                f'<div class="grid g2 vids">{"".join(vid_card(v) for v in vs)}</div></div></section>')
+    return out
+
+# ------------------------------------------------------------------ 구 KELI 플랫폼 보관 자료(old-keli/, scripts/backup_old_platform.py 로 백업)
+LEGACY_DIR = os.path.join(OUT, 'old-keli')
+LEGACY_ORDER = ['notice', 'news', 'newsletter', 'column-khighedu', 'column-humanities', 'solution-data', 'edu-ai', 'edu-learner', 'edu-professor', 'edu-corporate',
+                'archive-business', 'archive-technic', 'archive-policy', 'archive-guidebook', 'seminar', 'partner-video']
+def _legacy_items():
+    out = []
+    if not os.path.isdir(LEGACY_DIR): return out
+    for b in os.listdir(LEGACY_DIR):
+        bd = os.path.join(LEGACY_DIR, b)
+        if not os.path.isdir(bd): continue
+        for sq in os.listdir(bd):
+            mp = os.path.join(bd, sq, 'meta.json')
+            if os.path.exists(mp):
+                m = _load_json(mp, {}); m['dir'] = f'old-keli/{b}/{sq}'
+                if m.get('title'): out.append(m)
+    return sorted(out, key=dkey, reverse=True)
+LEGACY = _legacy_items()
+def legacy_href(m): return f'legacy-{m["board"]}-{m["seq"]}.html'
+def _legacy_body(m):
+    import importlib.util
+    try:
+        from fetch_events import clean_html as _ch
+    except Exception:
+        sys.path.insert(0, os.path.join(OUT, 'scripts')); from fetch_events import clean_html as _ch
+    b = m.get('body_html') or ''
+    for im in m.get('images') or []:
+        b = b.replace(im['src'], f'{m["dir"]}/{im["file"]}')
+    b = re.sub(r'<iframe[^>]+youtube[^>]*>\s*</iframe>', '', b, flags=re.S)
+    b = _ch(b, 'https://keliedu.org')
+    b = re.sub(r'(src|href)="https://keliedu\.org/(old-keli/[^"]+)"', r'\1="\2"', b)
+    return b
+def page_legacy():
+    if not LEGACY: return
+    labels = {}
+    for m in LEGACY: labels[m['board']] = m.get('board_label') or m['board']
+    for m in LEGACY:
+        vids = ''.join(f'<div class="vid" data-vid="{y}" data-embed="https://www.youtube-nocookie.com/embed/{y}?autoplay=1&amp;rel=0"><button type="button" class="vid-play" aria-label="영상 재생"><img src="https://i.ytimg.com/vi/{y}/hqdefault.jpg" alt="" loading="lazy"><span class="play"></span></button><div class="vid-body"><a class="more" href="https://www.youtube.com/watch?v={y}" target="_blank" rel="noopener">YouTube에서 보기</a></div></div>' for y in m.get('youtube') or [])
+        files = ''.join(f'<a class="li" href="{m["dir"]}/{E(f["file"])}" target="_blank" rel="noopener"><span class="t">{E(f["name"])}</span><span class="d">{E(_fmt_bytes(f.get("size", 0)))}</span></a>' for f in m.get('files') or [])
+        body = crumb(('archive.html', '아카이브'), ('legacy.html', '구 KELI 플랫폼 자료'), (None, m['title'][:40])) + f'''
+<section class="hero" style="padding-top:48px;padding-bottom:32px"><div class="wrap narrow" style="max-width:900px"><span class="eyebrow">구 KELI 플랫폼 · {E(labels[m["board"]])}</span><h1 style="font-size:clamp(26px,3.6vw,36px);text-wrap:balance">{E(m["title"])}</h1><p class="muted">{E((m.get("date") or "").replace("-", "."))} · 구 KELI 플랫폼(keliedu.org)에서 옮겨 보관한 글</p></div></section>
+<section class="sec" style="padding-top:0"><div class="wrap narrow" style="max-width:900px"><article class="art">
+{('<div class="grid g1 vids" style="margin-bottom:24px">' + vids + '</div>') if vids else ''}
+{_legacy_body(m)}
+{('<h2 class="art-h">첨부파일</h2><div class="list">' + files + '</div>') if files else ''}
+<div class="art-note">※ 이 글은 구 KELI 플랫폼이 닫혀도 볼 수 있도록 원문과 첨부파일을 그대로 옮겨 보관한 것입니다. 내용은 게시 당시 기준입니다.<br>· 문의: KELI 사무국 033-248-3242 / contact@keliedu.org</div>
+</article><p style="margin-top:24px"><a class="more" href="legacy.html#{m["board"]}">‹ 목록으로</a></p></div></section>'''
+        write(legacy_href(m), f'{m["title"][:60]} · 구 KELI 플랫폼 자료', body, desc=(m.get('body_text') or m['title'])[:150])
+    secs = ''
+    for b in LEGACY_ORDER + sorted(set(labels) - set(LEGACY_ORDER)):
+        its = [m for m in LEGACY if m['board'] == b]
+        if not its: continue
+        rows = ''.join(f'<a class="li" href="{legacy_href(m)}"><span><span class="t">{E(m["title"])}</span>{("<span class=badge style=margin-left:8px>영상</span>") if m.get("youtube") else ""}{("<span class=badge style=margin-left:8px>첨부 " + str(len(m["files"])) + "</span>") if m.get("files") else ""}</span><span class="d">{E((m.get("date") or "").replace("-", "."))}</span></a>' for m in its)
+        secs += f'<div class="head" id="{b}" style="margin-top:40px"><h2>{E(labels[b])}</h2><span class="muted small">{len(its)}건</span></div><div class="list">{rows}</div>'
+    body = crumb(('archive.html', '아카이브'), (None, '구 KELI 플랫폼 자료')) + f'''
+<section class="hero" style="padding-top:48px;padding-bottom:32px"><div class="wrap narrow" style="max-width:900px"><span class="eyebrow">아카이브</span><h1>구 KELI 플랫폼 자료.</h1><p class="lead">구 KELI 플랫폼(keliedu.org/keli)에 올라 있던 공지·뉴스·칼럼·자료·영상을 원문 그대로 옮겨 보관했습니다. 구 플랫폼이 닫혀도 여기서 볼 수 있습니다.</p></div></section>
+<section class="sec" style="padding-top:0"><div class="wrap narrow" style="max-width:900px">
+<div class="chips">{"".join(f'<a class="chip" href="#{b}">{E(labels[b])}</a>' for b in LEGACY_ORDER if b in labels)}</div>
+{secs}
+<p class="note" style="margin-top:24px">총 {len(LEGACY)}건 · 2026. 11. 12. 백업. 정리된 아카이브(실증 사례집·기술 동향·매뉴얼)는 <a href="archive.html">아카이브</a>에서 볼 수 있습니다.</p>
+</div></section>'''
+    write('legacy.html', '구 KELI 플랫폼 자료 · KELI 아카이브', body, desc='구 KELI 플랫폼(keliedu.org)의 공지·뉴스·칼럼·자료·영상을 원문 그대로 보관한 아카이브.')
+def _fmt_bytes(b):
+    try: b = int(b)
+    except Exception: return ''
+    return f'{b / 1048576:.1f} MB' if b > 1048576 else f'{max(1, round(b / 1024))} KB'
 
 def search_index():
     idx = [(f'service-{s["slug"]}.html', s['name'], s['one'] + ' · ' + AREA_LABEL.get(s['area'], s['area'])) for s in SERVICES]
@@ -2596,6 +2677,8 @@ def search_index():
     idx += [(ev_href(it), it['title'], '행사 · ' + (it.get('when') or '')) for it in FEED_ITEMS]
     idx += [(pr_href(it), it['title'], ('언론 보도 · ' if it.get('src') == 'unn' else '보도자료 · ') + (it.get('date') or '')) for it in PRESS_ALL]
     idx += [('videos.html', v['title'], '영상 · ' + (v.get('published') or v.get('published_text') or '')) for v in VIDEO_ITEMS]
+    idx += [(legacy_href(m), m['title'], '구 KELI 플랫폼 자료 · ' + (m.get('board_label') or '')) for m in LEGACY]
+    idx += [(f'videos.html#{v["group"]}', v['title'], '영상 · ' + (v.get('date') or '')) for v in VIDEOS_EXTRA]
     idx += [(f'demos.html#demo-{d["id"]}', d['name'] + ' 데모 영상' + (' (' + d['audience'] + ')' if d.get('audience') else ''), '데모 영상 · ' + d.get('category', '')) for d in DEMO_ITEMS]
     idx += [(arch_href(a)[0], a['title'], '아카이브 · ' + dict(ARCH_CATS).get(a.get('cat'), '')) for a in ARCHIVE]
     idx += [(f'notice-{n["id"]}.html', n['title'], '공지사항 · ' + n['cat'] + ' · ' + n.get('date', '')) for n in NOTICES]
@@ -2734,7 +2817,7 @@ def main():
     page_curriculum(); page_join(); page_archive(); page_news_hub(); page_notice(); page_events()
     for it in FEED_ITEMS: page_feed_event(it)
     for it in PRESS_ITEMS: page_press(it)
-    page_videos(); page_demos()
+    page_videos(); page_demos(); page_legacy()
     page_newsletter(); page_search(); page_en(); build_kb()
     page_privacy()
     page_admin()
