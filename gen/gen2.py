@@ -1714,6 +1714,10 @@ FEED_NOTE = f'AI교육확산센터 소식(aiadvcenter.csedu4all.com/news/stories
 def _load_press():
     return _load_json(os.path.join(OUT, 'assets', 'press.live.json'), {"source": "https://www.hallym.ac.kr/pr/5865/subview.do", "fetched_at": "", "items": []})
 PRESS = _load_press()
+# 사무국이 직접 올리는 보도자료(content/press_manual.json): 한림대 누리집에 같은 제목이 올라오면 자동 수집본을 씀
+def _norm_t(t): return re.sub(r'[\s\'"‘’“”·,.]', '', t or '')
+_live_titles = {_norm_t(x.get('title')) for x in PRESS.get('items', []) if not x.get('manual')}
+PRESS['items'] = [x for x in PRESS.get('items', []) if not x.get('manual')] + [x for x in _load_json(os.path.join(OUT, 'content', 'press_manual.json'), {'items': []}).get('items', []) if _norm_t(x.get('title')) not in _live_titles]
 PRESS_ITEMS = _not_hidden('press', PRESS.get('items', []))
 PRESS_IDS = ','.join(str(i['id']) for i in PRESS_ITEMS)
 UNN = _load_json(os.path.join(OUT, 'assets', 'unn.live.json'), {"source": "https://news.unn.net", "fetched_at": "", "items": []})
@@ -2608,7 +2612,7 @@ def page_press(it):
 <section class="hero" style="padding-top:40px;padding-bottom:32px"><div class="wrap">
 <span class="eyebrow">보도자료{(" · " + E(it["category"])) if it.get("category") else ""}</span>
 <h1 style="font-size:clamp(28px,3.4vw,44px)">{E(it['title'])}</h1>
-<p class="lead">{E(it.get('date') or '')} · 한림대학교 커뮤니케이션팀 · <a href="{it['url']}" target="_blank" rel="noopener">원문 보기</a></p>
+<p class="lead">{E(it.get('date') or '')} · 한림대학교 커뮤니케이션팀 · {E(it['source_note']) if it.get('manual') else f'<a href="{it["url"]}" target="_blank" rel="noopener">원문 보기</a>'}</p>
 </div></section>
 <section class="sec" style="padding-top:8px"><div class="wrap narrow" style="max-width:900px">
 {restyle(it.get('body_html'), 'press') or '<div class="art"><p class="art-lead">' + E(it.get('summary') or '') + '</p></div>'}
