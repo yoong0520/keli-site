@@ -8,6 +8,8 @@
   data-show-now=S  바로 보이기 · data-wait=S  잠깐(1.1초) 보였다 숨기기(입력 중 표시) · data-show=S  그 뒤에 보이기 · data-hide=S  숨기기
   data-echo=S      폼에 쓴 글을 S 에 넣기 · data-set="S|글"  S 의 글자를 바꾸기 · data-step=N  [data-stepper] 의 N 번째까지 .on
   data-check="묶음|정답번호"  묶음 안에서 .on 인 것이 정답이면 [data-right], 아니면 [data-wrong], 안 골랐으면 [data-need] 보이기(any = 아무거나 정답)
+  data-tg          누를 때마다 .on 켜고 끄기(안의 small 글자를 ON/OFF 로)
+  data-req=S       S 칸에 글이 없으면 [data-need] 를 보이고 멈춤
   canvas[data-draw] 손글씨 칸(목표면 조금 그렸을 때 성공) · data-clear=S  손글씨 지우기
   data-go=N        N번째 미션 화면으로 가기(옆 메뉴) · data-fill=글  폼 입력칸에 글 넣기 · form[data-form data-sample=예시 data-note=S data-log=S data-more=글]
 """
@@ -343,7 +345,101 @@ def _math():
         dict(title='AI 튜터에게 물어봐요', text='「AI 튜터」 창에서 개념을 물으면 예시와 함께 차근차근 설명해 줘요.', do='AI 튜터 입력칸에 궁금한 개념을 써서 보내 보세요.', ui=tutor(), img=I + '5.jpg'),
     ]
 
-MOCKS = {'hai-docs': _docs(), 'hai-tutor': _tutor(), 'hai-mate': _mate(), 'hai-gpt': _gpt(), 'hai-mathtutor': _math()}
+# ------------------------------------------------------------------ LXP (학습자 매뉴얼)
+def _lxp():
+    TH = '--mk:#2563eb;--mk-side:#1447b8'
+    WEEKS = ['1주차 8월 04일 - 8월 10일', '2주차 8월 11일 - 8월 17일', '3주차 8월 18일 - 8월 24일', '4주차 8월 25일 - 8월 31일', '5주차 9월 01일 - 9월 07일']
+    def sd(active, grade_goal=False):
+        h = side('생성형 AI 입문과 활용', '', [('', [('home', 'home', '강의실 홈'), ('info', 'doc', '강의실 정보'), ('ntc', 'bell', '공지사항'), ('qna', 'chat', '질의응답'), ('ana', 'chart', '학습 분석'), ('grade', 'check', '성적 조회'), ('room', 'chat', '대화방'), ('ait', 'user', 'AI 튜터')]),
+                                           ('주차별 학습', [('ov', 'doc', '강의 개요'), ('w1', 'edit', WEEKS[0])])], active, go={'home': 1, 'w1': 2, 'grade': 4},
+                 mid=''.join(f'<span class="mk-hist" style="color:inherit;opacity:.55">{w}</span>' for w in WEEKS[1:]))
+        return h.replace('data-go="4">', 'data-on data-goal data-show="[data-gr]" data-hide="[data-gr0]">') if grade_goal else h
+    BAN = '<div class="mk-box" style="background:linear-gradient(120deg,#ede9fe,#dbeafe);border:0"><b style="font-size:16px">생성형 AI 입문과 활용</b><small>임교수 · 3학점</small></div>'
+    def home():
+        main = (BAN + '<button type="button" class="mk-card" data-on data-show="[data-wk]" data-goal><span class="mk-row"><strong>1주차 <small>2026-08-04 ~ 2026-08-10</small></strong><span class="mk-link">자세히 보기</span></span>'
+                '<span class="mk-two"><span><span class="mk-lbl">학습 목표</span><br>1주차 | 인공지능의 이해</span><span class="mk-stats"><span class="mk-stat"><small>학습활동 진행</small><b>58.3%</b></span><span class="mk-stat"><small>출석</small><b>55.6%</b></span></span></span></button>'
+                '<div class="mk-box tint" data-wk hidden><b>주요 학습 내용 및 방법</b><span>인공지능이 무엇인지에 대한 기본 개념을 학습합니다. 활용 사례를 통해 인공지능 기술이 어떻게 발전해 왔는지 이해하고, 향후 AI 기술이 사회와 산업 전반에 미칠 영향을 살펴봅니다.</span></div>'
+                '<div class="mk-box"><b>미채점 활동 1개</b><table class="mk-tbl"><tr><th>주차</th><th>학습활동명</th><th>활동 유형</th><th>제출 여부</th></tr><tr><td>2주차</td><td>2주차_생성형 AI 활용 사례 과제</td><td>과제</td><td>제출</td></tr></table></div>'
+                '<div class="mk-box"><b>질문과 답변</b><span class="mk-ref">등록된 질문과 답변이 없습니다.</span></div>')
+        return frame(TH, sd('home'), ('LXP', '강의실 홈'), main)
+    ACT = [('동영상', '1주차_인공지능이란?', '2026-08-04 00:00 ~ 2026-08-10 23:59 마감', '완료'), ('파일', '1주차_참고자료 파일', '', ''), ('토론', '생성형 AI란 무엇인가요?', '', '완료'), ('투표', '중간고사 일정 투표', '2026-08-04 00:00 ~ 2026-08-14 23:59 참여 가능', '미완료'), ('채팅', '1주차 채팅방', '2026-08-14 00:00 ~ 제한 없음', '')]
+    def week(goal):
+        rows = ''.join(f'<button type="button" class="mk-rowbtn" data-cat="{t}" data-on data-hide="[data-v]" data-show="[data-v={chr(39)}{k if k == 0 else 9}{chr(39)}]"{" data-goal" if goal == "open" and k == 0 else ""}><span><span class="mk-chip">{t}</span> <b>{n}</b><small>{d}</small></span>'
+                       + (f'<span class="mk-st {"ok" if st == "완료" else "ing"}">{st}</span>' if st else '<span></span>') + '</button>' for k, (t, n, d, st) in enumerate(ACT))
+        flt = ''.join(f'<button type="button" class="{"on" if k == "all" else ""}" data-filter="{k}" data-on{" data-goal" if goal == "filter" and k == "동영상" else ""}>{t}</button>' for k, t in [('all', '전체'), ('동영상', '동영상'), ('파일', '파일'), ('토론', '토론'), ('투표', '투표'), ('채팅', '채팅')])
+        main = (BAN + '<div class="mk-box"><b>1주차 <small>8월 04일 - 8월 10일</small></b><span class="mk-lbl">학습 목표</span><span>1주차 | 인공지능의 이해</span></div>'
+                f'<div class="mk-row"><b>학습활동</b><div class="mk-tabs">{flt}</div></div><div class="mk-opts">{rows}</div><p class="mk-empty" data-empty hidden>이 유형의 학습활동이 없습니다.</p>'
+                '<div class="mk-modal" data-v="0" hidden><div class="mk-row"><b>1주차_인공지능이란?</b><span class="mk-st ok">완료</span></div><button type="button" class="mk-up" style="background:#0b1020;color:#fff;border:0" data-show="[data-play]">▶ 동영상 강의 재생</button>'
+                + toast('data-play', '동영상 강의를 재생해요. 다 보면 진도가 「완료」로 바뀌어요. (체험판에는 영상이 들어 있지 않아요)') + '</div>'
+                '<p class="mk-demo" data-v="9" hidden>체험판에는 첫 번째 활동(동영상 강의)만 열려요. 실제 강의실에서는 파일·토론·투표·채팅 활동에도 참여할 수 있어요.</p>')
+        return frame(TH, sd('w1'), ('LXP', '주차별 학습'), main)
+    def grade():
+        G = [('시험', '중간고사', '25.00', '0–55', '45.46 %'), ('과제', '2주차_생성형 AI 활용 사례 과제', '14.00', '0–15', '93.33 %'), ('퀴즈', '1주차 퀴즈', '5.00', '0–5', '100.00 %')]
+        tb = '<table class="mk-tbl"><tr><th>구분</th><th>성적 항목</th><th>성적</th><th>범위</th><th>백분율</th></tr>' + ''.join(f'<tr><td>{a}</td><td>{b}</td><td>{c}</td><td>{d}</td><td>{e}</td></tr>' for a, b, c, d, e in G) + '</table>'
+        main = (BAN + '<div class="mk-box" data-gr0><span class="mk-ref">왼쪽 메뉴에서 「성적 조회」를 누르면 학습활동별 성적과 교수님 피드백을 볼 수 있어요.</span></div>'
+                f'<div class="mk-box" data-gr hidden><div class="mk-row"><b>성적 조회</b><span class="mk-eg">체험용 예시 점수</span></div>{tb}<span class="mk-ref">성적은 교수님이 공개한 시점부터 볼 수 있어요.</span></div>')
+        return frame(TH, sd('home', True), ('LXP', '성적 조회'), main)
+    I = 'media/walk/lxp/'
+    return [
+        dict(title='학번/사번으로 로그인해요', text='한림대학교 LXP 접속 페이지에서 개인 계정으로 로그인하면 강의실에 들어갈 수 있어요.', do='학번(사번)과 비밀번호 칸을 확인하고 「로그인」을 눌러 보세요.', img=I + '1.jpg',
+             ui=login(TH, ('HALLYM UNIVERSITY', '한림대학교 LXP', '인공지능(AI) 기반 학습 경험 플랫폼'), ('LXP', '로그인'), [('학번/사번', '학번 또는 사번', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True)], foot='한림대학교 LXP에 오신 것을 환영합니다.')),
+        dict(title='강의실 홈에 들어가요', text='강의실 홈에서는 이번 주 학습 목표와 진행률, 아직 채점되지 않은 활동, 질문과 답변을 한 화면에서 확인해요.', do='강의실 홈에서 「1주차」 학습 영역을 눌러 이번 주 학습을 확인해 보세요.', ui=home(), img=I + '2.jpg'),
+        dict(title='주차별 학습을 확인해요', text='주차별 학습에서는 그 주의 학습 목표와 학습활동 목록, 기간과 완료 여부를 확인하고 활동을 눌러 바로 학습해요.', do='학습활동 목록에서 첫 번째 활동 「1주차_인공지능이란?」을 눌러 보세요.', ui=week('open'), img=I + '3.jpg'),
+        dict(title='학습활동을 진행해요', text='동영상·파일·토론·투표·채팅 같은 학습활동을 유형별로 모아 보고, 기간 안에 참여해 완료해요.', do='학습활동 필터에서 「동영상」을 눌러 동영상 활동만 모아 보세요.', ui=week('filter'), img=I + '4.jpg'),
+        dict(title='성적을 조회해요', text='강의에 참여한 학습활동별 성적과 교수님이 입력한 점수·피드백을 확인해요.', do='왼쪽 메뉴에서 「성적 조회」를 눌러 보세요.', ui=grade(), img=I + '5.jpg'),
+    ]
+
+# ------------------------------------------------------------------ HAI-Forum (학생용 매뉴얼)
+def _forum():
+    TH = '--mk:#2563eb;--mk-side:#0f172a'
+    def sd(active):
+        return side('HAI-Forum', '', [('', [('dash', 'home', '대시보드'), ('crs', 'doc', '내 강좌'), ('cls', 'send', '수업'), ('hw', 'edit', '과제'), ('gr', 'chart', '성적'), ('set', 'gear', '설정')])], active, user=('학생', '수강 중인 강좌 2개'), light=True, go={'dash': 0, 'hw': 1, 'cls': 3})
+    def dash():
+        stats = ''.join(f'<div class="mk-stat"><small>{l}</small><b>{v}</b></div>' for l, v in [('수강 과목', '2'), ('완료한 과제', '1'), ('대기 중 과제', '0'), ('평균 점수', '80점')])
+        main = ('<div class="mk-box" style="background:linear-gradient(120deg,#16a34a,#0d9488);color:#fff;border:0"><b style="font-size:15px">안녕하세요, 학생님!</b><span>오늘 예정된 수업 0개, 마감 임박 과제 0건이 있습니다.</span></div>'
+                '<div class="mk-box" style="background:#fff8ec;border-color:#fde6c3"><b>내 학업 위험 알림 (2건)</b><span class="mk-row"><span>고급시스템프로그래밍 <small>과제 제출 지연</small></span><span class="mk-st ing">위험</span></span><span class="mk-row"><span>해부생리학 <small>출석 주의</small></span><span class="mk-st ing">주의</span></span></div>'
+                f'<div class="mk-stats">{stats}</div><div class="mk-two"><div class="mk-box"><b>오늘 일정</b><span class="mk-ref">오늘 예정된 수업이 없습니다.</span></div><div class="mk-box"><b>마감 임박 과제</b><span class="mk-ref">마감 임박 과제가 없습니다.</span></div></div>'
+                '<div class="mk-two"><div class="mk-box"><b>내 강좌</b><button type="button" class="mk-rowbtn" data-on data-show="[data-crs]" data-goal><span><b>고급시스템프로그래밍</b></span><span>›</span></button><button type="button" class="mk-rowbtn" data-on><span><b>해부생리학</b></span><span>›</span></button></div>'
+                '<div class="mk-box"><b>최근 성적</b><span class="mk-row"><span>과제 0: 환경 설정</span><b>40/50 · 80%</b></span></div></div>'
+                + toast('data-crs', '고급시스템프로그래밍 강좌로 들어왔어요. 수업·콘텐츠·과제·성적을 볼 수 있어요.'))
+        return frame(TH, sd('dash'), ('HAI-Forum', '대시보드'), main)
+    def hw():
+        main = ('<div class="mk-h"><h3>과제 1: 조건문과 반복문</h3><span class="mk-badge">과제</span></div><p class="mk-ref">마감 2026년 6월 12일 오후 11:59 · 만점 100점 · 지각 제출 감점 10%</p>'
+                '<div class="mk-box"><b>설명</b><span>조건문(if-else)과 반복문(for, while)을 활용하여 간단한 계산기 프로그램을 작성하세요.</span></div>'
+                '<div class="mk-box"><b>제출하기</b><textarea id="mkhw" placeholder="제출 내용을 입력하세요..." aria-label="제출 내용"></textarea><div class="mk-row"><span class="mk-ref">' + ic('clip', 14) + ' 첨부 파일이 없습니다.</span><button type="button" class="mk-btn sm line" data-show="[data-file]">파일 추가</button></div>'
+                '<span class="mk-filechip" data-file hidden>' + ic('doc', 13) + 'calculator.py (체험용)</span><p class="mk-demo" data-need hidden>제출 내용을 먼저 써 주세요.</p>'
+                '<div class="mk-row end"><button type="button" class="mk-btn" data-req="#mkhw" data-show="[data-sent]" data-goal>' + ic('send', 14) + '제출</button></div>' + toast('data-sent', '과제를 제출했어요. 마감 전에는 다시 제출할 수 있어요.') + '</div>')
+        return frame(TH, sd('hw'), ('HAI-Forum', '과제 제출'), main)
+    def code():
+        main = ('<div class="mk-row"><div class="mk-h"><h3>코드 제출 &amp; 실행</h3></div><label class="mk-f" style="flex-direction:row;align-items:center">언어<select><option>Python</option><option>Java</option><option>C++</option><option>JavaScript</option></select></label></div>'
+                '<textarea class="mk-code" id="mkcode" spellcheck="false" aria-label="코드 편집기" rows="6"># 표준 입력으로부터 읽고 표준 출력으로 답안 출력\n# 예: print(input())\nprint(input())</textarea>'
+                '<div class="mk-row"><span class="mk-ref">제출 시 모든 테스트 케이스에 대해 코드를 실행합니다.</span><button type="button" class="mk-btn" data-req="#mkcode" data-show="[data-res]" data-goal>' + ic('send', 14) + '제출 + 실행</button></div><p class="mk-demo" data-need hidden>코드를 먼저 작성해 주세요.</p>'
+                '<div class="mk-box tint" data-res hidden><div class="mk-row"><b>테스트 결과</b><span class="mk-st ok">COMPLETED</span></div><span>테스트 케이스 3개 중 3개 통과 · 예상 출력과 실제 출력이 일치해요.</span><span class="mk-eg">체험용 예시 결과 · 코드는 실제로 실행되지 않아요</span></div>'
+                '<div class="mk-box"><b>제출 이력</b><span class="mk-row"><span><span class="mk-chip">python</span> 2026. 6. 9. 오전 12:15:36</span><span class="mk-row"><span class="mk-st ok">COMPLETED</span><span class="mk-link">재실행</span><span class="mk-link">결과</span></span></span></div>')
+        return frame(TH, sd('hw'), ('HAI-Forum', '코딩 과제'), main)
+    def live():
+        main = ('<div class="mk-h"><h3>수업 관리</h3></div><div class="mk-rowbtn" style="cursor:default"><span><span class="mk-st ing">LIVE</span> <b>제19장 심장</b></span><span class="mk-btn sm" style="cursor:default">입장</span></div>'
+                '<div class="mk-modal"><b style="text-align:center">수업 입장 준비</b><p style="text-align:center">AP1012 · 해부생리학<br><b>제19장 심장</b></p>'
+                '<div class="mk-up" style="border-style:solid" data-cam>' + ic('user', 30) + '<span>카메라 미리보기</span></div><p class="mk-demo" data-camoff hidden>카메라를 껐어요. 내 화면이 다른 사람에게 보이지 않아요.</p>'
+                '<div class="mk-two"><button type="button" class="mk-tile on" data-tg="cam">' + ic('send', 18) + '<b>카메라</b><small data-camt>ON</small></button><button type="button" class="mk-tile" data-tg="mic">' + ic('bell', 18) + '<b>마이크</b><small data-mict>OFF</small></button></div>'
+                '<button type="button" class="mk-btn wide" data-show="[data-in]" data-goal>수업 입장</button>' + toast('data-in', '수업에 입장했어요. 교수님이 입장 설정을 해 두면 그에 따라 카메라·마이크가 켜져요.') + '</div>')
+        return frame(TH, sd('cls'), ('HAI-Forum', '실시간 화상수업'), main)
+    def socratic():
+        main = ('<div class="mk-row"><div class="mk-h"><h3>소크라틱 토론</h3><span class="mk-st ing">LIVE</span></div><span class="mk-eg">체험용 예시 주제</span></div>'
+                '<div class="mk-box tint"><span class="mk-lbl">토론 주제 (교수님 질문)</span><b>인공지능이 만든 글의 책임은 누구에게 있을까요?</b></div>'
+                '<div class="mk-log" id="mklog">' + me('', 'data-qa hidden') + dots('교수') + ai('<p><b>후속 질문</b><br>그렇게 생각한 근거는 무엇인가요? 반대 입장이라면 어떤 점을 문제 삼을까요?</p><span class="mk-eg">체험용 예시 질문</span>', 'data-a hidden', '교수') + '</div>'
+                + inbar('글을 쓰도록 지시하고 결과를 확인한 사람에게 책임이 있다고 생각합니다.', '내 생각을 작성해 주세요…', True, hide='[data-none]', more='체험판에서는 후속 질문이 한 번만 나와요. 실제 수업에서는 교수님의 후속 질문에 이어서 답하며 토론을 이어 가요.'))
+        return frame(TH, sd('cls'), ('HAI-Forum', '소크라틱 토론'), main)
+    I = 'media/walk/hai-forum/'
+    return [
+        dict(title='대시보드에서 오늘 할 일을 봐요', text='오늘의 수업, 마감 임박 과제, 내 강좌, 평점을 한눈에 봐요. 진행 중인 수업은 「참여하기」로 바로 들어가요.', do='「내 강좌」에서 「고급시스템프로그래밍」을 눌러 강좌로 들어가 보세요.', ui=dash(), img=I + '1.jpg'),
+        dict(title='과제를 확인하고 제출해요', text='과제 설명과 마감 시간을 확인하고, 내용을 쓰거나 파일을 올려 「제출」을 눌러요.', do='제출 내용을 직접 쓰고 「제출」을 눌러 보세요.', ui=hw(), img=I + '2.jpg'),
+        dict(title='코딩 과제는 바로 실행해요', text='언어를 고르고 코드를 작성한 뒤 「제출 + 실행」을 누르면 자동으로 채점돼요. 테스트 결과와 오류 메시지도 볼 수 있어요.', do='코드를 확인하거나 고쳐 본 뒤 「제출 + 실행」을 눌러 보세요.', ui=code(), img=I + '3.jpg'),
+        dict(title='실시간 화상수업에 들어가요', text='대시보드나 강좌에서 「참여하기」를 누르고, 입장 전에 카메라·마이크를 확인해요.', do='카메라와 마이크를 눌러 켜고 끈 뒤 「수업 입장」을 눌러 보세요.', ui=live(), img=I + '4.jpg'),
+        dict(title='소크라틱 토론에 참여해요', text='교수님이 던진 질문에 내 생각을 쓰고, 이어지는 후속 질문에 답하며 생각을 깊게 다듬어요.', do='교수님의 질문에 내 생각을 써서 보내 보세요. 비워 둔 채 보내면 예시 답이 입력돼요.', ui=socratic(), img=I + '5.jpg'),
+    ]
+
+MOCKS = {'hai-docs': _docs(), 'hai-tutor': _tutor(), 'hai-mate': _mate(), 'hai-gpt': _gpt(), 'hai-mathtutor': _math(), 'lxp': _lxp(), 'hai-forum': _forum()}
 
 MK_CSS = r"""
 /* 체험용 화면(목업) 공통 */
