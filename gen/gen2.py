@@ -3002,7 +3002,7 @@ def walk_data(only=None):
 def walk_card(x):
     w = WALKS[x['slug']]; ai = any(t['svc'] == x['slug'] for t in TRY_DEMOS)
     img = w['steps'][1 if len(w['steps']) > 1 else 0]['img']; soon = ' · <span class="badge soon">준비 중</span>' if x.get('status') == 'soon' else ''
-    return (f'<div class="walk-card"><button type="button" class="walk-thumb" data-walk="{x["slug"]}" aria-label="{E(x["name"])} 직접 해 보기"><img src="{img}" alt="" loading="lazy"><span class="walk-n">미션 {len(w["steps"])}개</span></button>'
+    return (f'<div class="walk-card" data-key="{E(x["area"])}"><button type="button" class="walk-thumb" data-walk="{x["slug"]}" aria-label="{E(x["name"])} 직접 해 보기"><img src="{img}" alt="" loading="lazy"><span class="walk-n">미션 {len(w["steps"])}개</span></button>'
             f'<div class="walk-body"><span class="m">{E(AREA_LABEL.get(x["area"], x["area"]))}{soon}</span>'
             f'<strong class="t"><a href="service-{x["slug"]}.html">{E(x["name"])}</a></strong><span class="small muted">{E(w.get("lead") or x.get("head") or x.get("one") or "")}</span>'
             f'<div class="vbtns"><button type="button" class="btn sm" data-walk="{x["slug"]}">직접 해 보기</button>'
@@ -3139,9 +3139,10 @@ def page_experience():
 {finder_html()}
 </div></section>
 <section class="sec" id="try" style="padding-top:0"><div class="wrap">
-<div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">바로 체험</h2><span class="muted small">직접 해 보기 {len(WALKS)}종</span></div>
+<div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">바로 체험</h2><span class="muted small">직접 해 보기 <span data-count="walk">{len(WALKS)}개</span></span></div>
 <p class="note" style="margin:0 0 18px">이음이·이루미가 내는 미션에 따라, 서비스 화면에서 단추를 누르고 글을 입력하며 직접 써 봅니다. 화면은 서비스 매뉴얼·소개자료에 실린 화면을 본떠 다시 만든 체험용이라 실제 서비스와 연결되어 있지 않고, 입력한 내용은 저장되거나 전송되지 않습니다. 「AI 미니 체험」이 있는 서비스는 KELI 사무국이 만든 체험용 축소판으로 핵심 기능을 직접 써 볼 수 있습니다(실제 서비스와 다르며, 개인정보는 입력하지 마세요).</p>
-<div class="grid g3 walk-grid">{''.join(walk_card(x) for x in SERVICES if x['slug'] in WALKS) or '<div class="empty">직접 해 보기를 준비하고 있습니다.</div>'}</div>
+<div class="row" style="margin-bottom:20px">{tabs('walk', [(a[0], a[1]) for a in AREAS if any(x['area'] == a[0] and x['slug'] in WALKS for x in SERVICES)])}</div>
+<div class="grid g3 walk-grid" data-items="walk">{''.join(walk_card(x) for x in SERVICES if x['slug'] in WALKS) or '<div class="empty">직접 해 보기를 준비하고 있습니다.</div>'}</div>
 </div></section>
 <section class="sec" id="real" style="padding-top:0"><div class="wrap">
 <div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">실제 서비스 체험{'' if TRIALS else ' <span class="badge soon later">추후 공개</span>'}</h2><span class="muted small">{(str(len(TRIALS)) + '개 서비스') if TRIALS else '준비 중'}</span></div>
