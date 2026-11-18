@@ -27,9 +27,9 @@
 <link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="assets/site.css?v=5907aa56">
+<link rel="stylesheet" href="assets/site.css?v=d5e2023a">
 </head>
-<body><script>(function(){var B='6afdc28b';try{fetch('/assets/build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=(t||'').trim();if(!/^[0-9a-f]{6,12}$/.test(t)||t<=B)return;var k='keli-rl-'+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){return}fetch(location.href,{cache:'reload'}).then(function(){location.reload()})}).catch(function(){})}catch(e){}})();</script>
+<body><script>(function(){var B='6afdca06';try{fetch('/assets/build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=(t||'').trim();if(!/^[0-9a-f]{6,12}$/.test(t)||t<=B)return;var k='keli-rl-'+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){return}fetch(location.href,{cache:'reload'}).then(function(){location.reload()})}).catch(function(){})}catch(e){}})();</script>
 <header class="hdr"><div class="wrap bar">
 <a class="brand" href="index.html" aria-label="KELI 홈"><img src="assets/img/keli-logo.png" alt="KELI" width="62" height="28"></a>
 <nav class="nav" aria-label="주요 메뉴"><a href="about.html" data-menu="about.html">KELI 소개</a><a href="services.html" class="on" data-menu="services.html">HAI Ecosystems</a><a href="join.html" data-menu="join.html">KELI 협의체 참여</a><a href="archive.html" data-menu="archive.html">아카이브</a><a href="news.html" data-menu="news.html">소식</a></nav>
@@ -162,6 +162,8 @@
   // ---- 체험용 화면(목업): 요소에 적힌 대로 실제로 반응한다
   function reveal(sel){ var lastEl=null; each(sel,function(x){ x.hidden=false; lastEl=x; }); if(lastEl&&lastEl.scrollIntoView) lastEl.scrollIntoView({block:'nearest'}); }
   function act(el,val){ var a, z=S[i], goal=el.hasAttribute('data-goal');
+    if((a=el.getAttribute('data-check'))){ var cp=a.split('|'), grp=ui.querySelector(cp[0]), pick=-1; if(grp) Array.prototype.forEach.call(grp.children,function(c,k){ if(c.classList.contains('on')) pick=k; });   // 고른 답 확인: data-check="묶음|정답 번호(0부터, any=아무거나)"
+      each('[data-need],[data-right],[data-wrong]',function(x){ x.hidden=true; }); if(pick<0){ reveal('[data-need]'); return; } reveal((cp[1]==='any'||pick===+cp[1])?'[data-right]':'[data-wrong]'); }
     if(el.hasAttribute('data-on')) Array.prototype.forEach.call(el.parentNode.children,function(c){ c.classList.toggle('on',c===el); });
     if((a=el.getAttribute('data-filter'))){ var n=0; each('[data-cat]',function(x){ var ok=(a==='all'||x.getAttribute('data-cat')===a); x.hidden=!ok; if(ok) n++; }); each('[data-empty]',function(x){ x.hidden=n>0; }); each('[data-search]',function(x){ x.value=''; }); }
     if((a=el.getAttribute('data-set'))){ var p=a.split('|'); each(p[0],function(x){ x.textContent=p[1]; }); }
@@ -178,7 +180,7 @@
   ui.addEventListener('input',function(e){ var si=e.target.closest('[data-search]'); if(!si) return; var v=si.value.trim().toLowerCase(), n=0; each('[data-cat]',function(x){ var ok=!v||x.textContent.toLowerCase().indexOf(v)>=0; x.hidden=!ok; if(ok) n++; }); each('[data-empty]',function(x){ x.hidden=n>0; }); each('[data-filter]',function(x){ x.classList.toggle('on',x.getAttribute('data-filter')==='all'); });
     if(si.hasAttribute('data-goal')&&S[i]&&!S[i].ok){ clearTimeout(tmr2); if(v) tmr2=setTimeout(function(){ fin(true); },900); } });
   function uiClick(e){ if(busy) return; var gg=e.target.closest('[data-go]'); if(gg){ i=+gg.getAttribute('data-go'); render(); return; } var fl=e.target.closest('[data-fill]'); if(fl){ var f=ui.querySelector('form[data-form]'), inp=f&&f.querySelector('[data-in]'); if(inp){ inp.value=fl.getAttribute('data-fill'); inp.focus(); } return; }
-    var el=e.target.closest('[data-on],[data-filter],[data-set],[data-show],[data-hide],[data-step],[data-goal]'); if(el&&ui.contains(el)&&el.tagName!=='FORM'&&!el.matches('input,textarea,select,label')) act(el,null); }
+    var el=e.target.closest('[data-on],[data-filter],[data-set],[data-show],[data-hide],[data-step],[data-check],[data-goal]'); if(el&&ui.contains(el)&&el.tagName!=='FORM'&&!el.matches('input,textarea,select,label')) act(el,null); }
   function open(k, from){ if(!D[k]) return; cur=k; i=0; S=[]; last=from; tt.textContent=D[k].name; m.hidden=false; document.body.style.overflow='hidden'; shot.classList.remove('zoom'); zb.setAttribute('aria-pressed','false'); zb.textContent='🔍 확대'; render(); q('.vmodal-x').focus();
     try{ if(window.KELI_API&&navigator.sendBeacon) navigator.sendBeacon(window.KELI_API+'/api/hit', new Blob([JSON.stringify({t:'click',p:location.pathname,x:'walk:'+k})],{type:'text/plain'})); }catch(e){} }
   function close(){ clearInterval(tmr); clearTimeout(tmr2); ui.innerHTML=''; m.hidden=true; document.body.style.overflow=''; if(last) last.focus(); }

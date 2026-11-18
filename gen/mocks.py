@@ -7,6 +7,7 @@
   data-filter=K    [data-cat] 가운데 K 만 보이기(all = 전부)   · data-search  입력한 글자가 들어간 [data-cat] 만 보이기
   data-show-now=S  바로 보이기 · data-wait=S  잠깐(1.1초) 보였다 숨기기(입력 중 표시) · data-show=S  그 뒤에 보이기 · data-hide=S  숨기기
   data-echo=S      폼에 쓴 글을 S 에 넣기 · data-set="S|글"  S 의 글자를 바꾸기 · data-step=N  [data-stepper] 의 N 번째까지 .on
+  data-check="묶음|정답번호"  묶음 안에서 .on 인 것이 정답이면 [data-right], 아니면 [data-wrong], 안 골랐으면 [data-need] 보이기(any = 아무거나 정답)
   data-go=N        N번째 미션 화면으로 가기(옆 메뉴) · data-fill=글  폼 입력칸에 글 넣기 · form[data-form data-sample=예시 data-note=S data-log=S data-more=글]
 """
 from html import escape as E
@@ -32,17 +33,36 @@ def ic(name, s=16):
     }
     return f'<svg class="mk-ic" width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{P[name]}</svg>'
 
-def side(brand, sub, groups, active, user=None, foot=(), go=None):
+def side(brand, sub, groups, active, user=None, foot=(), go=None, light=False, top='', mid=''):
     go = go or {}
-    h = f'<aside class="mk-side"><div class="mk-brand"><strong>{brand}</strong>{("<small>" + sub + "</small>") if sub else ""}</div>'
+    h = f'<aside class="mk-side{" light" if light else ""}"><div class="mk-brand"><strong>{brand}</strong>{("<small>" + sub + "</small>") if sub else ""}</div>'
+    h += top
     for label, items in groups:
         h += (f'<span class="mk-grp">{label}</span>' if label else '') + ''.join((f'<button type="button" class="mk-nav{" on" if k == active else ""}" data-go="{go[k]}">{ic(i)}{t}</button>' if k in go else f'<span class="mk-nav{" on" if k == active else ""}">{ic(i)}{t}</span>') for k, i, t in items)
-    h += '<span class="mk-sp"></span>' + ''.join(f'<span class="mk-nav">{ic(i)}{t}</span>' for i, t in foot)
+    h += mid + '<span class="mk-sp"></span>' + ''.join(f'<span class="mk-nav">{ic(i)}{t}</span>' for i, t in foot)
     if user: h += f'<div class="mk-user"><span class="mk-uav">{ic("user", 14)}</span><span><b>{user[0]}</b><small>{user[1]}</small></span></div>'
     return h + '</aside>'
 
 def frame(theme, side_html, top, main, aside=''):
     return (f'<div class="mk" style="{theme}">{side_html}<div class="mk-main"><div class="mk-top"><b>{top[0]}</b><span>{top[1]}</span></div>{main}</div>{aside}</div>')
+
+def login(theme, hero, panel, fields, btns, done='로그인되었어요. 「다음」을 눌러 안으로 들어가 보세요.', foot='', extra=''):
+    """로그인 화면. hero=(작은 글, 큰 제목, 설명[, 칩들]) · fields=[(이름, 자리글, type)] · btns=[(글, 주단추?, 목표?)]"""
+    chips = ''.join(f'<i>{c}</i>' for c in (hero[3] if len(hero) > 3 else []))
+    f = ''.join(f'<label>{n}<input type="{t}" placeholder="{ph}" autocomplete="off"></label>' for n, ph, t in fields)
+    b = ''.join(f'<button type="button" class="mk-btn wide{"" if pri else " soft"}" data-show="[data-done]"{" data-goal" if goal else ""}>{t}</button>' for t, pri, goal in btns)
+    return (f'<div class="mk mk-login" style="{theme}"><div class="mk-hero"><small>{hero[0]}</small><b>{hero[1]}</b><span>{hero[2]}</span><div class="mk-hchips">{chips}</div></div>'
+            f'<div class="mk-lg"><small>{panel[0]}</small><h3>{panel[1]}</h3>{f}{extra}{b}<p class="mk-ok" data-done hidden>{ic("check", 15)}{done}</p>{("<p class=mk-ref>" + foot + "</p>") if foot else ""}</div></div>')
+
+def me(text='', attrs=''): return f'<div class="mk-msg me" {attrs}><div class="mk-bub" data-q>{text}</div></div>'
+def ai(html, attrs='', av='AI'): return f'<div class="mk-msg ai" {attrs}><span class="mk-av">{av}</span><div class="mk-bub">{html}</div></div>'
+def dots(av='AI'): return f'<div class="mk-msg ai" data-dots hidden><span class="mk-av">{av}</span><div class="mk-bub mk-dots"><i></i><i></i><i></i></div></div>'
+def inbar(sample, ph, goal=False, show='[data-a]', hide='[data-hello]', pre='', post='', more='체험판에서는 예시 질문 하나에만 답해 드려요. 실제 서비스에서는 올린 자료와 대화 내용을 바탕으로 답합니다.', log='#mklog'):
+    """대화 입력줄: 보내면 [data-q] 에 쓴 글 → [data-qa] 보이기 → 입력 중 표시 → show 보이기. 예시와 다른 글이면 [data-demo] 안내."""
+    return (f'<form class="mk-inbar" data-form data-sample="{sample}" data-echo="[data-q]" data-hide="{hide}" data-show-now="[data-qa]" data-wait="[data-dots]" data-show="{show}" data-note="[data-demo]" data-log="{log}" data-more="{more}"{" data-goal" if goal else ""}>'
+            f'{pre}<input type="text" data-in placeholder="{ph}" aria-label="입력" autocomplete="off">{post}<button type="submit" class="mk-send" aria-label="보내기">{ic("send", 15)}</button></form>')
+def demo(q): return f'<p class="mk-demo" data-demo hidden>체험판에서는 예시 「{q}」의 답변을 보여 드려요.</p>'
+def toast(key, text): return f'<p class="mk-ok" {key} hidden>{ic("check", 15)}{text}</p>'
 
 # ------------------------------------------------------------------ HAI-Docs (소개자료의 문서 라이브러리 · AI 대화 · DocsGen 화면)
 def _docs():
@@ -116,7 +136,122 @@ def _docs():
              do='「공문서 기본 템플릿」을 눌러 문서 초안을 만들어 보세요.', ui=gen(), img=I + '5.jpg'),
     ]
 
-MOCKS = {'hai-docs': _docs()}
+# ------------------------------------------------------------------ HAI-Tutor (교수용 AI 조교 매뉴얼)
+def _tutor():
+    TH = '--mk:#2f6fed;--mk-side:#0b2a66'
+    HIST = ['이번 학기 수업계획서를 생성해 주세요.', '창의적인 프론트엔드 기술에 대해 쉬운…', '메모리 관리에 관해 쉬운 단답식 1문제…', '메모리 관리에 관해 어려운 객관식 3문…']
+    def sd(active):
+        return side('AI 조교 <i>v1.1.4</i>', '', [('', [('new', 'chat', '새로운 대화'), ('src', 'doc', '소스 문서 관리'), ('con', 'edit', '콘텐츠 관리'), ('stu', 'user', '수강생 관리'), ('bank', 'chart', '문제출제 및 시험관리')])], active,
+                    user=('Test003 교수님', '교수'), go={'new': 1, 'bank': 3}, light=True, top='<div class="mk-course"><small>2025학년도 2학기</small><b>창의코딩-모두의웹</b></div>',
+                    mid='<span class="mk-grp">대화내역</span>' + ''.join(f'<span class="mk-hist">{h}</span>' for h in HIST))
+    Q = '올린 자료로 쉬운 단답식 3개와 어려운 객관식 2개를 만들어 줘'
+    def chat(answered, goal):
+        hid = '' if answered else ' hidden'
+        hello = '' if answered else ('<div class="mk-hello" data-hello><b>강의 준비에 필요한 <span style="color:var(--mk)">자료를 생성해 보세요</span></b><span>업로드한 강의 자료를 바탕으로 AI가 시험 문제, 수업 자료 등을 만들어 드립니다.</span>'
+                                    '<div class="mk-chips"><button type="button" data-show="[data-guide]">' + ic('help', 14) + ' 더 똑똑한 문제 생성 가이드</button><button type="button" data-fill="' + Q + '">예시 요청 넣기</button></div>'
+                                    '<p class="mk-note" data-guide hidden><span>문제의 난이도, 개수, 유형을 함께 알려 주면 더 좋은 문항을 만들 수 있어요. 강의 자료를 먼저 올리면 그 자료를 근거로 만들어요.</span></p></div>')
+        body = (demo(Q) + '<p><b>[객관식 · 어려움]</b> 다음 설명 중 \'과제별 특성 반영\' 기준에 해당하는 것을 고르세요.</p><p>A. 반복 없이 다양한 표현을 사용했다.<br>B. 서론-본론-결론이 명확하고 연결이 자연스럽다.<br>C. 문법적 오류가 적고 문장이 명확하다.<br>D. 논설문은 설득력, 설명문은 정보의 정확성과 다양성을 평가한다.</p><p><b>정답: D</b></p>'
+                '<p class="mk-ref">안내(요청 사항 확인) 위에 정리해 드린 문항들은 요청하신 쉬운 단답형 3개 + 어려운 객관식 2개 조건을 충족합니다. 원하시면 같은 기준으로 추가 문제도 더 만들어 드리겠습니다.</p>')
+        src = (f'<div class="mk-block" data-a{hid}><div class="mk-row"><span class="mk-lbl">원본 출처</span><span class="mk-pills"><button type="button" data-show="[data-saved]">파일로 저장</button></span></div>'
+               f'<div class="mk-rowbtn" style="cursor:default"><span><span class="mk-filechip">{ic("doc", 14)}pro16_영작 평가 기준 안내.pdf</span></span><button type="button" class="mk-btn sm line" data-show="[data-open]"{" data-goal" if goal == "src" else ""}>열기</button></div>'
+               + toast('data-open', '출처 문서가 열렸어요. 답변의 근거가 된 원본 자료를 확인할 수 있어요. (체험판에서는 문서 창이 뜨지 않아요)') + toast('data-saved', '답변을 파일로 저장했어요. (체험판에서는 파일이 만들어지지 않아요)') + '</div>')
+        main = (f'<div class="mk-log" id="mklog">{hello}{me(Q if answered else "", "data-qa" + hid)}{dots()}{ai(body, "data-a" + hid)}{src}</div>'
+                + inbar(Q, '메시지를 입력하세요…', goal == 'ask', pre=f'<span class="mk-ghost" title="강의 자료 올리기">{ic("clip", 16)}</span>', post='<span class="mk-chip" style="align-self:center">MODEL GPT 5.2</span>'))
+        return frame(TH, sd('new'), ('AI 조교', '새로운 대화'), main)
+    QS = [('단답형', '보통', '웹페이지 개발 시 불필요한 리소스가 과도하게 로드되어 메모리가 낭비되는 상황을 줄이기 위해 꼭 수행해야 할 작업 한 가지를 간단히 쓰시오.', '불필요한 리소스 제거',
+           '웹페이지에는 실제로 사용되지 않는 스크립트나 이미지 파일이 포함될 수 있는데, 이를 그대로 두면 메모리가 불필요하게 점유되고 로드 속도가 저하됩니다. 따라서 필요하지 않은 리소스를 적극적으로 제거하거나 최적화하여 메모리 사용을 효율화해야 합니다.'),
+          ('객관식', '보통', '다음 중 창의적인 프론트엔드 디자인에서 색상, 글꼴, 배치를 담당하는 기술은 무엇입니까?', '② CSS', 'CSS는 웹페이지의 시각적 요소를 꾸미고 배치하는 데 사용됩니다. HTML은 구조, JavaScript는 동적 기능, 데이터베이스는 백엔드와 관련됩니다.')]
+    def qcard(k, t, lv, q, a, ex):
+        return (f'<div class="mk-box" data-qc="{k}"{"" if k == 0 else " hidden"}><div class="mk-row"><span class="mk-pills"><span class="on">{t}</span><span>난이도 {lv}</span></span>'
+                f'<span class="mk-row"><button type="button" class="mk-btn sm" data-show="[data-add{k}]"{" data-goal" if k == 0 else ""}>이 문항만 추가</button><button type="button" class="mk-btn sm line" data-go="4">수정</button></span></div>'
+                f'<span class="mk-lbl">질문</span><p>{q}</p><span class="mk-lbl">정답</span><p><b>{a}</b></p><span class="mk-lbl">해설</span><p>{ex}</p>' + toast(f'data-add{k}', '문제은행에 추가했어요.') + '</div>')
+    def bank():
+        pager = ('<div class="mk-row"><span class="mk-pills"><button type="button" class="on" data-on data-hide="[data-qc]" data-show="[data-qc=\'0\']">1</button><button type="button" data-on data-hide="[data-qc]" data-show="[data-qc=\'1\']">2</button></span>'
+                 '<button type="button" class="mk-btn sm dark" data-show="[data-all]">미등록 2건 일괄 등록</button></div>')
+        main = ('<div class="mk-modal"><div class="mk-h"><h3>생성 문제</h3><span class="mk-badge">2건</span></div><p class="mk-ref">생성된 문제를 확인 및 수정하고 바로 문제은행에 추가할 수 있습니다.</p>' + pager
+                + ''.join(qcard(k, *x) for k, x in enumerate(QS)) + toast('data-all', '남은 문항을 모두 문제은행에 등록했어요.') + '</div>')
+        return frame(TH, sd('bank'), ('AI 조교', '생성 문제'), main)
+    def edit():
+        opts = ''.join(f'<button type="button" class="mk-opt{" on" if k == 1 else ""}" data-on>{k + 1}　{t}</button>' for k, t in enumerate(['HTML', 'CSS', 'JavaScript', '데이터베이스']))
+        main = ('<div class="mk-modal"><div class="mk-row"><div class="mk-h"><h3>생성 문제</h3><span class="mk-badge">문항 편집</span></div><span class="mk-row"><button type="button" class="mk-btn sm line">원래대로</button><button type="button" class="mk-btn sm dark" data-show="[data-saved]" data-goal>저장</button></span></div>'
+                '<div class="mk-two"><div class="mk-f">문제 유형<div class="mk-pills"><button type="button" class="on" data-on>객관식</button><button type="button" data-on>단답형</button><button type="button" data-on>빈칸 채우기</button><button type="button" data-on>서술형</button></div></div>'
+                '<label class="mk-f">난이도<select><option>쉬움</option><option selected>보통</option><option>어려움</option></select></label></div>'
+                '<label class="mk-f">질문<textarea>다음 중 창의적인 프론트엔드 디자인에서 색상, 글꼴, 배치를 담당하는 기술은 무엇입니까?</textarea></label>'
+                f'<div class="mk-f">선택지 (정답을 눌러 고르세요)<div class="mk-opts">{opts}</div></div>'
+                '<label class="mk-f">해설<textarea>CSS는 웹페이지의 시각적 요소를 꾸미고 배치하는 데 사용됩니다. HTML은 구조, JavaScript는 동적 기능, 데이터베이스는 백엔드와 관련됩니다.</textarea></label>'
+                + toast('data-saved', '수정한 내용을 저장했어요. 해설은 나중에 AI가 시험지를 채점할 때 쓰여요.') + '</div>')
+        return frame(TH, sd('bank'), ('AI 조교', '문항 편집'), main)
+    I = 'media/walk/hai-tutor/'
+    return [
+        dict(title='사번으로 로그인해요', text='별도 회원가입 없이 한림대학교 사번 ID와 비밀번호로 로그인해요. 아이디 저장 기능도 있어요.', do='「한림대 통합 로그인」 단추를 눌러 로그인해 보세요.', img=I + '1.jpg',
+             ui=login(TH, ('HALLYM UNIVERSITY AI TEACHING ASSISTANT', '교수 활동 지원 시스템', '검색부터 자료 생성까지 모두 가능한 AI 조교와의 대화를 시작해 보세요.', ['AI Chat', 'Lecture Prep', 'Smart Assist']),
+                      ('SECURE ACCESS', 'Sign in'), [('아이디', '아이디', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', False, False), ('한림대 통합 로그인', True, True)])),
+        dict(title='강의 자료를 올리고 대화를 시작해요', text='입력창 왼쪽 클립 단추로 강의 자료를 올리면, 그 자료를 근거로 더 믿을 수 있는 답을 만들어 줘요. 「더 똑똑한 문제 생성 가이드」로 요청 요령도 볼 수 있어요.',
+             do='입력창에 요청을 쓰고 보내 보세요. 비워 둔 채 보내면 예시 요청이 입력돼요.', ui=chat(False, 'ask'), img=I + '2.jpg'),
+        dict(title='답변의 출처를 확인해요', text='답변 아래에 근거가 된 원본 자료가 표시돼요. 「열기」를 누르면 출처 문서를 바로 열어 볼 수 있고, 답변은 복사하거나 파일로 저장할 수 있어요.',
+             do='답변 아래 원본 출처의 「열기」를 눌러 보세요.', ui=chat(True, 'src'), img=I + '3.jpg'),
+        dict(title='시험 문항을 만들어요', text='대화로 문제 생성을 요청하면 문항이 만들어져요. 문항을 넘겨 보며 검토하고, 마음에 드는 문항을 문제은행에 추가해요.',
+             do='첫 번째 문항에서 「이 문항만 추가」를 눌러 문제은행에 담아 보세요.', ui=bank(), img=I + '4.jpg'),
+        dict(title='문항을 다듬고 저장해요', text='난이도·정답·보기·해설을 직접 고칠 수 있어요. 해설은 나중에 AI가 시험지를 채점할 때 쓰이니 꼼꼼히 확인하고 저장해요.',
+             do='내용을 고쳐 본 뒤 「저장」을 눌러 보세요.', ui=edit(), img=I + '5.jpg'),
+    ]
+
+# ------------------------------------------------------------------ HAI-Mate (학생용 매뉴얼)
+def _mate():
+    TH = '--mk:#1e4fd8;--mk-side:#0b2a66'
+    def sd(active, entered=True):
+        return side('HAI-Mate', '', [('', [('chat', 'chat', '챗봇 튜터'), ('mat', 'doc', '학습 자료'), ('pre', 'edit', '예복습 문제'), ('quiz', 'check', '퀴즈')])], active, user=('학생', 'AIED 학생'), light=True,
+                    go=({'chat': 1, 'pre': 2} if entered else {}), top='<div class="mk-course"><small>2026학년도 2학기</small><b>' + ('창의코딩파이썬-1' if entered else '강좌를 선택해주세요') + '</b></div>')
+    def home():
+        main = ('<div class="mk-h"><h3>나의 강좌</h3></div><div class="mk-box"><div class="mk-row"><span><span class="mk-lbl">강좌 조회</span><br><b>2026학년도 2학기</b></span>'
+                '<span class="mk-row"><label class="mk-f">년도<select><option>2026</option><option>2025</option></select></label><label class="mk-f">학기<select><option>2</option><option>1</option></select></label></span></div></div>'
+                '<button type="button" class="mk-rowbtn" data-on data-show="[data-in]" data-goal><span><b>창의코딩파이썬-1</b> <small style="display:inline">AIED 2수 1</small></span><span>›</span></button>'
+                + toast('data-in', '강좌에 들어왔어요. 챗봇 튜터, 학습 자료, 예복습 문제, 퀴즈 메뉴가 열려요.'))
+        return frame(TH, sd('', False), ('HAI-Mate', '나의 강좌'), main)
+    Q = '파이썬에서 주석은 어떻게 작성해?'
+    def chat():
+        hello = '<div class="mk-hello" data-hello><b>무엇을 도와드릴까요?</b><span>창의코딩파이썬-1에 대해 궁금한 것을 튜터에게 자유롭게 물어보세요!</span><div class="mk-chips"><button type="button" data-fill="' + Q + '">예시 질문: ' + Q + '</button></div></div>'
+        body = (demo(Q) + '<p>파이썬에서 주석은 <b># 문자 뒤에</b> 작성해요.</p><p>주석은 주로 소스 코드를 읽는 사람을 위해 남기는 설명이에요. 코드가 무엇을 하는지보다 <b>왜 그렇게 작성했는지</b>를 적어 두면 좋아요.</p>'
+                f'<p class="mk-ref">참고 자료 <span class="mk-filechip">{ic("doc", 13)}byte_of_python_5장.pdf · p.1</span></p>')
+        aside = ('<aside class="mk-aside"><button type="button" class="mk-btn sm soft wide" data-go="1">새로운 대화 시작하기 +</button><b>전체 대화</b><small style="color:#94a3b8">오늘</small><span class="mk-hist">파이썬에서 주석은 어떻게 작성해?</span><small style="color:#94a3b8">지난 30일</small><span class="mk-hist">학습 자료 목록 요청</span></aside>')
+        main = '<div class="mk-h"><h3>챗봇 튜터</h3></div><div class="mk-log" id="mklog">' + hello + me('', 'data-qa hidden') + dots('튜터') + ai(body, 'data-a hidden', '튜터') + '</div>' + inbar(Q, '창의코딩파이썬-1에 대해 궁금한 것을 튜터에게 자유롭게 물어보세요!', True)
+        return frame(TH, sd('chat'), ('HAI-Mate', '챗봇 튜터'), main, aside)
+    def plist():
+        main = ('<div class="mk-h"><h3>문제 풀기</h3></div><table class="mk-tbl"><tr><th>번호</th><th>퀴즈명</th><th>시작 일시</th><th>종료 일시</th><th>상태</th><th>응시</th></tr>'
+                '<tr><td>1</td><td><button type="button" data-show="[data-open]" data-goal>11주차 예습</button></td><td>2026-09-02 10:23</td><td>-</td><td><span class="mk-st ok">응시 가능</span></td><td>›</td></tr></table>'
+                + toast('data-open', '11주차 예습 문제를 열었어요. 「다음」을 눌러 풀어 보세요.'))
+        return frame(TH, sd('pre'), ('HAI-Mate', '예복습 문제'), main)
+    OPT = ['주석을 작성하려면 세 개의 따옴표로 문자열 블록을 만들어야 한다.', '주석 내용은 실행 시 화면에 출력되므로 배포 전 반드시 삭제해야 한다.', "주석의 주된 목적은 코드가 '무엇'을 하는지를 상세히 기술하는 것이다.", "# 문자 뒤에 작성되며 '왜' 그 코드를 작성했는지를 설명한다."]
+    EXP = "주석은 # 문자 뒤에 오는 문장으로 작성해요. 코드는 '어떻게'를 말해 주고, 주석은 '왜' 그렇게 작성했는지를 설명하는 데 써요."
+    def solve():
+        opts = ''.join(f'<button type="button" class="mk-opt" data-on>{k + 1}. {t}</button>' for k, t in enumerate(OPT))
+        main = ('<div class="mk-row"><div class="mk-h"><h3>← 11주차 예습</h3></div><span class="mk-row"><small>정답 확인 0/5</small><span class="mk-btn sm soft" style="cursor:default">제출 (0/5)</span></span></div>'
+                '<div class="mk-pills"><span class="on">1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>'
+                f'<div class="mk-two"><div class="mk-box"><span class="mk-chip">문제 1</span><p><b>Q. 다음 중 파이썬 주석(comment)에 대한 설명으로 옳은 것은?</b></p><div class="mk-opts" id="mko">{opts}</div>'
+                '<p class="mk-demo" data-need hidden>먼저 답을 하나 골라 주세요.</p><div class="mk-box tint" data-right hidden><b>정답이에요! (정답 4번)</b><span>' + EXP + '</span></div><div class="mk-box tint" data-wrong hidden><b>아쉬워요. 정답은 4번이에요.</b><span>' + EXP + '</span></div>'
+                '<div class="mk-row end"><button type="button" class="mk-btn" data-check="#mko|3" data-goal>정답확인</button></div></div>'
+                f'<div class="mk-box"><div class="mk-row"><span class="mk-lbl">출처</span><span class="mk-link">byte_of_python_5장.pdf p.1</span></div><div class="mk-sheet"><p><b>5장. 기초</b></p><p><b>5.1 주석</b></p><p>주석은 # 문자 뒤에 따라오는 문장입니다. 주로 소스 코드를 읽는 사람들을 위해 주석을 남기는 용도로 빈번하게 사용됩니다.</p><p class="mk-code" style="min-height:0">print(\'hello world\')  # print는 함수입니다</p></div></div></div>')
+        return frame(TH, sd('pre'), ('HAI-Mate', '문제 풀기'), main)
+    def result():
+        QL = [('다음 중 파이썬 주석(comment)에…', 1), ("다음 중 파이썬에서 '변수(variable)…", 1), ('format() 메소드를 사용한 다음 코…', 1), ("파이썬에서 '물리적 명령행(physica…", 0), ('PyCharm에서 예제 파이썬 프로그…', 1)]
+        lst = ''.join(f'<button type="button" class="mk-rowbtn{" on" if k == 0 else ""}" data-on data-hide="[data-d]" data-show="[data-d={chr(39)}{0 if k == 0 else 9}{chr(39)}]"{" data-goal" if k == 0 else ""}><span>{k + 1}　{t}</span><span class="mk-st {"ok" if ok else "ing"}">{"정답" if ok else "오답"}</span></button>' for k, (t, ok) in enumerate(QL))
+        det = ('<div class="mk-box" data-d="0" hidden><div class="mk-row"><span class="mk-chip">문제 1</span><span class="mk-st ok">정답</span></div><p><b>Q. 다음 중 파이썬 주석(comment)에 대한 설명으로 옳은 것은?</b></p>'
+               + ''.join(f'<span class="mk-opt{" on" if k == 3 else ""}" style="cursor:default">{k + 1}. {t}</span>' for k, t in enumerate(OPT)) + '<div class="mk-box tint"><b>A. 4</b><span>' + EXP + '</span><span class="mk-ref">출처: byte_of_python_5장.pdf p.1</span></div></div>'
+               '<div class="mk-box" data-d="9" hidden><p class="mk-demo">체험판에는 1번 문항의 정답과 해설만 들어 있어요. 실제 서비스에서는 모든 문항의 정답·오답과 해설을 다시 볼 수 있어요.</p></div>'
+               '<div class="mk-box" data-d="x"><p class="mk-ref">왼쪽 목록에서 문항을 누르면 내 답안과 정답, 해설이 여기에 보여요.</p></div>')
+        main = ('<div class="mk-row"><div class="mk-h"><h3>← 11주차 예습</h3></div><span class="mk-row"><span class="mk-st ok">제출 완료</span><small>정답 4 / 오답 1</small></span></div>'
+                f'<div class="mk-two"><div class="mk-opts">{lst}</div><div>{det}</div></div>')
+        return frame(TH, sd('pre'), ('HAI-Mate', '결과 확인'), main)
+    I = 'media/walk/hai-mate/'
+    return [
+        dict(title='강좌를 골라요', text='로그인한 뒤 학년도·학기를 확인하고 「나의 강좌」에서 학습할 강좌를 선택해요. 챗봇 튜터, 학습 자료, 예복습 문제, 퀴즈 메뉴가 열려요.', do='「나의 강좌」에서 「창의코딩파이썬-1」 강좌를 눌러 보세요.', ui=home(), img=I + '1.jpg'),
+        dict(title='챗봇 튜터에게 물어봐요', text='「챗봇 튜터」에서 새 대화를 시작하고 궁금한 점을 입력해요. 강좌 자료를 근거로 답하고 참고 자료도 보여 줘요.', do='입력창에 궁금한 점을 쓰고 보내 보세요. 비워 둔 채 보내면 예시 질문이 입력돼요.', ui=chat(), img=I + '2.jpg'),
+        dict(title='예습·복습 문제를 골라요', text='「예복습 문제」에서 주차와 예습·복습 구분을 확인하고, 공개 기간 안에 있는 문제를 선택해요.', do='목록에서 「11주차 예습」을 눌러 문제를 열어 보세요.', ui=plist(), img=I + '3.jpg'),
+        dict(title='문제를 풀고 정답을 확인해요', text='답을 고른 뒤 「정답확인」을 누르면 정오와 해설, 출처를 바로 볼 수 있어요. 모든 문항을 확인하면 제출해요.', do='보기 가운데 답을 하나 고르고 「정답확인」을 눌러 보세요.', ui=solve(), img=I + '4.jpg'),
+        dict(title='결과를 다시 살펴봐요', text='제출 후에도 문항별 정답·오답과 해설을 다시 볼 수 있어요. 결과는 교수님 화면에도 반영돼요.', do='왼쪽 목록에서 1번 문항을 눌러 정답과 해설을 다시 확인해 보세요.', ui=result(), img=I + '5.jpg'),
+    ]
+
+MOCKS = {'hai-docs': _docs(), 'hai-tutor': _tutor(), 'hai-mate': _mate()}
 
 MK_CSS = r"""
 /* 체험용 화면(목업) 공통 */
@@ -160,7 +295,25 @@ MK_CSS = r"""
 .mk-paper { display: flex; flex-direction: column; gap: 10px; padding: 14px; border: 2px solid var(--mk); border-radius: 12px; background: #fff; } .mk-sheet { padding: 16px 18px; border: 1px solid #e5e9f2; border-radius: 6px; background: #fff; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.06); } .mk-sheet .c { text-align: center; font-weight: 800; font-size: 16px; letter-spacing: .2em; } .mk-sheet .in { padding-left: 18px; } .mk-sheet hr { width: 100%; border: 0; border-top: 2px solid #111827; margin: 2px 0; }
 .mk-btn { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border: 0; border-radius: 9px; background: var(--mk); color: #fff !important; font-weight: 700; } .mk-ok { display: flex; align-items: center; gap: 6px; color: #15803d; font-weight: 700; }
 .mk .mk-hint { outline: 3px solid var(--accent, #0b5cff); outline-offset: 3px; border-radius: 10px; animation: mkHint 1.1s ease-in-out infinite; } @keyframes mkHint { 0%, 100% { box-shadow: 0 0 0 4px rgba(11,92,255,.35); } 50% { box-shadow: 0 0 0 14px rgba(11,92,255,0); } }
+.mk-side.light { background: #fff; color: #334155; border-right: 1px solid #e5e9f2; } .mk-side.light .mk-brand { color: #0f172a; } .mk-side.light button.mk-nav { color: #0f172a; } .mk-side.light button.mk-nav:hover { background: #eef2f8; } .mk-side.light .mk-nav.on, .mk-side.light button.mk-nav.on:hover { background: #e3ecff; color: var(--mk); } .mk-side.light .mk-user { color: #0f172a; border-color: #e5e9f2; } .mk-side.light .mk-uav { background: #eef2f8; }
+.mk-hist { padding: 5px 10px; font-size: 12px; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .mk-course { margin: 0 4px 8px; padding: 8px 10px; border: 1px solid #e5e9f2; border-radius: 9px; font-size: 12px; } .mk-course b { display: block; }
+.mk-login { align-items: stretch; background: #fff; } .mk-hero { flex: 1.2; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 28px; background: linear-gradient(135deg, var(--mk-side), var(--mk)); color: #fff; } .mk-hero small { font-size: 10px; letter-spacing: .1em; opacity: .8; } .mk-hero b { font-size: 24px; line-height: 1.3; } .mk-hero span { opacity: .9; } .mk-hchips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; } .mk-hchips i { font-style: normal; padding: 3px 10px; border-radius: 999px; background: rgba(255,255,255,.18); font-size: 11px; }
+.mk-lg { flex: 1; min-width: 0; align-self: center; display: flex; flex-direction: column; gap: 10px; padding: 24px 28px; } .mk-lg small { color: var(--mk); font-size: 10px; font-weight: 700; letter-spacing: .1em; } .mk-lg h3 { margin: 0 0 4px; font-size: 20px; } .mk-lg label, .mk-f { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 700; color: #475569; }
+.mk input[type=text], .mk input[type=password], .mk textarea, .mk-f select { height: 38px; padding: 0 12px; border: 1px solid #dbe3f0; border-radius: 9px; background: #fff; font-weight: 400; color: #111827; outline: 0; } .mk textarea, .mk input, .mk select { font-weight: 400; } .mk textarea { height: auto; min-height: 64px; padding: 9px 12px; resize: vertical; font: inherit; } .mk input:focus, .mk textarea:focus { border-color: var(--mk); box-shadow: 0 0 0 3px rgba(29,78,216,.12); } .mk-inbar input[type=text], .mk-search input { height: 32px; padding: 0; border: 0; box-shadow: none !important; }
+.mk-btn.wide { justify-content: center; width: 100%; height: 40px; } .mk-btn.soft { background: #e3ecff; color: var(--mk) !important; } .mk-btn.line { background: #fff; border: 1px solid #dbe3f0; color: #334155 !important; } .mk-btn.sm { height: 30px; padding: 0 11px; font-size: 12px; } .mk-btn.dark { background: #0f172a; }
+.mk-modal { display: flex; flex-direction: column; gap: 12px; padding: 16px 18px; border-radius: 14px; background: #fff; border: 1px solid #e5e9f2; box-shadow: 0 10px 30px rgba(15,23,42,.12); } .mk-dim { background: #e9edf5; }
+.mk-box { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border: 1px solid #e5e9f2; border-radius: 12px; background: #fff; } .mk-box.tint { background: #f3f7ff; border-color: #d3e0ff; } .mk-lbl { font-size: 12px; font-weight: 700; color: #64748b; }
+.mk-pills { display: flex; flex-wrap: wrap; gap: 6px; } .mk-pills > * { padding: 3px 10px; border: 1px solid #dbe3f0; border-radius: 999px; background: #fff; font-size: 12px; color: #475569; } .mk-pills > .on { background: var(--mk); border-color: var(--mk); color: #fff; font-weight: 700; }
+.mk-opts { display: flex; flex-direction: column; gap: 6px; } .mk-opt { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid #e5e9f2; border-radius: 10px; background: #fff; text-align: left; } .mk-opt::before { content: ''; flex: none; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #cbd5e1; } .mk-opt.on { border-color: var(--mk); background: #f3f7ff; } .mk-opt.on::before { border-color: var(--mk); background: radial-gradient(var(--mk) 45%, #fff 50%); }
+.mk-tbl { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e5e9f2; border-radius: 10px; overflow: hidden; font-size: 12.5px; } .mk-tbl th { padding: 8px 10px; background: #f1f5fb; color: #64748b; font-weight: 700; text-align: left; white-space: nowrap; } .mk-tbl td { padding: 9px 10px; border-top: 1px solid #f1f4f9; } .mk-tbl tr.on td { background: #f3f7ff; } .mk-tbl button { border: 0; background: none; padding: 0; color: inherit; text-align: left; font-weight: 700; }
+.mk-rowbtn { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 12px 14px; border: 1px solid #e5e9f2; border-radius: 12px; background: #fff; text-align: left; } .mk-rowbtn:hover, .mk-card[type=button]:hover, .mk-opt:hover { border-color: var(--mk); } .mk-rowbtn small { display: block; color: #6b7280; font-weight: 400; }
+.mk-bars { display: flex; flex-direction: column; gap: 8px; } .mk-bar2 { display: grid; grid-template-columns: 96px 1fr 44px; align-items: center; gap: 8px; width: 100%; padding: 4px 6px; border: 0; border-radius: 8px; background: none; text-align: right; font-size: 12.5px; } .mk-bar2 i { display: block; height: 16px; border-radius: 5px; background: #e8edf5; overflow: hidden; } .mk-bar2 i::after { content: ''; display: block; height: 100%; width: var(--v); background: var(--mk); border-radius: 5px; } .mk-bar2 b { text-align: left; } .mk-bar2.on, button.mk-bar2:hover { background: #eef4ff; }
+.mk-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; } .mk-stat { display: flex; flex-direction: column; gap: 2px; padding: 12px; border: 1px solid #e5e9f2; border-radius: 12px; background: #fff; text-align: left; } .mk-stat small { color: #6b7280; } .mk-stat b { font-size: 20px; }
+.mk-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; } .mk-tile { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 8px; border: 1px solid #e5e9f2; border-radius: 12px; background: #fff; text-align: center; } .mk-tile small { color: #6b7280; font-size: 11px; } .mk-tile .mk-ic { color: var(--mk); } .mk-tile.on { border-color: var(--mk); background: #f3f7ff; }
+.mk-code { padding: 12px 14px; border-radius: 10px; background: #0b1020; color: #d6e2ff; font: 12.5px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; min-height: 90px; } textarea.mk-code { width: 100%; border: 0; }
+.mk-center { margin: auto; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; } .mk-up { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; padding: 22px 12px; border: 2px dashed #cbd5e1; border-radius: 12px; background: #fff; color: #64748b; } .mk-up:hover { border-color: var(--mk); color: var(--mk); }
+.mk-filechip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px; background: #eef2f8; font-size: 12px; } .mk-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .mk-grow { flex: 1; }
 @container (max-width: 700px) { .mk-aside { display: none; } }
-@container (max-width: 560px) { .mk-side { display: none; } .mk-top { display: flex; align-items: center; gap: 8px; margin: -16px -14px 0; padding: 9px 14px; background: var(--mk-side); color: #fff; } .mk-top span { opacity: .8; font-size: 12px; } .mk-main { padding: 16px 14px; } .mk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .mk-grid.two, .mk-srcs, .mk-fields { grid-template-columns: 1fr; } .mk-block { margin-left: 0; } }
+@container (max-width: 560px) { .mk-hero { display: none; } .mk-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .mk-two { grid-template-columns: 1fr; } .mk-bar2 { grid-template-columns: 72px 1fr 40px; } .mk-side { display: none; } .mk-top { display: flex; align-items: center; gap: 8px; margin: -16px -14px 0; padding: 9px 14px; background: var(--mk-side); color: #fff; } .mk-top span { opacity: .8; font-size: 12px; } .mk-main { padding: 16px 14px; } .mk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .mk-grid.two, .mk-srcs, .mk-fields { grid-template-columns: 1fr; } .mk-block { margin-left: 0; } }
 @media (max-width: 860px) { .walk-main.uimode { grid-template-rows: minmax(0, 56%) minmax(0, 1fr); } .walk-shot.ui { padding: 0; } .mk { min-height: 100%; border-radius: 0; } .mk-main { max-height: none; } }
 """
