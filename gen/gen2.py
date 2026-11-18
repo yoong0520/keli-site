@@ -622,6 +622,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .walk-type { position: absolute; z-index: 2; min-height: 36px; padding: 6px 12px; background: #fff; border: 2px solid var(--accent); border-radius: 10px; font-size: 14px; line-height: 1.5; color: #111; pointer-events: none; box-shadow: 0 6px 18px rgba(0,0,0,.18); } .walk-type[hidden] { display: none; }
 .walk-type::after { content: ''; display: inline-block; vertical-align: -2px; width: 2px; height: 1.1em; background: var(--accent); margin-left: 2px; animation: walkBlink 1s steps(1) infinite; } @keyframes walkBlink { 50% { opacity: 0; } }
 .walk-tools { position: absolute; right: 14px; bottom: 14px; display: flex; gap: 6px; z-index: 3; } .walk-tools[hidden] { display: none; }
+.walk-tools > [hidden] { display: none; }
 .walk-tools > * { padding: 5px 12px; border: 0; border-radius: 999px; background: rgba(15,23,42,.74); color: #fff; font: inherit; font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; }
 .walk-side { display: flex; flex-direction: column; gap: 14px; padding: 18px 20px; overflow-y: auto; } .walk-side .fd-bubble p.walk-h { font-size: 17px; } .walk-side .fd-bubble p.walk-t { white-space: pre-line; line-height: 1.7; color: var(--ink); }
 .walk-side .fd-bubble.shake { animation: walkShake .35s; } @keyframes walkShake { 20% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 80% { transform: translateX(-3px); } }
@@ -629,7 +630,9 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .walk-opts { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; } .walk-opts[hidden] { display: none; } .walk-opts .btn { justify-content: flex-start; text-align: left; white-space: normal; height: auto; padding: 9px 14px; line-height: 1.4; } .walk-opts .btn.no { opacity: .45; text-decoration: line-through; }
 .walk-dots { display: flex; gap: 6px; align-items: center; } .walk-dots button { width: 26px; height: 8px; border: 0; border-radius: 99px; background: #dbe3f0; cursor: pointer; padding: 0; } .walk-dots button.ok { background: #86d0a3; } .walk-dots button.star { background: #f5b301; } .walk-dots button.on { outline: 2px solid var(--accent); outline-offset: 2px; } .walk-dots span { opacity: .3; font-size: 14px; } .walk-dots span.on { opacity: 1; }
 .walk-end { display: flex; flex-wrap: wrap; gap: 8px; } .walk-end[hidden] { display: none; } .walk-nav { display: flex; justify-content: space-between; margin-top: auto; } .walk-nav button[disabled] { opacity: .35; cursor: default; }
-@media (max-width: 860px) { .walk-modal { padding: 0; } .walk-panel { max-height: 100vh; max-height: 100dvh; height: 100vh; height: 100dvh; border-radius: 0; } .walk-main { grid-template-columns: 1fr; grid-template-rows: minmax(0, 46%) minmax(0, 1fr); } .walk-shot { padding: 8px; } .walk-shot img { max-height: 100%; } .walk-shot.zoom img { width: 230%; } .walk-side { padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px)); gap: 10px; } .walk-tools { right: 8px; bottom: 8px; } }
+.walk-orig { color: var(--accent); white-space: nowrap; } .walk-orig[hidden] { display: none; }
+@media (max-width: 860px) { .walk-side { padding-bottom: 0 !important; } .walk-side .try-foot { display: none; } .walk-side .walk-nav { position: sticky; bottom: 0; z-index: 1; margin: auto -16px 0; padding: 8px 16px calc(10px + env(safe-area-inset-bottom, 0px)); background: #fff; box-shadow: 0 -8px 12px #fff; }
+  .walk-modal { padding: 0; } .walk-panel { max-height: 100vh; max-height: 100dvh; height: 100vh; height: 100dvh; border-radius: 0; } .walk-main { grid-template-columns: 1fr; grid-template-rows: minmax(0, 46%) minmax(0, 1fr); } .walk-shot { padding: 8px; } .walk-shot img { max-height: 100%; } .walk-shot.zoom img { width: 230%; } .walk-side { padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px)); gap: 10px; } .walk-tools { right: 8px; bottom: 8px; } }
 .try-grid { gap: 20px; } .try-card { display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
 .try-top { display: flex; gap: 14px; align-items: center; } .try-ic { font-size: 30px; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 14px; background: color-mix(in srgb, var(--accent, #0B5CFF) 8%, #fff); flex: none; }
 .try-top .m { display: block; font-size: 13px; color: var(--muted); } .try-top .t { font-size: 20px; font-weight: 700; }
@@ -1472,6 +1475,10 @@ FOOTER_EN = f'''<footer class="ftr"><div class="wrap">
 <div class="bot"><span>Hosted by Hallym University · Supported by the Ministry of Education (Glocal University 30) · © Hallym University</span><span><a href="privacy.html"><strong>Privacy Policy</strong></a> · <a href="index.html" lang="ko">한국어</a> · <a href="admin.html">Admin</a></span></div>
 </div></footer>'''
 
+import sys as _sys
+_sys.path.insert(0, os.path.join(BASE, 'gen'))
+import mocks as _mocks
+CSS = CSS + _mocks.MK_CSS
 CSS_V = hashlib.md5(CSS.encode('utf-8')).hexdigest()[:8]
 ADMIN_V = hashlib.md5(b''.join(open(os.path.join(BASE, 'gen', f), 'rb').read() for f in ('admin.js', 'templates.js'))).hexdigest()[:8]   # 관리자 화면은 admin.js·templates.js 가 바뀔 때마다 새로 받게
 import time as _time
@@ -2971,6 +2978,9 @@ def finder_html():
 
 # ------------------------------------------------------------------ 바로 체험 = 단계별 따라 해 보기(매뉴얼 화면 + 이음이·이루미 안내)
 WALKS = {k: v for k, v in (_load_json(os.path.join(CONTENT, 'walkthroughs.json'), {}).get('items') or {}).items() if v.get('steps')}
+from mocks import MOCKS, MK_CSS   # 실제로 눌리고 입력되는 체험용 화면(목업)이 있는 서비스는 그 화면으로 바꾼다
+for _k, _steps in MOCKS.items():
+    if _k in WALKS: WALKS[_k] = dict(WALKS[_k], steps=_steps)
 def walk_data(only=None):
     out = {}
     for x in SERVICES:
@@ -2992,64 +3002,93 @@ def walk_card(x):
 def walk_modal_html(only=None):
     return f"""<div class="walk-modal" hidden role="dialog" aria-modal="true" aria-labelledby="walk-title"><div class="try-bg" data-wclose></div><div class="walk-panel">
 <div class="try-head"><div><span class="walk-sub">바로 체험 · 직접 해 보기</span><h2 id="walk-title">직접 해 보기</h2></div><button type="button" class="vmodal-x" data-wclose aria-label="닫기">&times;</button></div>
-<div class="walk-main"><div class="walk-shotwrap"><div class="walk-shot"><img alt="" draggable="false"><button type="button" class="walk-hot" hidden></button><span class="walk-miss" hidden aria-hidden="true">✕</span><span class="walk-type" hidden></span></div>
+<div class="walk-main"><div class="walk-shotwrap"><div class="walk-shot"><img alt="" draggable="false"><div class="walk-ui"></div><button type="button" class="walk-hot" hidden></button><span class="walk-miss" hidden aria-hidden="true">✕</span><span class="walk-type" hidden></span></div>
 <div class="walk-tools"><button type="button" class="walk-zoomb" aria-pressed="false">🔍 확대</button><a class="walk-big" href="#" target="_blank" rel="noopener">원본 ↗</a></div></div>
 <div class="walk-side"><div class="walk-dots"></div><div class="fd-q"><img src="media/mascot/eumi.png" alt="" class="fd-av walk-av"><div class="fd-bubble" aria-live="polite"><span class="fd-who walk-step"></span><p class="walk-h"></p><p class="small walk-t"></p><div class="walk-opts" hidden></div><button type="button" class="walk-hint" hidden>💡 힌트 보기</button></div></div>
 <div class="walk-end" hidden></div>
 <div class="walk-nav"><button type="button" class="btn ghost sm walk-prev">← 이전</button><button type="button" class="btn sm walk-next">다음 →</button></div>
-<p class="try-foot" style="padding:0;margin-top:10px">화면 출처: 서비스 매뉴얼(실제 화면을 본뜬 체험용이며 입력한 내용은 저장되지 않아요)</p></div></div>
+<p class="try-foot" style="padding:0;margin-top:10px">화면 출처: 서비스 매뉴얼·소개자료(실제 화면을 본뜬 체험용이며 입력한 내용은 저장되거나 전송되지 않아요) <a class="walk-orig" href="#" target="_blank" rel="noopener" hidden>원본 화면 보기 ↗</a></p></div></div>
 </div></div>
-<script>window.KELI_WALK={json.dumps(walk_data(only), ensure_ascii=False)};</script><script>{WALK_JS}</script>"""
+<script>window.KELI_WALK={json.dumps(walk_data(only), ensure_ascii=False).replace('</', '<\\/')};</script><script>{WALK_JS}</script>"""
 WALK_JS = r"""(function(){
-  var m=document.querySelector('.walk-modal'); if(!m) return; var D=window.KELI_WALK||{}, cur=null, i=0, last=null, S=[], busy=false, tmr=null;
+  var m=document.querySelector('.walk-modal'); if(!m) return; var D=window.KELI_WALK||{}, cur=null, i=0, last=null, S=[], busy=false, tmr=null, tmr2=null, keepUi=false;
   var q=function(s){ return m.querySelector(s); };
-  var shot=q('.walk-shot'), img=q('.walk-shot img'), hot=q('.walk-hot'), miss=q('.walk-miss'), typ=q('.walk-type'), big=q('.walk-big'), zb=q('.walk-zoomb'), dots=q('.walk-dots'), h=q('.walk-h'), t=q('.walk-t'), sn=q('.walk-step'), av=q('.walk-av'), opts=q('.walk-opts'), hint=q('.walk-hint'), end=q('.walk-end'), prev=q('.walk-prev'), next=q('.walk-next'), tt=q('#walk-title'), bub=q('.walk-side .fd-bubble');
+  var main=q('.walk-main'), shot=q('.walk-shot'), img=q('.walk-shot img'), ui=q('.walk-ui'), hot=q('.walk-hot'), miss=q('.walk-miss'), typ=q('.walk-type'), big=q('.walk-big'), zb=q('.walk-zoomb'), orig=q('.walk-orig'), dots=q('.walk-dots'), h=q('.walk-h'), t=q('.walk-t'), sn=q('.walk-step'), av=q('.walk-av'), opts=q('.walk-opts'), hint=q('.walk-hint'), end=q('.walk-end'), prev=q('.walk-prev'), next=q('.walk-next'), tt=q('#walk-title'), bub=q('.walk-side .fd-bubble');
   function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-  function kind(s){ return s.hot?'tap':(s.q?'quiz':'view'); }
-  function place(){ var s=cur&&D[cur].steps[i]; if(!s||!s.hot||!img.offsetWidth){ hot.hidden=true; return; }
+  function kind(s){ return s.ui?'ui':(s.hot?'tap':(s.q?'quiz':'view')); }
+  function each(sel,fn){ if(!sel) return; Array.prototype.forEach.call(ui.querySelectorAll(sel),fn); }
+  function place(){ var s=cur&&D[cur].steps[i]; if(!s||!s.hot||s.ui||!img.offsetWidth){ hot.hidden=true; return; }
     var W=img.offsetWidth, H=img.offsetHeight, x=img.offsetLeft+s.hot[0]*W, y=img.offsetTop+s.hot[1]*H, w=(s.hot[2]-s.hot[0])*W, hh=(s.hot[3]-s.hot[1])*H, mn=40;
     typ.style.left=x+'px'; typ.style.top=Math.max(img.offsetTop, y+hh/2-18)+'px'; typ.style.maxWidth=Math.max(140, img.offsetLeft+W-x-4)+'px'; typ.style.minWidth=Math.min(Math.max(w,140), Math.max(140, img.offsetLeft+W-x-4))+'px';
     if(w<mn){ x-=(mn-w)/2; w=mn; } if(hh<mn){ y-=(mn-hh)/2; hh=mn; }
     hot.style.left=x+'px'; hot.style.top=y+'px'; hot.style.width=w+'px'; hot.style.height=hh+'px'; hot.hidden=false; }
   function who(){ return (i%2?'이루미':'이음이'); }
-  function render(){ clearInterval(tmr); busy=false; var w=D[cur], n=w.steps.length, done=(i>=n);
+  function goalEl(){ var g=ui.querySelector('[data-goal]'); if(!g) return null; return g.tagName==='FORM'?g:(g.matches('input')?(g.closest('label')||g):g); }
+  function showHint(){ var z=S[i], s=D[cur].steps[i]; z.hint=true; hint.hidden=true;
+    if(s.ui){ var g=goalEl(); if(g){ g.classList.add('mk-hint'); if(g.scrollIntoView) g.scrollIntoView({block:'center',inline:'nearest'}); } t.textContent='힌트: 반짝이는 곳을 써 보세요.'; }
+    else { shot.classList.add('hinted'); t.textContent='힌트: 반짝이는 곳을 눌러 보세요.'; if(hot.scrollIntoView) hot.scrollIntoView({block:'nearest',inline:'nearest'}); } }
+  function render(){ clearInterval(tmr); clearTimeout(tmr2); busy=false; var w=D[cur], n=w.steps.length, done=(i>=n);
     dots.innerHTML=w.steps.map(function(s,k){ var z=S[k]||{}; return '<button type="button" class="'+(z.ok?'ok ':'')+(z.star?'star ':'')+(k===i?'on':'')+'" data-k="'+k+'" aria-label="'+(k+1)+'단계'+(z.ok?' 성공':'')+'"></button>'; }).join('')+'<span class="'+(done?'on':'')+'">🎉</span>';
-    miss.hidden=true; typ.hidden=true; opts.hidden=true; opts.innerHTML=''; hint.hidden=true; shot.classList.toggle('fin',done); q('.walk-tools').hidden=done;
-    if(done){ hot.hidden=true; shot.classList.remove('play','solved','hinted'); var ms=0, ok=0, stars=0; w.steps.forEach(function(s,k){ if(kind(s)!=='view'){ ms++; if(S[k]&&S[k].ok){ ok++; if(S[k].star) stars++; } } });
+    miss.hidden=true; typ.hidden=true; opts.hidden=true; opts.innerHTML=''; hint.hidden=true; shot.classList.toggle('fin',done); q('.walk-tools').hidden=done||!!(D[cur].steps[i]&&D[cur].steps[i].ui); orig.hidden=true;
+    if(done){ hot.hidden=true; shot.classList.remove('play','solved','hinted','ui'); main.classList.remove('uimode'); ui.innerHTML=''; var ms=0, ok=0, stars=0; w.steps.forEach(function(s,k){ if(kind(s)!=='view'){ ms++; if(S[k]&&S[k].ok){ ok++; if(S[k].star) stars++; } } });
       av.src='media/mascot/irumi.png'; sn.textContent='이루미 · 완료!'; h.textContent=w.name+' 체험을 마쳤어요!'; t.textContent=(ms?('미션 '+ms+'개 중 '+ok+'개 성공'+(stars?' · 힌트 없이 '+stars+'개 '+new Array(stars+1).join('★'):'')+'\n'):'')+'이제 직접 써 볼 차례예요.'; next.hidden=true;
       end.innerHTML=(w.trial?'<a class="btn sm" href="'+esc(w.trial)+'" target="_blank" rel="noopener">실제 서비스 체험 ↗</a>':'')+(w.ai?'<button type="button" class="btn sm" data-try="'+w.ai+'">AI 미니 체험</button>':'')+(w.video?'<button type="button" class="btn ghost sm" data-vmodal="'+esc(w.video)+'" data-vtitle="'+esc(w.name)+' · 영상">▶ 영상 보기</button>':'')+(w.demo?'<a class="btn sm btn-demo" href="'+w.demo+'">데모 신청</a>':'')+(w.manual?'<a class="btn ghost sm" href="'+esc(w.manual)+'" target="_blank" rel="noopener">매뉴얼(PDF)</a>':'')+'<a class="btn ghost sm" href="'+w.page+'">서비스 소개</a><button type="button" class="btn ghost sm walk-again">처음부터</button>';
       end.hidden=false; prev.disabled=false; return; }
-    var s=w.steps[i], z=S[i]||(S[i]={}), k=kind(s), open=(k==='view'||z.ok);
-    if(img.getAttribute('src')!==s.img) img.src=s.img; img.alt=s.title; big.href=s.img;
+    var s=w.steps[i], z=S[i]||(S[i]={}), k=kind(s), open=(k==='view'||z.ok), isUi=(k==='ui');
+    shot.classList.toggle('ui',isUi); main.classList.toggle('uimode',isUi); if(s.img) big.href=s.img; if(isUi&&s.img){ orig.href=s.img; orig.hidden=false; }
+    if(isUi){ if(!keepUi){ ui.innerHTML=s.ui; shot.scrollTop=0; shot.classList.remove('zoom'); } }
+    else { ui.innerHTML=''; if(img.getAttribute('src')!==s.img) img.src=s.img; img.alt=s.title; }
     shot.classList.toggle('play',!open&&k==='tap'); shot.classList.toggle('solved',!!z.ok&&k==='tap'); shot.classList.toggle('hinted',!!z.hint&&!z.ok&&k==='tap');
     av.src=(i%2?'media/mascot/irumi.png':'media/mascot/eumi.png');
-    if(open){ sn.textContent=who()+' · '+(i+1)+'/'+n+'단계'+(z.ok?' · 성공! '+(z.star?'★':''):''); h.textContent=s.title; t.textContent=s.text||''; next.textContent=(i===n-1?'완료 →':'다음 →'); next.className='btn sm walk-next'; }
-    else { sn.textContent=who()+' · 미션 '+(i+1)+'/'+n; h.textContent=(k==='tap'?(s['do']||'화면에서 눌러 보세요.'):s.q.ask); t.textContent=(k==='tap'?(z.hint?'힌트: 반짝이는 곳을 눌러 보세요.':'화면에서 직접 찾아 눌러 보세요.'):'알맞은 것을 골라 보세요.'); next.textContent='건너뛰기'; next.className='btn ghost sm walk-next';
+    if(open){ sn.textContent=who()+' · '+(i+1)+'/'+n+'단계'+(z.ok?' · 성공! '+(z.star?'★':''):''); h.textContent=s.title; t.textContent=(s.text||'')+(isUi&&z.ok?'\n화면은 계속 눌러 볼 수 있어요.':''); next.textContent=(i===n-1?'완료 →':'다음 →'); next.className='btn sm walk-next'; each('.mk-hint',function(x){ x.classList.remove('mk-hint'); }); }
+    else { sn.textContent=who()+' · 미션 '+(i+1)+'/'+n; h.textContent=(k==='quiz'?s.q.ask:(s['do']||'화면에서 눌러 보세요.')); t.textContent=(k==='quiz'?'알맞은 것을 골라 보세요.':(z.hint?(isUi?'힌트: 반짝이는 곳을 써 보세요.':'힌트: 반짝이는 곳을 눌러 보세요.'):(isUi?'실제로 눌리고 입력되는 화면이에요. 직접 해 보세요.':'화면에서 직접 찾아 눌러 보세요.'))); next.textContent='건너뛰기'; next.className='btn ghost sm walk-next';
       if(k==='tap'){ hint.hidden=!!z.hint; hot.setAttribute('aria-label', s['do']||'여기를 누르세요'); }
+      else if(k==='ui'){ hint.hidden=!!z.hint; if(z.hint){ var g=goalEl(); if(g) g.classList.add('mk-hint'); } }
       else { opts.hidden=false; opts.innerHTML=s.q.opts.map(function(o,j){ return '<button type="button" class="btn ghost sm" data-o="'+j+'">'+esc(o)+'</button>'; }).join(''); } }
     end.hidden=true; next.hidden=false; prev.disabled=(i===0); place(); }
-  function fin(){ var z=S[i]; z.ok=true; z.star=!z.hint&&!z.miss; render(); next.focus(); }
+  function fin(keep){ var z=S[i]; z.ok=true; z.star=!z.hint&&!z.miss; keepUi=!!keep; render(); keepUi=false; if(!ui.contains(document.activeElement)) next.focus(); }
   function solve(){ var s=D[cur].steps[i], z=S[i]; if(z.ok||busy) return;
-    if(s.type){ busy=true; var k=0; typ.textContent=''; typ.hidden=false; shot.classList.remove('hinted'); tmr=setInterval(function(){ k++; typ.textContent=s.type.slice(0,k); if(k>=s.type.length){ clearInterval(tmr); setTimeout(fin, 700); } }, 45); }
+    if(s.type){ busy=true; var k=0; typ.textContent=''; typ.hidden=false; shot.classList.remove('hinted'); tmr=setInterval(function(){ k++; typ.textContent=s.type.slice(0,k); if(k>=s.type.length){ clearInterval(tmr); setTimeout(function(){ fin(); }, 700); } }, 45); }
     else fin(); }
   function missed(e){ var z=S[i]; z.miss=(z.miss||0)+1; var r=shot.getBoundingClientRect(); miss.style.left=(e.clientX-r.left+shot.scrollLeft)+'px'; miss.style.top=(e.clientY-r.top+shot.scrollTop)+'px'; miss.hidden=true; void miss.offsetWidth; miss.hidden=false;
     bub.classList.remove('shake'); void bub.offsetWidth; bub.classList.add('shake');
     if(z.miss>=2&&!z.hint){ z.hint=true; shot.classList.add('hinted'); hint.hidden=true; t.textContent='힌트: 반짝이는 곳을 눌러 보세요.'; } else if(!z.hint) t.textContent='앗, 거기가 아니에요. 다시 찾아볼까요?'; }
+  // ---- 체험용 화면(목업): 요소에 적힌 대로 실제로 반응한다
+  function reveal(sel){ var lastEl=null; each(sel,function(x){ x.hidden=false; lastEl=x; }); if(lastEl&&lastEl.scrollIntoView) lastEl.scrollIntoView({block:'nearest'}); }
+  function act(el,val){ var a, z=S[i], goal=el.hasAttribute('data-goal');
+    if(el.hasAttribute('data-on')) Array.prototype.forEach.call(el.parentNode.children,function(c){ c.classList.toggle('on',c===el); });
+    if((a=el.getAttribute('data-filter'))){ var n=0; each('[data-cat]',function(x){ var ok=(a==='all'||x.getAttribute('data-cat')===a); x.hidden=!ok; if(ok) n++; }); each('[data-empty]',function(x){ x.hidden=n>0; }); each('[data-search]',function(x){ x.value=''; }); }
+    if((a=el.getAttribute('data-set'))){ var p=a.split('|'); each(p[0],function(x){ x.textContent=p[1]; }); }
+    if((a=el.getAttribute('data-step'))){ each('[data-stepper]>*',function(x,k){ x.classList.toggle('on',k<=+a); }); }
+    each(el.getAttribute('data-hide'),function(x){ x.hidden=true; });
+    if(val!=null) each(el.getAttribute('data-echo'),function(x){ x.textContent=val; });
+    reveal(el.getAttribute('data-show-now'));
+    function done(){ reveal(el.getAttribute('data-show')); if(goal&&z&&!z.ok) fin(true); }
+    var w=el.getAttribute('data-wait'); if(w){ busy=true; reveal(w); tmr2=setTimeout(function(){ each(w,function(x){ x.hidden=true; }); busy=false; done(); },1100); } else done(); }
+  ui.addEventListener('submit',function(e){ var f=e.target.closest('form[data-form]'); if(!f) return; e.preventDefault(); if(busy) return; var inp=f.querySelector('[data-in]'), v=(inp.value||'').trim(), sample=f.getAttribute('data-sample')||'';
+    function go(v){ inp.value=''; if(f._used){ var more=f.getAttribute('data-more'), box=ui.querySelector(f.getAttribute('data-log')||'x-none'); if(box&&more){ box.insertAdjacentHTML('beforeend','<div class="mk-msg me"><div class="mk-bub"></div></div><div class="mk-msg ai"><span class="mk-av">AI</span><div class="mk-bub mk-demo"></div></div>'); var bs=box.querySelectorAll('.mk-bub'); bs[bs.length-2].textContent=v; bs[bs.length-1].textContent=more; box.lastChild.scrollIntoView({block:'nearest'}); } return; }
+      f._used=true; each(f.getAttribute('data-note'),function(x){ x.hidden=(v===sample); }); act(f,v); }
+    if(!v&&sample){ busy=true; var k=0; tmr=setInterval(function(){ k++; inp.value=sample.slice(0,k); if(k>=sample.length){ clearInterval(tmr); busy=false; setTimeout(function(){ go(sample); },350); } },28); } else if(v) go(v); });
+  ui.addEventListener('input',function(e){ var si=e.target.closest('[data-search]'); if(!si) return; var v=si.value.trim().toLowerCase(), n=0; each('[data-cat]',function(x){ var ok=!v||x.textContent.toLowerCase().indexOf(v)>=0; x.hidden=!ok; if(ok) n++; }); each('[data-empty]',function(x){ x.hidden=n>0; }); each('[data-filter]',function(x){ x.classList.toggle('on',x.getAttribute('data-filter')==='all'); });
+    if(si.hasAttribute('data-goal')&&S[i]&&!S[i].ok){ clearTimeout(tmr2); if(v) tmr2=setTimeout(function(){ fin(true); },900); } });
+  function uiClick(e){ if(busy) return; var gg=e.target.closest('[data-go]'); if(gg){ i=+gg.getAttribute('data-go'); render(); return; } var fl=e.target.closest('[data-fill]'); if(fl){ var f=ui.querySelector('form[data-form]'), inp=f&&f.querySelector('[data-in]'); if(inp){ inp.value=fl.getAttribute('data-fill'); inp.focus(); } return; }
+    var el=e.target.closest('[data-on],[data-filter],[data-set],[data-show],[data-hide],[data-step],[data-goal]'); if(el&&ui.contains(el)&&el.tagName!=='FORM'&&!el.matches('input,textarea,select,label')) act(el,null); }
   function open(k, from){ if(!D[k]) return; cur=k; i=0; S=[]; last=from; tt.textContent=D[k].name; m.hidden=false; document.body.style.overflow='hidden'; shot.classList.remove('zoom'); zb.setAttribute('aria-pressed','false'); zb.textContent='🔍 확대'; render(); q('.vmodal-x').focus();
     try{ if(window.KELI_API&&navigator.sendBeacon) navigator.sendBeacon(window.KELI_API+'/api/hit', new Blob([JSON.stringify({t:'click',p:location.pathname,x:'walk:'+k})],{type:'text/plain'})); }catch(e){} }
-  function close(){ clearInterval(tmr); m.hidden=true; document.body.style.overflow=''; if(last) last.focus(); }
+  function close(){ clearInterval(tmr); clearTimeout(tmr2); ui.innerHTML=''; m.hidden=true; document.body.style.overflow=''; if(last) last.focus(); }
   img.addEventListener('load', place); window.addEventListener('resize', function(){ if(!m.hidden) place(); });
   document.addEventListener('click', function(e){ var b=e.target.closest('[data-walk]'); if(b){ e.preventDefault(); open(b.getAttribute('data-walk'), b); return; }
     if(m.hidden) return; if(e.target.closest('[data-wclose]')){ close(); return; }
+    if(ui.contains(e.target)){ uiClick(e); return; }
     if(e.target.closest('.walk-hot')){ solve(); return; }
     if(e.target===img&&shot.classList.contains('play')&&!busy){ missed(e); return; }
-    if(e.target.closest('.walk-hint')){ var z=S[i]; z.hint=true; shot.classList.add('hinted'); hint.hidden=true; t.textContent='힌트: 반짝이는 곳을 눌러 보세요.'; if(hot.scrollIntoView) hot.scrollIntoView({block:'nearest',inline:'nearest'}); return; }
+    if(e.target.closest('.walk-hint')){ showHint(); return; }
     var o=e.target.closest('.walk-opts [data-o]'); if(o){ var s=D[cur].steps[i], z2=S[i]; if(+o.getAttribute('data-o')===s.q.ans){ z2.ok=true; z2.star=!z2.miss; render(); next.focus(); } else { z2.miss=(z2.miss||0)+1; o.disabled=true; o.classList.add('no'); t.textContent='아쉬워요, 다시 골라 볼까요?'; bub.classList.remove('shake'); void bub.offsetWidth; bub.classList.add('shake'); } return; }
     if(e.target.closest('.walk-zoomb')){ var on=!shot.classList.contains('zoom'); shot.classList.toggle('zoom',on); zb.setAttribute('aria-pressed',String(on)); zb.textContent=on?'🔍 축소':'🔍 확대'; place(); if(on&&!hot.hidden&&S[i]&&(S[i].hint||S[i].ok)&&hot.scrollIntoView) hot.scrollIntoView({block:'center',inline:'center'}); return; }
     if(e.target.closest('.walk-next')){ if(busy) return; i++; render(); return; } if(e.target.closest('.walk-prev')){ if(i>0&&!busy){ i--; render(); } return; }
     if(e.target.closest('.walk-again')){ i=0; S=[]; render(); return; } var d=e.target.closest('.walk-dots button'); if(d&&!busy){ i=+d.getAttribute('data-k'); render(); return; }
     if(e.target.closest('[data-try],[data-vmodal]')){ close(); } });
-  document.addEventListener('keydown', function(e){ if(m.hidden||busy) return; if(e.key==='Escape') close(); else if(e.key==='ArrowRight'&&i<D[cur].steps.length){ i++; render(); } else if(e.key==='ArrowLeft'&&i>0){ i--; render(); } });
+  document.addEventListener('keydown', function(e){ if(m.hidden) return; if(e.key==='Escape'){ close(); return; } if(busy||/^(INPUT|TEXTAREA|SELECT)$/.test((e.target&&e.target.tagName)||'')) return; if(e.key==='ArrowRight'&&i<D[cur].steps.length){ i++; render(); } else if(e.key==='ArrowLeft'&&i>0){ i--; render(); } });
 })();"""
 
 def try_modal_html():
