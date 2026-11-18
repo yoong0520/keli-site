@@ -6,16 +6,19 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, '_manual_pages'); os.makedirs(OUT, exist_ok=True)
 mv = json.load(open(os.path.join(ROOT, 'assets', 'manual_videos.json'), encoding='utf-8')).get('items', [])
 jobs = []
+ONLY = set(filter(None, os.environ.get('KEYS', '').split(',')))
+SCALE = os.environ.get('SCALE', '1400')
 for it in mv:
     for i, m in enumerate(it.get('manuals') or []):
-        jobs.append((f"{it['id']}-{i}", m['url'], m.get('label', '')))
+        k = f"{it['id']}-{i}"
+        if not ONLY or k in ONLY: jobs.append((k, m['url'], m.get('label', '')))
 idx = []
 for key, url, label in jobs:
     d = os.path.join(OUT, key); os.makedirs(d, exist_ok=True); pdf = os.path.join(d, 'm.pdf')
     try:
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 KELI-site manual pages'})
         with urllib.request.urlopen(req, timeout=120) as r, open(pdf, 'wb') as f: f.write(r.read())
-        subprocess.run(['pdftoppm', '-jpeg', '-jpegopt', 'quality=82', '-scale-to', '1400', pdf, os.path.join(d, 'p')], check=True, timeout=600)
+        subprocess.run(['pdftoppm', '-jpeg', '-jpegopt', 'quality=82', '-scale-to', SCALE, pdf, os.path.join(d, 'p')], check=True, timeout=600)
         subprocess.run(['pdftotext', '-layout', pdf, os.path.join(d, 'text.txt')], check=True, timeout=120)
         n = len([x for x in os.listdir(d) if x.startswith('p-')])
         os.remove(pdf); idx.append({'key': key, 'url': url, 'label': label, 'pages': n}); print('ok', key, n)

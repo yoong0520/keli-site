@@ -577,6 +577,19 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .fd-picks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 18px; } .fd-pick { display: flex; flex-direction: column; gap: 6px; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: #fff; } .fd-pick strong { font-size: 18px; } .fd-pick .vbtns { margin-top: auto; padding-top: 8px; }
 .fd-rank { font-size: 12px; font-weight: 700; color: #b45309; } .fd-end { display: flex; gap: 16px; align-items: center; margin-top: 16px; }
 @media (max-width: 760px) { .fd-intro { flex-direction: column; text-align: center; } .fd-opts { grid-template-columns: 1fr; margin-left: 0; } .fd-back { margin-left: 0; } .fd-picks { grid-template-columns: 1fr; } }
+.walk-grid { gap: 22px; } .walk-card { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 18px; background: #fff; overflow: hidden; }
+.walk-thumb { position: relative; display: block; border: 0; padding: 0; aspect-ratio: 16 / 10; background: #eef2f8; cursor: pointer; overflow: hidden; } .walk-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; transition: transform .3s; } .walk-thumb:hover img { transform: scale(1.03); }
+.walk-n { position: absolute; left: 12px; top: 12px; padding: 3px 10px; border-radius: 999px; background: rgba(11,92,255,.92); color: #fff; font-size: 12px; font-weight: 700; }
+.walk-body { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px 18px; flex: 1; } .walk-body .m { font-size: 13px; color: var(--muted); } .walk-body .t { font-size: 18px; } .walk-body .vbtns { margin-top: auto; padding-top: 10px; }
+.walk-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; } .walk-modal[hidden] { display: none; }
+.walk-panel { position: relative; width: min(1180px, 100%); max-height: calc(100vh - 32px); display: flex; flex-direction: column; background: #fff; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.35); overflow: hidden; }
+.walk-sub { font-size: 12px; font-weight: 700; color: var(--accent); }
+.walk-main { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr); min-height: 0; flex: 1; }
+.walk-shot { background: #eef2f8; display: flex; align-items: center; justify-content: center; padding: 14px; min-height: 0; overflow: auto; } .walk-shot img { max-width: 100%; max-height: calc(100vh - 160px); object-fit: contain; border-radius: 8px; box-shadow: 0 4px 18px rgba(0,0,0,.12); background: #fff; } .walk-shot.fin img { opacity: .35; }
+.walk-side { display: flex; flex-direction: column; gap: 14px; padding: 18px 20px; overflow-y: auto; } .walk-side .fd-bubble p.walk-h { font-size: 17px; } .walk-side .fd-bubble p.walk-t { white-space: pre-line; line-height: 1.7; color: var(--ink); }
+.walk-dots { display: flex; gap: 6px; align-items: center; } .walk-dots button { width: 26px; height: 6px; border: 0; border-radius: 99px; background: #dbe3f0; cursor: pointer; padding: 0; } .walk-dots button.ok { background: #93b4f5; } .walk-dots button.on { background: var(--accent); } .walk-dots span { opacity: .3; font-size: 14px; } .walk-dots span.on { opacity: 1; }
+.walk-end { display: flex; flex-wrap: wrap; gap: 8px; } .walk-nav { display: flex; justify-content: space-between; margin-top: auto; } .walk-nav button[disabled] { opacity: .35; cursor: default; }
+@media (max-width: 860px) { .walk-modal { padding: 0; } .walk-panel { max-height: 100vh; height: 100vh; border-radius: 0; } .walk-main { grid-template-columns: 1fr; grid-template-rows: auto 1fr; overflow-y: auto; } .walk-shot img { max-height: 46vh; } }
 .try-grid { gap: 20px; } .try-card { display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
 .try-top { display: flex; gap: 14px; align-items: center; } .try-ic { font-size: 30px; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 14px; background: color-mix(in srgb, var(--accent, #0B5CFF) 8%, #fff); flex: none; }
 .try-top .m { display: block; font-size: 13px; color: var(--muted); } .try-top .t { font-size: 20px; font-weight: 700; }
@@ -2861,6 +2874,58 @@ def finder_html():
 <div class="fd-bar" aria-hidden="true"><i></i></div><div class="fd-stage" aria-live="polite"></div></div>
 <script>window.KELI_FINDER={finder_data()};</script><script>{FINDER_JS}</script>"""
 
+# ------------------------------------------------------------------ 바로 체험 = 단계별 따라 해 보기(매뉴얼 화면 + 이음이·이루미 안내)
+WALKS = {k: v for k, v in (_load_json(os.path.join(CONTENT, 'walkthroughs.json'), {}).get('items') or {}).items() if v.get('steps')}
+def walk_data():
+    out = {}
+    for x in SERVICES:
+        w = WALKS.get(x['slug'])
+        if not w: continue
+        vs = videos_for(x['name']); tr = TRIALS.get(x['slug'])
+        out[x['slug']] = {'name': x['name'], 'steps': w['steps'], 'manual': w.get('manual') or x.get('manual') or '', 'page': f'service-{x["slug"]}.html',
+                          'video': (vs[0]['embed'] if vs else ''), 'demo': demo_url(x['slug']), 'trial': (tr['url'] if tr else ''),
+                          'ai': x['slug'] if any(t['svc'] == x['slug'] for t in TRY_DEMOS) else ''}
+    return out
+def walk_card(x):
+    w = WALKS[x['slug']]; ai = any(t['svc'] == x['slug'] for t in TRY_DEMOS)
+    img = w['steps'][0]['img']; soon = ' · <span class="badge soon">준비 중</span>' if x.get('status') == 'soon' else ''
+    return (f'<div class="walk-card"><button type="button" class="walk-thumb" data-walk="{x["slug"]}" aria-label="{E(x["name"])} 따라 해 보기"><img src="{img}" alt="" loading="lazy"><span class="walk-n">{len(w["steps"])}단계</span></button>'
+            f'<div class="walk-body"><span class="m">{E(AREA_LABEL.get(x["area"], x["area"]))}{soon}</span>'
+            f'<strong class="t"><a href="service-{x["slug"]}.html">{E(x["name"])}</a></strong><span class="small muted">{E(w.get("lead") or x.get("one") or "")}</span>'
+            f'<div class="vbtns"><button type="button" class="btn sm" data-walk="{x["slug"]}">따라 해 보기</button>'
+            + (f'<button type="button" class="btn ghost sm" data-try="{x["slug"]}">AI 미니 체험</button>' if ai else '') + '</div></div></div>')
+def walk_modal_html():
+    return f"""<div class="walk-modal" hidden role="dialog" aria-modal="true" aria-labelledby="walk-title"><div class="try-bg" data-wclose></div><div class="walk-panel">
+<div class="try-head"><div><span class="walk-sub">바로 체험 · 따라 해 보기</span><h2 id="walk-title">따라 해 보기</h2></div><button type="button" class="vmodal-x" data-wclose aria-label="닫기">&times;</button></div>
+<div class="walk-main"><div class="walk-shot"><img alt=""></div>
+<div class="walk-side"><div class="walk-dots"></div><div class="fd-q"><img src="media/mascot/eumi.png" alt="" class="fd-av walk-av"><div class="fd-bubble"><span class="fd-who walk-step"></span><p class="walk-h"></p><p class="small walk-t"></p></div></div>
+<div class="walk-end" hidden></div>
+<div class="walk-nav"><button type="button" class="btn ghost sm walk-prev">← 이전</button><button type="button" class="btn sm walk-next">다음 →</button></div>
+<p class="try-foot" style="padding:0;margin-top:10px">화면 출처: 서비스 매뉴얼 · ←/→ 키로도 넘길 수 있어요</p></div></div>
+</div></div>
+<script>window.KELI_WALK={json.dumps(walk_data(), ensure_ascii=False)};</script><script>{WALK_JS}</script>"""
+WALK_JS = r"""(function(){
+  var m=document.querySelector('.walk-modal'); if(!m) return; var D=window.KELI_WALK||{}, cur=null, i=0, last=null;
+  var img=m.querySelector('.walk-shot img'), dots=m.querySelector('.walk-dots'), h=m.querySelector('.walk-h'), t=m.querySelector('.walk-t'), sn=m.querySelector('.walk-step'), av=m.querySelector('.walk-av'), end=m.querySelector('.walk-end'), prev=m.querySelector('.walk-prev'), next=m.querySelector('.walk-next'), tt=m.querySelector('#walk-title');
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function render(){ var w=D[cur], n=w.steps.length, done=(i>=n);
+    dots.innerHTML=w.steps.map(function(_,k){ return '<button type="button" class="'+(k<i?'ok ':'')+(k===i?'on':'')+'" data-k="'+k+'" aria-label="'+(k+1)+'단계"></button>'; }).join('')+'<span class="'+(done?'on':'')+'">🎉</span>';
+    if(!done){ var st=w.steps[i]; img.src=st.img; img.alt=st.title; img.parentNode.classList.remove('fin'); av.src=(i%2?'media/mascot/irumi.png':'media/mascot/eumi.png'); sn.textContent=(i%2?'이루미':'이음이')+' · '+(i+1)+'/'+n+'단계'; h.textContent=st.title; t.textContent=st.text||''; end.hidden=true; m.querySelector('.walk-side .fd-q').hidden=false; next.textContent=(i===n-1?'완료 →':'다음 →'); next.hidden=false; }
+    else { img.parentNode.classList.add('fin'); m.querySelector('.walk-side .fd-q').hidden=false; av.src='media/mascot/irumi.png'; sn.textContent='이루미 · 완료!'; h.textContent=w.name+' 따라 해 보기를 마쳤어요!'; t.textContent='이제 직접 써 볼 차례예요.'; next.hidden=true;
+      end.innerHTML=(w.trial?'<a class="btn sm" href="'+esc(w.trial)+'" target="_blank" rel="noopener">실제 서비스 체험 ↗</a>':'')+(w.ai?'<button type="button" class="btn sm" data-try="'+w.ai+'">AI 미니 체험</button>':'')+(w.video?'<button type="button" class="btn ghost sm" data-vmodal="'+esc(w.video)+'" data-vtitle="'+esc(w.name)+' · 영상">▶ 영상 보기</button>':'')+(w.demo?'<a class="btn sm btn-demo" href="'+w.demo+'">데모 신청</a>':'')+(w.manual?'<a class="btn ghost sm" href="'+esc(w.manual)+'" target="_blank" rel="noopener">매뉴얼(PDF)</a>':'')+'<a class="btn ghost sm" href="'+w.page+'">서비스 소개</a><button type="button" class="btn ghost sm walk-again">처음부터</button>';
+      end.hidden=false; }
+    prev.disabled=(i===0); }
+  function open(k, from){ if(!D[k]) return; cur=k; i=0; last=from; tt.textContent=D[k].name; m.hidden=false; document.body.style.overflow='hidden'; render(); next.focus();
+    try{ if(window.KELI_API&&navigator.sendBeacon) navigator.sendBeacon(window.KELI_API+'/api/hit', new Blob([JSON.stringify({t:'click',p:location.pathname,x:'walk:'+k})],{type:'text/plain'})); }catch(e){} }
+  function close(){ m.hidden=true; document.body.style.overflow=''; if(last) last.focus(); }
+  document.addEventListener('click', function(e){ var b=e.target.closest('[data-walk]'); if(b){ e.preventDefault(); open(b.getAttribute('data-walk'), b); return; }
+    if(m.hidden) return; if(e.target.closest('[data-wclose]')){ close(); return; }
+    if(e.target.closest('.walk-next')){ i++; render(); return; } if(e.target.closest('.walk-prev')){ if(i>0){ i--; render(); } return; }
+    if(e.target.closest('.walk-again')){ i=0; render(); return; } var d=e.target.closest('.walk-dots button'); if(d){ i=+d.getAttribute('data-k'); render(); return; }
+    if(e.target.closest('[data-try],[data-vmodal]')){ close(); } });
+  document.addEventListener('keydown', function(e){ if(m.hidden) return; if(e.key==='Escape') close(); else if(e.key==='ArrowRight'&&i<D[cur].steps.length){ i++; render(); } else if(e.key==='ArrowLeft'&&i>0){ i--; render(); } });
+})();"""
+
 def try_modal_html():
     return f'''<div class="try-modal" hidden role="dialog" aria-modal="true" aria-labelledby="try-title"><div class="try-bg" data-tclose></div><div class="try-panel">
 <div class="try-head"><div><span class="try-sub">미니 체험판 · 실제 서비스와 다릅니다</span><h2 id="try-title">체험</h2></div><button type="button" class="vmodal-x" data-tclose aria-label="닫기">&times;</button></div>
@@ -2874,7 +2939,6 @@ def try_modal_html():
 '''
 
 def page_experience():
-    tries = ''.join(try_card(t) for t in TRY_DEMOS)
     secs = ''
     for cat in DEMO_CATS:
         items = [d for d in DEMO_ITEMS if d.get('category') == cat]
@@ -2889,9 +2953,9 @@ def page_experience():
 {finder_html()}
 </div></section>
 <section class="sec" id="try" style="padding-top:0"><div class="wrap">
-<div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">바로 체험</h2><span class="muted small">미니 체험판 {len(TRY_DEMOS)}종</span></div>
-<p class="note" style="margin:0 0 18px">미니 체험판은 각 서비스의 핵심 기능을 맛볼 수 있도록 KELI 사무국이 만든 <b>체험용 축소판</b>입니다. 실제 서비스와 화면·기능·AI 모델이 다릅니다. 이름·학번·연락처 같은 개인정보는 입력하지 마세요. 입력한 내용은 답변을 만드는 데에만 쓰고 저장하지 않습니다.</p>
-<div class="grid g2 try-grid">{tries}</div>
+<div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">바로 체험</h2><span class="muted small">따라 해 보기 {len(WALKS)}종</span></div>
+<p class="note" style="margin:0 0 18px">서비스 매뉴얼의 실제 화면을 한 장씩 넘기며 이음이·이루미의 안내대로 사용 흐름을 따라 해 봅니다. 「AI 미니 체험」이 있는 서비스는 KELI 사무국이 만든 체험용 축소판으로 핵심 기능을 직접 써 볼 수 있습니다(실제 서비스와 다르며, 개인정보는 입력하지 마세요).</p>
+<div class="grid g3 walk-grid">{''.join(walk_card(x) for x in SERVICES if x['slug'] in WALKS) or '<div class="empty">따라 해 보기를 준비하고 있습니다.</div>'}</div>
 </div></section>
 <section class="sec" id="real" style="padding-top:0"><div class="wrap">
 <div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">실제 서비스 체험</h2><span class="muted small">{len(TRIALS)}개 서비스</span></div>
@@ -2905,6 +2969,7 @@ def page_experience():
 <p class="note" style="margin-top:24px">{DEMO_NOTE} 영상과 매뉴얼의 저작권은 한림대학교와 각 개발 기업에 있습니다.</p>
 </div></section>
 {try_modal_html()}
+{walk_modal_html()}
 <script>{TRIAL_JS}</script>
 """
     write('experience.html', 'HAI 체험관 · KELI', body, desc='HAI Ecosystems 체험관 — 로그인 없이 브라우저에서 AI 교육 서비스의 핵심 기능을 미니 체험판으로 써 보고, 모든 서비스를 영상과 매뉴얼로 따라 해 봅니다.')

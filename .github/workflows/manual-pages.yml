@@ -1,5 +1,9 @@
 name: Manual pages (one-off)
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      keys: { description: 'comma-separated keys (empty=all)', default: '' }
+      scale: { description: 'max page size px', default: '1400' }
 jobs:
   pages:
     runs-on: ubuntu-latest
@@ -7,5 +11,6 @@ jobs:
       - uses: actions/checkout@v4
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
       - run: python3 scripts/manual_pages.py
+        env: { KEYS: '${{ inputs.keys }}', SCALE: '${{ inputs.scale }}' }
       - uses: actions/upload-artifact@v4
         with: { name: manual-pages, path: _manual_pages, retention-days: 7 }
