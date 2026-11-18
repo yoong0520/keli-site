@@ -4,6 +4,7 @@ on:
     inputs:
       keys: { description: 'comma-separated keys (empty=all)', default: '' }
       scale: { description: 'max page size px', default: '1400' }
+      pages: { description: 'key:3,5;key2:4 (only these pages, with image boxes)', default: '' }
 jobs:
   pages:
     runs-on: ubuntu-latest
@@ -11,6 +12,6 @@ jobs:
       - uses: actions/checkout@v4
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
       - run: python3 scripts/manual_pages.py
-        env: { KEYS: '${{ inputs.keys }}', SCALE: '${{ inputs.scale }}' }
+        env: { KEYS: '${{ inputs.keys }}', SCALE: '${{ inputs.scale }}', PAGES: '${{ inputs.pages }}' }
       - uses: actions/upload-artifact@v4
         with: { name: manual-pages, path: _manual_pages, retention-days: 7 }

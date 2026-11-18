@@ -8,6 +8,11 @@ mv = json.load(open(os.path.join(ROOT, 'assets', 'manual_videos.json'), encoding
 jobs = []
 ONLY = set(filter(None, os.environ.get('KEYS', '').split(',')))
 SCALE = os.environ.get('SCALE', '1400')
+# PAGES="key:3,5,9;key2:4,8" 이면 그 쪽만(고해상도 화면 잘라내기용) 뽑고, 쪽 안의 그림 위치(pdftohtml -xml)도 함께 남긴다
+PAGES = {}
+for part in filter(None, os.environ.get('PAGES', '').split(';')):
+    k, _, ps = part.partition(':'); PAGES[k.strip()] = [int(x) for x in ps.split(',') if x.strip().isdigit()]
+if PAGES: ONLY = set(PAGES)
 for it in mv:
     for i, m in enumerate(it.get('manuals') or []):
         k = f"{it['id']}-{i}"
@@ -18,8 +23,15 @@ for key, url, label in jobs:
     try:
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 KELI-site manual pages'})
         with urllib.request.urlopen(req, timeout=120) as r, open(pdf, 'wb') as f: f.write(r.read())
-        subprocess.run(['pdftoppm', '-jpeg', '-jpegopt', 'quality=82', '-scale-to', SCALE, pdf, os.path.join(d, 'p')], check=True, timeout=600)
-        subprocess.run(['pdftotext', '-layout', pdf, os.path.join(d, 'text.txt')], check=True, timeout=120)
+        if key in PAGES:
+            for n in PAGES[key]:
+                subprocess.run(['pdftoppm', '-jpeg', '-jpegopt', 'quality=88', '-scale-to', SCALE, '-f', str(n), '-l', str(n), pdf, os.path.join(d, 'p')], check=True, timeout=600)
+                subprocess.run(['pdftohtml', '-xml', '-nodrm', '-q', '-f', str(n), '-l', str(n), pdf, os.path.join(d, f'x-{n}')], check=False, timeout=300)
+            for x in os.listdir(d):
+                if not (x.startswith('p-') or x.endswith('.xml') or x == 'm.pdf'): os.remove(os.path.join(d, x))   # pdftohtml 이 떨군 그림 파일은 버림(위치만 필요)
+        else:
+            subprocess.run(['pdftoppm', '-jpeg', '-jpegopt', 'quality=82', '-scale-to', SCALE, pdf, os.path.join(d, 'p')], check=True, timeout=600)
+            subprocess.run(['pdftotext', '-layout', pdf, os.path.join(d, 'text.txt')], check=True, timeout=120)
         n = len([x for x in os.listdir(d) if x.startswith('p-')])
         os.remove(pdf); idx.append({'key': key, 'url': url, 'label': label, 'pages': n}); print('ok', key, n)
     except Exception as e:
