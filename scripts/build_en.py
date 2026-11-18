@@ -198,6 +198,9 @@ def fill(missing, cache, token, budget):
 def main():
     os.makedirs(os.path.dirname(CACHE), exist_ok=True)
     cache = json.load(open(CACHE, encoding='utf-8')) if os.path.exists(CACHE) else {}
+    BASE = os.path.join(ROOT, 'content', 'i18n', 'en_base.json')   # 사무국이 검수해 저장소에 넣어 둔 번역
+    if os.path.exists(BASE):
+        for k, v in json.load(open(BASE, encoding='utf-8')).items(): cache.setdefault(k, v)
     fix = json.load(open(FIX, encoding='utf-8')) if os.path.exists(FIX) else {}
     pages = [os.path.basename(f) for f in sorted(glob.glob(os.path.join(ROOT, '*.html'))) if not os.path.basename(f).startswith('en') and os.path.basename(f) not in SKIP]
     site_js = open(os.path.join(ROOT, 'assets', 'site.js'), encoding='utf-8').read()
@@ -212,7 +215,7 @@ def main():
     missing = [k for k in need if k not in cache and k not in fix]
     print(f'pages {len(pages)} · strings {len(need)} · cached {len(need) - len(missing)} · new {len(missing)}', flush=True)
     token = os.environ.get('GITHUB_TOKEN') or os.environ.get('GH_TOKEN')
-    if missing and token:
+    if missing and token and os.environ.get('EN_MT', '') == '1':   # 자동 번역 서버는 EN_MT=1 일 때만(GitHub Models 는 2026년 서비스 종료로 응답하지 않음)
         fill(missing, cache, token, int(os.environ.get('EN_BUDGET', '140')))
     elif missing:
         print('  no token: untranslated strings stay Korean', flush=True)
@@ -228,7 +231,7 @@ def main():
         if pg in ko: return f'{m.group(1)}en-{pg}{rest}'
         return m.group(0)
     open(os.path.join(ROOT, 'assets', 'site.en.js'), 'w', encoding='utf-8').write(walk_js(site_js, tr))
-    left = 0
+    left, skipped = 0, []
     for p in pages:
         h = open(os.path.join(ROOT, p), encoding='utf-8').read()
         e = walk_html(h, tr)
@@ -240,16 +243,31 @@ def main():
         e = re.sub(r'<html lang="ko"', '<html lang="en"', e, count=1)
         e = e.replace('assets/site.js?', 'assets/site.en.js?').replace('class="kchat" id="kchat" data-lang="ko"', 'class="kchat" id="kchat" data-lang="en"')
         e = re.sub(r'<link rel="canonical" href="([^"]*?)' + re.escape(p) + '">', lambda m: f'<link rel="canonical" href="{m.group(1)}en-{p}">', e)
-        open(os.path.join(ROOT, 'en-' + p), 'w', encoding='utf-8').write(e)
-        left += len(set(norm(t) for t in re.findall(r'>([^<>]*[가-힣][^<>]*)<', re.sub(r'<script.*?</script>', '', e, flags=re.S))))
+        rest = set(norm(t) for t in re.findall(r'>([^<>]*[가-힣][^<>]*)<', re.sub(r'<script.*?</script>', '', e, flags=re.S)))
+        allk = set(norm(t) for t in re.findall(r'>([^<>]*[가-힣][^<>]*)<', re.sub(r'<script.*?</script>', '', h, flags=re.S)))
+        ep = os.path.join(ROOT, 'en-' + p)
+        if allk and len(rest) / len(allk) > 0.15:   # 아직 번역이 덜 된 페이지: 영어판을 내지 않는다
+            if os.path.exists(ep): os.remove(ep)
+            kh = h.replace(f'href="en-{p}" data-lang-switch', 'href="en.html" data-lang-switch')
+            if kh != h: open(os.path.join(ROOT, p), 'w', encoding='utf-8').write(kh)
+            skipped.append(p); continue
+        open(ep, 'w', encoding='utf-8').write(e)
+        left += len(rest)
+    # 영어판이 없는 페이지로 가는 링크는 한국어 페이지로
+    for p in pages:
+        ep = os.path.join(ROOT, 'en-' + p)
+        if not os.path.exists(ep): continue
+        e = open(ep, encoding='utf-8').read()
+        e2 = re.sub(r'href="en-([a-z0-9_-]+\.html)', lambda m: m.group(0) if m.group(1) not in skipped else 'href="' + m.group(1), e)
+        if e2 != e: open(ep, 'w', encoding='utf-8').write(e2)
     # 영어 홈(en.html)도 영어판끼리 잇는다
     hp = os.path.join(ROOT, 'en.html')
     if os.path.exists(hp):
         h = open(hp, encoding='utf-8').read()
-        h = re.sub(r'(href=")([a-z0-9_-]+\.html)((?:#[^"]*)?")', lambda m: m.group(0) if m.group(2) in ('en.html', 'index.html') else link(m), h)
+        h = re.sub(r'(href=")([a-z0-9_-]+\.html)((?:#[^"]*)?")', lambda m: m.group(0) if m.group(2) in ('en.html', 'index.html') or m.group(2) in skipped else link(m), h)
         h = h.replace('assets/site.js?', 'assets/site.en.js?')
         open(hp, 'w', encoding='utf-8').write(h)
-    print(f'wrote {len(pages)} English pages · untranslated text nodes left ≈ {left}', flush=True)
+    print(f'wrote {len(pages) - len(skipped)} English pages · skipped (not translated yet) {len(skipped)} · untranslated text nodes left ≈ {left}', flush=True)
 
 
 if __name__ == '__main__':
