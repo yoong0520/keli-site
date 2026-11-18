@@ -73,10 +73,10 @@ def toast(key, text): return f'<p class="mk-ok" {key} hidden>{ic("check", 15)}{t
 def _docs():
     TH = '--mk:#1d4ed8;--mk-side:#0b2a5b'
     def sd(active):
-        return side('HAI-Docs <i>AI</i>', 'HALLYM UNIVERSITY', [
+        return side('HAI-Docs <i>AI</i>', '○○ UNIVERSITY', [
             ('WORKSPACE', [('home', 'home', '홈'), ('chat', 'chat', 'AI 대화'), ('lib', 'doc', '문서 라이브러리'), ('gen', 'edit', '문서 생성'), ('mark', 'mark', '북마크'), ('rem', 'bell', '리마인드')]),
             ('ADMIN', [('dash', 'chart', '대시보드'), ('sys', 'gear', '시스템 관리')])], active, user=('박직원', '교무팀 · 직원'), foot=[('gear', '설정'), ('help', '도움말')], go={'lib': 0, 'chat': 2, 'gen': 4})
-    DOCS = [('한림대학교_학사운영규정', 'PDF', '2.4 MB', '2026.03.15', '완료', '규정'), ('교원인사규정', 'HWP', '1.8 MB', '2026.03.12', '진행중', '규정'), ('자체평가계획서', 'PDF', '3.1 MB', '2026.03.10', '완료', '보고서'),
+    DOCS = [('○○대학교_학사운영규정', 'PDF', '2.4 MB', '2026.03.15', '완료', '규정'), ('교원인사규정', 'HWP', '1.8 MB', '2026.03.12', '진행중', '규정'), ('자체평가계획서', 'PDF', '3.1 MB', '2026.03.10', '완료', '보고서'),
             ('학칙시행세칙', 'HWP', '1.2 MB', '2026.03.08', '완료', '규정'), ('수업평가_실시안내', 'PDF', '0.9 MB', '2026.03.05', '진행중', '공지'), ('교내장학금규정', 'DOCX', '1.5 MB', '2026.03.01', '완료', '규정')]
     cards = ''.join(f'<div class="mk-card mk-doc" data-cat="{c}"><div class="mk-row"><span class="mk-file {t.lower()}">{ic("doc", 18)}</span><span class="mk-st {"ing" if st == "진행중" else "ok"}">{st}</span></div>'
                     f'<strong>{n}</strong><span class="mk-chip">{t}</span><div class="mk-row mk-meta"><span>{sz}</span><span>{d}</span></div></div>' for n, t, sz, d, st, c in DOCS)
@@ -95,10 +95,10 @@ def _docs():
         ans = (f'<div class="mk-msg me" data-qa{hid}><div class="mk-bub" data-q>{Q if answered else ""}</div></div>'
                f'<div class="mk-msg ai" data-dots hidden><span class="mk-av">AI</span><div class="mk-bub mk-dots"><i></i><i></i><i></i></div></div>'
                f'<div class="mk-msg ai" data-a{hid}><span class="mk-av">AI</span><div class="mk-bub"><p class="mk-demo" data-demo hidden>체험판에서는 예시 질문 「{Q}」의 답변을 보여 드려요.</p>'
-               f'<p>한림대학교 교원 연구년 제도는 다음과 같이 운영됩니다.</p><ul class="mk-ck"><li><b>대상:</b> 전임교원(조교수 이상)으로 재직기간 3년 이상인 자</li><li><b>기간:</b> 1년 또는 2년(단, 연속 2회 초과 불가)</li></ul>'
-               f'<p class="mk-ref">(근거: 한림대학교 교원인사규정 제27조(연구년))</p></div></div>'
+               f'<p>○○대학교 교원 연구년 제도는 다음과 같이 운영됩니다.</p><ul class="mk-ck"><li><b>대상:</b> 전임교원(조교수 이상)으로 재직기간 3년 이상인 자</li><li><b>기간:</b> 1년 또는 2년(단, 연속 2회 초과 불가)</li></ul>'
+               f'<p class="mk-ref">(근거: ○○대학교 교원인사규정 제27조(연구년))</p></div></div>'
                f'<div class="mk-block" data-a{hid}><div class="mk-row"><b>참고 문서 <small>(원문 근거)</small></b><span class="mk-link">모두 보기</span></div><div class="mk-srcs">{src}</div>{cites}'
-               f'<p class="mk-note">{ic("shield", 15)}<span>AI 응답은 등록된 한림대학교 공식 문서를 기반으로 생성되었습니다. 부정확한 정보 발견 시 피드백을 통해 개선에 참여해주세요.</span></p>'
+               f'<p class="mk-note">{ic("shield", 15)}<span>AI 응답은 등록된 ○○대학교 공식 문서를 기반으로 생성되었습니다. 부정확한 정보 발견 시 피드백을 통해 개선에 참여해주세요.</span></p>'
                f'<div class="mk-sub">관련 질문 제안</div><div class="mk-chips"><button type="button" data-fill="연구년 신청 절차">연구년 신청 절차</button><button type="button" data-fill="연구년 중 강의 배정">연구년 중 강의 배정</button><button type="button" data-fill="연구년 종료 후 의무">연구년 종료 후 의무</button></div></div>')
         start = '' if answered else f'<div class="mk-hello" data-hello><b>무엇을 도와드릴까요?</b><span>규정·공지·양식 등 등록된 행정 문서를 근거로 답해 드려요.</span><div class="mk-chips"><button type="button" data-fill="{Q}">예시 질문: {Q}</button></div></div>'
         form = (f'<form class="mk-inbar" data-form data-sample="{Q}" data-echo="[data-q]" data-hide="[data-hello]" data-show-now="[data-qa]" data-wait="[data-dots]" data-show="[data-a],[data-res]" data-note="[data-demo]" data-log="#mklog" '
@@ -109,7 +109,7 @@ def _docs():
         main = f'<div class="mk-h"><h3>AI 대화</h3></div><div class="mk-log" id="mklog">{start}{ans}</div>{form}'
         return frame(TH, sd('chat'), ('HAI-Docs', 'AI 대화'), main, aside)
     EX = ['교원 해외여행 결과보고 미제출자에게 제출을 안내하는 공문', '전임교원 겸직 신청 절차와 제출서류를 안내하는 내부 공지', '교원 업적평가 연구영역 자료 제출 요청 공문을 작성해줘']
-    TPL = [('공문서 기본 템플릿', '제목과 주요 내용을 바탕으로 한림대학교 행정 공문서 초안을 생성합니다.'), ('공지사항 기본 템플릿', '공지 대상, 기간, 안내사항을 중심으로 게시용 공지 초안을 생성합니다.'), ('회의록 기본 템플릿', '회의명, 참석자, 안건, 결정사항을 중심으로 회의록 초안을 생성합니다.'),
+    TPL = [('공문서 기본 템플릿', '제목과 주요 내용을 바탕으로 ○○대학교 행정 공문서 초안을 생성합니다.'), ('공지사항 기본 템플릿', '공지 대상, 기간, 안내사항을 중심으로 게시용 공지 초안을 생성합니다.'), ('회의록 기본 템플릿', '회의명, 참석자, 안건, 결정사항을 중심으로 회의록 초안을 생성합니다.'),
            ('계획서 기본 템플릿', '목적, 추진 일정, 담당 부서를 중심으로 계획서 초안을 생성합니다.'), ('보고서 기본 템플릿', '보고 배경, 주요 결과, 후속 조치를 중심으로 보고서 초안을 생성합니다.'), ('요청서 기본 템플릿', '요청 배경, 요청 사항, 기한을 중심으로 요청서 초안을 생성합니다.')]
     def gen():
         tpl = ''.join(f'<button type="button" class="mk-card mk-tpl" data-on data-step="1" data-set="[data-tname]|{t}" data-show="[data-draft]"{" data-goal" if k == 0 else ""}><span class="mk-row"><strong>{t}</strong>{ic("edit", 15)}</span><span>{d}</span></button>' for k, (t, d) in enumerate(TPL))
@@ -188,9 +188,9 @@ def _tutor():
         return frame(TH, sd('bank'), ('AI 조교', '문항 편집'), main)
     I = 'media/walk/hai-tutor/'
     return [
-        dict(title='사번으로 로그인해요', text='별도 회원가입 없이 한림대학교 사번 ID와 비밀번호로 로그인해요. 아이디 저장 기능도 있어요.', do='「한림대 통합 로그인」 단추를 눌러 로그인해 보세요.', img=I + '1.jpg',
-             ui=login(TH, ('HALLYM UNIVERSITY AI TEACHING ASSISTANT', '교수 활동 지원 시스템', '검색부터 자료 생성까지 모두 가능한 AI 조교와의 대화를 시작해 보세요.', ['AI Chat', 'Lecture Prep', 'Smart Assist']),
-                      ('SECURE ACCESS', 'Sign in'), [('아이디', '아이디', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', False, False), ('한림대 통합 로그인', True, True)])),
+        dict(title='사번으로 로그인해요', text='별도 회원가입 없이 ○○대학교 사번 ID와 비밀번호로 로그인해요. 아이디 저장 기능도 있어요.', do='「통합 로그인」 단추를 눌러 로그인해 보세요.', img=I + '1.jpg',
+             ui=login(TH, ('UNIVERSITY AI TEACHING ASSISTANT', '교수 활동 지원 시스템', '검색부터 자료 생성까지 모두 가능한 AI 조교와의 대화를 시작해 보세요.', ['AI Chat', 'Lecture Prep', 'Smart Assist']),
+                      ('SECURE ACCESS', 'Sign in'), [('아이디', '아이디', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', False, False), ('통합 로그인', True, True)])),
         dict(title='강의 자료를 올리고 대화를 시작해요', text='입력창 왼쪽 클립 단추로 강의 자료를 올리면, 그 자료를 근거로 더 믿을 수 있는 답을 만들어 줘요. 「더 똑똑한 문제 생성 가이드」로 요청 요령도 볼 수 있어요.',
              do='입력창에 요청을 쓰고 보내 보세요. 비워 둔 채 보내면 예시 요청이 입력돼요.', ui=chat(False, 'ask'), img=I + '2.jpg'),
         dict(title='답변의 출처를 확인해요', text='답변 아래에 근거가 된 원본 자료가 표시돼요. 「열기」를 누르면 출처 문서를 바로 열어 볼 수 있고, 답변은 복사하거나 파일로 저장할 수 있어요.',
@@ -268,7 +268,7 @@ def _gpt():
                     'new', go={'new': 1}, light=True, mid='<span class="mk-grp">내 채팅 내역</span>' + ''.join(f'<span class="mk-hist">{h}</span>' for h in HIST))
     def top(agent, goal=False):
         return ('<div class="mk-topbar"><div class="mk-pills" title="모델 선택"><button type="button" class="' + ('' if agent else 'on') + '" data-on data-hide="[data-sa]" data-show="[data-nm]">Grok 4.1 Fast</button>'
-                '<button type="button" class="' + ('on' if agent else '') + '" data-on data-hide="[data-nm]" data-show="[data-sa]"' + (' data-goal' if goal else '') + '>Super Agent</button></div><span class="mk-chip">한림대학교 구성원</span></div>')
+                '<button type="button" class="' + ('on' if agent else '') + '" data-on data-hide="[data-nm]" data-show="[data-sa]"' + (' data-goal' if goal else '') + '>Super Agent</button></div><span class="mk-chip">○○대학교 구성원</span></div>')
     Q1 = '프로그래밍 조건문의 개념을 쉽게 설명해 줘'
     def main_chat():
         hello = '<div class="mk-hello" data-hello><b>무엇을 도와드릴까요?</b><div class="mk-chips"><button type="button" data-fill="' + Q1 + '">예시: ' + Q1 + '</button></div></div>'
@@ -293,8 +293,8 @@ def _gpt():
                      + '<div class="mk-chips" data-hello><button type="button" data-fill="' + Q3 + '">' + Q3 + '</button><button type="button" data-fill="한글 요약본도 같이 만들어 줘">한글 요약본도 같이 만들어 줘</button></div></div>' + inbar(Q3, '고치고 싶은 부분만 말해 보세요.', True))
     I = 'media/walk/hai-gpt/'
     return [
-        dict(title='한림 계정으로 로그인해요', text='기존 한림 계정(SSO) 그대로 로그인하면 HAI-GPT 메인 채팅 화면으로 들어가요.', do='「로그인」을 눌러 한림 계정으로 들어가 보세요.', img=I + '1.jpg',
-             ui=login(TH, ('HALLYM UNIVERSITY', 'The New Hallym,<br>K-University of the Future', '한림대학교 통합 로그인'), ('한국어 · English', '로그인'), [('ID', 'ID', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True)], foot='비밀번호 초기화 · 도움말')),
+        dict(title='학교 계정으로 로그인해요', text='기존 학교 계정(SSO) 그대로 로그인하면 HAI-GPT 메인 채팅 화면으로 들어가요.', do='「로그인」을 눌러 학교 계정으로 들어가 보세요.', img=I + '1.jpg',
+             ui=login(TH, ('○○ UNIVERSITY', 'The New University,<br>K-University of the Future', '○○대학교 통합 로그인'), ('한국어 · English', '로그인'), [('ID', 'ID', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True)], foot='비밀번호 초기화 · 도움말')),
         dict(title='메인 채팅 화면에서 시작해요', text='로그인하면 HAI-GPT 메인 채팅 화면이 열려요. 아래 입력창에 궁금한 것을 바로 물어볼 수 있어요.', do='입력창에 궁금한 것을 쓰고 보내 보세요. 비워 둔 채 보내면 예시 질문이 입력돼요.', ui=main_chat(), img=I + '2.jpg'),
         dict(title='Super Agent 모드를 켜요', text='상단 모델 선택에서 「Super Agent」를 눌러요. 도구 이름을 외울 필요 없이 원하는 것을 한국어 한 줄로 말하면 돼요.', do='위쪽 모델 선택에서 「Super Agent」를 눌러 보세요.', ui=agent_pick(), img=I + '3.jpg'),
         dict(title='무엇이든 만들어 달라고 해요', text='문서(한글·PDF), PPT, 이미지, 짧은 영상, 음악, 음성, 웹페이지, 다이어그램, 데이터 분석까지 한 번에 만들 수 있어요.', do='만들고 싶은 것을 한 줄로 써서 보내 보세요. 예시 요청을 눌러도 돼요.', ui=make(), img=I + '4.jpg'),
@@ -383,8 +383,8 @@ def _lxp():
         return frame(TH, sd('home', True), ('LXP', '성적 조회'), main)
     I = 'media/walk/lxp/'
     return [
-        dict(title='학번/사번으로 로그인해요', text='한림대학교 LXP 접속 페이지에서 개인 계정으로 로그인하면 강의실에 들어갈 수 있어요.', do='학번(사번)과 비밀번호 칸을 확인하고 「로그인」을 눌러 보세요.', img=I + '1.jpg',
-             ui=login(TH, ('HALLYM UNIVERSITY', '한림대학교 LXP', '인공지능(AI) 기반 학습 경험 플랫폼'), ('LXP', '로그인'), [('학번/사번', '학번 또는 사번', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True)], foot='한림대학교 LXP에 오신 것을 환영합니다.')),
+        dict(title='학번/사번으로 로그인해요', text='○○대학교 LXP 접속 페이지에서 개인 계정으로 로그인하면 강의실에 들어갈 수 있어요.', do='학번(사번)과 비밀번호 칸을 확인하고 「로그인」을 눌러 보세요.', img=I + '1.jpg',
+             ui=login(TH, ('○○ UNIVERSITY', '○○대학교 LXP', '인공지능(AI) 기반 학습 경험 플랫폼'), ('LXP', '로그인'), [('학번/사번', '학번 또는 사번', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True)], foot='○○대학교 LXP에 오신 것을 환영합니다.')),
         dict(title='강의실 홈에 들어가요', text='강의실 홈에서는 이번 주 학습 목표와 진행률, 아직 채점되지 않은 활동, 질문과 답변을 한 화면에서 확인해요.', do='강의실 홈에서 「1주차」 학습 영역을 눌러 이번 주 학습을 확인해 보세요.', ui=home(), img=I + '2.jpg'),
         dict(title='주차별 학습을 확인해요', text='주차별 학습에서는 그 주의 학습 목표와 학습활동 목록, 기간과 완료 여부를 확인하고 활동을 눌러 바로 학습해요.', do='학습활동 목록에서 첫 번째 활동 「1주차_인공지능이란?」을 눌러 보세요.', ui=week('open'), img=I + '3.jpg'),
         dict(title='학습활동을 진행해요', text='동영상·파일·토론·투표·채팅 같은 학습활동을 유형별로 모아 보고, 기간 안에 참여해 완료해요.', do='학습활동 필터에서 「동영상」을 눌러 동영상 활동만 모아 보세요.', ui=week('filter'), img=I + '4.jpg'),
@@ -573,8 +573,8 @@ def _way():
         return frame(TH, sd('job'), ('HAI-Way', '직무 매칭'), '<div class="mk-h"><h3>직무 매칭</h3></div><div class="mk-tabs">' + tabs + '</div>' + p0 + p1 + p2)
     I = 'media/walk/hai-way/'
     return [
-        dict(title='한림 SSO로 로그인해요', text='한림대학교 계정(SSO)으로 바로 로그인해요.', do='「로그인」을 눌러 한림 SSO로 들어가 보세요.', img=I + '1.jpg',
-             ui=login(TH, ('HALLYM UNIVERSITY', 'Think Beyond,<br>Together Grow', '한림대학교 통합 로그인'), ('한국어 · English', '로그인'), [('ID', 'ID', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True)], foot='비밀번호 초기화 · 도움말')),
+        dict(title='통합 SSO로 로그인해요', text='○○대학교 계정(SSO)으로 바로 로그인해요.', do='「로그인」을 눌러 통합 SSO로 들어가 보세요.', img=I + '1.jpg',
+             ui=login(TH, ('○○ UNIVERSITY', 'Think Beyond,<br>Together Grow', '○○대학교 통합 로그인'), ('한국어 · English', '로그인'), [('ID', 'ID', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True)], foot='비밀번호 초기화 · 도움말')),
         dict(title='나의 대시보드를 봐요', text='전공 로드맵과 지금까지 들은 과목의 스킬셋 분석, 추천 직무를 대시보드로 확인해요.', do='「핵심 역량」 영역을 눌러 나의 스킬셋 분석을 확인해 보세요.', ui=dash(), img=I + '2.jpg'),
         dict(title='희망 직무에 맞는 커리큘럼을 받아요', text='희망 직무를 고르면 그 직무에 필요한 스킬셋을 기준으로 들어야 할 과목 로드맵을 만들어 줘요.', do='왼쪽 메뉴에서 「커리큘럼 추천」을 눌러 보세요.', ui=cur(), img=I + '3.jpg'),
         dict(title='나와 가까운 직무를 찾아요', text='내가 들은 과목의 스킬셋을 바탕으로 나와 가장 가까운 직무와 그 직무를 위한 로드맵을 추천해요.', do='「커리큘럼 기반 매칭」 탭을 눌러 나와 가까운 직무를 확인해 보세요.', ui=job(0), img=I + '4.jpg'),
@@ -584,7 +584,7 @@ def _way():
 # ------------------------------------------------------------------ HAI-Research (일반 사용자 매뉴얼)
 def _research():
     TH = '--mk:#0d9488;--mk-side:#0f2f4a'
-    TOP = '<div class="mk-box" style="background:var(--mk-side);color:#fff;border:0;flex-direction:row;justify-content:space-between;align-items:center"><b>한림대학교 · 연구자 탐색</b><span class="mk-pills"><span>매뉴얼 보기</span><span>연구자 로그인</span></span></div>'
+    TOP = '<div class="mk-box" style="background:var(--mk-side);color:#fff;border:0;flex-direction:row;justify-content:space-between;align-items:center"><b>○○대학교 · 연구자 탐색</b><span class="mk-pills"><span>매뉴얼 보기</span><span>연구자 로그인</span></span></div>'
     CARDS = [('연구자 A', '의학과', '줄기세포·조직 재생'), ('연구자 B', '바이오메디컬학과', '재생의학 소재'), ('연구자 C', '의학과', '임상 적용 연구')]
     def cards(goal=False):
         return ('<div class="mk-box" data-a{H}><b>매칭된 연구자의 상세 정보를 제공합니다</b><div class="mk-srcs">' + ''.join(f'<button type="button" class="mk-src" data-on data-hide="[data-pf]" data-show="[data-pf={chr(39)}{k}{chr(39)}]"{" data-goal" if goal and k == 0 else ""}><strong>{n}</strong><span>소속 {d}</span><span>연구분야 {f}</span></button>' for k, (n, d, f) in enumerate(CARDS)) + '</div>'
@@ -638,18 +638,18 @@ def _bdpi():
                 + '<p class="mk-demo" data-need hidden>모든 문항에 응답해야 다음 페이지로 넘어갈 수 있어요.</p><div class="mk-row end"><button type="button" class="mk-btn" data-allon="[data-sc]" data-show="[data-nx]" data-goal>다음으로</button></div>' + toast('data-nx', '응답을 저장하고 다음 페이지로 넘어갔어요.'))
         return frame(TH, '', ('BDPI', '성격검사 응시'), main)
     def result(goal):
-        R = ['2026_08_12_한림이_6회차', '2026_08_12_한림이_5회차', '2026_08_11_한림이_4회차']
+        R = ['2026_08_12_홍길동_6회차', '2026_08_12_홍길동_5회차', '2026_08_11_홍길동_4회차']
         rows = ''.join(f'<div class="mk-rowbtn" style="cursor:default"><span>{r}</span><span class="mk-row"><button type="button" class="mk-btn sm line" data-show="[data-rp]"{" data-goal" if goal == "view" and k == 0 else ""}>보고서 보기</button>'
                        f'<button type="button" class="mk-btn sm" data-show="[data-dl]"{" data-goal" if goal == "pdf" and k == 0 else ""}>PDF 다운로드</button></span></div>' for k, r in enumerate(R))
-        main = (BAR + '<div class="mk-two"><div class="mk-box"><b>본인확인</b><span>성명　한림이</span><span>학번　H1234</span></div><div class="mk-box"><b>결과안내</b><span><b>한림이</b>님의 BDPI 성격검사가 종료되었습니다.</span></div></div>'
+        main = (BAR + '<div class="mk-two"><div class="mk-box"><b>본인확인</b><span>성명　홍길동</span><span>학번　H1234</span></div><div class="mk-box"><b>결과안내</b><span><b>홍길동</b>님의 BDPI 성격검사가 종료되었습니다.</span></div></div>'
                 '<div class="mk-box"><b>결과 보고서</b>' + rows + '</div>'
                 '<div class="mk-box" data-rp hidden style="background:linear-gradient(160deg,#bbf7d0,#86efac);border:0;align-items:center;text-align:center;padding:26px 14px"><b style="font-size:19px">5요인 성격 모델 기반<br>한국형 다차원 성격 검사</b><span>Bright Dark Personality Inventory</span><small>결과 보고서가 새 창에서 열려요. 요인별 프로파일과 해석을 볼 수 있어요.</small></div>'
                 + toast('data-dl', 'PDF로 내려받았어요. (체험판에서는 파일이 만들어지지 않아요)'))
         return frame(TH, '', ('BDPI', '결과 확인'), main)
     I = 'media/walk/hai-bdpi/'
     return [
-        dict(title='학번으로 로그인해요', text='한림대학교 통합 로그인 화면에서 학번과 비밀번호로 로그인해요.', do='학번과 비밀번호 칸을 확인하고 「로그인」을 눌러 보세요.', img=I + '1.jpg',
-             ui=login(TH, ('HALLYM UNIVERSITY', 'The New Hallym,<br>K-University of the Future', '한림대학교 통합 로그인'), ('한국어 · English', '로그인'), [('ID', 'ID', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True)], foot='비밀번호 초기화 · 도움말')),
+        dict(title='학번으로 로그인해요', text='○○대학교 통합 로그인 화면에서 학번과 비밀번호로 로그인해요.', do='학번과 비밀번호 칸을 확인하고 「로그인」을 눌러 보세요.', img=I + '1.jpg',
+             ui=login(TH, ('○○ UNIVERSITY', 'The New University,<br>K-University of the Future', '○○대학교 통합 로그인'), ('한국어 · English', '로그인'), [('ID', 'ID', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True)], foot='비밀번호 초기화 · 도움말')),
         dict(title='검사를 시작해요', text='검사 안내문을 읽고 「시작」을 누르면 성격검사가 시작돼요. 이미 응시했다면 「결과 확인」으로 바로 갈 수 있어요.', do='안내문을 읽었다면 「시작」을 눌러 검사를 시작해 보세요.', ui=intro(), img=I + '2.jpg'),
         dict(title='문항에 응답해요', text='각 문항에 솔직하게 응답하고 「다음으로」를 눌러요. 모든 문항에 답해야 다음 페이지로 넘어가요.', do='네 문항에 모두 응답한 뒤 「다음으로」를 눌러 보세요.', ui=items(), img=I + '3.jpg'),
         dict(title='결과 보고서를 확인해요', text='검사가 끝나면 결과 보고서가 만들어져요. 「보고서 보기」를 누르면 새 창에서 결과를 확인할 수 있어요.', do='첫 번째 보고서의 「보고서 보기」를 눌러 보세요.', ui=result('view'), img=I + '4.jpg'),
@@ -680,11 +680,11 @@ def _check():
                      '<label class="mk-f">문항Pool명<input type="text" id="mknm" placeholder="예: 중간고사 시험지"></label><div class="mk-f">담을 문항 (눌러서 고르기)<div class="mk-pills"><button type="button" data-tg>문항 1</button><button type="button" data-tg>문항 2</button><button type="button" data-tg>문항 3</button></div></div>', '새 문항Pool을 등록했어요. 문항Pool은 이번 시험의 시험지예요.')
         return frame(TH, sd('pool'), ('LIVECAT', '문항 pool'), main)
     def test():
-        main = table('등록중인 TEST 목록', ['조직명', '시험명', '진행', '등록자', '상태'], [['한림대', '중간고사', 'step3단계', '홍길동', '<span class="mk-st ok">완료</span>'], ['한림대', 'CAT 테스트', 'step3단계', '홍길동', '<span class="mk-st ok">완료</span>']], '새 TEST 등록',
+        main = table('등록중인 TEST 목록', ['조직명', '시험명', '진행', '등록자', '상태'], [['○○대학교', '중간고사', 'step3단계', '홍길동', '<span class="mk-st ok">완료</span>'], ['○○대학교', 'CAT 테스트', 'step3단계', '홍길동', '<span class="mk-st ok">완료</span>']], '새 TEST 등록',
                      '<label class="mk-f">TEST 명<input type="text" id="mknm" placeholder="예: 기말고사"></label><label class="mk-f">문항Pool<select><option>CBT 2</option><option>CAT 2</option></select></label><label class="mk-f">응시자 안내 문구<textarea placeholder="응시자에게 보일 안내 문구"></textarea></label>', '새 시험을 만들었어요. 시험마다 응시용 URL이 만들어져요.')
         return frame(TH, sd('test'), ('LIVECAT', 'TEST 등록'), main)
     def res():
-        main = ('<div class="mk-h"><h3>결과관리</h3></div><table class="mk-tbl"><tr><th>조직명</th><th>테스트명</th><th>응시인원</th><th>진행일</th></tr><tr class="on"><td>한림대</td><td><button type="button" data-show="[data-pv]">중간고사</button></td><td>0/22</td><td>2026-08-18 ~ 2026-08-18</td></tr><tr><td>한림대</td><td>CAT 테스트</td><td>0/22</td><td>2026-08-18 ~ 2026-08-18</td></tr></table>'
+        main = ('<div class="mk-h"><h3>결과관리</h3></div><table class="mk-tbl"><tr><th>조직명</th><th>테스트명</th><th>응시인원</th><th>진행일</th></tr><tr class="on"><td>○○대학교</td><td><button type="button" data-show="[data-pv]">중간고사</button></td><td>0/22</td><td>2026-08-18 ~ 2026-08-18</td></tr><tr><td>○○대학교</td><td>CAT 테스트</td><td>0/22</td><td>2026-08-18 ~ 2026-08-18</td></tr></table>'
                 '<div class="mk-modal" data-pv><b>미리보기</b><span class="mk-lbl">TEST 기본정보</span><span>TEST 명　중간고사<br>대상자 정보　지속관리형 · 22명<br>TEST url　https://…/takerlogin (응시용 주소)</span><span class="mk-lbl">결과관리</span>'
                 '<div class="mk-row"><span>결과표</span><button type="button" class="mk-btn sm" style="background:#15803d" data-show="[data-dl]" data-goal>' + ic('down', 14) + '다운로드</button></div>' + toast('data-dl', '응시 결과를 엑셀 결과표로 내려받았어요. (체험판에서는 파일이 만들어지지 않아요)') + '</div>')
         return frame(TH, sd('res'), ('LIVECAT', '결과 관리'), main)
@@ -896,7 +896,7 @@ def _epilearn():
     I = 'media/walk/hai-epilearn/'
     return [
         dict(title='EPI-Learn Studio에 로그인해요', text='브라우저에서 EPI-Learn Studio에 접속해 로그인해요. 수업 전·중·후 전 과정을 한 곳에서 지원해요.', do='아이디와 비밀번호 칸을 확인하고 「로그인」을 눌러 보세요.', img=I + '1.jpg',
-             ui=login(TH, ('HALLYM UNIVERSITY COLLEGE OF MEDICINE', 'EpiLearn Studio', '사회의학 수업을 위한 AI 코스웨어'), ('EpiLearn', 'Studio'), [('아이디', '아이디를 입력하세요', 'text'), ('비밀번호', '비밀번호를 입력하세요', 'password')], [('로그인', True, True)], foot='교수자 또는 학생 계정으로 로그인하세요')),
+             ui=login(TH, ('COLLEGE OF MEDICINE', 'EpiLearn Studio', '사회의학 수업을 위한 AI 코스웨어'), ('EpiLearn', 'Studio'), [('아이디', '아이디를 입력하세요', 'text'), ('비밀번호', '비밀번호를 입력하세요', 'password')], [('로그인', True, True)], foot='교수자 또는 학생 계정으로 로그인하세요')),
         dict(title='교수자 대시보드에서 기능을 골라요', text='코스를 선택하면 수업 자료 생성, 수업 자료 편집, 수업 진행, 학습 분석 네 가지 기능 타일이 보여요.', do='네 가지 기능 가운데 「수업 자료 생성」을 눌러 보세요.', ui=dash(), img=I + '2.jpg'),
         dict(title='자료를 고르고 AI 생성을 시작해요', text='학습 목표와 교재를 고르면 AI가 팟캐스트, 강의노트, 퀴즈, 사례를 한 번에 만들어요.', do='교재를 눌러 고른 뒤 「AI 콘텐츠 생성 시작」을 눌러 보세요.', ui=make(), img=I + '3.jpg'),
         dict(title='생성된 콘텐츠를 검토해요', text='팟캐스트, 강의록, 사전퀴즈, 케이스, 사후퀴즈를 탭별로 검토하고 필요한 부분을 고쳐요.', do='「사전퀴즈」 탭을 눌러 생성된 퀴즈를 검토해 보세요.', ui=review(), img=I + '4.jpg'),
