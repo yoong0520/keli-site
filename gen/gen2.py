@@ -564,6 +564,19 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .fcard .vid-body > .try-steps { margin: 12px 0 0; align-self: start; } .fcard .vid-body > .vbtns { margin-top: 14px; align-self: start; align-content: flex-start; } .fcard .vid-body > .vbtns.docs { margin-top: 8px; } .fcard .vid-body > .vbtns:empty { margin: 0; } .fcard .vid-body > .trial { margin: 12px 0 0; align-self: start; }
 @supports not (grid-template-rows: subgrid) { .fcard { display: flex; flex-direction: column; } .fcard > .vid-body { display: flex; flex-direction: column; } }
 .btn.btn-demo { background: #fff; color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); } .btn.btn-demo:hover { background: var(--accent); color: #fff; }
+.finder { border: 1px solid var(--line); border-radius: 22px; background: linear-gradient(160deg, #f5f9ff, #fff 55%); padding: 26px; }
+.fd-intro { display: flex; gap: 22px; align-items: center; } .fd-intro h3 { font-size: 22px; margin: 0 0 6px; } .fd-intro .btn { margin-top: 12px; }
+.fd-duo { display: flex; flex: none; } .fd-duo img { width: 84px; height: 84px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 6px 18px rgba(11,92,255,.15); background: #eaf2ff; } .fd-duo img + img { margin-left: -18px; }
+.finder.on .fd-intro { display: none; } .fd-bar { display: none; height: 6px; border-radius: 99px; background: #e6edf9; overflow: hidden; margin-bottom: 18px; } .finder.on .fd-bar { display: block; } .fd-bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
+.fd-q { display: flex; gap: 12px; align-items: flex-start; } .fd-av { width: 56px; height: 56px; border-radius: 50%; flex: none; background: #eaf2ff; }
+.fd-bubble { background: #fff; border: 1px solid var(--line); border-radius: 4px 18px 18px 18px; padding: 12px 16px; } .fd-bubble p { margin: 2px 0 0; font-size: 17px; font-weight: 600; } .fd-bubble p.small { font-size: 14px; font-weight: 400; color: var(--muted); }
+.fd-who { font-size: 12px; color: var(--accent); font-weight: 700; }
+.fd-opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 18px 0 0 68px; }
+.fd-opt { text-align: left; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: 14px; background: #fff; font: inherit; font-size: 15px; cursor: pointer; transition: border-color .15s, transform .15s; } .fd-opt:hover, .fd-opt:focus-visible { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); outline: none; }
+.fd-back { margin: 12px 0 0 68px; border: 0; background: none; color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; }
+.fd-picks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 18px; } .fd-pick { display: flex; flex-direction: column; gap: 6px; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: #fff; } .fd-pick strong { font-size: 18px; } .fd-pick .vbtns { margin-top: auto; padding-top: 8px; }
+.fd-rank { font-size: 12px; font-weight: 700; color: #b45309; } .fd-end { display: flex; gap: 16px; align-items: center; margin-top: 16px; }
+@media (max-width: 760px) { .fd-intro { flex-direction: column; text-align: center; } .fd-opts { grid-template-columns: 1fr; margin-left: 0; } .fd-back { margin-left: 0; } .fd-picks { grid-template-columns: 1fr; } }
 .try-grid { gap: 20px; } .try-card { display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
 .try-top { display: flex; gap: 14px; align-items: center; } .try-ic { font-size: 30px; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 14px; background: color-mix(in srgb, var(--accent, #0B5CFF) 8%, #fff); flex: none; }
 .try-top .m { display: block; font-size: 13px; color: var(--muted); } .try-top .t { font-size: 20px; font-weight: 700; }
@@ -2770,6 +2783,84 @@ def page_demos():
     body += f'<script>{TRIAL_JS}</script>'
     write('demos.html', '전체 데모 영상 · KELI', body)
 
+# ------------------------------------------------------------------ 나에게 맞는 한림 AI 찾기(전공박람회 체험 이벤트의 온라인판 · 개인정보 받지 않음)
+FINDER_Q = [
+    {'who': 'eumi', 'q': '안녕하세요! 저는 이음이예요. 먼저, 어떤 분이신가요?', 'opts': [
+        ('학생이에요', {'student': 3}), ('교수자예요', {'prof': 3}), ('연구자·대학원생이에요', {'research': 3, 'student': 1}), ('직원(행정)이에요', {'staff': 3})]},
+    {'who': 'irumi', 'q': '저는 이루미! 요즘 가장 도움받고 싶은 일은 무엇인가요?', 'opts': [
+        ('수업 내용을 더 잘 이해하고 싶어요', {'understand': 3}), ('문제 풀이·코딩을 연습하고 싶어요', {'practice': 3}), ('진로·나에게 맞는 길이 궁금해요', {'career': 3}),
+        ('수업·강의를 더 잘 운영하고 싶어요', {'teach': 3}), ('연구·협업 상대를 찾고 싶어요', {'collab': 3}), ('일을 더 빨리 처리하고 싶어요', {'work': 3})]},
+    {'who': 'eumi', 'q': '관심 있는 분야를 하나 골라 주세요.', 'opts': [
+        ('수학·공학', {'math': 2}), ('프로그래밍·보안', {'code': 2}), ('의학·보건', {'med': 2}), ('과학수사·융합', {'forensic': 2}), ('인문·사회·교육', {'human': 2}), ('특별히 없어요', {'any': 1})]},
+    {'who': 'irumi', 'q': '어떤 방식으로 배우거나 일할 때 가장 신나나요?', 'opts': [
+        ('궁금한 걸 바로 묻고 답을 듣기', {'chat': 2}), ('직접 풀어 보고 피드백 받기', {'feedback': 2}), ('팀으로 함께 토론·프로젝트', {'team': 2}), ('데이터로 확인하고 분석하기', {'data': 2})]},
+    {'who': 'eumi', 'q': '마지막! AI에게 가장 바라는 한 가지는?', 'opts': [
+        ('정답보다 스스로 생각하게 돕는 힌트', {'hint': 2}), ('빠른 요약·정리', {'summary': 2}), ('나에게 맞춘 추천', {'recommend': 2}), ('기록이 쌓여 성장이 보이는 것', {'growth': 2})]},
+]
+# 서비스별 특징 태그(점수 계산용)
+FINDER_TAGS = {
+    'hai-tutor': 'student prof understand chat hint human any', 'hai-mathtutor': 'student understand practice math feedback hint',
+    'hai-coder': 'student practice code feedback hint growth', 'hai-security': 'student practice code feedback',
+    'hai-fist': 'student understand practice forensic team', 'hai-sync': 'student understand summary chat any',
+    'hai-mate': 'prof student teach chat understand', 'hai-forum': 'prof student teach team human',
+    'hai-pbl': 'prof student teach team collab', 'hai-check': 'prof teach practice feedback data growth',
+    'hai-lens': 'prof teach data growth', 'hai-lrs': 'prof staff data growth teach',
+    'hai-research': 'research prof collab recommend data', 'hai-way': 'student career recommend growth',
+    'hai-bdpi': 'student career recommend', 'hai-gpt': 'student prof research staff chat summary work any',
+    'hai-llm': 'prof research staff chat summary work', 'hai-epilearn': 'student prof med understand data',
+    'hai-medlearn-x': 'student prof med understand practice', 'hai-docs': 'staff work summary',
+    'lxp': 'student recommend growth understand',
+}
+FINDER_TYPES = {   # 2번 질문(필요한 일)에 따라 유형 이름
+    'understand': ('탐구형 러너', '궁금한 건 끝까지 파고드는 당신! AI 튜터와 함께라면 수업이 훨씬 또렷해져요.'),
+    'practice': ('도전형 챌린저', '직접 풀고 고치며 실력이 느는 당신! 힌트와 피드백을 주는 AI 코스웨어가 딱이에요.'),
+    'career': ('미래 설계자', '나에게 맞는 길을 찾는 당신! 진단과 추천으로 다음 걸음을 함께 그려 봐요.'),
+    'teach': ('수업 디자이너', '더 좋은 수업을 고민하는 당신! 수업 운영과 분석을 돕는 AI가 든든한 조교가 되어 줄 거예요.'),
+    'collab': ('연구 탐험가', '함께할 사람과 아이디어를 찾는 당신! 연구 매칭과 협업 도구를 추천해요.'),
+    'work': ('스마트 일잘러', '시간을 아끼고 싶은 당신! 문서와 업무를 빠르게 처리하는 AI를 추천해요.'),
+}
+def finder_data():
+    svc = {}
+    for x in SERVICES:
+        if x['slug'] not in FINDER_TAGS: continue
+        vs = videos_for(x['name'])
+        svc[x['slug']] = {'name': x['name'], 'one': (x.get('head') if (x.get('one') or '').endswith('…') else x.get('one')) or x.get('head') or '', 'page': f'service-{x["slug"]}.html',
+                          'video': (vs[0]['embed'] if vs else ''), 'demo': demo_url(x['slug']), 'tags': FINDER_TAGS[x['slug']].split(),
+                          'try': x['slug'] if any(t['svc'] == x['slug'] for t in TRY_DEMOS) else '', 'soon': x.get('status') == 'soon'}
+    return json.dumps({'q': [{'who': q['who'], 'q': q['q'], 'opts': [[a, w] for a, w in q['opts']]} for q in FINDER_Q],
+                       'types': {k: list(v) for k, v in FINDER_TYPES.items()}, 'svc': svc}, ensure_ascii=False)
+FINDER_JS = r"""(function(){
+  var box=document.querySelector('.finder'); if(!box) return; var D=window.KELI_FINDER, st=box.querySelector('.fd-stage'), bar=box.querySelector('.fd-bar i'), step=0, ans=[];
+  var AV={eumi:'media/mascot/eumi.png', irumi:'media/mascot/irumi.png'}, NM={eumi:'이음이', irumi:'이루미'};
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function start(){ step=0; ans=[]; show(); }
+  function show(){ bar.style.width=(step/D.q.length*100)+'%'; var q=D.q[step];
+    st.innerHTML='<div class="fd-q"><img src="'+AV[q.who]+'" alt="" class="fd-av"><div class="fd-bubble"><span class="fd-who">'+NM[q.who]+' · 질문 '+(step+1)+'/'+D.q.length+'</span><p>'+esc(q.q)+'</p></div></div><div class="fd-opts">'+q.opts.map(function(o,i){ return '<button type="button" class="fd-opt" data-i="'+i+'">'+esc(o[0])+'</button>'; }).join('')+'</div>'+(step?'<button type="button" class="fd-back">← 이전 질문</button>':'');
+    var f=st.querySelector('.fd-opt'); if(f&&step) f.focus(); }
+  function result(){ bar.style.width='100%'; var w={}; ans.forEach(function(a){ for(var k in a) w[k]=(w[k]||0)+a[k]; });
+    var need=Object.keys(D.q[1].opts[ans.idx1][1])[0], ty=D.types[need]||['한림 AI 탐험가',''];
+    var list=Object.keys(D.svc).map(function(k){ var s=D.svc[k], sc=0; s.tags.forEach(function(t){ sc+=(w[t]||0); }); if(s.soon) sc-=0.5; if(s.try) sc+=0.3; return {k:k,s:s,sc:sc}; }).sort(function(a,b){ return b.sc-a.sc; }).slice(0,3);
+    st.innerHTML='<div class="fd-res"><div class="fd-q"><img src="'+AV.irumi+'" alt="" class="fd-av"><div class="fd-bubble"><span class="fd-who">이루미 · 결과</span><p>당신은 <b>'+esc(ty[0])+'</b> 유형이에요!</p><p class="small">'+esc(ty[1])+'</p></div></div>'
+      +'<div class="fd-picks">'+list.map(function(x,i){ var s=x.s; return '<div class="fd-pick"><span class="fd-rank">추천 '+(i+1)+'</span><strong><a href="'+s.page+'">'+esc(s.name)+'</a></strong>'+(s.soon?' <span class="badge soon">준비 중</span>':'')+'<span class="small muted">'+esc(s.one)+'</span><div class="vbtns">'
+        +(s.try?'<button type="button" class="btn sm" data-try="'+s.try+'">바로 체험하기</button>':'')
+        +(s.video?'<button type="button" class="btn '+(s.try?'ghost ':'')+'sm" data-vmodal="'+esc(s.video)+'" data-vtitle="'+esc(s.name)+' · 영상">▶ 영상 보기</button>':'')
+        +(s.demo?'<a class="btn sm btn-demo" href="'+s.demo+'">데모 신청</a>':'')
+        +'<a class="btn ghost sm" href="'+s.page+'">서비스 소개</a></div></div>'; }).join('')+'</div>'
+      +'<div class="fd-end"><button type="button" class="btn ghost sm fd-again">다시 하기</button><a class="more" href="services.html">전체 서비스 보기</a></div></div>';
+    try{ if(window.KELI_API&&navigator.sendBeacon) navigator.sendBeacon(window.KELI_API+'/api/hit', new Blob([JSON.stringify({t:'click',p:location.pathname,x:'finder:'+need+':'+list.map(function(x){return x.k;}).join(',')})],{type:'text/plain'})); }catch(e){} }
+  st.addEventListener('click', function(e){ var o=e.target.closest('.fd-opt');
+    if(o){ var i=+o.getAttribute('data-i'); ans[step]=D.q[step].opts[i][1]; if(step===1) ans.idx1=i; step++; if(step<D.q.length) show(); else result(); return; }
+    if(e.target.closest('.fd-back')){ step=Math.max(0,step-1); ans.length=step; show(); return; }
+    if(e.target.closest('.fd-again')){ start(); } });
+  box.querySelector('.fd-start').addEventListener('click', function(){ box.classList.add('on'); start(); });
+})();"""
+def finder_html():
+    return f"""<div class="finder"><div class="fd-intro"><div class="fd-duo"><img src="media/mascot/eumi.png" alt="이음이"><img src="media/mascot/irumi.png" alt="이루미"></div>
+<div><h3>나에게 딱 맞는 한림 AI 찾기</h3><p class="small muted">이음이·이루미의 질문 5개에 답하면, 나에게 맞는 한림 AI 유형과 추천 서비스 3개를 1분 만에 알려 드려요. 이름·학번 같은 개인정보는 묻지 않아요.</p>
+<button type="button" class="btn fd-start">시작하기</button></div></div>
+<div class="fd-bar" aria-hidden="true"><i></i></div><div class="fd-stage" aria-live="polite"></div></div>
+<script>window.KELI_FINDER={finder_data()};</script><script>{FINDER_JS}</script>"""
+
 def try_modal_html():
     return f'''<div class="try-modal" hidden role="dialog" aria-modal="true" aria-labelledby="try-title"><div class="try-bg" data-tclose></div><div class="try-panel">
 <div class="try-head"><div><span class="try-sub">미니 체험판 · 실제 서비스와 다릅니다</span><h2 id="try-title">체험</h2></div><button type="button" class="vmodal-x" data-tclose aria-label="닫기">&times;</button></div>
@@ -2791,9 +2882,13 @@ def page_experience():
                  f'<div class="grid g3 vids fgrid">{"".join(follow_card(d) for d in items)}</div>')
     body = crumb(('services.html', 'HAI Ecosystems'), (None, 'HAI 체험관')) + f"""
 <section class="hero" style="padding-top:48px;padding-bottom:36px"><div class="wrap"><span class="eyebrow">HAI Ecosystems · 체험관</span><h1>로그인 없이,<br>브라우저에서 바로 체험합니다.</h1>
-<p class="lead">HAI Ecosystems의 핵심 기능을 미니 체험판으로 직접 써 보고, 모든 서비스는 영상과 매뉴얼로 따라 해 봅니다.</p>
-<div class="acts"><a class="btn" href="#try">바로 체험</a><a class="btn ghost" href="#real">실제 서비스 체험</a><a class="btn ghost" href="#follow">전체 데모 영상 및 데모 신청</a><a class="more" href="services.html">서비스 목록</a></div>{MKT_NOTICE}</div></section>
-<section class="sec" id="try" style="padding-top:8px"><div class="wrap">
+<p class="lead">이음이·이루미와 함께 나에게 맞는 한림 AI를 찾고, 미니 체험판과 영상·매뉴얼로 바로 써 봅니다.</p>
+<div class="acts"><a class="btn" href="#find">나에게 맞는 한림 AI 찾기</a><a class="btn ghost" href="#try">바로 체험</a><a class="btn ghost" href="#real">실제 서비스 체험</a><a class="btn ghost" href="#follow">전체 데모 영상 및 데모 신청</a><a class="more" href="services.html">서비스 목록</a></div>{MKT_NOTICE}</div></section>
+<section class="sec" id="find" style="padding-top:8px"><div class="wrap narrow" style="max-width:980px">
+<div class="row" style="margin-bottom:14px"><h2 style="font-size:28px">나에게 맞는 한림 AI 찾기</h2><span class="muted small">질문 5개 · 1분</span></div>
+{finder_html()}
+</div></section>
+<section class="sec" id="try" style="padding-top:0"><div class="wrap">
 <div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">바로 체험</h2><span class="muted small">미니 체험판 {len(TRY_DEMOS)}종</span></div>
 <p class="note" style="margin:0 0 18px">미니 체험판은 각 서비스의 핵심 기능을 맛볼 수 있도록 KELI 사무국이 만든 <b>체험용 축소판</b>입니다. 실제 서비스와 화면·기능·AI 모델이 다릅니다. 이름·학번·연락처 같은 개인정보는 입력하지 마세요. 입력한 내용은 답변을 만드는 데에만 쓰고 저장하지 않습니다.</p>
 <div class="grid g2 try-grid">{tries}</div>
