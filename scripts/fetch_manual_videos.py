@@ -25,8 +25,9 @@ def main():
                 if not emb:
                     emb = f'https://www.youtube-nocookie.com/embed/{y.group(1)}?autoplay=1&rel=0' if y else (f'https://www.youtube-nocookie.com/embed/videoseries?list={pl.group(1)}' if pl else u)
                 vids.append({'label': v.get('label') or '영상', 'type': v.get('type') or '', 'url': u, 'embed': emb})
-            if vids:
-                items.append({'id': s.get('id'), 'name': s.get('name'), 'portalName': s.get('portalName') or '', 'videos': vids})
+            mans = [{'label': (m.get('type') or '') + ' ' + (m.get('label') or '매뉴얼'), 'url': m.get('url')} for m in (s.get('manuals') or []) if m.get('url') and (m.get('kind') == 'pdf')]
+            if vids:   # 체험관에서 함께 쓰려고 매뉴얼(PDF) 주소도 넣는다
+                items.append({'id': s.get('id'), 'name': s.get('name'), 'portalName': s.get('portalName') or '', 'videos': vids, 'manuals': mans})
         if not items: raise RuntimeError('no videos')
         kst = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
         json.dump({'source': SITE, 'fetched_at': kst.strftime('%Y. %m. %d.').replace(' 0', ' '), 'items': items}, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)

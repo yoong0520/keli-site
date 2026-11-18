@@ -548,7 +548,26 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .vmodal-title { font-size: 17px; font-weight: 700; color: var(--accent); margin: 0; }
 .vmodal-x { width: 40px; height: 40px; border: 0; border-radius: 8px; background: transparent; font-size: 30px; line-height: 1; cursor: pointer; color: var(--ink); } .vmodal-x:hover, .vmodal-x:focus-visible { background: var(--bg2, #f2f2f5); outline: none; }
 .vmodal-body { position: relative; aspect-ratio: 16 / 9; background: #000; } .vmodal-body iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-.vbtns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; } button.more.vlink { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
+.vbtns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.try-grid { gap: 20px; } .try-card { display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+.try-top { display: flex; gap: 14px; align-items: center; } .try-ic { font-size: 30px; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 14px; background: color-mix(in srgb, var(--accent, #0B5CFF) 8%, #fff); flex: none; }
+.try-top .m { display: block; font-size: 13px; color: var(--muted); } .try-top .t { font-size: 20px; font-weight: 700; }
+.try-steps { margin: 4px 0 0; padding-left: 20px; font-size: 14px; line-height: 1.7; color: var(--ink); } .vid-body .try-steps { margin-top: 6px; font-size: 13px; color: var(--muted); }
+.try-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; } .try-modal[hidden] { display: none; }
+.try-bg { position: absolute; inset: 0; background: rgba(0,0,0,.55); }
+.try-panel { position: relative; width: min(720px, 100%); max-height: calc(100vh - 32px); display: flex; flex-direction: column; background: #fff; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.35); overflow: hidden; }
+.try-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 14px 12px 22px; border-bottom: 1px solid var(--line); }
+.try-head h2 { font-size: 20px; margin: 2px 0 0; color: var(--accent); } .try-sub { font-size: 12px; font-weight: 600; color: #b45309; background: #fef3c7; padding: 2px 8px; border-radius: 999px; }
+.try-log { flex: 1; min-height: 240px; overflow-y: auto; padding: 18px 22px; display: flex; flex-direction: column; gap: 10px; background: var(--bg2, #f7f8fa); }
+.try-msg { max-width: 88%; padding: 10px 14px; border-radius: 14px; font-size: 15px; line-height: 1.65; word-break: keep-all; overflow-wrap: anywhere; }
+.try-msg.bot { align-self: flex-start; background: #fff; border: 1px solid var(--line); } .try-msg.me { align-self: flex-end; background: var(--accent, #0B5CFF); color: #fff; }
+.try-msg pre { margin: 8px 0; padding: 10px 12px; border-radius: 10px; background: #0f172a; color: #e2e8f0; overflow-x: auto; font-size: 13px; line-height: 1.5; white-space: pre; } .try-msg code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; }
+.try-msg.me code { color: #fff; } .dots i { display: inline-block; width: 7px; height: 7px; margin: 0 2px; border-radius: 50%; background: var(--muted); animation: trydot 1s infinite ease-in-out; } .dots i:nth-child(2) { animation-delay: .15s; } .dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes trydot { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+.try-samples { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 22px 0; } .try-samples .chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 13px; cursor: pointer; } .try-samples .chip:hover { border-color: var(--accent); color: var(--accent); }
+.try-form { display: flex; gap: 10px; padding: 12px 22px 6px; align-items: flex-end; } .try-form textarea { flex: 1; resize: none; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font: inherit; font-size: 15px; } .try-form textarea:focus { outline: 2px solid var(--accent); border-color: transparent; }
+.try-foot { margin: 0; padding: 0 22px 14px; font-size: 12px; color: var(--muted); }
+@media (max-width: 600px) { .try-modal { padding: 0; } .try-panel { max-height: 100vh; height: 100vh; border-radius: 0; } .try-msg { max-width: 94%; } } button.more.vlink { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
 @media (max-width: 600px) { .vmodal { padding: 8px; } .vmodal-panel { border-radius: 12px; } }
 .vid-body { display: flex; flex-direction: column; gap: 6px; } .vid-body .m { font-size: 13px; color: var(--muted); } .vid-body .t { font-size: 17px; font-weight: 600; line-height: 1.5; } .vid-body .more { font-size: 14px; }
 .vids { gap: 28px 24px; }
@@ -1278,7 +1297,7 @@ def demo_url(slug):
 def _ext(h): return ' target="_blank" rel="noopener"' if str(h).startswith('http') and 'keliedu.org' not in str(h) else ''   # 구 플랫폼(Marketplace)은 현재 창
 MEGA = [
     ('about.html', 'KELI 소개', [('about.html#vision', '비전'), ('about.html#consortium', 'KELI 협의체'), ('about.html#org', '조직도')]),
-    ('services.html', 'HAI Ecosystems', [('services.html', 'HAI Ecosystems', [(f'services.html#{k}', lb) for k, lb, _ in AREAS] + [('demos.html', '전체 데모 영상')]), (OLD_MARKET, 'Marketplace')]),
+    ('services.html', 'HAI Ecosystems', [('services.html', 'HAI Ecosystems', [(f'services.html#{k}', lb) for k, lb, _ in AREAS] + [('demos.html', '전체 데모 영상'), ('experience.html', 'HAI 체험관')]), (OLD_MARKET, 'Marketplace')]),
     ('join.html', 'KELI 협의체 참여', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의')]),
     ('archive.html', '아카이브', [(f'archive-{k}.html', l.replace('·', ' · ')) for k, l in ARCH_CATS]),
     ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료')]),
@@ -1834,6 +1853,61 @@ def demo_card(d):
             f'<div class="vid-body"><span class="m">{E(d.get("category", ""))} {st}</span><strong class="t">{name}</strong>'
             f'<span class="small muted">{E(d.get("summary", ""))}</span><div class="vbtns">{btns}</div></div></div>')
 
+# ------------------------------------------------------------------ HAI 체험관: 바로 체험(미니 체험판) + 영상으로 따라 하기
+def manuals_for(name):
+    n = _svc_n(name)
+    for mv in sorted(MANUAL_VIDEOS, key=lambda x: -len(_svc_n(x.get('portalName') or x['name']))):
+        for k in {_svc_n(mv.get('portalName') or ''), _svc_n(mv['name'])}:
+            if k and (n == k or n.startswith(k) or k.startswith(n)): return mv.get('manuals') or []
+    return []
+def svc_slug_of(name):
+    h = svc_page_of(name)
+    return h[len('service-'):-len('.html')] if h else ''
+# 미니 체험판: 서비스별 역할(시스템 지시)은 관리자 서버(/api/try)에만 있고, 여기에는 화면 문구와 예시 질문만 둔다.
+TRY_DEMOS = [
+    {'svc': 'hai-tutor', 'name': 'HAI-Tutor', 'what': '교과목 AI 튜터', 'icon': '📘',
+     'pitch': '강의 자료를 근거로 답하는 RAG 튜터를 체험합니다. 체험용 강의 자료는 「교육공학 개론 3주차: ADDIE 모형」 한 편입니다.',
+     'how': ['강의 자료에 대해 궁금한 점을 묻습니다.', '튜터가 자료를 근거로 설명하고, 근거 부분을 함께 보여 줍니다.', '튜터의 확인 질문에 답하며 스스로 정리합니다.'],
+     'samples': ['ADDIE 모형의 다섯 단계를 쉽게 설명해 주세요.', '형성평가와 총괄평가는 어떻게 달라요?', '학습 목표는 어떻게 써야 하나요?']},
+    {'svc': 'hai-mathtutor', 'name': 'HAI-MathTutor', 'what': 'AI 수학 튜터', 'icon': '➗',
+     'pitch': '정답을 바로 주지 않고, 스스로 풀 수 있도록 단계별 힌트를 주는 수학 튜터를 체험합니다.',
+     'how': ['풀고 싶은 문제를 입력합니다.', '튜터가 첫 단계 힌트와 질문을 줍니다.', '내 생각을 답하며 다음 힌트를 받습니다.'],
+     'samples': ['x^2 - 5x + 6 = 0 을 풀고 싶어요. 힌트 주세요.', '미분이 왜 기울기인지 이해가 안 돼요.', '1부터 100까지 더하는 빠른 방법이 있나요?']},
+    {'svc': 'hai-coder', 'name': 'HAI-Coder', 'what': 'AI 코딩 코스웨어', 'icon': '💻',
+     'pitch': '코드와 오류 메시지를 붙여 넣으면, 고친 코드를 바로 주는 대신 원인과 힌트로 스스로 고치게 돕습니다.',
+     'how': ['코드나 오류 메시지를 붙여 넣습니다.', '오류의 원인과 살펴볼 곳을 힌트로 받습니다.', '직접 고쳐 보고, 막히면 다시 물어봅니다.'],
+     'samples': ['for i in range(10)\n    print(i)\n이 코드에서 SyntaxError가 나요.', "nums = [1, 2, 3]\nprint(nums[3])\nIndexError가 무슨 뜻이에요?", '리스트와 튜플은 언제 다르게 써요?']},
+    {'svc': 'hai-way', 'name': 'HAI-Way', 'what': 'AI 진로 설계', 'icon': '🧭',
+     'pitch': '전공과 관심사를 이야기하면 진로 경로와 키울 역량, 대학에서 해 볼 활동을 함께 설계해 봅니다.',
+     'how': ['전공(또는 관심 분야)과 관심사를 적습니다.', '진로 경로 2~3개와 필요한 역량을 받아 봅니다.', '다음 학기에 해 볼 한 가지를 정합니다.'],
+     'samples': ['교육학과 2학년이고 에듀테크에 관심이 있어요.', '경영학 전공인데 데이터 분석 쪽 진로가 궁금해요.', '아직 하고 싶은 일이 없어요. 어떻게 시작하면 좋을까요?']},
+]
+def try_card(t):
+    page = svc_page_of(t['name'])
+    steps = ''.join(f'<li>{E(x)}</li>' for x in t['how'])
+    return (f'<div class="try-card"><div class="try-top"><span class="try-ic" aria-hidden="true">{t["icon"]}</span><span><span class="m">{E(t["what"])} · <span class="badge live">바로 체험</span></span><strong class="t">{E(t["name"])}</strong></span></div>'
+            f'<p class="small muted">{E(t["pitch"])}</p><ol class="try-steps">{steps}</ol>'
+            f'<div class="vbtns"><button type="button" class="btn sm" data-try="{t["svc"]}">바로 체험하기</button>'
+            + (f'<a class="btn ghost sm" href="{page}">서비스 소개</a>' if page else '') + '</div></div>')
+def follow_card(d):
+    vs = d.get('videos') or []
+    mans = manuals_for(d['name'])
+    slug = svc_slug_of(d['name']); dem = demo_url(slug) if slug else ''
+    st = '<span class="badge live">운영 중</span>' if d.get('status') == 'live' else '<span class="badge soon">준비 중</span>'
+    media = f'<img src="{d["thumb"]}" alt="" loading="lazy">' if d.get('thumb') else f'<span class="vid-ph"><span>{E(d["name"])}</span></span>'
+    steps = ('<ol class="try-steps"><li>영상으로 사용 흐름을 봅니다.</li>'
+             + ('<li>매뉴얼(PDF)을 펼쳐 화면을 따라가 봅니다.</li>' if mans else '')
+             + ('<li>Marketplace에서 데모를 신청해 직접 써 봅니다.</li>' if dem else '<li>도입 문의로 체험 방법을 안내받습니다.</li>') + '</ol>')
+    btns = ''.join(vbtn(d['name'], v, cls='btn sm', label=('영상 보기' if len(vs) == 1 else v['label'])) for v in vs)
+    btns += ''.join(f'<a class="btn ghost sm" href="{E(m["url"])}" target="_blank" rel="noopener">{E((m["label"] or "매뉴얼").replace("공통 ", "").strip())}(PDF)</a>' for m in mans)
+    btns += (f'<a class="btn ghost sm" href="{dem}">데모 신청</a>' if dem else '')
+    page = svc_page_of(d['name'])
+    nm = f'<a href="{page}">{E(d["name"])}</a>' if page else E(d['name'])
+    return (f'<div class="vid" id="try-{d["id"]}">'
+            f'<button type="button" class="vid-play" data-vmodal="{E(vs[0]["embed"])}" data-vtitle="{E(d["name"] + " · " + vs[0]["label"])}" aria-label="{E(d["name"])} 영상 보기">{media}<span class="play"></span></button>'
+            f'<div class="vid-body"><span class="m">{E(d.get("category", ""))} {st}</span><strong class="t">{nm}</strong>'
+            f'<span class="small muted">{E(d.get("summary", ""))}</span>{steps}<div class="vbtns">{btns}</div></div></div>')
+
 DEMO_NOTE = f'서비스별 영상은 HAI 활용 매뉴얼 사이트(haimanual.csedu4all.com)의 「영상 보기」와 같은 영상을 매일 자동으로 가져오며, 서비스 정보는 한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai)에서 가져옵니다. <span data-demo-date>{E(DEMOS.get("fetched_at", ""))}</span> 기준 {len({d["service_id"] for d in DEMO_ITEMS})}개 서비스 · 영상 {len(DEMO_ITEMS)}건.'
 
 # ------------------------------------------------------------------ 홈 숫자 3 (관리자 입력 + 포털 자동 수집)
@@ -2011,7 +2085,7 @@ def page_index():
 <div class="head"><span class="eyebrow">HAI Ecosystems</span><h2>수업 설계부터 평가·분석까지, {len(SERVICES)}개 서비스.</h2><p class="lead">한림대학교가 직접 개발해 수업에서 검증한 뒤 KELI Marketplace에 먼저 올린 서비스입니다. 다른 대학과 기관도 도입할 수 있습니다.</p></div>
 {tabs('home-svc', [(a[0], a[1]) for a in AREAS])}
 <div class="grid g4" data-items="home-svc" style="margin-top:24px">{cards}</div>
-<div class="cta" style="margin-top:40px"><div class="acts"><a class="btn ghost" href="demos.html">전체 데모 영상</a><a class="btn ghost" href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a></div></div>
+<div class="cta" style="margin-top:40px"><div class="acts"><a class="btn" href="experience.html">HAI 체험관</a><a class="btn ghost" href="demos.html">전체 데모 영상</a><a class="btn ghost" href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a></div></div>
 </div></section>
 
 <section class="sec alt"><div class="wrap">
@@ -2120,7 +2194,7 @@ def page_services():
 <span class="eyebrow">HAI Ecosystems · Hallym AI</span>
 <h1>한림대학교가 수업에서 써 온<br>AI 교육 서비스.</h1>
 <p class="lead">직접 개발해 수업에서 검증한 뒤 KELI Marketplace에 먼저 올린 서비스입니다. 다른 대학과 기관도 도입할 수 있습니다.</p>
-<div class="acts"><a class="btn ghost" href="demos.html">전체 데모 영상</a><a class="btn ghost" href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a><a class="more" href="curriculum.html">수업에 결합하는 방법</a></div>
+<div class="acts"><a class="btn" href="experience.html">HAI 체험관</a><a class="btn ghost" href="demos.html">전체 데모 영상</a><a class="btn ghost" href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a><a class="more" href="curriculum.html">수업에 결합하는 방법</a></div>
 {MKT_NOTICE}
 </div></section>
 <section class="sec glass" style="padding-top:48px"><div class="wrap">
@@ -2636,10 +2710,74 @@ def page_demos():
 </div></section>'''
     body = crumb(('services.html', 'HAI Ecosystems'), (None, '전체 데모 영상')) + f'''
 <section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap"><span class="eyebrow">HAI Ecosystems · 데모 영상</span><h1>서비스를 먼저<br>영상으로 봅니다.</h1><p class="lead">한림 AI 교육 포털에 등록된 서비스별 데모 영상을 한곳에 모았습니다. 썸네일을 누르면 이 자리에서 바로 재생됩니다.</p>
-<div class="acts"><a class="btn ghost" href="services.html">서비스 목록</a><a class="btn ghost" href="{PORTAL_DEMOS}" target="_blank" rel="noopener">한림 AI 교육 포털</a><a class="more" href="join.html#inquiry">도입 문의</a></div>{MKT_NOTICE}</div></section>{secs}
+<div class="acts"><a class="btn" href="experience.html">HAI 체험관</a><a class="btn ghost" href="services.html">서비스 목록</a><a class="btn ghost" href="{PORTAL_DEMOS}" target="_blank" rel="noopener">한림 AI 교육 포털</a><a class="more" href="join.html#inquiry">도입 문의</a></div>{MKT_NOTICE}</div></section>{secs}
 <section class="sec" style="padding-top:0"><div class="wrap"><p class="note">{DEMO_NOTE} 영상 저작권은 한림대학교에 있습니다.</p></div></section>
 '''
     write('demos.html', '전체 데모 영상 · KELI', body)
+
+def page_experience():
+    tries = ''.join(try_card(t) for t in TRY_DEMOS)
+    secs = ''
+    for cat in DEMO_CATS:
+        items = [d for d in DEMO_ITEMS if d.get('category') == cat]
+        secs += (f'<div class="row" style="margin:28px 0 14px"><h3 style="font-size:22px">{E(cat)}</h3><span class="muted small">{len(items)}건</span></div>'
+                 f'<div class="grid g3 vids">{"".join(follow_card(d) for d in items)}</div>')
+    try_data = json.dumps({t['svc']: {'name': t['name'], 'what': t['what'], 'samples': t['samples']} for t in TRY_DEMOS}, ensure_ascii=False)
+    body = crumb(('services.html', 'HAI Ecosystems'), (None, 'HAI 체험관')) + f"""
+<section class="hero" style="padding-top:48px;padding-bottom:36px"><div class="wrap"><span class="eyebrow">HAI Ecosystems · 체험관</span><h1>로그인 없이,<br>브라우저에서 바로 체험합니다.</h1>
+<p class="lead">HAI Ecosystems의 핵심 기능을 미니 체험판으로 직접 써 보고, 모든 서비스는 영상과 매뉴얼로 따라 해 봅니다.</p>
+<div class="acts"><a class="btn" href="#try">바로 체험</a><a class="btn ghost" href="#follow">영상으로 따라 하기</a><a class="more" href="services.html">서비스 목록</a></div>{MKT_NOTICE}</div></section>
+<section class="sec" id="try" style="padding-top:8px"><div class="wrap">
+<div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">바로 체험</h2><span class="muted small">미니 체험판 {len(TRY_DEMOS)}종</span></div>
+<p class="note" style="margin:0 0 18px">미니 체험판은 각 서비스의 핵심 기능을 맛볼 수 있도록 KELI 사무국이 만든 <b>체험용 축소판</b>입니다. 실제 서비스와 화면·기능·AI 모델이 다릅니다. 이름·학번·연락처 같은 개인정보는 입력하지 마세요. 입력한 내용은 답변을 만드는 데에만 쓰고 저장하지 않습니다.</p>
+<div class="grid g2 try-grid">{tries}</div>
+</div></section>
+<section class="sec alt" id="follow"><div class="wrap">
+<div class="row" style="margin-bottom:4px"><h2 style="font-size:28px">영상으로 따라 하기</h2><span class="muted small">{len(DEMO_ITEMS)}개 서비스</span></div>
+<p class="note" style="margin:0">영상으로 사용 흐름을 보고, 매뉴얼(PDF)로 화면을 따라가 본 뒤, Marketplace에서 데모를 신청해 직접 써 보세요.</p>
+{secs}
+<p class="note" style="margin-top:24px">{DEMO_NOTE} 영상과 매뉴얼의 저작권은 한림대학교와 각 개발 기업에 있습니다.</p>
+</div></section>
+<div class="try-modal" hidden role="dialog" aria-modal="true" aria-labelledby="try-title"><div class="try-bg" data-tclose></div><div class="try-panel">
+<div class="try-head"><div><span class="try-sub">미니 체험판 · 실제 서비스와 다릅니다</span><h2 id="try-title">체험</h2></div><button type="button" class="vmodal-x" data-tclose aria-label="닫기">&times;</button></div>
+<div class="try-log" aria-live="polite"></div>
+<div class="try-samples"></div>
+<form class="try-form"><textarea rows="2" maxlength="2000" placeholder="여기에 입력하세요 (Enter 보내기 · Shift+Enter 줄바꿈)" aria-label="체험 입력"></textarea><button type="submit" class="btn sm">보내기</button></form>
+<p class="try-foot">개인정보를 입력하지 마세요 · 체험용 축소판의 답변은 틀릴 수 있습니다</p>
+</div></div>
+<script>window.KELI_TRY={try_data};</script>
+<script>{TRY_JS}</script>
+"""
+    write('experience.html', 'HAI 체험관 · KELI', body, desc='HAI Ecosystems 체험관 — 로그인 없이 브라우저에서 AI 교육 서비스의 핵심 기능을 미니 체험판으로 써 보고, 모든 서비스를 영상과 매뉴얼로 따라 해 봅니다.')
+
+TRY_JS = r"""(function(){
+  var m=document.querySelector('.try-modal'); if(!m) return; var log=m.querySelector('.try-log'), ta=m.querySelector('textarea'), form=m.querySelector('.try-form'), sm=m.querySelector('.try-samples'), tt=m.querySelector('#try-title');
+  var cur=null, msgs=[], busy=false, last=null;
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function fmt(t){ var parts=String(t||'').split('```'); return parts.map(function(p,i){ if(i%2){ return '<pre><code>'+esc(p.replace(/^[a-zA-Z]*\n/,''))+'</code></pre>'; } return esc(p).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\n/g,'<br>'); }).join(''); }
+  function add(role, html){ var d=document.createElement('div'); d.className='try-msg '+role; d.innerHTML=html; log.appendChild(d); log.scrollTop=log.scrollHeight; return d; }
+  function open(svc, from){ var t=(window.KELI_TRY||{})[svc]; if(!t) return; cur=svc; msgs=[]; last=from; tt.textContent=t.name+' · '+t.what; log.innerHTML='';
+    add('bot', esc(t.name+' 미니 체험판입니다. 아래 예시를 누르거나 직접 입력해 보세요.'));
+    sm.innerHTML=t.samples.map(function(x){ return '<button type="button" class="chip">'+esc(x.split('\n')[0].slice(0,40))+(x.length>40||x.indexOf('\n')>-1?'…':'')+'</button>'; }).join('');
+    [].forEach.call(sm.querySelectorAll('button'), function(b,i){ b.addEventListener('click', function(){ send(t.samples[i]); }); });
+    m.hidden=false; document.body.style.overflow='hidden'; setTimeout(function(){ ta.focus(); }, 50);
+    try{ if(window.KELI_API&&navigator.sendBeacon) navigator.sendBeacon(window.KELI_API+'/api/hit', new Blob([JSON.stringify({t:'click',p:location.pathname,x:'try:'+svc})],{type:'text/plain'})); }catch(e){} }
+  function close(){ m.hidden=true; document.body.style.overflow=''; if(last) last.focus(); }
+  function send(text){ text=String(text||'').trim(); if(!text||busy||!cur) return; busy=true; ta.value=''; add('me', fmt(text)); msgs.push({role:'user',content:text});
+    var w=add('bot wait','<span class="dots"><i></i><i></i><i></i></span>');
+    if(!window.KELI_API){ w.className='try-msg bot'; w.innerHTML='지금은 체험 서버에 연결할 수 없어요. 잠시 뒤에 다시 해 주세요.'; busy=false; return; }
+    fetch(window.KELI_API+'/api/try',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({svc:cur,messages:msgs.slice(-8)})})
+      .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return {ok:r.ok, status:r.status, j:j}; }); })
+      .then(function(x){ w.className='try-msg bot';
+        if(x.ok&&x.j.answer){ w.innerHTML=fmt(x.j.answer); msgs.push({role:'assistant',content:x.j.answer}); }
+        else { msgs.pop(); w.innerHTML=esc(x.status===404?'미니 체험판을 준비하고 있어요. 조금만 기다려 주세요.':(x.j.error||'잠시 뒤에 다시 해 주세요.')); } })
+      .catch(function(){ msgs.pop(); w.className='try-msg bot'; w.innerHTML='연결이 원활하지 않아요. 잠시 뒤에 다시 해 주세요.'; })
+      .then(function(){ busy=false; log.scrollTop=log.scrollHeight; }); }
+  document.addEventListener('click', function(e){ var b=e.target.closest('[data-try]'); if(b){ e.preventDefault(); open(b.getAttribute('data-try'), b); return; } if(e.target.closest('[data-tclose]')) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'&&!m.hidden) close(); });
+  form.addEventListener('submit', function(e){ e.preventDefault(); send(ta.value); });
+  ta.addEventListener('keydown', function(e){ if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){ e.preventDefault(); send(ta.value); } });
+})();"""
 
 def page_videos():
     keli = ''.join(vid_card(v) for v in VIDEOS_KELI) or '<div class="empty">아직 KELI 영상이 없습니다.</div>'
@@ -2888,7 +3026,7 @@ def main():
     page_curriculum(); page_join(); page_archive(); page_news_hub(); page_notice(); page_events()
     for it in FEED_ITEMS: page_feed_event(it)
     for it in PRESS_ITEMS: page_press(it)
-    page_videos(); page_demos()   # 구 플랫폼 백업(old-keli)은 사이트에 싣지 않고 별도 보관(2026-11-12 유은님 지시)
+    page_videos(); page_demos(); page_experience()   # 구 플랫폼 백업(old-keli)은 사이트에 싣지 않고 별도 보관(2026-11-12 유은님 지시)
     page_newsletter(); page_search(); page_en(); build_kb()
     page_privacy()
     page_admin()

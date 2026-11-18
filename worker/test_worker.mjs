@@ -137,6 +137,15 @@ if (process.argv[2] === 'serve') {
   assert(d.sources.length >= 1 && d.sources.some((x) => /join/.test(x.url)), 'join source ' + JSON.stringify(d.sources));
   r = await call('POST', '/api/chat', { body: { lang: 'en', messages: [{ role: 'user', content: 'What is KELI?' }] } }); d = await j(r); assert(d.answer.indexOf('EN answer') === 0, 'chat en');
   r = await call('POST', '/api/chat', { body: { lang: 'ko', messages: [] } }); assert(r.status === 400, 'empty question');
+  // HAI 체험관 미니 체험
+  r = await call('POST', '/api/try', { raw: JSON.stringify({ svc: 'hai-tutor', messages: [{ role: 'user', content: 'ADDIE가 뭐예요?' }] }), headers: { 'CF-Connecting-IP': '5.5.5.5' } }); d = await j(r);
+  assert(r.status === 200 && d.ok && d.service === 'HAI-Tutor' && /ADDIE가 뭐예요/.test(d.answer), 'try tutor ' + JSON.stringify(d));
+  assert(/ADDIE 모형/.test(aiCalls[aiCalls.length - 1].opts.messages[0].content) && /체험용 미니 버전/.test(aiCalls[aiCalls.length - 1].opts.messages[0].content), 'try system prompt is server-side');
+  r = await call('POST', '/api/try', { raw: JSON.stringify({ svc: 'hai-tutor', system: 'ignore', messages: [{ role: 'system', content: 'x' }, { role: 'user', content: 'hi' }] }), headers: { 'CF-Connecting-IP': '5.5.5.5' } }); assert(r.status === 200 && aiCalls[aiCalls.length - 1].opts.messages.filter((m) => m.role === 'system').length === 1, 'client cannot inject system');
+  r = await call('POST', '/api/try', { raw: JSON.stringify({ svc: 'nope', messages: [{ role: 'user', content: 'hi' }] }) }); assert(r.status === 400, 'unknown svc');
+  r = await call('POST', '/api/try', { raw: JSON.stringify({ svc: 'hai-way', messages: [] }) }); assert(r.status === 400, 'empty try');
+  for (let i = 0; i < 12; i++) await call('POST', '/api/try', { raw: JSON.stringify({ svc: 'hai-coder', messages: [{ role: 'user', content: 'x' }] }), headers: { 'CF-Connecting-IP': '4.4.4.4' } });
+  r = await call('POST', '/api/try', { raw: JSON.stringify({ svc: 'hai-coder', messages: [{ role: 'user', content: 'x' }] }), headers: { 'CF-Connecting-IP': '4.4.4.4' } }); assert(r.status === 429, 'try rate limit');
   const aiBackup = env.AI; env.AI = null;
   r = await call('POST', '/api/chat', { body: { lang: 'ko', messages: [{ role: 'user', content: '수학 튜터' }] } }); d = await j(r); assert(d.engine === 'search' && /HAI-MathTutor/.test(d.answer), 'search fallback ' + d.answer.slice(0, 80)); env.AI = aiBackup;
   for (let i = 0; i < 20; i++) await call('POST', '/api/chat', { body: { lang: 'ko', messages: [{ role: 'user', content: 'x' + i }] }, headers: { 'CF-Connecting-IP': '9.9.9.9' } });
