@@ -27,9 +27,9 @@
 <link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="assets/site.css?v=5f45fdb9">
+<link rel="stylesheet" href="assets/site.css?v=0bdae936">
 </head>
-<body><script>(function(){var B='6afd541f';try{fetch('/assets/build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=(t||'').trim();if(!/^[0-9a-f]{6,12}$/.test(t)||t<=B)return;var k='keli-rl-'+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){return}fetch(location.href,{cache:'reload'}).then(function(){location.reload()})}).catch(function(){})}catch(e){}})();</script>
+<body><script>(function(){var B='6afd5533';try{fetch('/assets/build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=(t||'').trim();if(!/^[0-9a-f]{6,12}$/.test(t)||t<=B)return;var k='keli-rl-'+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){return}fetch(location.href,{cache:'reload'}).then(function(){location.reload()})}).catch(function(){})}catch(e){}})();</script>
 <header class="hdr"><div class="wrap bar">
 <a class="brand" href="index.html" aria-label="KELI 홈"><img src="assets/img/keli-logo.png" alt="KELI" width="62" height="28"></a>
 <nav class="nav" aria-label="주요 메뉴"><a href="about.html" data-menu="about.html">KELI 소개</a><a href="services.html" data-menu="services.html">HAI Ecosystems</a><a href="join.html" data-menu="join.html">KELI 협의체 참여</a><a href="archive.html" data-menu="archive.html">아카이브</a><a href="news.html" data-menu="news.html">소식</a></nav>
@@ -82,7 +82,8 @@
 <div class="grid g3 vids"><div class="vid" id="demo-39-104"><button type="button" class="vid-play" data-vmodal="https://drive.google.com/file/d/1wxC7hJmd33MzCIJTAhloaAJgKtxfY2vi/preview" data-vtitle="HAI-Tag · 데모 영상" aria-label="HAI-Tag 영상 보기"><img src="media/demos/39-104.jpg" alt="" loading="lazy"><span class="play"></span></button><div class="vid-body"><span class="m">AI 운영 지원 <span class="badge soon">준비 중</span></span><strong class="t"><a href="service-hai-tag.html">HAI⁠-⁠Tag</a></strong><span class="small muted">데이터로 읽는 KELI 서비스 이용</span><ol class="try-steps"><li>영상으로 사용 흐름을 봅니다.</li><li>도입 문의로 체험 방법을 안내받습니다.</li></ol><div class="vbtns"><button type="button" class="btn sm" data-vmodal="https://drive.google.com/file/d/1wxC7hJmd33MzCIJTAhloaAJgKtxfY2vi/preview" data-vtitle="HAI-Tag · 데모 영상">▶⁠영상 보기</button></div></div></div></div>
 </div></section>
 <section class="sec" style="padding-top:0"><div class="wrap"><p class="note">서비스별 영상은 HAI 활용 매뉴얼 사이트⁠(haimanual.csedu4all.com)⁠의 「영상 보기」⁠와 같은 영상을 매일 자동으로 가져오며, 서비스 정보는 한림 AI 교육 포털⁠(ai.hallym.ac.kr/hallym⁠-⁠ai)⁠에서 가져옵니다.<br><span data-demo-date>2026. 11. 2.</span> 기준 20⁠개 서비스 ⁠·⁠ 영상 20⁠건.<br>영상 저작권은 한림대학교에 있습니다.</p></div></section>
-
+<script>document.addEventListener('click',function(e){var b=e.target.closest('.trial-copy');if(b){var v=b.getAttribute('data-copy');(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(function(){b.textContent='복사됨';setTimeout(function(){b.textContent='복사';},1500);}).catch(function(){window.prompt('복사해 쓰세요',v);});}
+var t=e.target.closest('[data-trial]');if(t){try{if(window.KELI_API&&navigator.sendBeacon)navigator.sendBeacon(window.KELI_API+'/api/hit',new Blob([JSON.stringify({t:'click',p:location.pathname,x:'trial:'+t.getAttribute('data-trial')})],{type:'text/plain'}));}catch(x){}}});</script>
 </main>
 <footer class="ftr"><div class="wrap">
 <div class="cols">

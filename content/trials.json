@@ -1,0 +1,5 @@
+{
+  "_note": "HAI 체험관 '실제 서비스 체험'. 기업이 준 체험 방법을 서비스 주소 이름(slug) 아래에 적는다. type: guest(로그인 없는 체험 링크) | account(공용 체험 계정). 공개 사이트에 그대로 보이므로 체험 전용 계정만 적는다. until 이 지나면 자동으로 숨긴다.",
+  "_example": {"hai-tutor": {"type": "account", "url": "https://tutor.k-university.ai", "id": "keli-demo", "pw": "demo1234", "note": "샘플 교과목 1개만 열려 있습니다. 매일 밤 초기화됩니다.", "until": "2026-12-31"}},
+  "items": {}
+}

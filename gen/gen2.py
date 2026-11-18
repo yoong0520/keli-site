@@ -550,6 +550,11 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .vmodal-body { position: relative; aspect-ratio: 16 / 9; background: #000; } .vmodal-body iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .vbtns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .vid[id^="try-"] { scroll-margin-top: 90px; } .vid[id^="try-"]:target { outline: 3px solid var(--accent); outline-offset: 8px; border-radius: 18px; }
+.trial { display: flex; flex-direction: column; gap: 6px; margin: 16px auto 0; max-width: 980px; padding: 14px 16px; border-radius: 14px; border: 1px solid #a7f3d0; background: #ecfdf5; text-align: left; } .trial.compact { margin-top: 12px; padding: 12px 14px; }
+.trial-k { font-size: 13px; font-weight: 700; color: #047857; } .trial .btn { align-self: flex-start; margin-top: 4px; }
+.trial-acct { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 14px; } .trial-acct code { background: #fff; border: 1px solid #a7f3d0; border-radius: 6px; padding: 1px 6px; margin-left: 4px; }
+.trial-copy { margin-left: 6px; border: 0; background: none; color: #047857; font: inherit; font-size: 12px; text-decoration: underline; cursor: pointer; }
+.trial-card { display: flex; flex-direction: column; gap: 6px; padding: 20px; border: 1px solid var(--line); border-radius: 18px; background: #fff; } .trial-card .t { font-size: 19px; } .trial-card .trial { margin: 8px 0 0; }
 .try-grid { gap: 20px; } .try-card { display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
 .try-top { display: flex; gap: 14px; align-items: center; } .try-ic { font-size: 30px; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 14px; background: color-mix(in srgb, var(--accent, #0B5CFF) 8%, #fff); flex: none; }
 .try-top .m { display: block; font-size: 13px; color: var(--muted); } .try-top .t { font-size: 20px; font-weight: 700; }
@@ -1883,6 +1888,26 @@ TRY_DEMOS = [
      'how': ['전공(또는 관심 분야)과 관심사를 적습니다.', '진로 경로 2~3개와 필요한 역량을 받아 봅니다.', '다음 학기에 해 볼 한 가지를 정합니다.'],
      'samples': ['교육학과 2학년이고 에듀테크에 관심이 있어요.', '경영학 전공인데 데이터 분석 쪽 진로가 궁금해요.', '아직 하고 싶은 일이 없어요. 어떻게 시작하면 좋을까요?']},
 ]
+# 실제 서비스 체험(기업 제공 체험 계정·게스트 링크): content/trials.json
+import datetime as _dt
+_TODAY = _dt.datetime.now(_dt.timezone(_dt.timedelta(hours=9))).strftime('%Y-%m-%d')
+TRIALS = {k: v for k, v in (_load_json(os.path.join(CONTENT, 'trials.json'), {}).get('items') or {}).items()
+          if isinstance(v, dict) and v.get('url') and (not v.get('until') or str(v['until']) >= _TODAY)}
+def trial_box(slug, name, compact=False):
+    t = TRIALS.get(slug)
+    if not t: return ''
+    acct = ''
+    if t.get('type') == 'account' and t.get('id'):
+        acct = (f'<span class="trial-acct"><span>체험 아이디 <code>{E(t["id"])}</code><button type="button" class="trial-copy" data-copy="{E(t["id"])}">복사</button></span>'
+                + (f'<span>비밀번호 <code>{E(t["pw"])}</code><button type="button" class="trial-copy" data-copy="{E(t["pw"])}">복사</button></span>' if t.get('pw') else '') + '</span>')
+    note = f'<span class="small muted">{E(t["note"])}</span>' if t.get('note') else ''
+    until = f'<span class="small muted">체험 가능 기간: {E(str(t["until"]))}까지</span>' if t.get('until') else ''
+    return (f'<div class="trial{" compact" if compact else ""}"><span class="trial-k">실제 서비스 체험</span>'
+            f'<span class="small">{"로그인 없이 체험 링크로 바로 들어갑니다." if t.get("type") == "guest" else "아래 체험 계정으로 로그인해 실제 서비스를 써 봅니다."}</span>{acct}{note}{until}'
+            f'<a class="btn sm" href="{E(t["url"])}" target="_blank" rel="noopener" data-trial="{slug}">{E(name)} 실제 서비스 열기 ↗</a></div>')
+TRIAL_JS = """document.addEventListener('click',function(e){var b=e.target.closest('.trial-copy');if(b){var v=b.getAttribute('data-copy');(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(function(){b.textContent='복사됨';setTimeout(function(){b.textContent='복사';},1500);}).catch(function(){window.prompt('복사해 쓰세요',v);});}
+var t=e.target.closest('[data-trial]');if(t){try{if(window.KELI_API&&navigator.sendBeacon)navigator.sendBeacon(window.KELI_API+'/api/hit',new Blob([JSON.stringify({t:'click',p:location.pathname,x:'trial:'+t.getAttribute('data-trial')})],{type:'text/plain'}));}catch(x){}}});"""
+
 def try_card(t):
     page = svc_page_of(t['name'])
     steps = ''.join(f'<li>{E(x)}</li>' for x in t['how'])
@@ -1907,7 +1932,7 @@ def follow_card(d, pre='try'):
     return (f'<div class="vid" id="{pre}-{d["id"]}">'
             f'<button type="button" class="vid-play" data-vmodal="{E(vs[0]["embed"])}" data-vtitle="{E(d["name"] + " · " + vs[0]["label"])}" aria-label="{E(d["name"])} 영상 보기">{media}<span class="play"></span></button>'
             f'<div class="vid-body"><span class="m">{E(d.get("category", ""))} {st}</span><strong class="t">{nm}</strong>'
-            f'<span class="small muted">{E(d.get("summary", ""))}</span>{steps}<div class="vbtns">{btns}</div></div></div>')
+            f'<span class="small muted">{E(d.get("summary", ""))}</span>{steps}<div class="vbtns">{btns}</div>{trial_box(slug, d["name"], True) if slug else ""}</div></div>')
 
 DEMO_NOTE = f'서비스별 영상은 HAI 활용 매뉴얼 사이트(haimanual.csedu4all.com)의 「영상 보기」와 같은 영상을 매일 자동으로 가져오며, 서비스 정보는 한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai)에서 가져옵니다. <span data-demo-date>{E(DEMOS.get("fetched_at", ""))}</span> 기준 {len({d["service_id"] for d in DEMO_ITEMS})}개 서비스 · 영상 {len(DEMO_ITEMS)}건.'
 
@@ -2236,8 +2261,9 @@ def page_service(s):
     src = f'<dt>등록 정보</dt><dd><a href="{PORTAL_DEMOS}" target="_blank" rel="noopener">한림 AI 교육 포털</a>에 등록된 정보를 자동으로 가져옵니다{(" (" + E((SVC_LIVE or {}).get("fetched_at", "")) + " 기준)") if SVC_LIVE else ""}.</dd>' if s.get('portal_id') else ''
     _t = next((t for t in TRY_DEMOS if t['svc'] == s['slug']), None)   # 미니 체험판이 있으면 그 자리에서 대화창, 없으면 체험관의 영상·매뉴얼 카드로
     _f = next((d for d in DEMO_ITEMS if svc_slug_of(d['name']) == s['slug']), None)
-    try_btn = (f'<button type="button" class="btn" data-try="{_t["svc"]}">바로 체험하기</button>' if _t
-               else (f'<a class="btn" href="experience.html#try-{_f["id"]}">체험하기</a>' if _f else ''))
+    _tr = TRIALS.get(s['slug'])
+    try_btn = (f'<a class="btn" href="{E(_tr["url"])}" target="_blank" rel="noopener" data-trial="{s["slug"]}">실제 서비스 체험 ↗</a>' if _tr else '') + (f'<button type="button" class="btn{" ghost" if _tr else ""}" data-try="{_t["svc"]}">바로 체험하기</button>' if _t
+               else (f'<a class="btn{" ghost" if _tr else ""}" href="experience.html#try-{_f["id"]}">체험하기</a>' if _f else ''))
     siblings = [x for x in SERVICES if x['area'] == s['area'] and x['slug'] != s['slug']]
     sib = ''.join(svc_card(x) for x in siblings[:3])
     body = crumb(('services.html', 'HAI Ecosystems'), (None, s['name'])) + f'''
@@ -2267,6 +2293,7 @@ def page_service(s):
 <section class="sec"><div class="wrap"><div class="cta"><h2>내 교과목에 적용하려면.</h2><p class="lead">첫걸음은 1개 교과목 × 1개 서비스 × 1개 학기입니다.</p><div class="acts"><a class="btn" href="join.html?service={s['slug']}#inquiry">도입 문의</a><a class="more" href="archive.html#case">실증 사례 보기</a></div></div></div></section>
 '''
     if _t: body += try_modal_html()
+    if _tr: body = body.replace(MKT_NOTICE, trial_box(s['slug'], s['name']) + MKT_NOTICE, 1) + f'<script>{TRIAL_JS}</script>'
     write(f'service-{s["slug"]}.html', f'{s["name"]} · KELI', body, desc=s['head'])
 
 def page_curriculum():
@@ -2719,6 +2746,7 @@ def page_demos():
 <div class="acts"><a class="btn" href="experience.html">HAI 체험관</a><a class="btn ghost" href="services.html">서비스 목록</a><a class="btn ghost" href="{PORTAL_DEMOS}" target="_blank" rel="noopener">한림 AI 교육 포털</a><a class="more" href="join.html#inquiry">도입 문의</a></div>{MKT_NOTICE}</div></section>{secs}
 <section class="sec" style="padding-top:0"><div class="wrap"><p class="note">{DEMO_NOTE} 영상 저작권은 한림대학교에 있습니다.</p></div></section>
 '''
+    body += f'<script>{TRIAL_JS}</script>'
     write('demos.html', '전체 데모 영상 · KELI', body)
 
 def try_modal_html():
@@ -2743,11 +2771,16 @@ def page_experience():
     body = crumb(('services.html', 'HAI Ecosystems'), (None, 'HAI 체험관')) + f"""
 <section class="hero" style="padding-top:48px;padding-bottom:36px"><div class="wrap"><span class="eyebrow">HAI Ecosystems · 체험관</span><h1>로그인 없이,<br>브라우저에서 바로 체험합니다.</h1>
 <p class="lead">HAI Ecosystems의 핵심 기능을 미니 체험판으로 직접 써 보고, 모든 서비스는 영상과 매뉴얼로 따라 해 봅니다.</p>
-<div class="acts"><a class="btn" href="#try">바로 체험</a><a class="btn ghost" href="#follow">영상으로 따라 하기</a><a class="more" href="services.html">서비스 목록</a></div>{MKT_NOTICE}</div></section>
+<div class="acts"><a class="btn" href="#try">바로 체험</a><a class="btn ghost" href="#real">실제 서비스 체험</a><a class="btn ghost" href="#follow">영상으로 따라 하기</a><a class="more" href="services.html">서비스 목록</a></div>{MKT_NOTICE}</div></section>
 <section class="sec" id="try" style="padding-top:8px"><div class="wrap">
 <div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">바로 체험</h2><span class="muted small">미니 체험판 {len(TRY_DEMOS)}종</span></div>
 <p class="note" style="margin:0 0 18px">미니 체험판은 각 서비스의 핵심 기능을 맛볼 수 있도록 KELI 사무국이 만든 <b>체험용 축소판</b>입니다. 실제 서비스와 화면·기능·AI 모델이 다릅니다. 이름·학번·연락처 같은 개인정보는 입력하지 마세요. 입력한 내용은 답변을 만드는 데에만 쓰고 저장하지 않습니다.</p>
 <div class="grid g2 try-grid">{tries}</div>
+</div></section>
+<section class="sec" id="real" style="padding-top:0"><div class="wrap">
+<div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">실제 서비스 체험</h2><span class="muted small">{len(TRIALS)}개 서비스</span></div>
+<p class="note" style="margin:0 0 18px">개발 기업이 제공한 체험 계정이나 체험 링크로 실제 서비스를 직접 써 봅니다. 체험 계정은 여러 사람이 함께 쓰므로 개인정보나 중요한 자료를 올리지 마세요.</p>
+{('<div class="grid g3 trial-grid">' + ''.join(f'<div class="trial-card"><strong class="t"><a href="{svc_page_of(x["name"])}">{E(x["name"])}</a></strong><span class="small muted">{E(x.get("one") or "")}</span>{trial_box(x["slug"], x["name"])}</div>' for x in SERVICES if x["slug"] in TRIALS) + '</div>') if TRIALS else '<div class="empty">기업별 체험 계정을 준비하고 있습니다. 준비되는 대로 이곳과 각 서비스 페이지에 열어 드립니다.</div>'}
 </div></section>
 <section class="sec alt" id="follow"><div class="wrap">
 <div class="row" style="margin-bottom:4px"><h2 style="font-size:28px">영상으로 따라 하기</h2><span class="muted small">{len(DEMO_ITEMS)}개 서비스</span></div>
@@ -2756,6 +2789,7 @@ def page_experience():
 <p class="note" style="margin-top:24px">{DEMO_NOTE} 영상과 매뉴얼의 저작권은 한림대학교와 각 개발 기업에 있습니다.</p>
 </div></section>
 {try_modal_html()}
+<script>{TRIAL_JS}</script>
 """
     write('experience.html', 'HAI 체험관 · KELI', body, desc='HAI Ecosystems 체험관 — 로그인 없이 브라우저에서 AI 교육 서비스의 핵심 기능을 미니 체험판으로 써 보고, 모든 서비스를 영상과 매뉴얼로 따라 해 봅니다.')
 
