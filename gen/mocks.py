@@ -601,7 +601,7 @@ def _research():
     def s3():
         main = (TOP + '<div class="mk-row"><b>검색 결과</b><button type="button" class="mk-btn sm line" data-show="[data-w]">검색 가중치</button></div>' + cards().replace('{H}', '')
                 + '<div class="mk-modal" data-w><b>검색 가중치</b><div class="mk-two"><label class="mk-f">주저자 (1~3)<input type="text" value="1" inputmode="numeric"><small style="font-weight:400">주저자 논문이 많은 교수님이 더 많이 검색됩니다.</small></label>'
-                '<label class="mk-f">최근 연구 (년도 1~5 / 배수 1~3)<input type="text" value="2년 · 1배"><small style="font-weight:400">최근에 발간한 논문에 가중치를 더 줍니다.</small></label></div>'
+                '<label class="mk-f">최근 연구 (년도 1~5 / 배수 1~3)<input type="text" value="2 · 1"><small style="font-weight:400">최근에 발간한 논문에 가중치를 더 줍니다.</small></label></div>'
                 '<div class="mk-row end"><button type="button" class="mk-btn sm line" data-hide="[data-w]">취소</button><button type="button" class="mk-btn sm" data-hide="[data-w]" data-show="[data-rs]" data-goal>재검색</button></div></div>' + toast('data-rs', '가중치를 반영해 연구자를 다시 찾았어요.'))
         return frame(TH, '', ('HAI-Research', '검색 가중치'), main)
     Q4 = '의료분야 AI 팀 빌딩해줘'

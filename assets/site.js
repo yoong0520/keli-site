@@ -42,11 +42,11 @@
       if(sub){ sub.disabled=true; sub.textContent='보내는 중…'; }
       fetch(window.KELI_API+'/api/contact',{ method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(data) }).then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return {ok:r.ok, st:r.status, j:j}; }); }).then(function(x){
         if(x.st===404||x.st===401){ if(sub){ sub.disabled=false; sub.textContent='문의 보내기'; } mailto(); return; }   // 서버가 아직 옛 코드 → 메일 앱으로
-        if(!x.ok||!x.j.ok){ bad((x.j&&x.j.error?x.j.error:'보내지 못했습니다.')+' <a href="mailto:contact@keliedu.org">contact@keliedu.org</a> 로 직접 보내 주셔도 됩니다.'); return; }
+        if(!x.ok||!x.j.ok){ bad((x.j&&x.j.error?x.j.error:'보내지 못했습니다.')+' <span>아래 주소로 직접 보내 주셔도 됩니다:</span> <a href="mailto:contact@keliedu.org">contact@keliedu.org</a>'); return; }
         if(done){ var c=qs('code',done); if(c) c.textContent=x.j.ref; done.setAttribute('data-show','1'); done.scrollIntoView({block:'nearest'}); }
         if(sub) sub.textContent='접수되었습니다';
         try{ if(navigator.sendBeacon) navigator.sendBeacon(window.KELI_API+'/api/hit', new Blob([JSON.stringify({t:'click',p:location.pathname,x:'inquiry:sent'})],{type:'text/plain'})); }catch(e){}
-      }).catch(function(){ bad('네트워크 문제로 보내지 못했습니다. <a href="#" data-mailto>메일 앱으로 보내기</a> 또는 contact@keliedu.org 로 보내 주세요.'); var a=qs('[data-mailto]',f); if(a) a.addEventListener('click',function(ev){ ev.preventDefault(); mailto(); }); });
+      }).catch(function(){ bad('<span>네트워크 문제로 보내지 못했습니다.</span> <a href="#" data-mailto>메일 앱으로 보내기</a> <span>또는 이 주소로 보내 주세요:</span> contact@keliedu.org'); var a=qs('[data-mailto]',f); if(a) a.addEventListener('click',function(ev){ ev.preventDefault(); mailto(); }); });
     });
   });
   // prefill service from ?service= or #svc=

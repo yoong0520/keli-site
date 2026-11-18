@@ -856,6 +856,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .mega-intro .eyebrow { display: block; text-align: left; font-size: 12px; letter-spacing: .04em; color: var(--accent); margin: 0; } .mega-intro strong { font-size: 20px; line-height: 1.35; letter-spacing: -.01em; } .mega-intro p { margin: 0 0 6px; font-size: 14px; line-height: 1.65; color: var(--muted); } .mega-intro .more { font-size: 14px; }
 .mega-cols { display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; }
 @media (min-width: 1025px) { .mega-cols { grid-template-columns: repeat(5, auto); justify-content: space-between; gap: 24px; } .mega-col-title { white-space: nowrap; } .mega-col li a { white-space: nowrap; } .mega-inner { grid-template-columns: 200px 1fr; gap: 32px; } }
+@media (min-width: 1025px) { html[lang=en] .mega-col li a { white-space: normal; } html[lang=en] .mega-cols { gap: 20px; } html[lang=en] .mega-col { max-width: 230px; } }
 .mega-col-title { display: block; font-size: 16px; font-weight: 700; color: var(--fg); padding-bottom: 10px; margin-bottom: 8px; border-bottom: 2px solid var(--fg); }
 .mega-col-title:hover { text-decoration: none; color: var(--accent); border-color: var(--accent); }
 .mega-col ul { list-style: none; margin: 0; padding: 0; } .mega-col li a { display: block; padding: 6px 0; font-size: 15px; color: var(--muted); line-height: 1.5; } .mega-col li a:hover, .mega-col li a:focus-visible { color: var(--accent); text-decoration: none; font-weight: 600; }
@@ -1117,11 +1118,11 @@ JS = r"""
       if(sub){ sub.disabled=true; sub.textContent='보내는 중…'; }
       fetch(window.KELI_API+'/api/contact',{ method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(data) }).then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return {ok:r.ok, st:r.status, j:j}; }); }).then(function(x){
         if(x.st===404||x.st===401){ if(sub){ sub.disabled=false; sub.textContent='문의 보내기'; } mailto(); return; }   // 서버가 아직 옛 코드 → 메일 앱으로
-        if(!x.ok||!x.j.ok){ bad((x.j&&x.j.error?x.j.error:'보내지 못했습니다.')+' <a href="mailto:contact@keliedu.org">contact@keliedu.org</a> 로 직접 보내 주셔도 됩니다.'); return; }
+        if(!x.ok||!x.j.ok){ bad((x.j&&x.j.error?x.j.error:'보내지 못했습니다.')+' <span>아래 주소로 직접 보내 주셔도 됩니다:</span> <a href="mailto:contact@keliedu.org">contact@keliedu.org</a>'); return; }
         if(done){ var c=qs('code',done); if(c) c.textContent=x.j.ref; done.setAttribute('data-show','1'); done.scrollIntoView({block:'nearest'}); }
         if(sub) sub.textContent='접수되었습니다';
         try{ if(navigator.sendBeacon) navigator.sendBeacon(window.KELI_API+'/api/hit', new Blob([JSON.stringify({t:'click',p:location.pathname,x:'inquiry:sent'})],{type:'text/plain'})); }catch(e){}
-      }).catch(function(){ bad('네트워크 문제로 보내지 못했습니다. <a href="#" data-mailto>메일 앱으로 보내기</a> 또는 contact@keliedu.org 로 보내 주세요.'); var a=qs('[data-mailto]',f); if(a) a.addEventListener('click',function(ev){ ev.preventDefault(); mailto(); }); });
+      }).catch(function(){ bad('<span>네트워크 문제로 보내지 못했습니다.</span> <a href="#" data-mailto>메일 앱으로 보내기</a> <span>또는 이 주소로 보내 주세요:</span> contact@keliedu.org'); var a=qs('[data-mailto]',f); if(a) a.addEventListener('click',function(ev){ ev.preventDefault(); mailto(); }); });
     });
   });
   // prefill service from ?service= or #svc=
@@ -2975,9 +2976,9 @@ FINDER_JS = r"""(function(){
     var need=Object.keys(D.q[1].opts[ans.idx1][1])[0], ty=D.types[need]||['HAI 탐험가',''];
     var list=Object.keys(D.svc).map(function(k){ var s=D.svc[k], sc=0; s.tags.forEach(function(t){ sc+=(w[t]||0); }); if(s.soon) sc-=0.5; if(s.try) sc+=0.3; return {k:k,s:s,sc:sc}; }).sort(function(a,b){ return b.sc-a.sc; }).slice(0,3);
     st.innerHTML='<div class="fd-res"><div class="fd-q"><img src="'+AV.irumi+'" alt="" class="fd-av"><div class="fd-bubble"><span class="fd-who">이루미 · 결과</span><p>당신은 <b>'+esc(ty[0])+'</b> 유형이에요!</p><p class="small">'+esc(ty[1])+'</p></div></div>'
-      +'<div class="fd-picks">'+list.map(function(x,i){ var s=x.s; return '<div class="fd-pick"><span class="fd-rank">추천 '+(i+1)+'</span><strong><a href="'+s.page+'">'+esc(s.name)+'</a></strong>'+(s.soon?' <span class="badge soon">준비 중</span>':'')+'<span class="small muted">'+esc(s.one)+'</span><div class="vbtns">'
+      +'<div class="fd-picks">'+list.map(function(x,i){ var s=x.s; return '<div class="fd-pick"><span class="fd-rank">'+'추천 '+(i+1)+'</span><strong><a href="'+s.page+'">'+esc(s.name)+'</a></strong>'+(s.soon?' <span class="badge soon">준비 중</span>':'')+'<span class="small muted">'+esc(s.one)+'</span><div class="vbtns">'
         +(s.try?'<button type="button" class="btn sm" data-try="'+s.try+'">바로 체험하기</button>':'')
-        +(s.video?'<button type="button" class="btn '+(s.try?'ghost ':'')+'sm" data-vmodal="'+esc(s.video)+'" data-vtitle="'+esc(s.name)+' · 영상">▶ 영상 보기</button>':'')
+        +(s.video?'<button type="button" class="btn '+(s.try?'ghost ':'')+'sm" data-vmodal="'+esc(s.video)+'" data-vtitle="'+esc(s.name)+' · 영상'+'"'+'>'+'▶ 영상 보기'+'</button>':'')
         +(s.demo?'<a class="btn sm btn-demo" href="'+s.demo+'">데모 신청</a>':'')
         +'<a class="btn ghost sm" href="'+s.page+'">서비스 소개</a></div></div>'; }).join('')+'</div>'
       +'<div class="fd-end"><button type="button" class="btn ghost sm fd-again">다시 하기</button><a class="more" href="services.html">전체 서비스 보기</a></div></div>';
@@ -3050,8 +3051,8 @@ WALK_JS = r"""(function(){
     dots.innerHTML=w.steps.map(function(s,k){ var z=S[k]||{}; return '<button type="button" class="'+(z.ok?'ok ':'')+(z.star?'star ':'')+(k===i?'on':'')+'" data-k="'+k+'" aria-label="'+(k+1)+'단계'+(z.ok?' 성공':'')+'"></button>'; }).join('')+'<span class="'+(done?'on':'')+'">🎉</span>';
     miss.hidden=true; typ.hidden=true; opts.hidden=true; opts.innerHTML=''; hint.hidden=true; shot.classList.toggle('fin',done); q('.walk-tools').hidden=done||!!(D[cur].steps[i]&&D[cur].steps[i].ui); orig.hidden=true;
     if(done){ hot.hidden=true; shot.classList.remove('play','solved','hinted','ui'); main.classList.remove('uimode'); ui.innerHTML=''; var ms=0, ok=0, stars=0; w.steps.forEach(function(s,k){ if(kind(s)!=='view'){ ms++; if(S[k]&&S[k].ok){ ok++; if(S[k].star) stars++; } } });
-      av.src='media/mascot/irumi.png'; sn.textContent='이루미 · 완료!'; h.textContent=w.name+' 체험을 마쳤어요!'; t.textContent=(ms?('미션 '+ms+'개 중 '+ok+'개 성공'+(stars?' · 힌트 없이 '+stars+'개 '+new Array(stars+1).join('★'):'')+'\n'):'')+'이제 직접 써 볼 차례예요.'; next.hidden=true;
-      end.innerHTML=(w.trial?'<a class="btn sm" href="'+esc(w.trial)+'" target="_blank" rel="noopener">실제 서비스 체험 ↗</a>':'')+(w.ai?'<button type="button" class="btn sm" data-try="'+w.ai+'">AI 미니 체험</button>':'')+(w.video?'<button type="button" class="btn ghost sm" data-vmodal="'+esc(w.video)+'" data-vtitle="'+esc(w.name)+' · 영상">▶ 영상 보기</button>':'')+(w.demo?'<a class="btn sm btn-demo" href="'+w.demo+'">데모 신청</a>':'')+(w.manual?'<a class="btn ghost sm" href="'+esc(w.manual)+'" target="_blank" rel="noopener">매뉴얼(PDF)</a>':'')+'<a class="btn ghost sm" href="'+w.page+'">서비스 소개</a><button type="button" class="btn ghost sm walk-again">처음부터</button>';
+      av.src='media/mascot/irumi.png'; sn.textContent='이루미 · 완료!'; h.textContent=w.name+' 체험을 마쳤어요!'; var EN=document.documentElement.lang==='en'; t.textContent=(ms?((EN?(ok+' of '+ms+' missions done'+(stars?' · '+stars+' without hints '+new Array(stars+1).join('★'):'')):('미션 '+ms+'개 중 '+ok+'개 성공'+(stars?' · 힌트 없이 '+stars+'개 '+new Array(stars+1).join('★'):'')))+'\n'):'')+'이제 직접 써 볼 차례예요.'; next.hidden=true;
+      end.innerHTML=(w.trial?'<a class="btn sm" href="'+esc(w.trial)+'" target="_blank" rel="noopener">실제 서비스 체험 ↗</a>':'')+(w.ai?'<button type="button" class="btn sm" data-try="'+w.ai+'">AI 미니 체험</button>':'')+(w.video?'<button type="button" class="btn ghost sm" data-vmodal="'+esc(w.video)+'" data-vtitle="'+esc(w.name)+' · 영상'+'"'+'>'+'▶ 영상 보기'+'</button>':'')+(w.demo?'<a class="btn sm btn-demo" href="'+w.demo+'">데모 신청</a>':'')+(w.manual?'<a class="btn ghost sm" href="'+esc(w.manual)+'" target="_blank" rel="noopener">매뉴얼(PDF)</a>':'')+'<a class="btn ghost sm" href="'+w.page+'">서비스 소개</a><button type="button" class="btn ghost sm walk-again">처음부터</button>';
       end.hidden=false; prev.disabled=false; return; }
     var s=w.steps[i], z=S[i]||(S[i]={}), k=kind(s), open=(k==='view'||z.ok), isUi=(k==='ui');
     shot.classList.toggle('ui',isUi); main.classList.toggle('uimode',isUi); if(s.img) big.href=s.img; if(isUi&&s.img){ orig.href=s.img; orig.hidden=false; }

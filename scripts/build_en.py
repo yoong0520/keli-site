@@ -200,7 +200,7 @@ def main():
     cache = json.load(open(CACHE, encoding='utf-8')) if os.path.exists(CACHE) else {}
     BASE = os.path.join(ROOT, 'content', 'i18n', 'en_base.json')   # 사무국이 검수해 저장소에 넣어 둔 번역
     if os.path.exists(BASE):
-        for k, v in json.load(open(BASE, encoding='utf-8')).items(): cache.setdefault(k, v)
+        cache.update(json.load(open(BASE, encoding='utf-8')))   # 검수한 번역이 자동 번역 캐시보다 먼저
     fix = json.load(open(FIX, encoding='utf-8')) if os.path.exists(FIX) else {}
     pages = [os.path.basename(f) for f in sorted(glob.glob(os.path.join(ROOT, '*.html'))) if not os.path.basename(f).startswith('en') and os.path.basename(f) not in SKIP]
     site_js = open(os.path.join(ROOT, 'assets', 'site.js'), encoding='utf-8').read()
@@ -236,8 +236,8 @@ def main():
         h = open(os.path.join(ROOT, p), encoding='utf-8').read()
         e = walk_html(h, tr)
         e = re.sub(r'(href=")([a-z0-9_-]+\.html)((?:#[^"]*)?")', link, e)   # 영어판끼리 잇기(먼저)
-        e = re.sub(r'<a class="txt" href="en-[^"]*" data-lang-switch>ENG</a>', f'<a class="txt" href="{p}" lang="ko">KOR</a>', e)
-        e = re.sub(r'<a href="en-[^"]*" data-lang-switch>English</a>', f'<a href="{p}" lang="ko">한국어</a>', e)
+        e = re.sub(r'<a class="txt" href="en[^"]*" data-lang-switch>ENG</a>', f'<a class="txt" href="{p}" lang="ko">KOR</a>', e)
+        e = re.sub(r'<a href="en[^"]*" data-lang-switch>English</a>', f'<a href="{p}" lang="ko">한국어</a>', e)
         e = e.replace('<a href="en.html">English</a>', f'<a href="{p}" lang="ko">한국어</a>')
         e = re.sub(r'("page":\s*")([a-z0-9_-]+\.html)(")', link, e)
         e = re.sub(r'<html lang="ko"', '<html lang="en"', e, count=1)

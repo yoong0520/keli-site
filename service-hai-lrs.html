@@ -27,9 +27,9 @@
 <link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="assets/site.css?v=2a5fe41c">
+<link rel="stylesheet" href="assets/site.css?v=ec69d456">
 </head>
-<body><script>(function(){var B='6afde57c';try{fetch('/assets/build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=(t||'').trim();if(!/^[0-9a-f]{6,12}$/.test(t)||t<=B)return;var k='keli-rl-'+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){return}fetch(location.href,{cache:'reload'}).then(function(){location.reload()})}).catch(function(){})}catch(e){}})();</script>
+<body><script>(function(){var B='6afdf167';try{fetch('/assets/build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=(t||'').trim();if(!/^[0-9a-f]{6,12}$/.test(t)||t<=B)return;var k='keli-rl-'+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){return}fetch(location.href,{cache:'reload'}).then(function(){location.reload()})}).catch(function(){})}catch(e){}})();</script>
 <header class="hdr"><div class="wrap bar">
 <a class="brand" href="index.html" aria-label="KELI 홈"><img src="assets/img/keli-logo.png" alt="KELI" width="62" height="28"></a>
 <nav class="nav" aria-label="주요 메뉴"><a href="about.html" data-menu="about.html">KELI 소개</a><a href="services.html" class="on" data-menu="services.html">HAI Ecosystems</a><a href="join.html" data-menu="join.html">KELI 협의체 참여</a><a href="archive.html" data-menu="archive.html">아카이브</a><a href="news.html" data-menu="news.html">소식</a></nav>
@@ -101,8 +101,8 @@
     dots.innerHTML=w.steps.map(function(s,k){ var z=S[k]||{}; return '<button type="button" class="'+(z.ok?'ok ':'')+(z.star?'star ':'')+(k===i?'on':'')+'" data-k="'+k+'" aria-label="'+(k+1)+'단계'+(z.ok?' 성공':'')+'"></button>'; }).join('')+'<span class="'+(done?'on':'')+'">🎉</span>';
     miss.hidden=true; typ.hidden=true; opts.hidden=true; opts.innerHTML=''; hint.hidden=true; shot.classList.toggle('fin',done); q('.walk-tools').hidden=done||!!(D[cur].steps[i]&&D[cur].steps[i].ui); orig.hidden=true;
     if(done){ hot.hidden=true; shot.classList.remove('play','solved','hinted','ui'); main.classList.remove('uimode'); ui.innerHTML=''; var ms=0, ok=0, stars=0; w.steps.forEach(function(s,k){ if(kind(s)!=='view'){ ms++; if(S[k]&&S[k].ok){ ok++; if(S[k].star) stars++; } } });
-      av.src='media/mascot/irumi.png'; sn.textContent='이루미 · 완료!'; h.textContent=w.name+' 체험을 마쳤어요!'; t.textContent=(ms?('미션 '+ms+'개 중 '+ok+'개 성공'+(stars?' · 힌트 없이 '+stars+'개 '+new Array(stars+1).join('★'):'')+'\n'):'')+'이제 직접 써 볼 차례예요.'; next.hidden=true;
-      end.innerHTML=(w.trial?'<a class="btn sm" href="'+esc(w.trial)+'" target="_blank" rel="noopener">실제 서비스 체험 ↗</a>':'')+(w.ai?'<button type="button" class="btn sm" data-try="'+w.ai+'">AI 미니 체험</button>':'')+(w.video?'<button type="button" class="btn ghost sm" data-vmodal="'+esc(w.video)+'" data-vtitle="'+esc(w.name)+' · 영상">▶ 영상 보기</button>':'')+(w.demo?'<a class="btn sm btn-demo" href="'+w.demo+'">데모 신청</a>':'')+(w.manual?'<a class="btn ghost sm" href="'+esc(w.manual)+'" target="_blank" rel="noopener">매뉴얼(PDF)</a>':'')+'<a class="btn ghost sm" href="'+w.page+'">서비스 소개</a><button type="button" class="btn ghost sm walk-again">처음부터</button>';
+      av.src='media/mascot/irumi.png'; sn.textContent='이루미 · 완료!'; h.textContent=w.name+' 체험을 마쳤어요!'; var EN=document.documentElement.lang==='en'; t.textContent=(ms?((EN?(ok+' of '+ms+' missions done'+(stars?' · '+stars+' without hints '+new Array(stars+1).join('★'):'')):('미션 '+ms+'개 중 '+ok+'개 성공'+(stars?' · 힌트 없이 '+stars+'개 '+new Array(stars+1).join('★'):'')))+'\n'):'')+'이제 직접 써 볼 차례예요.'; next.hidden=true;
+      end.innerHTML=(w.trial?'<a class="btn sm" href="'+esc(w.trial)+'" target="_blank" rel="noopener">실제 서비스 체험 ↗</a>':'')+(w.ai?'<button type="button" class="btn sm" data-try="'+w.ai+'">AI 미니 체험</button>':'')+(w.video?'<button type="button" class="btn ghost sm" data-vmodal="'+esc(w.video)+'" data-vtitle="'+esc(w.name)+' · 영상'+'"'+'>'+'▶ 영상 보기'+'</button>':'')+(w.demo?'<a class="btn sm btn-demo" href="'+w.demo+'">데모 신청</a>':'')+(w.manual?'<a class="btn ghost sm" href="'+esc(w.manual)+'" target="_blank" rel="noopener">매뉴얼(PDF)</a>':'')+'<a class="btn ghost sm" href="'+w.page+'">서비스 소개</a><button type="button" class="btn ghost sm walk-again">처음부터</button>';
       end.hidden=false; prev.disabled=false; return; }
     var s=w.steps[i], z=S[i]||(S[i]={}), k=kind(s), open=(k==='view'||z.ok), isUi=(k==='ui');
     shot.classList.toggle('ui',isUi); main.classList.toggle('uimode',isUi); if(s.img) big.href=s.img; if(isUi&&s.img){ orig.href=s.img; orig.hidden=false; }
@@ -193,6 +193,6 @@
 <p class="kc-note">AI⁠가 사이트 내용을 바탕으로 답해요.<br>정확한 사항은 사무국⁠(033⁠-⁠248⁠-⁠3242)⁠로 전화해 주세요.</p>
 </div>
 <button type="button" class="kchat-fab" id="kchat-fab" aria-label="이음이에게 물어보기" aria-expanded="false"><img src="media/mascot/eumi.png" alt=""><span class="kc-hi">이음이에게 물어보기</span></button><script>window.KELI_HIDDEN={"events": [], "press": [], "videos": [], "unn": [], "services": []};window.KELI_API="https://keli-admin.quiet-waterfall-20bb.workers.dev";</script>
-<script src="assets/site.js?v=732248d3"></script>
+<script src="assets/site.js?v=dc3dd870"></script>
 </body>
 </html>
