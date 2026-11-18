@@ -412,9 +412,28 @@ a.btn.ghost, .util a.btn.ghost { color: var(--fg); }
 .util .ico { display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; border-radius: 999px; }
 .util .ico:hover { background: var(--bg2); }
 .burger { display: none; width: 44px; height: 44px; border: 0; background: transparent; border-radius: 999px; }
-.hdr .mnav { display: none; border-top: 1px solid var(--line); background: var(--bg); }
-.mnav a { display: block; padding: 14px 0; border-bottom: 1px solid var(--line); color: var(--fg); font-size: 17px; }
+.hdr .mnav { display: none; position: absolute; left: 0; right: 0; top: 100%; height: calc(100vh - 56px); height: calc(100dvh - 56px - env(safe-area-inset-top, 0px)); overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; background: var(--bg); border-top: 1px solid var(--line); }
 .hdr .mnav[data-open="1"] { display: block; }
+.burger .b-close { display: none; } .burger[aria-expanded="true"] .b-open { display: none; } .burger[aria-expanded="true"] .b-close { display: block; }
+.mnav a { color: var(--fg); text-decoration: none; }
+.mnav-in { max-width: 640px; margin: 0 auto; padding: 16px 20px calc(40px + env(safe-area-inset-bottom, 0px)); }
+.mq { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.mq a { display: flex; flex-direction: column; gap: 4px; padding: 14px 14px 13px; border-radius: 14px; background: var(--bg2); font-size: 15px; font-weight: 700; line-height: 1.3; }
+.mq a small { font-size: 12px; font-weight: 500; color: var(--muted); } .mq a.pri { background: var(--accent); color: var(--accent-fg); } .mq a.pri small { color: inherit; opacity: .85; }
+.mnav .mgrp { border-bottom: 1px solid var(--line); }
+.mnav .mgrp summary { list-style: none; display: flex; align-items: center; justify-content: space-between; min-height: 56px; padding: 0 4px; font-size: 18px; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mnav .mgrp summary::-webkit-details-marker { display: none; } .mnav .mgrp .chev { color: var(--muted); transition: transform .2s; } .mnav .mgrp[open] .chev { transform: rotate(180deg); color: var(--accent); } .mnav .mgrp[open] summary { color: var(--accent); }
+.mnav .msub { display: flex; flex-direction: column; padding: 0 0 12px; }
+.mnav .msub > a { display: flex; align-items: center; justify-content: space-between; min-height: 46px; padding: 0 12px; border-radius: 10px; font-size: 16px; }
+.mnav .msub > a span { color: var(--muted); font-size: 18px; } .mnav .msub > a:active, .mnav .msub2 a:active { background: var(--bg2); }
+.mnav .msub > a.mall { font-size: 14px; font-weight: 600; color: var(--accent); min-height: 40px; } .mnav .msub > a.mall span { color: inherit; }
+.mnav .msub a.on { color: var(--accent); font-weight: 700; background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.mnav .msub2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 4px 4px 10px; }
+.mnav .msub2 a { display: flex; align-items: center; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 14px; line-height: 1.3; }
+.mfoot { display: flex; gap: 10px; margin-top: 20px; } .mfoot a { flex: 1; text-align: center; padding: 12px; border: 1px solid var(--line); border-radius: 999px; font-size: 15px; font-weight: 600; }
+@media (min-width: 861px) { .hdr .mnav { display: none !important; } }
+html.mnav-lock { overflow: hidden; } body.mnav-on .kchat-fab, body.mnav-on .kchat { display: none !important; }
+
 @media (max-width: 860px) { .nav, .util .txt { display: none; } .burger { display: inline-flex; align-items: center; justify-content: center; } }
 /* sections */
 .sec { padding-block: clamp(64px, 9vw, 120px); }
@@ -814,9 +833,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .mega-col ul { list-style: none; margin: 0; padding: 0; } .mega-col li a { display: block; padding: 6px 0; font-size: 15px; color: var(--muted); line-height: 1.5; } .mega-col li a:hover, .mega-col li a:focus-visible { color: var(--accent); text-decoration: none; font-weight: 600; }
 .mega-col.hot .mega-col-title { color: var(--accent); border-color: var(--accent); }
 .mega-col li.has-sub > a { color: var(--fg); font-weight: 600; } .mega-col ul ul { margin: 2px 0 6px 6px; padding-left: 12px; border-left: 1px solid var(--line); } .mega-col ul ul a { font-size: 14px; padding: 4px 0; }
-.mnav .msub2 { display: flex; flex-wrap: wrap; gap: 0 14px; padding-left: 12px; width: 100%; } .mnav .msub2 a { font-size: 14px; }
 .hdr { position: sticky; }
-.mnav .mgrp { padding: 6px 0; border-bottom: 1px solid var(--line); } .mnav .mtop { font-weight: 700; } .mnav .msub { display: flex; flex-wrap: wrap; gap: 0 18px; padding: 0 0 6px 12px; } .mnav .msub a { font-size: 15px; color: var(--muted); padding: 4px 0; }
 @media (max-width: 1024px) { .mega-inner { grid-template-columns: 1fr; gap: 20px; } .mega-intro { display: none; } .mega-cols { gap: 20px; } }
 @media (max-width: 860px) { .mega, .dim { display: none !important; } }
 .srch { position: fixed; inset: 0; z-index: 60; display: none; } .srch.on { display: block; }
@@ -1029,7 +1046,11 @@ JS = r"""
   var qs=function(s,r){return (r||document).querySelector(s)}, qsa=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
   // mobile nav
   var b=qs('.burger'), m=qs('.mnav');
-  if(b&&m){ b.addEventListener('click',function(){ var o=m.getAttribute('data-open')==='1'; m.setAttribute('data-open',o?'0':'1'); b.setAttribute('aria-expanded',String(!o)); }); }
+  if(b&&m){ var setM=function(o){ m.setAttribute('data-open',o?'1':'0'); b.setAttribute('aria-expanded',String(o)); b.setAttribute('aria-label',o?'메뉴 닫기':'메뉴 열기'); document.documentElement.classList.toggle('mnav-lock',o); document.body.classList.toggle('mnav-on',o); };
+    b.addEventListener('click',function(){ setM(m.getAttribute('data-open')!=='1'); });
+    m.addEventListener('click',function(e){ if(e.target.closest('a')) setM(false); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&m.getAttribute('data-open')==='1'){ setM(false); b.focus(); } });
+    window.addEventListener('resize',function(){ if(window.innerWidth>860&&m.getAttribute('data-open')==='1') setM(false); }); }
   // generic tab filters: [data-tabs] buttons filter [data-items] children by data-key
   qsa('[data-tabs]').forEach(function(bar){
     var target=qs('[data-items="'+bar.getAttribute('data-tabs')+'"]'); if(!target) return;
@@ -1356,7 +1377,27 @@ def header(current):
     def _sub_c(it):
         sh, st = it[0], it[1]; kids = it[2] if len(it) > 2 else []
         return f'<li class="{"has-sub" if kids else ""}"><a href="{sh}"{_ext(sh)}>{st}</a>' + (('<ul>' + ''.join(f'<li><a href="{kh}">{kt}</a></li>' for kh, kt in kids) + '</ul>') if kids else '') + '</li>'
-    mlinks = ''.join(f'<div class="mgrp"><a class="mtop" href="{h}">{t}</a><div class="msub">' + ''.join(_sub_m(it) for it in subs) + '</div></div>' for h, t, subs in MEGA) + '<div class="mgrp"><div class="msub"><a href="search.html">검색</a><a href="en.html">English</a><a href="join.html#inquiry">도입 문의</a></div></div>'
+    def _cur(h): return h.split('#')[0] == current
+    def _msub(it):
+        sh, st = it[0], it[1]; kids = it[2] if len(it) > 2 else []
+        if kids:
+            return (f'<a href="{sh}"{_ext(sh)}{" class=\"on\"" if _cur(sh) and "#" not in sh else ""}>{st} 전체 보기<span aria-hidden="true">›</span></a>'
+                    '<div class="msub2">' + ''.join(f'<a href="{kh}"{" class=\"on\"" if _cur(kh) and "#" not in kh else ""}>{kt}</a>' for kh, kt in kids) + '</div>')
+        return f'<a href="{sh}"{_ext(sh)}{" class=\"on\"" if _cur(sh) and "#" not in sh else ""}>{st}<span aria-hidden="true">{"↗" if _ext(sh) or "keliedu.org" in str(sh) else "›"}</span></a>'
+    def _gopen(h, subs):
+        if on(h): return True
+        hs = [it[0] for it in subs] + [k[0] for it in subs if len(it) > 2 for k in it[2]]
+        return any(_cur(x) for x in hs)
+    CHEV = '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'
+    mquick = (f'<div class="mq"><a class="pri" href="experience.html">HAI 체험관<small>서비스를 바로 따라 해 보기</small></a>'
+              f'<a href="services.html">HAI Ecosystems<small>AI 서비스 한눈에 보기</small></a>'
+              f'<a href="demos.html">전체 데모 영상<small>영상 보고 데모 신청</small></a>'
+              f'<a href="{OLD_MARKET}">Marketplace<small>회원가입 후 도입·구독</small></a></div>')
+    mlinks = ('<div class="mnav-in">' + mquick + ''.join(
+        f'<details class="mgrp" name="mnav"{" open" if _gopen(h, subs) else ""}><summary>{t}{CHEV}</summary><div class="msub">'
+        + (f'<a href="{h}" class="mall">{t} 첫 화면<span aria-hidden="true">›</span></a>' if all(it[0] != h for it in subs) else '')
+        + ''.join(_msub(it) for it in subs) + '</div></details>' for h, t, subs in MEGA)
+        + '<div class="mfoot"><a href="search.html">검색</a><a href="en.html">English</a></div></div>')
     cols = ''.join(f'<div class="mega-col" data-menu="{h}"><a class="mega-col-title" href="{h}">{t}</a><ul>' + ''.join(_sub_c(it) for it in subs) + '</ul></div>' for h, t, subs in MEGA)
     mega = f'''<div class="mega" id="mega" aria-hidden="true"><div class="wrap mega-inner">
 <div class="mega-intro"><span class="eyebrow">한림대학교 KELI</span><strong>고등교육 AI<br>공유 플랫폼</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="more" href="join.html#inquiry">도입 문의</a><a class="more" href="demos.html">전체 데모 영상</a><a class="more" href="{OLD_MARKET}">Marketplace</a></div>
@@ -1369,9 +1410,9 @@ def header(current):
 <a class="ico txt" href="search.html" aria-label="검색"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></a>
 <a class="txt" href="en.html">ENG</a>
 <a class="btn sm" href="join.html#inquiry">도입 문의</a>
-<button class="burger" aria-label="메뉴 열기" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+<button class="burger" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mnav"><svg class="b-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="b-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 </div></div>
-<nav class="mnav wrap" data-open="0" aria-label="모바일 메뉴">{mlinks}</nav>
+<nav class="mnav" id="mnav" data-open="0" aria-label="모바일 메뉴">{mlinks}</nav>
 {mega}
 </header><div class="dim" id="dim"></div>'''
 

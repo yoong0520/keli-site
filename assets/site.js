@@ -3,7 +3,11 @@
   var qs=function(s,r){return (r||document).querySelector(s)}, qsa=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
   // mobile nav
   var b=qs('.burger'), m=qs('.mnav');
-  if(b&&m){ b.addEventListener('click',function(){ var o=m.getAttribute('data-open')==='1'; m.setAttribute('data-open',o?'0':'1'); b.setAttribute('aria-expanded',String(!o)); }); }
+  if(b&&m){ var setM=function(o){ m.setAttribute('data-open',o?'1':'0'); b.setAttribute('aria-expanded',String(o)); b.setAttribute('aria-label',o?'메뉴 닫기':'메뉴 열기'); document.documentElement.classList.toggle('mnav-lock',o); document.body.classList.toggle('mnav-on',o); };
+    b.addEventListener('click',function(){ setM(m.getAttribute('data-open')!=='1'); });
+    m.addEventListener('click',function(e){ if(e.target.closest('a')) setM(false); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&m.getAttribute('data-open')==='1'){ setM(false); b.focus(); } });
+    window.addEventListener('resize',function(){ if(window.innerWidth>860&&m.getAttribute('data-open')==='1') setM(false); }); }
   // generic tab filters: [data-tabs] buttons filter [data-items] children by data-key
   qsa('[data-tabs]').forEach(function(bar){
     var target=qs('[data-items="'+bar.getAttribute('data-tabs')+'"]'); if(!target) return;
