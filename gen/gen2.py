@@ -582,10 +582,10 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .walk-n { position: absolute; left: 12px; top: 12px; padding: 3px 10px; border-radius: 999px; background: rgba(11,92,255,.92); color: #fff; font-size: 12px; font-weight: 700; }
 .walk-body { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px 18px; flex: 1; } .walk-body .m { font-size: 13px; color: var(--muted); } .walk-body .t { font-size: 18px; } .walk-body .vbtns { margin-top: auto; padding-top: 10px; }
 .walk-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; } .walk-modal[hidden] { display: none; }
-.walk-panel { position: relative; width: min(1180px, 100%); max-height: calc(100vh - 32px); display: flex; flex-direction: column; background: #fff; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.35); overflow: hidden; }
+.walk-panel { position: relative; width: min(1360px, 100%); max-height: calc(100vh - 32px); display: flex; flex-direction: column; background: #fff; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.35); overflow: hidden; }
 .walk-sub { font-size: 12px; font-weight: 700; color: var(--accent); }
-.walk-main { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr); min-height: 0; flex: 1; }
-.walk-shot { background: #eef2f8; display: flex; align-items: center; justify-content: center; padding: 14px; min-height: 0; overflow: auto; } .walk-shot img { max-width: 100%; max-height: calc(100vh - 160px); object-fit: contain; border-radius: 8px; box-shadow: 0 4px 18px rgba(0,0,0,.12); background: #fff; } .walk-shot.fin img { opacity: .35; }
+.walk-main { display: grid; grid-template-columns: minmax(0, 2.4fr) minmax(290px, 1fr); min-height: 0; flex: 1; }
+.walk-shot { position: relative; background: #eef2f8; display: flex; align-items: center; justify-content: center; padding: 14px; min-height: 0; overflow: auto; } .walk-zoom { display: contents; cursor: zoom-in; } .walk-big { position: absolute; right: 18px; bottom: 18px; padding: 4px 12px; border-radius: 999px; background: rgba(15,23,42,.72); color: #fff; font-size: 12px; font-weight: 700; text-decoration: none; } .walk-big[hidden] { display: none; } .walk-shot img { max-width: 100%; max-height: calc(100vh - 130px); cursor: zoom-in; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 18px rgba(0,0,0,.12); background: #fff; } .walk-shot.fin img { opacity: .35; }
 .walk-side { display: flex; flex-direction: column; gap: 14px; padding: 18px 20px; overflow-y: auto; } .walk-side .fd-bubble p.walk-h { font-size: 17px; } .walk-side .fd-bubble p.walk-t { white-space: pre-line; line-height: 1.7; color: var(--ink); }
 .walk-dots { display: flex; gap: 6px; align-items: center; } .walk-dots button { width: 26px; height: 6px; border: 0; border-radius: 99px; background: #dbe3f0; cursor: pointer; padding: 0; } .walk-dots button.ok { background: #93b4f5; } .walk-dots button.on { background: var(--accent); } .walk-dots span { opacity: .3; font-size: 14px; } .walk-dots span.on { opacity: 1; }
 .walk-end { display: flex; flex-wrap: wrap; gap: 8px; } .walk-nav { display: flex; justify-content: space-between; margin-top: auto; } .walk-nav button[disabled] { opacity: .35; cursor: default; }
@@ -2309,8 +2309,12 @@ def page_service(s):
     _t = next((t for t in TRY_DEMOS if t['svc'] == s['slug']), None)   # 미니 체험판이 있으면 그 자리에서 대화창, 없으면 체험관의 영상·매뉴얼 카드로
     _f = next((d for d in DEMO_ITEMS if svc_slug_of(d['name']) == s['slug']), None)
     _tr = TRIALS.get(s['slug'])
-    try_btn = (f'<a class="btn" href="{E(_tr["url"])}" target="_blank" rel="noopener" data-trial="{s["slug"]}">실제 서비스 체험 ↗</a>' if _tr else '') + (f'<button type="button" class="btn{" ghost" if _tr else ""}" data-try="{_t["svc"]}">바로 체험하기</button>' if _t
-               else (f'<a class="btn{" ghost" if _tr else ""}" href="experience.html#try-{_f["id"]}">체험하기</a>' if _f else ''))
+    _w = s['slug'] in WALKS
+    try_btn = (f'<a class="btn" href="{E(_tr["url"])}" target="_blank" rel="noopener" data-trial="{s["slug"]}">실제 서비스 체험 ↗</a>' if _tr else '') + (
+               f'<button type="button" class="btn{" ghost" if _tr else ""}" data-walk="{s["slug"]}">바로 체험하기</button>' if _w
+               else (f'<button type="button" class="btn{" ghost" if _tr else ""}" data-try="{_t["svc"]}">바로 체험하기</button>' if _t
+               else (f'<a class="btn{" ghost" if _tr else ""}" href="experience.html#try-{_f["id"]}">체험하기</a>' if _f else ''))) + (
+               f'<button type="button" class="btn ghost" data-try="{_t["svc"]}">AI 미니 체험</button>' if (_w and _t) else '')
     siblings = [x for x in SERVICES if x['area'] == s['area'] and x['slug'] != s['slug']]
     sib = ''.join(svc_card(x) for x in siblings[:3])
     body = crumb(('services.html', 'HAI Ecosystems'), (None, s['name'])) + f'''
@@ -2340,6 +2344,7 @@ def page_service(s):
 <section class="sec"><div class="wrap"><div class="cta"><h2>내 교과목에 적용하려면.</h2><p class="lead">첫걸음은 1개 교과목 × 1개 서비스 × 1개 학기입니다.</p><div class="acts"><a class="btn" href="join.html?service={s['slug']}#inquiry">도입 문의</a><a class="more" href="archive.html#case">실증 사례 보기</a></div></div></div></section>
 '''
     if _t: body += try_modal_html()
+    if _w: body += walk_modal_html([s['slug']])
     if _tr: body = body.replace(MKT_NOTICE, trial_box(s['slug'], s['name']) + MKT_NOTICE, 1) + f'<script>{TRIAL_JS}</script>'
     write(f'service-{s["slug"]}.html', f'{s["name"]} · KELI', body, desc=s['head'])
 
@@ -2876,11 +2881,11 @@ def finder_html():
 
 # ------------------------------------------------------------------ 바로 체험 = 단계별 따라 해 보기(매뉴얼 화면 + 이음이·이루미 안내)
 WALKS = {k: v for k, v in (_load_json(os.path.join(CONTENT, 'walkthroughs.json'), {}).get('items') or {}).items() if v.get('steps')}
-def walk_data():
+def walk_data(only=None):
     out = {}
     for x in SERVICES:
         w = WALKS.get(x['slug'])
-        if not w: continue
+        if not w or (only and x['slug'] not in only): continue
         vs = videos_for(x['name']); tr = TRIALS.get(x['slug'])
         out[x['slug']] = {'name': x['name'], 'steps': w['steps'], 'manual': w.get('manual') or x.get('manual') or '', 'page': f'service-{x["slug"]}.html',
                           'video': (vs[0]['embed'] if vs else ''), 'demo': demo_url(x['slug']), 'trial': (tr['url'] if tr else ''),
@@ -2888,30 +2893,30 @@ def walk_data():
     return out
 def walk_card(x):
     w = WALKS[x['slug']]; ai = any(t['svc'] == x['slug'] for t in TRY_DEMOS)
-    img = w['steps'][0]['img']; soon = ' · <span class="badge soon">준비 중</span>' if x.get('status') == 'soon' else ''
+    img = w['steps'][1 if len(w['steps']) > 1 else 0]['img']; soon = ' · <span class="badge soon">준비 중</span>' if x.get('status') == 'soon' else ''
     return (f'<div class="walk-card"><button type="button" class="walk-thumb" data-walk="{x["slug"]}" aria-label="{E(x["name"])} 따라 해 보기"><img src="{img}" alt="" loading="lazy"><span class="walk-n">{len(w["steps"])}단계</span></button>'
             f'<div class="walk-body"><span class="m">{E(AREA_LABEL.get(x["area"], x["area"]))}{soon}</span>'
-            f'<strong class="t"><a href="service-{x["slug"]}.html">{E(x["name"])}</a></strong><span class="small muted">{E(w.get("lead") or x.get("one") or "")}</span>'
+            f'<strong class="t"><a href="service-{x["slug"]}.html">{E(x["name"])}</a></strong><span class="small muted">{E(w.get("lead") or x.get("head") or x.get("one") or "")}</span>'
             f'<div class="vbtns"><button type="button" class="btn sm" data-walk="{x["slug"]}">따라 해 보기</button>'
             + (f'<button type="button" class="btn ghost sm" data-try="{x["slug"]}">AI 미니 체험</button>' if ai else '') + '</div></div></div>')
-def walk_modal_html():
+def walk_modal_html(only=None):
     return f"""<div class="walk-modal" hidden role="dialog" aria-modal="true" aria-labelledby="walk-title"><div class="try-bg" data-wclose></div><div class="walk-panel">
 <div class="try-head"><div><span class="walk-sub">바로 체험 · 따라 해 보기</span><h2 id="walk-title">따라 해 보기</h2></div><button type="button" class="vmodal-x" data-wclose aria-label="닫기">&times;</button></div>
-<div class="walk-main"><div class="walk-shot"><img alt=""></div>
+<div class="walk-main"><div class="walk-shot"><a class="walk-zoom" href="#" target="_blank" rel="noopener" title="새 창에서 크게 보기"><img alt=""></a><a class="walk-big" href="#" target="_blank" rel="noopener">크게 보기 ↗</a></div>
 <div class="walk-side"><div class="walk-dots"></div><div class="fd-q"><img src="media/mascot/eumi.png" alt="" class="fd-av walk-av"><div class="fd-bubble"><span class="fd-who walk-step"></span><p class="walk-h"></p><p class="small walk-t"></p></div></div>
 <div class="walk-end" hidden></div>
 <div class="walk-nav"><button type="button" class="btn ghost sm walk-prev">← 이전</button><button type="button" class="btn sm walk-next">다음 →</button></div>
 <p class="try-foot" style="padding:0;margin-top:10px">화면 출처: 서비스 매뉴얼 · ←/→ 키로도 넘길 수 있어요</p></div></div>
 </div></div>
-<script>window.KELI_WALK={json.dumps(walk_data(), ensure_ascii=False)};</script><script>{WALK_JS}</script>"""
+<script>window.KELI_WALK={json.dumps(walk_data(only), ensure_ascii=False)};</script><script>{WALK_JS}</script>"""
 WALK_JS = r"""(function(){
   var m=document.querySelector('.walk-modal'); if(!m) return; var D=window.KELI_WALK||{}, cur=null, i=0, last=null;
-  var img=m.querySelector('.walk-shot img'), dots=m.querySelector('.walk-dots'), h=m.querySelector('.walk-h'), t=m.querySelector('.walk-t'), sn=m.querySelector('.walk-step'), av=m.querySelector('.walk-av'), end=m.querySelector('.walk-end'), prev=m.querySelector('.walk-prev'), next=m.querySelector('.walk-next'), tt=m.querySelector('#walk-title');
+  var img=m.querySelector('.walk-shot img'), zl=m.querySelectorAll('.walk-zoom,.walk-big'), dots=m.querySelector('.walk-dots'), h=m.querySelector('.walk-h'), t=m.querySelector('.walk-t'), sn=m.querySelector('.walk-step'), av=m.querySelector('.walk-av'), end=m.querySelector('.walk-end'), prev=m.querySelector('.walk-prev'), next=m.querySelector('.walk-next'), tt=m.querySelector('#walk-title');
   function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   function render(){ var w=D[cur], n=w.steps.length, done=(i>=n);
     dots.innerHTML=w.steps.map(function(_,k){ return '<button type="button" class="'+(k<i?'ok ':'')+(k===i?'on':'')+'" data-k="'+k+'" aria-label="'+(k+1)+'단계"></button>'; }).join('')+'<span class="'+(done?'on':'')+'">🎉</span>';
-    if(!done){ var st=w.steps[i]; img.src=st.img; img.alt=st.title; img.parentNode.classList.remove('fin'); av.src=(i%2?'media/mascot/irumi.png':'media/mascot/eumi.png'); sn.textContent=(i%2?'이루미':'이음이')+' · '+(i+1)+'/'+n+'단계'; h.textContent=st.title; t.textContent=st.text||''; end.hidden=true; m.querySelector('.walk-side .fd-q').hidden=false; next.textContent=(i===n-1?'완료 →':'다음 →'); next.hidden=false; }
-    else { img.parentNode.classList.add('fin'); m.querySelector('.walk-side .fd-q').hidden=false; av.src='media/mascot/irumi.png'; sn.textContent='이루미 · 완료!'; h.textContent=w.name+' 따라 해 보기를 마쳤어요!'; t.textContent='이제 직접 써 볼 차례예요.'; next.hidden=true;
+    if(!done){ var st=w.steps[i]; img.src=st.img; img.alt=st.title; zl.forEach(function(a){ a.href=st.img; a.hidden=false; }); img.closest('.walk-shot').classList.remove('fin'); av.src=(i%2?'media/mascot/irumi.png':'media/mascot/eumi.png'); sn.textContent=(i%2?'이루미':'이음이')+' · '+(i+1)+'/'+n+'단계'; h.textContent=st.title; t.textContent=st.text||''; end.hidden=true; m.querySelector('.walk-side .fd-q').hidden=false; next.textContent=(i===n-1?'완료 →':'다음 →'); next.hidden=false; }
+    else { img.closest('.walk-shot').classList.add('fin'); m.querySelector('.walk-big').hidden=true; m.querySelector('.walk-side .fd-q').hidden=false; av.src='media/mascot/irumi.png'; sn.textContent='이루미 · 완료!'; h.textContent=w.name+' 따라 해 보기를 마쳤어요!'; t.textContent='이제 직접 써 볼 차례예요.'; next.hidden=true;
       end.innerHTML=(w.trial?'<a class="btn sm" href="'+esc(w.trial)+'" target="_blank" rel="noopener">실제 서비스 체험 ↗</a>':'')+(w.ai?'<button type="button" class="btn sm" data-try="'+w.ai+'">AI 미니 체험</button>':'')+(w.video?'<button type="button" class="btn ghost sm" data-vmodal="'+esc(w.video)+'" data-vtitle="'+esc(w.name)+' · 영상">▶ 영상 보기</button>':'')+(w.demo?'<a class="btn sm btn-demo" href="'+w.demo+'">데모 신청</a>':'')+(w.manual?'<a class="btn ghost sm" href="'+esc(w.manual)+'" target="_blank" rel="noopener">매뉴얼(PDF)</a>':'')+'<a class="btn ghost sm" href="'+w.page+'">서비스 소개</a><button type="button" class="btn ghost sm walk-again">처음부터</button>';
       end.hidden=false; }
     prev.disabled=(i===0); }

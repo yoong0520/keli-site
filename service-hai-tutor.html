@@ -27,9 +27,9 @@
 <link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="assets/site.css?v=2989bcf8">
+<link rel="stylesheet" href="assets/site.css?v=cf9b046d">
 </head>
-<body><script>(function(){var B='6afd6dd6';try{fetch('/assets/build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=(t||'').trim();if(!/^[0-9a-f]{6,12}$/.test(t)||t<=B)return;var k='keli-rl-'+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){return}fetch(location.href,{cache:'reload'}).then(function(){location.reload()})}).catch(function(){})}catch(e){}})();</script>
+<body><script>(function(){var B='6afd70e1';try{fetch('/assets/build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=(t||'').trim();if(!/^[0-9a-f]{6,12}$/.test(t)||t<=B)return;var k='keli-rl-'+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){return}fetch(location.href,{cache:'reload'}).then(function(){location.reload()})}).catch(function(){})}catch(e){}})();</script>
 <header class="hdr"><div class="wrap bar">
 <a class="brand" href="index.html" aria-label="KELI 홈"><img src="assets/img/keli-logo.png" alt="KELI" width="62" height="28"></a>
 <nav class="nav" aria-label="주요 메뉴"><a href="about.html" data-menu="about.html">KELI 소개</a><a href="services.html" class="on" data-menu="services.html">HAI Ecosystems</a><a href="join.html" data-menu="join.html">KELI 협의체 참여</a><a href="archive.html" data-menu="archive.html">아카이브</a><a href="news.html" data-menu="news.html">소식</a></nav>
@@ -51,7 +51,7 @@
 <span class="eyebrow">AI 학습 지원</span>
 <h1>HAI⁠-⁠Tutor</h1>
 <p class="lead">한림대학교에서 개발한 RAG 기능을 지원하는 교과목 특화형 지능형 튜터 서비스.</p>
-<div class="acts"><button type="button" class="btn" data-try="hai-tutor">바로 체험하기</button><a class="btn ghost" href="https://keliedu.org/keli/solution/collection?mode=view&sltnSn=7">데모 신청하기</a><a class="btn ghost" href="join.html?service=hai-tutor#inquiry">도입 문의</a><a class="more" href="https://tutor.k-university.ai" target="_blank" rel="noopener">서비스 바로가기</a><a class="more" href="https://ai.hallym.ac.kr/media/uploads/guides/7ee14e77cd1649fbae98177aa678eef3.pdf#ar=1.7778" target="_blank" rel="noopener">매뉴얼</a></div>
+<div class="acts"><button type="button" class="btn" data-walk="hai-tutor">바로 체험하기</button><button type="button" class="btn ghost" data-try="hai-tutor">AI 미니 체험</button><a class="btn ghost" href="https://keliedu.org/keli/solution/collection?mode=view&sltnSn=7">데모 신청하기</a><a class="btn ghost" href="join.html?service=hai-tutor#inquiry">도입 문의</a><a class="more" href="https://tutor.k-university.ai" target="_blank" rel="noopener">서비스 바로가기</a><a class="more" href="https://ai.hallym.ac.kr/media/uploads/guides/7ee14e77cd1649fbae98177aa678eef3.pdf#ar=1.7778" target="_blank" rel="noopener">매뉴얼</a></div>
 <div class="mkt-notice"><b>도입⁠·⁠구독 안내</b><span>HAI Ecosystems 서비스의 데모 신청과 도입⁠·⁠구독은 <b>KELI Marketplace⁠에서 회원가입 후</b> 이용할 수 있습니다.</span><span class="mkt-acts"><a href="https://keliedu.org/keli/service/signup">Marketplace 회원가입</a><a href="https://keliedu.org/keli/solution/collection">Marketplace 바로가기</a></span></div>
 </div></section>
 <section class="sec" style="padding-top:24px"><div class="wrap">
@@ -107,7 +107,35 @@
   form.addEventListener('submit', function(e){ e.preventDefault(); send(ta.value); });
   ta.addEventListener('keydown', function(e){ if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){ e.preventDefault(); send(ta.value); } });
 })();</script>
-
+<div class="walk-modal" hidden role="dialog" aria-modal="true" aria-labelledby="walk-title"><div class="try-bg" data-wclose></div><div class="walk-panel">
+<div class="try-head"><div><span class="walk-sub">바로 체험 ⁠·⁠ 따라 해 보기</span><h2 id="walk-title">따라 해 보기</h2></div><button type="button" class="vmodal-x" data-wclose aria-label="닫기">&times;</button></div>
+<div class="walk-main"><div class="walk-shot"><a class="walk-zoom" href="#" target="_blank" rel="noopener" title="새 창에서 크게 보기"><img alt=""></a><a class="walk-big" href="#" target="_blank" rel="noopener">크게 보기 ↗</a></div>
+<div class="walk-side"><div class="walk-dots"></div><div class="fd-q"><img src="media/mascot/eumi.png" alt="" class="fd-av walk-av"><div class="fd-bubble"><span class="fd-who walk-step"></span><p class="walk-h"></p><p class="small walk-t"></p></div></div>
+<div class="walk-end" hidden></div>
+<div class="walk-nav"><button type="button" class="btn ghost sm walk-prev">← 이전</button><button type="button" class="btn sm walk-next">다음 →</button></div>
+<p class="try-foot" style="padding:0;margin-top:10px">화면 출처: 서비스 매뉴얼 ⁠·⁠ ←/→ 키로도 넘길 수 있어요</p></div></div>
+</div></div>
+<script>window.KELI_WALK={"hai-tutor": {"name": "HAI-Tutor", "steps": [{"img": "media/walk/hai-tutor/1.jpg", "title": "사번으로 로그인해요", "text": "별도 회원가입 없이 한림대학교 사번 ID와 비밀번호로 로그인해요. 아이디 저장 기능도 있어요."}, {"img": "media/walk/hai-tutor/2.jpg", "title": "강의 자료를 올리고 대화를 시작해요", "text": "입력창 왼쪽 클립 단추로 강의 자료를 올리면, 그 자료를 근거로 더 믿을 수 있는 답을 만들어 줘요. 「더 똑똑한 문제 생성 가이드」로 요청 요령도 볼 수 있어요."}, {"img": "media/walk/hai-tutor/3.jpg", "title": "답변의 출처를 확인해요", "text": "답변 아래에 근거가 된 원본 자료가 표시돼요. 「열기」를 누르면 출처 문서를 바로 열어 볼 수 있고, 답변은 복사하거나 파일로 저장할 수 있어요."}, {"img": "media/walk/hai-tutor/4.jpg", "title": "시험 문항을 만들어요", "text": "대화로 문제 생성을 요청하면 문항이 만들어져요. 문항을 넘겨 보며 검토하고, 마음에 드는 문항을 문제은행에 추가해요."}, {"img": "media/walk/hai-tutor/5.jpg", "title": "문항을 다듬고 저장해요", "text": "난이도·정답·보기·해설을 직접 고칠 수 있어요. 해설은 나중에 AI가 시험지를 채점할 때 쓰이니 꼼꼼히 확인하고 저장해요."}], "manual": "https://ai.hallym.ac.kr/media/uploads/guides/7ee14e77cd1649fbae98177aa678eef3.pdf", "page": "service-hai-tutor.html", "video": "", "demo": "https://keliedu.org/keli/solution/collection?mode=view&sltnSn=7", "trial": "", "ai": "hai-tutor"}};</script><script>(function(){
+  var m=document.querySelector('.walk-modal'); if(!m) return; var D=window.KELI_WALK||{}, cur=null, i=0, last=null;
+  var img=m.querySelector('.walk-shot img'), zl=m.querySelectorAll('.walk-zoom,.walk-big'), dots=m.querySelector('.walk-dots'), h=m.querySelector('.walk-h'), t=m.querySelector('.walk-t'), sn=m.querySelector('.walk-step'), av=m.querySelector('.walk-av'), end=m.querySelector('.walk-end'), prev=m.querySelector('.walk-prev'), next=m.querySelector('.walk-next'), tt=m.querySelector('#walk-title');
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function render(){ var w=D[cur], n=w.steps.length, done=(i>=n);
+    dots.innerHTML=w.steps.map(function(_,k){ return '<button type="button" class="'+(k<i?'ok ':'')+(k===i?'on':'')+'" data-k="'+k+'" aria-label="'+(k+1)+'단계"></button>'; }).join('')+'<span class="'+(done?'on':'')+'">🎉</span>';
+    if(!done){ var st=w.steps[i]; img.src=st.img; img.alt=st.title; zl.forEach(function(a){ a.href=st.img; a.hidden=false; }); img.closest('.walk-shot').classList.remove('fin'); av.src=(i%2?'media/mascot/irumi.png':'media/mascot/eumi.png'); sn.textContent=(i%2?'이루미':'이음이')+' · '+(i+1)+'/'+n+'단계'; h.textContent=st.title; t.textContent=st.text||''; end.hidden=true; m.querySelector('.walk-side .fd-q').hidden=false; next.textContent=(i===n-1?'완료 →':'다음 →'); next.hidden=false; }
+    else { img.closest('.walk-shot').classList.add('fin'); m.querySelector('.walk-big').hidden=true; m.querySelector('.walk-side .fd-q').hidden=false; av.src='media/mascot/irumi.png'; sn.textContent='이루미 · 완료!'; h.textContent=w.name+' 따라 해 보기를 마쳤어요!'; t.textContent='이제 직접 써 볼 차례예요.'; next.hidden=true;
+      end.innerHTML=(w.trial?'<a class="btn sm" href="'+esc(w.trial)+'" target="_blank" rel="noopener">실제 서비스 체험 ↗</a>':'')+(w.ai?'<button type="button" class="btn sm" data-try="'+w.ai+'">AI 미니 체험</button>':'')+(w.video?'<button type="button" class="btn ghost sm" data-vmodal="'+esc(w.video)+'" data-vtitle="'+esc(w.name)+' · 영상">▶ 영상 보기</button>':'')+(w.demo?'<a class="btn sm btn-demo" href="'+w.demo+'">데모 신청</a>':'')+(w.manual?'<a class="btn ghost sm" href="'+esc(w.manual)+'" target="_blank" rel="noopener">매뉴얼(PDF)</a>':'')+'<a class="btn ghost sm" href="'+w.page+'">서비스 소개</a><button type="button" class="btn ghost sm walk-again">처음부터</button>';
+      end.hidden=false; }
+    prev.disabled=(i===0); }
+  function open(k, from){ if(!D[k]) return; cur=k; i=0; last=from; tt.textContent=D[k].name; m.hidden=false; document.body.style.overflow='hidden'; render(); next.focus();
+    try{ if(window.KELI_API&&navigator.sendBeacon) navigator.sendBeacon(window.KELI_API+'/api/hit', new Blob([JSON.stringify({t:'click',p:location.pathname,x:'walk:'+k})],{type:'text/plain'})); }catch(e){} }
+  function close(){ m.hidden=true; document.body.style.overflow=''; if(last) last.focus(); }
+  document.addEventListener('click', function(e){ var b=e.target.closest('[data-walk]'); if(b){ e.preventDefault(); open(b.getAttribute('data-walk'), b); return; }
+    if(m.hidden) return; if(e.target.closest('[data-wclose]')){ close(); return; }
+    if(e.target.closest('.walk-next')){ i++; render(); return; } if(e.target.closest('.walk-prev')){ if(i>0){ i--; render(); } return; }
+    if(e.target.closest('.walk-again')){ i=0; render(); return; } var d=e.target.closest('.walk-dots button'); if(d){ i=+d.getAttribute('data-k'); render(); return; }
+    if(e.target.closest('[data-try],[data-vmodal]')){ close(); } });
+  document.addEventListener('keydown', function(e){ if(m.hidden) return; if(e.key==='Escape') close(); else if(e.key==='ArrowRight'&&i<D[cur].steps.length){ i++; render(); } else if(e.key==='ArrowLeft'&&i>0){ i--; render(); } });
+})();</script>
 </main>
 <footer class="ftr"><div class="wrap">
 <div class="cols">

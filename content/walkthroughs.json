@@ -1,1 +1,570 @@
-{"_note": "HAI 체험관 바로 체험(단계별 따라 해 보기). 서비스 slug 별로 steps: [{img, title, text}], 화면은 각 서비스 매뉴얼(PDF)에서 가져옴.", "items": {}}
+{
+ "_note": "HAI 체험관 바로 체험(단계별 따라 해 보기). 서비스 slug 별로 steps: [{img, title, text}], 화면은 각 서비스 매뉴얼(PDF)에서 가져옴.",
+ "items": {
+  "hai-tutor": {
+   "steps": [
+    {
+     "img": "media/walk/hai-tutor/1.jpg",
+     "title": "사번으로 로그인해요",
+     "text": "별도 회원가입 없이 한림대학교 사번 ID와 비밀번호로 로그인해요. 아이디 저장 기능도 있어요."
+    },
+    {
+     "img": "media/walk/hai-tutor/2.jpg",
+     "title": "강의 자료를 올리고 대화를 시작해요",
+     "text": "입력창 왼쪽 클립 단추로 강의 자료를 올리면, 그 자료를 근거로 더 믿을 수 있는 답을 만들어 줘요. 「더 똑똑한 문제 생성 가이드」로 요청 요령도 볼 수 있어요."
+    },
+    {
+     "img": "media/walk/hai-tutor/3.jpg",
+     "title": "답변의 출처를 확인해요",
+     "text": "답변 아래에 근거가 된 원본 자료가 표시돼요. 「열기」를 누르면 출처 문서를 바로 열어 볼 수 있고, 답변은 복사하거나 파일로 저장할 수 있어요."
+    },
+    {
+     "img": "media/walk/hai-tutor/4.jpg",
+     "title": "시험 문항을 만들어요",
+     "text": "대화로 문제 생성을 요청하면 문항이 만들어져요. 문항을 넘겨 보며 검토하고, 마음에 드는 문항을 문제은행에 추가해요."
+    },
+    {
+     "img": "media/walk/hai-tutor/5.jpg",
+     "title": "문항을 다듬고 저장해요",
+     "text": "난이도·정답·보기·해설을 직접 고칠 수 있어요. 해설은 나중에 AI가 시험지를 채점할 때 쓰이니 꼼꼼히 확인하고 저장해요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/7ee14e77cd1649fbae98177aa678eef3.pdf"
+  },
+  "hai-mate": {
+   "steps": [
+    {
+     "img": "media/walk/hai-mate/1.jpg",
+     "title": "강좌를 골라요",
+     "text": "로그인한 뒤 학년도·학기를 확인하고 「나의 강좌」에서 학습할 강좌를 선택해요. 챗봇 튜터, 학습 자료, 예복습 문제, 퀴즈 메뉴가 열려요."
+    },
+    {
+     "img": "media/walk/hai-mate/2.jpg",
+     "title": "챗봇 튜터에게 물어봐요",
+     "text": "「챗봇 튜터」에서 새 대화를 시작하고 궁금한 점을 입력해요. 강좌 자료를 근거로 답하고 참고 자료도 보여 줘요."
+    },
+    {
+     "img": "media/walk/hai-mate/3.jpg",
+     "title": "예습·복습 문제를 골라요",
+     "text": "「예복습 문제」에서 주차와 예습·복습 구분을 확인하고, 공개 기간 안에 있는 문제를 선택해요."
+    },
+    {
+     "img": "media/walk/hai-mate/4.jpg",
+     "title": "문제를 풀고 정답을 확인해요",
+     "text": "답을 고른 뒤 「정답 확인」을 누르면 정오와 해설, 출처를 바로 볼 수 있어요. 모든 문항을 확인하면 제출해요."
+    },
+    {
+     "img": "media/walk/hai-mate/5.jpg",
+     "title": "결과를 다시 살펴봐요",
+     "text": "제출 후에도 문항별 정답·오답과 해설을 다시 볼 수 있어요. 결과는 교수님 화면에도 반영돼요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/b5649de1d857415bb9f5a70b0ba5547f.pdf"
+  },
+  "hai-fist": {
+   "steps": [
+    {
+     "img": "media/walk/hai-fist/1.jpg",
+     "title": "강의 대시보드에서 시작해요",
+     "text": "담당 강의를 고르면 진행 중인 주차, 예정 수업, 공지를 한 화면에서 보고 강의계획서·자료 생성·시험 설정으로 이동해요."
+    },
+    {
+     "img": "media/walk/hai-fist/2.jpg",
+     "title": "AI가 교재로 강의계획서를 만들어요",
+     "text": "교재를 올리면 AI가 분석해 강의계획서 초안을 만들어요. 주차·차시별 수업 구성과 교재 범위를 학사 일정에 맞게 조정해요."
+    },
+    {
+     "img": "media/walk/hai-fist/3.jpg",
+     "title": "수업 자료를 생성해요",
+     "text": "차시마다 강의록, 강의장표, 팟캐스트, 마인드맵, 퀴즈 등 필요한 자료 유형을 골라 AI로 만들어요."
+    },
+    {
+     "img": "media/walk/hai-fist/4.jpg",
+     "title": "만든 자료를 AI와 함께 다듬어요",
+     "text": "강의장표를 미리 보며 고칠 장표를 고르고, 수정 방향을 AI에게 요청해 내용을 보완해요."
+    },
+    {
+     "img": "media/walk/hai-fist/5.jpg",
+     "title": "학습성과를 분석해요",
+     "text": "학생 참여도, 평가 결과, Q&A 활동, AI 활용 이력으로 학습성과를 확인하고 분석 보고서를 내려받아요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/b4b55b5cdc494b1eb66eca4237f529fc.pdf"
+  },
+  "hai-forum": {
+   "steps": [
+    {
+     "img": "media/walk/hai-forum/1.jpg",
+     "title": "대시보드에서 오늘 할 일을 봐요",
+     "text": "오늘의 수업, 마감 임박 과제, 내 강좌, 평점을 한눈에 봐요. 진행 중인 수업은 「참여하기」로 바로 들어가요."
+    },
+    {
+     "img": "media/walk/hai-forum/2.jpg",
+     "title": "과제를 확인하고 제출해요",
+     "text": "과제 설명과 마감 시간을 확인하고, 내용을 쓰거나 파일을 올려 「제출」을 눌러요."
+    },
+    {
+     "img": "media/walk/hai-forum/3.jpg",
+     "title": "코딩 과제는 바로 실행해요",
+     "text": "언어를 고르고 코드를 작성한 뒤 「제출 및 실행」을 누르면 자동으로 채점돼요. 테스트 결과와 오류 메시지도 볼 수 있어요."
+    },
+    {
+     "img": "media/walk/hai-forum/4.jpg",
+     "title": "실시간 화상수업에 들어가요",
+     "text": "대시보드나 강좌에서 「참여하기」를 누르고, 입장 전에 카메라·마이크를 확인해요."
+    },
+    {
+     "img": "media/walk/hai-forum/5.jpg",
+     "title": "소크라틱 토론에 참여해요",
+     "text": "교수님이 던진 질문에 내 생각을 쓰고, 이어지는 후속 질문에 답하며 생각을 깊게 다듬어요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/1bb328c83e834c39bbc809e1cc7ccd36.pdf"
+  },
+  "hai-lens": {
+   "steps": [
+    {
+     "img": "media/walk/hai-lens/1.jpg",
+     "title": "과목을 골라요",
+     "text": "로그인하면 담당 과목이 보여요. 과목을 누르면 강의 시작, 강의 자료, 지난 강의로 들어가요."
+    },
+    {
+     "img": "media/walk/hai-lens/2.jpg",
+     "title": "강의 자료(PDF)를 올려요",
+     "text": "수업에 쓸 PDF 슬라이드를 올려요. 리포트에서 어느 슬라이드에서 무슨 말을 했는지 함께 보여 줘요."
+    },
+    {
+     "img": "media/walk/hai-lens/3.jpg",
+     "title": "강의를 진행해요",
+     "text": "강의를 시작하면 발표 화면으로 바뀌어요. 슬라이드를 넘긴 시점이 기록되고, 필기 도구도 쓸 수 있어요. 마치면 「강의 종료」로 분석을 시작해요."
+    },
+    {
+     "img": "media/walk/hai-lens/4.jpg",
+     "title": "리포트 요약을 확인해요",
+     "text": "종합 점수와 강의 총평, 8개 영역별 점수와 진단, 먼저 고칠 점과 잘하고 있는 점을 한눈에 봐요."
+    },
+    {
+     "img": "media/walk/hai-lens/5.jpg",
+     "title": "강의 흐름을 구간별로 돌아봐요",
+     "text": "타임라인에서 구간별 점수 흐름을 보고, 원하는 구간의 슬라이드·영상·음성과 관찰 내용을 함께 확인해요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/e0b8cb235deb44ad8a837bb82fc46d79.pdf"
+  },
+  "hai-way": {
+   "steps": [
+    {
+     "img": "media/walk/hai-way/1.jpg",
+     "title": "한림 SSO로 로그인해요",
+     "text": "한림대학교 계정(SSO)으로 바로 로그인해요."
+    },
+    {
+     "img": "media/walk/hai-way/2.jpg",
+     "title": "나의 대시보드를 봐요",
+     "text": "전공 로드맵과 지금까지 들은 과목의 스킬셋 분석, 추천 직무를 대시보드로 확인해요."
+    },
+    {
+     "img": "media/walk/hai-way/3.jpg",
+     "title": "희망 직무에 맞는 커리큘럼을 받아요",
+     "text": "희망 직무를 고르면 그 직무에 필요한 스킬셋을 기준으로 들어야 할 과목 로드맵을 만들어 줘요."
+    },
+    {
+     "img": "media/walk/hai-way/4.jpg",
+     "title": "나와 가까운 직무를 찾아요",
+     "text": "내가 들은 과목의 스킬셋을 바탕으로 나와 가장 가까운 직무와 그 직무를 위한 로드맵을 추천해요."
+    },
+    {
+     "img": "media/walk/hai-way/5.jpg",
+     "title": "성향검사로 직무를 매칭해요",
+     "text": "STRONG 직무 성향검사 결과를 바탕으로 나에게 맞는 직무를 추천하고 설명해 줘요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/fcf51da27ef644c39444f158fc0b5119.pdf"
+  },
+  "hai-gpt": {
+   "steps": [
+    {
+     "img": "media/walk/hai-gpt/1.jpg",
+     "title": "한림 계정으로 로그인해요",
+     "text": "기존 한림 계정(SSO) 그대로 로그인하면 HAI-GPT 메인 채팅 화면으로 들어가요."
+    },
+    {
+     "img": "media/walk/hai-gpt/2.jpg",
+     "title": "Super Agent 모드를 켜요",
+     "text": "상단 모델 선택에서 「Super Agent」를 눌러요. 도구 이름을 외울 필요 없이 원하는 것을 한국어 한 줄로 말하면 돼요."
+    },
+    {
+     "img": "media/walk/hai-gpt/3.jpg",
+     "title": "무엇이든 만들어 달라고 해요",
+     "text": "문서(한글·PDF), PPT, 이미지, 짧은 영상, 음악, 음성, 웹페이지, 다이어그램, 데이터 분석까지 한 번에 만들 수 있어요."
+    },
+    {
+     "img": "media/walk/hai-gpt/4.jpg",
+     "title": "결과를 부분만 고쳐요",
+     "text": "“3페이지 표를 막대차트로 바꿔 줘”처럼 후속 요청으로 일부만 고치면 처음부터 다시 만들지 않아도 돼요. 첨부 파일을 먼저 올리고 요청해도 좋아요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/manuals/super_agent.pdf"
+  },
+  "hai-bdpi": {
+   "steps": [
+    {
+     "img": "media/walk/hai-bdpi/1.jpg",
+     "title": "학번으로 로그인해요",
+     "text": "크롬 브라우저에서 한림 AI 교육 포털을 통해 접속하고, 학번과 비밀번호로 로그인해요."
+    },
+    {
+     "img": "media/walk/hai-bdpi/2.jpg",
+     "title": "검사를 시작해요",
+     "text": "안내문을 읽고 「시작」을 눌러 성격검사를 시작해요. 한 번 이상 응시했다면 「결과 확인」으로 지난 결과도 볼 수 있어요."
+    },
+    {
+     "img": "media/walk/hai-bdpi/3.jpg",
+     "title": "문항에 응답해요",
+     "text": "각 문항에 솔직하게 응답하고 「다음으로」를 눌러요. 모든 문항에 답해야 다음 페이지로 넘어가요."
+    },
+    {
+     "img": "media/walk/hai-bdpi/4.jpg",
+     "title": "결과 보고서를 확인해요",
+     "text": "검사가 끝나면 결과 보고서 창이 자동으로 열려요."
+    },
+    {
+     "img": "media/walk/hai-bdpi/5.jpg",
+     "title": "결과를 모아 보고 내려받아요",
+     "text": "응시한 결과를 목록으로 다시 열어 보고, PDF로 내려받을 수 있어요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/ea2602f5a5df44babfa862a6a6a71d05.pdf"
+  },
+  "hai-research": {
+   "steps": [
+    {
+     "img": "media/walk/hai-research/1.jpg",
+     "title": "협업 내용을 채팅으로 입력해요",
+     "text": "함께 연구하고 싶은 주제나 RFP 내용을 입력하면 관련 연구자 목록을 찾아 줘요. 추천 질문을 눌러도 돼요."
+    },
+    {
+     "img": "media/walk/hai-research/2.jpg",
+     "title": "연구자 프로필을 자세히 봐요",
+     "text": "「더보기」로 교수님의 전체 프로필과 논문·과제 목록을 확인하고, 관련성순·최신순으로 정렬해요."
+    },
+    {
+     "img": "media/walk/hai-research/3.jpg",
+     "title": "검색 가중치로 다시 찾아요",
+     "text": "주저자 논문, 최근 연구에 가중치를 주고 「재검색」을 누르면 원하는 기준으로 연구자를 다시 찾아요."
+    },
+    {
+     "img": "media/walk/hai-research/4.jpg",
+     "title": "팀 빌딩을 요청해요",
+     "text": "채팅으로 팀 빌딩을 요청하면 최대 5명까지 최적의 연구팀을 조합해 추천해요."
+    },
+    {
+     "img": "media/walk/hai-research/5.jpg",
+     "title": "RFP 파일로 연구자를 찾아요",
+     "text": "RFP 파일을 올리면 내용을 읽고 맞는 연구자를 추천해요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/80cd233c766345fc853d53b5dc853b9e.pdf"
+  },
+  "hai-epilearn": {
+   "steps": [
+    {
+     "img": "media/walk/hai-epilearn/1.jpg",
+     "title": "수업 전·중·후를 한 곳에서",
+     "text": "수업 전 팟캐스트·사전퀴즈, 수업 중 강의록·역학 시뮬레이션·팀 토론(TBL), 수업 후 사후퀴즈·학습성과 분석까지 한 플랫폼에서 이어져요."
+    },
+    {
+     "img": "media/walk/hai-epilearn/2.jpg",
+     "title": "교수자 대시보드에서 기능을 골라요",
+     "text": "코스를 고르면 수업 자료 생성, 자료 편집, 수업 진행, 학습 분석 네 가지 타일이 나와요."
+    },
+    {
+     "img": "media/walk/hai-epilearn/3.jpg",
+     "title": "자료를 고르고 AI 생성을 시작해요",
+     "text": "학습 목표와 교재(PDF)·부가자료를 고르고 「AI 콘텐츠 생성 시작」을 눌러요. Bloom 분류로 퀴즈 난이도를 맞출 수 있어요."
+    },
+    {
+     "img": "media/walk/hai-epilearn/4.jpg",
+     "title": "생성된 콘텐츠를 검토해요",
+     "text": "팟캐스트, 강의록, 사전·사후퀴즈, 케이스를 탭별로 확인하고 필요하면 고쳐요."
+    },
+    {
+     "img": "media/walk/hai-epilearn/5.jpg",
+     "title": "수업을 진행해요",
+     "text": "수업 QR로 학생이 접속하면 팟캐스트, 강의록, 사전퀴즈, 케이스 토론, 사후퀴즈 순서로 수업을 이끌어요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/6062efcbf6a048db9f2c11a749030c40.pdf"
+  },
+  "hai-medlearn-x": {
+   "steps": [
+    {
+     "img": "media/walk/hai-medlearn-x/1.jpg",
+     "title": "수업 전·중·후를 하나로",
+     "text": "콘텐츠 생성 → 검수 → 배포 → 학습 → 분석 → 재생성의 흐름으로 의학교육 수업 전 과정을 지원해요."
+    },
+    {
+     "img": "media/walk/hai-medlearn-x/2.jpg",
+     "title": "학생은 QR로 바로 들어와요",
+     "text": "교수님이 수업 QR을 띄우면 학생은 스마트폰으로 스캔해 아이디만 입력하고 접속해요."
+    },
+    {
+     "img": "media/walk/hai-medlearn-x/3.jpg",
+     "title": "교수자 대시보드에서 시작해요",
+     "text": "수업 자료 생성, 자료 편집, 수업 진행, 학습 분석 네 가지 기능을 타일로 골라요."
+    },
+    {
+     "img": "media/walk/hai-medlearn-x/4.jpg",
+     "title": "AI로 수업 자료를 만들어요",
+     "text": "학습 목표와 교재(PDF)를 고르면 AI가 팟캐스트, 강의노트, 퀴즈, 임상 증례를 자동으로 만들어요."
+    },
+    {
+     "img": "media/walk/hai-medlearn-x/5.jpg",
+     "title": "만든 콘텐츠를 확인해요",
+     "text": "팟캐스트, 사전퀴즈, 케이스, 사후퀴즈를 탭별로 검토·수정하고 수업용 영상도 추가해요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/bf687738e24141fdaa532fa06ba7e63c.pdf"
+  },
+  "hai-lrs": {
+   "steps": [
+    {
+     "img": "media/walk/hai-lrs/1.jpg",
+     "title": "나의 학습 대시보드를 열어요",
+     "text": "학생 화면에는 진로 경험, 역량 프로필, 마이크로디그리, 선배 수강 경험, 할 일·일정 등 분석 카드가 모여 있어요."
+    },
+    {
+     "img": "media/walk/hai-lrs/2.jpg",
+     "title": "진로 경험 레이더를 봐요",
+     "text": "같은 해 입학한 동기와 비교해 수강·성취·비교과·상담·어학 다섯 가지 경험이 어디쯤인지 백분위로 보여 줘요."
+    },
+    {
+     "img": "media/walk/hai-lrs/3.jpg",
+     "title": "나의 역량 프로필을 확인해요",
+     "text": "들은 과목이 직무·도전·기술·탐구 역량을 얼마나 쌓아 줬는지 보여 줘요. 성적이 아니라 이수 사실이 기준이에요."
+    },
+    {
+     "img": "media/walk/hai-lrs/4.jpg",
+     "title": "마이크로디그리에 얼마나 가까운지 봐요",
+     "text": "지금까지 들은 과목만으로 어떤 마이크로디그리 과정에 가까워졌는지 요건 대비 비율로 보여 줘요."
+    },
+    {
+     "img": "media/walk/hai-lrs/5.jpg",
+     "title": "선배들의 수강 경험을 참고해요",
+     "text": "선배 강의평가를 부담과 진로 도움 두 축으로 나눠, 힘들지만 남는 수업까지 찾아볼 수 있어요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/3ccfe2b0965547fab06e94fa7c1d0b45.pdf"
+  },
+  "lxp": {
+   "steps": [
+    {
+     "img": "media/walk/lxp/1.jpg",
+     "title": "학번/사번으로 로그인해요",
+     "text": "한림대학교 LXP 접속 페이지에서 아이디(학번·사번)와 비밀번호로 로그인하면 대시보드로 이동해요."
+    },
+    {
+     "img": "media/walk/lxp/2.jpg",
+     "title": "강의실 홈에 들어가요",
+     "text": "강의실 대시보드에서 공지사항, Q&A, 강좌 소개를 확인해요."
+    },
+    {
+     "img": "media/walk/lxp/3.jpg",
+     "title": "주차별 학습을 확인해요",
+     "text": "주차별 학습 목표와 활동 목록, 시작·마감 일정과 진행 상태를 한눈에 봐요."
+    },
+    {
+     "img": "media/walk/lxp/4.jpg",
+     "title": "학습활동을 진행해요",
+     "text": "주차별 학습활동을 눌러 학습을 진행해요. 진도 기간, 참여 상태, 완료 여부가 함께 표시돼요."
+    },
+    {
+     "img": "media/walk/lxp/5.jpg",
+     "title": "성적을 조회해요",
+     "text": "왼쪽 메뉴 「성적 조회」에서 학습활동별 성적과 교수님 피드백을 확인해요. 성적은 교수님이 공개한 뒤부터 보여요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/08163c4fb0ed4f0d989c4c32e53ce0c0.pdf"
+  },
+  "hai-check": {
+   "steps": [
+    {
+     "img": "media/walk/hai-check/1.jpg",
+     "title": "전체 흐름을 먼저 봐요",
+     "text": "문항 등록 → 문항Pool 생성 → 시험 생성 → URL 배포 → 응시 → 결과 확인 순서로 진행해요. CBT와 맞춤형 CAT 모두 웹에서 운영해요."
+    },
+    {
+     "img": "media/walk/hai-check/2.jpg",
+     "title": "문항을 등록해요",
+     "text": "문항의 분류와 등급 등 기본 정보를 정하고 문항을 등록해요."
+    },
+    {
+     "img": "media/walk/hai-check/3.jpg",
+     "title": "문항Pool(시험지)을 구성해요",
+     "text": "문항Pool은 시험지와 같아요. 「문항Pool구성」 → 「새 문항Pool 등록」에서 이번 시험에 쓸 문항을 골라 담아요."
+    },
+    {
+     "img": "media/walk/hai-check/4.jpg",
+     "title": "시험(Test)을 만들어요",
+     "text": "「Test 등록」에서 「새 Test 등록」을 눌러 시험을 만들고 응시자와 안내 문구를 설정해요."
+    },
+    {
+     "img": "media/walk/hai-check/5.jpg",
+     "title": "결과를 확인하고 내려받아요",
+     "text": "「결과 관리」에서 검사를 고르고 「다운로드」를 누르면 응시 결과를 엑셀 결과표로 받을 수 있어요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/1527c4a963894138bc8ebbe6c2746184.pdf"
+  },
+  "hai-mathtutor": {
+   "steps": [
+    {
+     "img": "media/walk/hai-mathtutor/1.jpg",
+     "title": "나의 학습 현황을 봐요",
+     "text": "홈에서 배정된 튜터별 진도와 정답률, 풀이 기록을 한눈에 봐요. 「내 튜터」를 누르면 나에게 배정된 튜터 목록이 나와요."
+    },
+    {
+     "img": "media/walk/hai-mathtutor/2.jpg",
+     "title": "답을 손글씨로 써요",
+     "text": "문제를 보고 최종 답안과 풀이 과정을 손글씨로 자유롭게 써요. 이미지로 올려 제출할 수도 있어요."
+    },
+    {
+     "img": "media/walk/hai-mathtutor/3.jpg",
+     "title": "막히면 가이드를 열어요",
+     "text": "「가이드」를 누르면 문제에 필요한 개념과 관련 공식을 정리해 보여 줘요."
+    },
+    {
+     "img": "media/walk/hai-mathtutor/4.jpg",
+     "title": "바로 채점 결과를 확인해요",
+     "text": "답안을 제출하면 자동으로 채점돼 정답인지 바로 알 수 있어요. 정답과 해설, 친구 풀이도 볼 수 있어요."
+    },
+    {
+     "img": "media/walk/hai-mathtutor/5.jpg",
+     "title": "AI 튜터에게 물어봐요",
+     "text": "오른쪽 「AI 튜터」 창에서 개념을 물으면 예시와 함께 차근차근 설명해 줘요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/901aae536b7a4abea39d7cdff831382d.pdf"
+  },
+  "hai-security": {
+   "steps": [
+    {
+     "img": "media/walk/hai-security/1.jpg",
+     "title": "실전형 보안 학습 플랫폼이에요",
+     "text": "실전형 CTF 플랫폼과 AI 튜터를 함께 제공하는 올인원 네트워크 보안 코스웨어예요."
+    },
+    {
+     "img": "media/walk/hai-security/2.jpg",
+     "title": "학습자 대시보드에서 시작해요",
+     "text": "오늘의 학습, 진행 중인 과제와 문제 풀이 현황을 대시보드에서 확인해요."
+    },
+    {
+     "img": "media/walk/hai-security/3.jpg",
+     "title": "AI 튜터와 함께 공부해요",
+     "text": "실습하다 막히면 AI 튜터에게 질문하며 스스로 답을 찾아가요."
+    },
+    {
+     "img": "media/walk/hai-security/4.jpg",
+     "title": "실전형 CTF 문제를 풀어요",
+     "text": "실제 공격 데이터를 분석해 위협 행위를 찾아내는 문제를 풀고, 자동 채점으로 결과를 받아요."
+    },
+    {
+     "img": "media/walk/hai-security/5.jpg",
+     "title": "교수님은 학습 현황을 관리해요",
+     "text": "교수(관리자) 화면에서 문제와 시나리오를 관리하고 학생들의 학습 현황을 확인해요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/b8a835b53c734079a9a172af4b5bc863.pdf"
+  },
+  "hai-sync": {
+   "steps": [
+    {
+     "img": "media/walk/hai-sync/1.jpg",
+     "title": "강의자료와 녹음으로 배우는 AI 학습 파트너",
+     "text": "교수님은 강의자료와 수업 녹음을 올리기만 하면 되고, 학생은 언제든 질문하며 복습해요."
+    },
+    {
+     "img": "media/walk/hai-sync/2.jpg",
+     "title": "강의자료·녹음을 자동으로 학습해요",
+     "text": "자료와 녹음을 올리면 AI가 회차별 학습 콘텐츠를 자동으로 만들어요."
+    },
+    {
+     "img": "media/walk/hai-sync/3.jpg",
+     "title": "AI 요약 노트로 복습해요",
+     "text": "회차 전체를 구조화한 요약 노트에 문단마다 강의자료·녹음 출처가 붙어 있어 원문을 바로 확인해요."
+    },
+    {
+     "img": "media/walk/hai-sync/4.jpg",
+     "title": "퀴즈와 게임으로 반복해요",
+     "text": "회차마다 연습 퀴즈와 학습 게임으로 재미있게 반복 학습해요."
+    },
+    {
+     "img": "media/walk/hai-sync/5.jpg",
+     "title": "AI 튜터에게 언제든 물어봐요",
+     "text": "궁금한 건 대화형 AI 튜터에게 물어보면 강의 내용을 근거로 답하고 근거 페이지까지 짚어 줘요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/1586248eb4c948e0aab306892a7cd09a.pdf"
+  },
+  "hai-docs": {
+   "steps": [
+    {
+     "img": "media/walk/hai-docs/1.jpg",
+     "title": "세 단계면 충분해요",
+     "text": "문서와 업무 맥락을 등록하고 → YURIS에게 질문하고 → 문서 초안을 받아 검토해요."
+    },
+    {
+     "img": "media/walk/hai-docs/2.jpg",
+     "title": "행정 문서를 라이브러리에 모아요",
+     "text": "규정·공지·양식 같은 HWP/PDF/DOCX 문서를 문서 라이브러리에 모으면 AI가 구조화해 찾기 쉽게 만들어요."
+    },
+    {
+     "img": "media/walk/hai-docs/3.jpg",
+     "title": "AI 대화로 질문해요",
+     "text": "궁금한 행정 업무를 물으면 관련 규정과 문서를 찾아 근거와 함께 답해 줘요."
+    },
+    {
+     "img": "media/walk/hai-docs/4.jpg",
+     "title": "근거를 검증하고 출처를 확인해요",
+     "text": "수집·분류 → 구조화 → 검색 → 답변 합성 → 검증·출처의 흐름으로, 답변마다 원문 근거를 확인할 수 있어요."
+    },
+    {
+     "img": "media/walk/hai-docs/5.jpg",
+     "title": "DocsGen으로 문서 초안을 만들어요",
+     "text": "필요한 행정 문서 양식을 골라 초안을 만들고, 담당자가 검토해 마무리해요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/510f1ce09cf842338ea5b8081d8d2635.pdf"
+  },
+  "hai-pbl": {
+   "steps": [
+    {
+     "img": "media/walk/hai-pbl/1.jpg",
+     "title": "어디서나 접속하는 웹 플랫폼",
+     "text": "PC, 태블릿, 스마트폰 어디서나 웹으로 바로 접속하는 반응형 PBL 협업 플랫폼이에요."
+    },
+    {
+     "img": "media/walk/hai-pbl/2.jpg",
+     "title": "프로젝트를 체계적으로 구성해요",
+     "text": "수업 설계를 프로젝트 단위로 재구성하고, 작업장 대시보드에서 학생 활동 통계와 맞춤형 피드백을 확인해요."
+    },
+    {
+     "img": "media/walk/hai-pbl/3.jpg",
+     "title": "실시간으로 아이디어를 모아요",
+     "text": "아이디어 보드와 화상 연결로 실시간 토의·토론 수업을 해요."
+    },
+    {
+     "img": "media/walk/hai-pbl/4.jpg",
+     "title": "학생별 포트폴리오가 쌓여요",
+     "text": "활동 기록이 학생별 포트폴리오로 쌓여 성장 과정을 관찰할 수 있어요."
+    },
+    {
+     "img": "media/walk/hai-pbl/5.jpg",
+     "title": "과정중심으로 평가해요",
+     "text": "교사 평가(포트폴리오)와 동료 평가(루브릭 상호평가)로 과정중심 종합 평가를 해요."
+    }
+   ],
+   "manual": "https://ai.hallym.ac.kr/media/uploads/guides/49e68ed9bb79409097f44e3d6adf62b0.pdf"
+  }
+ }
+}
