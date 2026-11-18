@@ -194,6 +194,29 @@ def fill(missing, cache, token, budget):
     flush()
 
 
+
+# ---------------------------------------------------------------- 날마다 바뀌는 숫자·날짜 문구(포털 집계 등)는 틀로 번역
+DOW = {'월': 'Mon', '화': 'Tue', '수': 'Wed', '목': 'Thu', '금': 'Fri', '토': 'Sat', '일': 'Sun'}
+def _d(m):  # 2026. 11. 19. -> 2026.11.19
+    return f'{m.group(1)}.{int(m.group(2)):02d}.{int(m.group(3)):02d}'
+PATTERNS = [
+    (r'(\d+)개 서비스', lambda m: f'{m.group(1)} services'),
+    (r'(\d+)개 서비스 · 영상 (\d+)건\.', lambda m: f'{m.group(1)} services · {m.group(2)} videos.'),
+    (r'기준 (\d+)개 서비스 · 영상 (\d+)건\.', lambda m: f'— {m.group(1)} services · {m.group(2)} videos.'),
+    (r'수업 설계부터 평가·분석까지, (\d+)개 서비스\.', lambda m: f'From class design to assessment and analytics: {m.group(1)} services.'),
+    (r'운영 중 (\d+) · 오픈 예정 (\d+) · 포털 (\d{4})\. (\d+)\. (\d+)\. 기준', lambda m: f'{m.group(1)} live · {m.group(2)} coming soon · portal as of {m.group(3)}.{int(m.group(4)):02d}.{int(m.group(5)):02d}'),
+    (r'(.*?)에 등록된 정보를 자동으로 가져옵니다 \((\d{4})\. (\d+)\. (\d+)\. 기준\)\.', lambda m: (m.group(1) + ' ' if m.group(1) else ' ') + f'is the source; its registered information is pulled automatically (as of {m.group(2)}.{int(m.group(3)):02d}.{int(m.group(4)):02d}).'),
+    (r'(\d{4})\. (\d+)\. (\d+)\. 기준', lambda m: f'As of {m.group(1)}.{int(m.group(2)):02d}.{int(m.group(3)):02d}'),
+    (r'(\d{4}\.\d{2}\.\d{2})\(([월화수목금토일])\)(.*)', lambda m: f'{m.group(1)} ({DOW[m.group(2)]}){m.group(3)}' if not re.search('[가-힣]', m.group(3)) else None),
+]
+def pattern(k):
+    for rx, f in PATTERNS:
+        m = re.fullmatch(rx, k)
+        if m:
+            r = f(m)
+            if r: return r
+    return None
+
 # ---------------------------------------------------------------- 영어판 쓰기
 def main():
     os.makedirs(os.path.dirname(CACHE), exist_ok=True)
@@ -212,7 +235,7 @@ def main():
     for p in pages:
         walk_html(open(os.path.join(ROOT, p), encoding='utf-8').read(), collect)
     walk_js(site_js, collect)
-    missing = [k for k in need if k not in cache and k not in fix]
+    missing = [k for k in need if k not in cache and k not in fix and not pattern(k)]
     print(f'pages {len(pages)} · strings {len(need)} · cached {len(need) - len(missing)} · new {len(missing)}', flush=True)
     token = os.environ.get('GITHUB_TOKEN') or os.environ.get('GH_TOKEN')
     if missing and token and os.environ.get('EN_MT', '') == '1':   # 자동 번역 서버는 EN_MT=1 일 때만(GitHub Models 는 2026년 서비스 종료로 응답하지 않음)
@@ -223,7 +246,7 @@ def main():
 
     def tr(t):
         k = norm(t)
-        return fix.get(k) or cache.get(k) or t
+        return fix.get(k) or cache.get(k) or pattern(k) or t
     ko = set(pages) | {'index.html'}
     def link(m):
         pg, rest = m.group(2), m.group(3) or ''
