@@ -200,6 +200,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .vmodal-x { width: 40px; height: 40px; border: 0; border-radius: 8px; background: transparent; font-size: 30px; line-height: 1; cursor: pointer; color: var(--ink); } .vmodal-x:hover, .vmodal-x:focus-visible { background: var(--bg2, #f2f2f5); outline: none; }
 .vmodal-body { position: relative; aspect-ratio: 16 / 9; background: #000; } .vmodal-body iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .vbtns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.vid[id^="try-"] { scroll-margin-top: 90px; } .vid[id^="try-"]:target { outline: 3px solid var(--accent); outline-offset: 8px; border-radius: 18px; }
 .try-grid { gap: 20px; } .try-card { display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
 .try-top { display: flex; gap: 14px; align-items: center; } .try-ic { font-size: 30px; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 14px; background: color-mix(in srgb, var(--accent, #0B5CFF) 8%, #fff); flex: none; }
 .try-top .m { display: block; font-size: 13px; color: var(--muted); } .try-top .t { font-size: 20px; font-weight: 700; }

@@ -27,9 +27,9 @@
 <link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="assets/site.css?v=2625c2a3">
+<link rel="stylesheet" href="assets/site.css?v=5f45fdb9">
 </head>
-<body><script>(function(){var B='6afd5305';try{fetch('/assets/build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=(t||'').trim();if(!/^[0-9a-f]{6,12}$/.test(t)||t<=B)return;var k='keli-rl-'+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){return}fetch(location.href,{cache:'reload'}).then(function(){location.reload()})}).catch(function(){})}catch(e){}})();</script>
+<body><script>(function(){var B='6afd53c1';try{fetch('/assets/build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=(t||'').trim();if(!/^[0-9a-f]{6,12}$/.test(t)||t<=B)return;var k='keli-rl-'+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){return}fetch(location.href,{cache:'reload'}).then(function(){location.reload()})}).catch(function(){})}catch(e){}})();</script>
 <header class="hdr"><div class="wrap bar">
 <a class="brand" href="index.html" aria-label="KELI 홈"><img src="assets/img/keli-logo.png" alt="KELI" width="62" height="28"></a>
 <nav class="nav" aria-label="주요 메뉴"><a href="about.html" data-menu="about.html">KELI 소개</a><a href="services.html" class="on" data-menu="services.html">HAI Ecosystems</a><a href="join.html" data-menu="join.html">KELI 협의체 참여</a><a href="archive.html" data-menu="archive.html">아카이브</a><a href="news.html" data-menu="news.html">소식</a></nav>
@@ -51,7 +51,7 @@
 <span class="eyebrow">AI 진로⁠·⁠취업</span>
 <h1>HAI⁠-⁠Way</h1>
 <p class="lead">진로⁠·⁠수강⁠·⁠채용 정보를 연결하는 커리어 인바디.</p>
-<div class="acts"><a class="btn" href="https://keliedu.org/keli/solution/collection?mode=view&sltnSn=3">데모 신청하기</a><a class="btn ghost" href="join.html?service=hai-way#inquiry">도입 문의</a><a class="more" href="https://cib.k-university.ai" target="_blank" rel="noopener">서비스 바로가기</a><button type="button" class="more vlink" data-vmodal="https://drive.google.com/file/d/1ouC6XEhAb8Rha2LaxgFCv_WspJJdGM7o/preview" data-vtitle="HAI-Way · 데모 영상">▶⁠영상 보기</button><a class="more" href="https://ai.hallym.ac.kr/media/uploads/guides/fcf51da27ef644c39444f158fc0b5119.pdf#ar=1.7778" target="_blank" rel="noopener">매뉴얼</a></div>
+<div class="acts"><button type="button" class="btn" data-try="hai-way">바로 체험하기</button><a class="btn ghost" href="https://keliedu.org/keli/solution/collection?mode=view&sltnSn=3">데모 신청하기</a><a class="btn ghost" href="join.html?service=hai-way#inquiry">도입 문의</a><a class="more" href="https://cib.k-university.ai" target="_blank" rel="noopener">서비스 바로가기</a><button type="button" class="more vlink" data-vmodal="https://drive.google.com/file/d/1ouC6XEhAb8Rha2LaxgFCv_WspJJdGM7o/preview" data-vtitle="HAI-Way · 데모 영상">▶⁠영상 보기</button><a class="more" href="https://ai.hallym.ac.kr/media/uploads/guides/fcf51da27ef644c39444f158fc0b5119.pdf#ar=1.7778" target="_blank" rel="noopener">매뉴얼</a></div>
 <div class="mkt-notice"><b>도입⁠·⁠구독 안내</b><span>HAI Ecosystems 서비스의 데모 신청과 도입⁠·⁠구독은 <b>KELI Marketplace⁠에서 회원가입 후</b> 이용할 수 있습니다.</span><span class="mkt-acts"><a href="https://keliedu.org/keli/service/signup">Marketplace 회원가입</a><a href="https://keliedu.org/keli/solution/collection">Marketplace 바로가기</a></span></div>
 </div></section>
 <section class="sec" style="padding-top:24px"><div class="wrap">
@@ -71,6 +71,42 @@
 </div></section>
 
 <section class="sec"><div class="wrap"><div class="cta"><h2>내 교과목에 적용하려면.</h2><p class="lead">첫걸음은 1⁠개 교과목 × 1⁠개 서비스 × 1⁠개 학기입니다.</p><div class="acts"><a class="btn" href="join.html?service=hai-way#inquiry">도입 문의</a><a class="more" href="archive.html#case">실증 사례 보기</a></div></div></div></section>
+<div class="try-modal" hidden role="dialog" aria-modal="true" aria-labelledby="try-title"><div class="try-bg" data-tclose></div><div class="try-panel">
+<div class="try-head"><div><span class="try-sub">미니 체험판 ⁠·⁠ 실제 서비스와 다릅니다</span><h2 id="try-title">체험</h2></div><button type="button" class="vmodal-x" data-tclose aria-label="닫기">&times;</button></div>
+<div class="try-log" aria-live="polite"></div>
+<div class="try-samples"></div>
+<form class="try-form"><textarea rows="2" maxlength="2000" placeholder="여기에 입력하세요 (Enter 보내기 · Shift+Enter 줄바꿈)" aria-label="체험 입력"></textarea><button type="submit" class="btn sm">보내기</button></form>
+<p class="try-foot">개인정보를 입력하지 마세요 ⁠·⁠ 체험용 축소판의 답변은 틀릴 수 있습니다</p>
+</div></div>
+<script>window.KELI_TRY={"hai-tutor": {"name": "HAI-Tutor", "what": "교과목 AI 튜터", "samples": ["ADDIE 모형의 다섯 단계를 쉽게 설명해 주세요.", "형성평가와 총괄평가는 어떻게 달라요?", "학습 목표는 어떻게 써야 하나요?"]}, "hai-mathtutor": {"name": "HAI-MathTutor", "what": "AI 수학 튜터", "samples": ["x^2 - 5x + 6 = 0 을 풀고 싶어요. 힌트 주세요.", "미분이 왜 기울기인지 이해가 안 돼요.", "1부터 100까지 더하는 빠른 방법이 있나요?"]}, "hai-coder": {"name": "HAI-Coder", "what": "AI 코딩 코스웨어", "samples": ["for i in range(10)\n    print(i)\n이 코드에서 SyntaxError가 나요.", "nums = [1, 2, 3]\nprint(nums[3])\nIndexError가 무슨 뜻이에요?", "리스트와 튜플은 언제 다르게 써요?"]}, "hai-way": {"name": "HAI-Way", "what": "AI 진로 설계", "samples": ["교육학과 2학년이고 에듀테크에 관심이 있어요.", "경영학 전공인데 데이터 분석 쪽 진로가 궁금해요.", "아직 하고 싶은 일이 없어요. 어떻게 시작하면 좋을까요?"]}};</script>
+<script>(function(){
+  var m=document.querySelector('.try-modal'); if(!m) return; var log=m.querySelector('.try-log'), ta=m.querySelector('textarea'), form=m.querySelector('.try-form'), sm=m.querySelector('.try-samples'), tt=m.querySelector('#try-title');
+  var cur=null, msgs=[], busy=false, last=null;
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function fmt(t){ var parts=String(t||'').split('```'); return parts.map(function(p,i){ if(i%2){ return '<pre><code>'+esc(p.replace(/^[a-zA-Z]*\n/,''))+'</code></pre>'; } return esc(p).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\n/g,'<br>'); }).join(''); }
+  function add(role, html){ var d=document.createElement('div'); d.className='try-msg '+role; d.innerHTML=html; log.appendChild(d); log.scrollTop=log.scrollHeight; return d; }
+  function open(svc, from){ var t=(window.KELI_TRY||{})[svc]; if(!t) return; cur=svc; msgs=[]; last=from; tt.textContent=t.name+' · '+t.what; log.innerHTML='';
+    add('bot', esc(t.name+' 미니 체험판입니다. 아래 예시를 누르거나 직접 입력해 보세요.'));
+    sm.innerHTML=t.samples.map(function(x){ return '<button type="button" class="chip">'+esc(x.split('\n')[0].slice(0,40))+(x.length>40||x.indexOf('\n')>-1?'…':'')+'</button>'; }).join('');
+    [].forEach.call(sm.querySelectorAll('button'), function(b,i){ b.addEventListener('click', function(){ send(t.samples[i]); }); });
+    m.hidden=false; document.body.style.overflow='hidden'; setTimeout(function(){ ta.focus(); }, 50);
+    try{ if(window.KELI_API&&navigator.sendBeacon) navigator.sendBeacon(window.KELI_API+'/api/hit', new Blob([JSON.stringify({t:'click',p:location.pathname,x:'try:'+svc})],{type:'text/plain'})); }catch(e){} }
+  function close(){ m.hidden=true; document.body.style.overflow=''; if(last) last.focus(); }
+  function send(text){ text=String(text||'').trim(); if(!text||busy||!cur) return; busy=true; ta.value=''; add('me', fmt(text)); msgs.push({role:'user',content:text});
+    var w=add('bot wait','<span class="dots"><i></i><i></i><i></i></span>');
+    if(!window.KELI_API){ w.className='try-msg bot'; w.innerHTML='지금은 체험 서버에 연결할 수 없어요. 잠시 뒤에 다시 해 주세요.'; busy=false; return; }
+    fetch(window.KELI_API+'/api/try',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({svc:cur,messages:msgs.slice(-8)})})
+      .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return {ok:r.ok, status:r.status, j:j}; }); })
+      .then(function(x){ w.className='try-msg bot';
+        if(x.ok&&x.j.answer){ w.innerHTML=fmt(x.j.answer); msgs.push({role:'assistant',content:x.j.answer}); }
+        else { msgs.pop(); w.innerHTML=esc((x.status===404||x.status===401)?'미니 체험판을 준비하고 있어요. 조금만 기다려 주세요.':(x.j.error||'잠시 뒤에 다시 해 주세요.')); } })
+      .catch(function(){ msgs.pop(); w.className='try-msg bot'; w.innerHTML='연결이 원활하지 않아요. 잠시 뒤에 다시 해 주세요.'; })
+      .then(function(){ busy=false; log.scrollTop=log.scrollHeight; }); }
+  document.addEventListener('click', function(e){ var b=e.target.closest('[data-try]'); if(b){ e.preventDefault(); open(b.getAttribute('data-try'), b); return; } if(e.target.closest('[data-tclose]')) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'&&!m.hidden) close(); });
+  form.addEventListener('submit', function(e){ e.preventDefault(); send(ta.value); });
+  ta.addEventListener('keydown', function(e){ if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){ e.preventDefault(); send(ta.value); } });
+})();</script>
 
 </main>
 <footer class="ftr"><div class="wrap">
