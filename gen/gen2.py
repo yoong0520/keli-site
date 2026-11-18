@@ -857,6 +857,10 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .mega-col-title:hover { text-decoration: none; color: var(--accent); border-color: var(--accent); }
 .mega-col ul { list-style: none; margin: 0; padding: 0; } .mega-col li a { display: block; padding: 6px 0; font-size: 15px; color: var(--muted); line-height: 1.5; } .mega-col li a:hover, .mega-col li a:focus-visible { color: var(--accent); text-decoration: none; font-weight: 600; }
 .mega-col.hot .mega-col-title { color: var(--accent); border-color: var(--accent); }
+.mega-col li.feat { margin: 4px 0 12px; } .mega-col li.feat > a { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; border-radius: 12px; background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); font-size: 16px; font-weight: 700; }
+.mega-col li.feat > a:hover, .mega-col li.feat > a:focus-visible { background: var(--accent); color: var(--accent-fg); font-weight: 700; } .mtag { padding: 2px 8px; border-radius: 999px; background: var(--accent); color: var(--accent-fg); font-size: 11px; font-weight: 700; white-space: nowrap; } .mega-col li.feat > a:hover .mtag { background: #fff; color: var(--accent); }
+.mega-intro a.more.feat { font-weight: 800; }
+.mnav .msub > a.feat .mtag { color: var(--accent-fg); font-size: 12px; } .mnav .msub > a.feat { justify-content: flex-start; gap: 8px; margin-bottom: 4px; background: color-mix(in srgb, var(--accent) 9%, transparent); color: var(--accent); font-weight: 700; }
 .mega-col li.has-sub > a { color: var(--fg); font-weight: 600; } .mega-col ul ul { margin: 2px 0 6px 6px; padding-left: 12px; border-left: 1px solid var(--line); } .mega-col ul ul a { font-size: 14px; padding: 4px 0; }
 .hdr { position: sticky; }
 @media (max-width: 1024px) { .mega-inner { grid-template-columns: 1fr; gap: 20px; } .mega-intro { display: none; } .mega-cols { gap: 20px; } }
@@ -1384,7 +1388,7 @@ def demo_url(slug):
 def _ext(h): return ' target="_blank" rel="noopener"' if str(h).startswith('http') and 'keliedu.org' not in str(h) else ''   # 구 플랫폼(Marketplace)은 현재 창
 MEGA = [
     ('about.html', 'KELI 소개', [('about.html#vision', '비전'), ('about.html#consortium', 'KELI 협의체'), ('about.html#org', '조직도')]),
-    ('services.html', 'HAI Ecosystems', [('services.html', 'HAI Ecosystems', [(f'services.html#{k}', lb) for k, lb, _ in AREAS] + [('demos.html', '전체 데모 영상'), ('experience.html', 'HAI 체험관')]), (OLD_MARKET, 'Marketplace')]),
+    ('services.html', 'HAI Ecosystems', [('experience.html', 'HAI 체험관'), ('services.html', 'HAI Ecosystems', [(f'services.html#{k}', lb) for k, lb, _ in AREAS] + [('demos.html', '전체 데모 영상')]), (OLD_MARKET, 'Marketplace')]),
     ('join.html', 'KELI 협의체 참여', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의')]),
     ('archive.html', '아카이브', [(f'archive-{k}.html', l.replace('·', ' · ')) for k, l in ARCH_CATS]),
     ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료')]),
@@ -1408,6 +1412,7 @@ def header(current):
         return f'<a href="{sh}"{_ext(sh)}>{st}</a>' + (('<div class="msub2">' + ''.join(f'<a href="{kh}">{kt}</a>' for kh, kt in kids) + '</div>') if kids else '')
     def _sub_c(it):
         sh, st = it[0], it[1]; kids = it[2] if len(it) > 2 else []
+        if sh == 'experience.html': return f'<li class="feat"><a href="{sh}">{L(st)}<span class="mtag">{"Try" if en else "체험"}</span></a></li>'   # 돋보이게
         return f'<li class="{"has-sub" if kids else ""}"><a href="{sh}"{_ext(sh)}>{L(st)}</a>' + (('<ul>' + ''.join(f'<li><a href="{kh}">{L(kt)}</a></li>' for kh, kt in kids) + '</ul>') if kids else '') + '</li>'
     def _cur(h): return h.split('#')[0] == current
     def _msub(it):
@@ -1415,6 +1420,7 @@ def header(current):
         if kids:
             return (f'<a href="{sh}"{_ext(sh)}{" class=\"on\"" if _cur(sh) and "#" not in sh else ""}>{("All " + L(st)) if en else (st + " 전체 보기")}<span aria-hidden="true">›</span></a>'
                     '<div class="msub2">' + ''.join(f'<a href="{kh}"{" class=\"on\"" if _cur(kh) and "#" not in kh else ""}>{L(kt)}</a>' for kh, kt in kids) + '</div>')
+        if sh == 'experience.html': return f'<a href="{sh}" class="feat{" on" if _cur(sh) else ""}">{L(st)}<span class="mtag">{"Try it" if en else "직접 해 보기"}</span></a>'
         return f'<a href="{sh}"{_ext(sh)}{" class=\"on\"" if _cur(sh) and "#" not in sh else ""}>{L(st)}<span aria-hidden="true">{"↗" if _ext(sh) or "keliedu.org" in str(sh) else "›"}</span></a>'
     def _gopen(h, subs):
         if on(h): return True
@@ -1437,7 +1443,7 @@ def header(current):
         + ('<div class="mfoot"><a href="search.html">Search</a><a href="index.html" lang="ko">한국어</a></div></div>' if en else '<div class="mfoot"><a href="search.html">검색</a><a href="en.html">English</a></div></div>'))
     cols = ''.join(f'<div class="mega-col" data-menu="{h}"><a class="mega-col-title" href="{h}">{L(t)}</a><ul>' + ''.join(_sub_c(it) for it in subs) + '</ul></div>' for h, t, subs in MEGA)
     mega = f'''<div class="mega" id="mega" aria-hidden="true"><div class="wrap mega-inner">
-<div class="mega-intro">{('<span class="eyebrow">Hallym University KELI</span><strong>Higher-education AI<br>sharing platform</strong><p>AI education services classroom-tested at Hallym University, shared with universities and institutions. Detail pages are currently available in Korean.</p><a class="more" href="#contact">Contact us</a><a class="more" href="demos.html">All demo videos</a>') if en else ('<span class="eyebrow">한림대학교 KELI</span><strong>고등교육 AI<br>공유 플랫폼</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="more" href="join.html#inquiry">도입 문의</a><a class="more" href="demos.html">전체 데모 영상</a>')}<a class="more" href="{OLD_MARKET}">Marketplace</a></div>
+<div class="mega-intro">{('<span class="eyebrow">Hallym University KELI</span><strong>Higher-education AI<br>sharing platform</strong><p>AI education services classroom-tested at Hallym University, shared with universities and institutions. Detail pages are currently available in Korean.</p><a class="more" href="#contact">Contact us</a><a class="more feat" href="experience.html">HAI Experience Center</a><a class="more" href="demos.html">All demo videos</a>') if en else ('<span class="eyebrow">한림대학교 KELI</span><strong>고등교육 AI<br>공유 플랫폼</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="more" href="join.html#inquiry">도입 문의</a><a class="more feat" href="experience.html">HAI 체험관</a><a class="more" href="demos.html">전체 데모 영상</a>')}<a class="more" href="{OLD_MARKET}">Marketplace</a></div>
 <div class="mega-cols">{cols}</div>
 </div></div>'''
     return f'''<header class="hdr"><div class="wrap bar">

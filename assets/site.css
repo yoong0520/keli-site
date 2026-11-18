@@ -508,6 +508,10 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .mega-col-title:hover { text-decoration: none; color: var(--accent); border-color: var(--accent); }
 .mega-col ul { list-style: none; margin: 0; padding: 0; } .mega-col li a { display: block; padding: 6px 0; font-size: 15px; color: var(--muted); line-height: 1.5; } .mega-col li a:hover, .mega-col li a:focus-visible { color: var(--accent); text-decoration: none; font-weight: 600; }
 .mega-col.hot .mega-col-title { color: var(--accent); border-color: var(--accent); }
+.mega-col li.feat { margin: 4px 0 12px; } .mega-col li.feat > a { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; border-radius: 12px; background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); font-size: 16px; font-weight: 700; }
+.mega-col li.feat > a:hover, .mega-col li.feat > a:focus-visible { background: var(--accent); color: var(--accent-fg); font-weight: 700; } .mtag { padding: 2px 8px; border-radius: 999px; background: var(--accent); color: var(--accent-fg); font-size: 11px; font-weight: 700; white-space: nowrap; } .mega-col li.feat > a:hover .mtag { background: #fff; color: var(--accent); }
+.mega-intro a.more.feat { font-weight: 800; }
+.mnav .msub > a.feat .mtag { color: var(--accent-fg); font-size: 12px; } .mnav .msub > a.feat { justify-content: flex-start; gap: 8px; margin-bottom: 4px; background: color-mix(in srgb, var(--accent) 9%, transparent); color: var(--accent); font-weight: 700; }
 .mega-col li.has-sub > a { color: var(--fg); font-weight: 600; } .mega-col ul ul { margin: 2px 0 6px 6px; padding-left: 12px; border-left: 1px solid var(--line); } .mega-col ul ul a { font-size: 14px; padding: 4px 0; }
 .hdr { position: sticky; }
 @media (max-width: 1024px) { .mega-inner { grid-template-columns: 1fr; gap: 20px; } .mega-intro { display: none; } .mega-cols { gap: 20px; } }
