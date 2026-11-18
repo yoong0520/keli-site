@@ -184,6 +184,14 @@
   (function(){
     var mega=qs('#mega'), hdr=qs('.hdr'), dim=qs('#dim'); if(!mega||!hdr) return;
     var navLinks=qsa('.nav a[data-menu]'), timer=null;
+    // 상단 메뉴 글자를 아래 펼침 메뉴의 칸(제목) 시작점과 같은 줄에 맞춘다(넓은 화면)
+    function align(){ var nav=qs('.nav'); if(!nav) return; navLinks.forEach(function(a){ a.style.marginLeft=''; }); nav.classList.remove('aligned');
+      var cols=qs('.mega-cols',mega), util=qs('.hdr .util'); if(cols) cols.style.marginRight='';
+      if(window.innerWidth<=1024) return; nav.classList.add('aligned');
+      if(cols&&util){ var ur=util.getBoundingClientRect(), cr=cols.getBoundingClientRect(); cols.style.marginRight=Math.max(0, cr.right-ur.left+16)+'px'; }   // 펼침 메뉴 칸을 오른쪽 단추(검색·ENG·도입 문의) 앞에서 끝나게
+      var x=nav.getBoundingClientRect().left;
+      navLinks.forEach(function(a){ var c=qs('.mega-col[data-menu="'+a.getAttribute('data-menu')+'"] .mega-col-title',mega); if(!c) return; var cl=c.getBoundingClientRect().left; a.style.marginLeft=Math.max(0,cl-x)+'px'; x=cl+a.getBoundingClientRect().width; }); }
+    align(); window.addEventListener('resize',align); window.addEventListener('load',align); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(align);
     function isOpen(){ return mega.classList.contains('open'); }
     function open(key){ clearTimeout(timer); mega.classList.add('open'); mega.setAttribute('aria-hidden','false'); if(dim) dim.classList.add('on'); qsa('.mega-col',mega).forEach(function(c){ c.classList.toggle('hot', c.getAttribute('data-menu')===key); }); navLinks.forEach(function(a){ a.setAttribute('aria-expanded', a.getAttribute('data-menu')===key?'true':'false'); }); }
     function closeNow(){ mega.classList.remove('open'); mega.setAttribute('aria-hidden','true'); if(dim) dim.classList.remove('on'); navLinks.forEach(function(a){ a.setAttribute('aria-expanded','false'); }); }

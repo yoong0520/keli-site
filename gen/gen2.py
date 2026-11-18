@@ -49,7 +49,7 @@ CURATED = [
          usage='대학별 회원과 권한을 관리하고 자료·서비스·협업 정보를 한 곳에서 공유합니다.',
          status='live', url='https://keli-aied.org/', img='keli-logo.png', video=None, manual=None, stage=[]),
     dict(slug='hai-ai', name='HAI-AI', area='platform', one='AI 서비스 통합 포털',
-         head='한림 AI 교육 서비스와 활용 정보를 연결하는 통합 포털.',
+         head='HAI 교육 서비스와 활용 정보를 연결하는 통합 포털.',
          desc='대학 구성원이 여러 AI 서비스를 한 번에 탐색하고 자신의 역할에 맞는 기능으로 빠르게 연결되도록 설계된 통합 접근 플랫폼입니다.',
          features=['통합 서비스 진입점 제공', '역할 기반 서비스 안내', '플랫폼 간 빠른 이동 지원'],
          usage='교수·학생·직원이 필요한 AI 서비스를 빠르게 선택하고 활용 환경으로 이동합니다.',
@@ -256,12 +256,13 @@ SITE_DEFAULT = {
 SITE_CFG = _load_json(os.path.join(CONTENT, 'site.json'), {})
 BOT_DEFAULT = {
     'enabled': True,
-    'greeting_ko': '안녕하세요! KELI 사무국 마스코트 이음이예요. KELI 서비스, 참여 방법, 행사… 무엇이든 물어보세요.',
-    'greeting_en': "Hi! I'm Iru-mi, the KELI mascot. Ask me about KELI services, how to join, events, or anything else.",
+    'greeting_ko': 'Hi, AI! 안녕하세요, KELI 사무국 마스코트 이음이예요. KELI 서비스, 참여 방법, 행사… 무엇이든 물어보세요.',
+    'greeting_en': "Hi, AI! I'm Iru-mi, the KELI mascot. Ask me about KELI services, how to join, events, or anything else.",
     'quick_ko': ['KELI가 뭐예요?', '어떤 서비스가 있나요?', '도입은 어떻게 하나요?', '곧 열리는 행사가 있나요?', '사무국 연락처'],
     'quick_en': ['What is KELI?', 'What services are there?', 'How can we join?', 'Upcoming events?', 'Contact the secretariat'],
     'faq': [
         {'url': 'about.html', 'q_ko': 'KELI가 뭐예요?', 'q_en': 'What is KELI?', 'a_ko': 'KELI(K-University AI EdTech and Learning Initiative)는 한림대학교가 개발하고 수업에서 검증한 AI 교육 서비스 HAI Ecosystems를 국내외 대학·기관·기업에 제공하고, 함께 실증하고 확산하는 고등교육 AI 공유 플랫폼이에요. 주관은 한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)이에요.', 'a_en': 'KELI (K-University AI EdTech and Learning Initiative) is a higher-education AI sharing platform. Hallym University provides HAI Ecosystems — AI education services it developed and validated in real classes — to universities, institutions and companies in Korea and abroad, and they test and scale them together. It is run by the KELI Secretariat at Hallym University.'},
+        {'url': 'services.html', 'q_ko': 'HAI는 무슨 뜻인가요?', 'q_en': 'What does HAI stand for?', 'a_ko': 'HAI는 Higher-education AI, 곧 고등교육을 위한 AI라는 뜻이에요. 대학 수업과 연구·행정을 돕는 AI 교육 서비스 묶음을 HAI Ecosystems라고 불러요. 인사말처럼 \'Hi, AI\'로 읽기도 해요.', 'a_en': 'HAI stands for Higher-education AI — AI for higher education. HAI Ecosystems is the family of AI education services that support university teaching, research and administration. It is also read as a greeting: "Hi, AI".'},
         {'url': 'join.html', 'q_ko': '도입은 어떻게 하나요?', 'q_en': 'How can we adopt a service?', 'a_ko': '네 단계예요. ① 도입 문의 폼이나 이메일(contact@keliedu.org)로 기관명·관심 서비스·적용 교과목을 알려 주세요. ② 사무국이 무상으로 시연하고 적용 방법을 안내해요. ③ 1개 교과목 × 1개 서비스 × 1개 학기부터 시범 도입해 효과를 확인해요. ④ 교과목·범위·기간을 정해 정식 도입하고, 이용 조건은 사무국과 협의해요.', 'a_en': 'Four steps. 1) Tell us your institution, the services you are interested in and the course via the inquiry form or contact@keliedu.org. 2) The secretariat gives a free demo and explains how to apply it. 3) Pilot it — one course × one service × one semester — and see the effect. 4) Adopt it formally; terms are agreed with the secretariat.'},
         {'url': 'join.html', 'q_ko': '비용이 드나요?', 'q_en': 'Is there a cost?', 'a_ko': '시범 도입은 무상 또는 협의로 진행하고, 정식 도입은 유상이며 기관별로 사무국과 협의해요.', 'a_en': 'Pilots are free or by agreement; formal adoption is paid and negotiated per institution with the secretariat.'},
         {'url': 'join.html#inquiry', 'q_ko': '사무국 연락처', 'q_en': 'Contact the secretariat', 'a_ko': '한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)은 전화 033-248-3242, 이메일 contact@keliedu.org 예요. 주소는 (24252) 강원특별자치도 춘천시 한림대학길 1 한림대학교이고, 인스타그램은 @hallym_keli 예요.', 'a_en': 'KELI Secretariat (Center for AI Education Advancement, Hallym University): phone +82-33-248-3242, email contact@keliedu.org, address 1 Hallymdaehak-gil, Chuncheon, Gangwon State 24252, Republic of Korea. Instagram @hallym_keli.'},
@@ -406,7 +407,7 @@ a.btn.ghost, .util a.btn.ghost { color: var(--fg); }
 .hdr .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 56px; }
 .brand { font-weight: 800; font-size: 20px; letter-spacing: .06em; color: var(--fg); }
 .brand:hover { text-decoration: none; } .brand img { display: block; height: 28px; width: auto; }
-.nav { display: flex; align-items: center; gap: 28px; }
+.nav { display: flex; align-items: center; gap: 28px; } .nav.aligned { flex: 1; gap: 0; justify-content: flex-start; } .nav.aligned a { flex: none; }
 .nav a { color: var(--fg); font-size: 16px; font-weight: 600; letter-spacing: -.01em; padding: 6px 0; transition: color .15s; }
 .nav a.on { color: var(--accent); font-weight: 700; }
 .util { display: flex; align-items: center; gap: 14px; }
@@ -854,6 +855,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .mega-intro { display: flex; flex-direction: column; gap: 8px; align-self: stretch; padding: 4px 32px 4px 0; border-right: 1px solid var(--line); }
 .mega-intro .eyebrow { display: block; text-align: left; font-size: 12px; letter-spacing: .04em; color: var(--accent); margin: 0; } .mega-intro strong { font-size: 20px; line-height: 1.35; letter-spacing: -.01em; } .mega-intro p { margin: 0 0 6px; font-size: 14px; line-height: 1.65; color: var(--muted); } .mega-intro .more { font-size: 14px; }
 .mega-cols { display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; }
+@media (min-width: 1025px) { .mega-cols { grid-template-columns: repeat(5, auto); justify-content: space-between; gap: 24px; } .mega-col-title { white-space: nowrap; } .mega-col li a { white-space: nowrap; } .mega-inner { grid-template-columns: 200px 1fr; gap: 32px; } }
 .mega-col-title { display: block; font-size: 16px; font-weight: 700; color: var(--fg); padding-bottom: 10px; margin-bottom: 8px; border-bottom: 2px solid var(--fg); }
 .mega-col-title:hover { text-decoration: none; color: var(--accent); border-color: var(--accent); }
 .mega-col ul { list-style: none; margin: 0; padding: 0; } .mega-col li a { display: block; padding: 6px 0; font-size: 15px; color: var(--muted); line-height: 1.5; } .mega-col li a:hover, .mega-col li a:focus-visible { color: var(--accent); text-decoration: none; font-weight: 600; }
@@ -1257,6 +1259,14 @@ JS = r"""
   (function(){
     var mega=qs('#mega'), hdr=qs('.hdr'), dim=qs('#dim'); if(!mega||!hdr) return;
     var navLinks=qsa('.nav a[data-menu]'), timer=null;
+    // 상단 메뉴 글자를 아래 펼침 메뉴의 칸(제목) 시작점과 같은 줄에 맞춘다(넓은 화면)
+    function align(){ var nav=qs('.nav'); if(!nav) return; navLinks.forEach(function(a){ a.style.marginLeft=''; }); nav.classList.remove('aligned');
+      var cols=qs('.mega-cols',mega), util=qs('.hdr .util'); if(cols) cols.style.marginRight='';
+      if(window.innerWidth<=1024) return; nav.classList.add('aligned');
+      if(cols&&util){ var ur=util.getBoundingClientRect(), cr=cols.getBoundingClientRect(); cols.style.marginRight=Math.max(0, cr.right-ur.left+16)+'px'; }   // 펼침 메뉴 칸을 오른쪽 단추(검색·ENG·도입 문의) 앞에서 끝나게
+      var x=nav.getBoundingClientRect().left;
+      navLinks.forEach(function(a){ var c=qs('.mega-col[data-menu="'+a.getAttribute('data-menu')+'"] .mega-col-title',mega); if(!c) return; var cl=c.getBoundingClientRect().left; a.style.marginLeft=Math.max(0,cl-x)+'px'; x=cl+a.getBoundingClientRect().width; }); }
+    align(); window.addEventListener('resize',align); window.addEventListener('load',align); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(align);
     function isOpen(){ return mega.classList.contains('open'); }
     function open(key){ clearTimeout(timer); mega.classList.add('open'); mega.setAttribute('aria-hidden','false'); if(dim) dim.classList.add('on'); qsa('.mega-col',mega).forEach(function(c){ c.classList.toggle('hot', c.getAttribute('data-menu')===key); }); navLinks.forEach(function(a){ a.setAttribute('aria-expanded', a.getAttribute('data-menu')===key?'true':'false'); }); }
     function closeNow(){ mega.classList.remove('open'); mega.setAttribute('aria-hidden','true'); if(dim) dim.classList.remove('on'); navLinks.forEach(function(a){ a.setAttribute('aria-expanded','false'); }); }
@@ -2261,7 +2271,7 @@ def page_index():
 </div></section>
 
 <section class="sec glass" id="services"><div class="wrap">
-<div class="head"><span class="eyebrow">HAI Ecosystems</span><h2>수업 설계부터 평가·분석까지, {len(SERVICES)}개 서비스.</h2><p class="lead">한림대학교가 직접 개발해 수업에서 검증한 뒤 KELI Marketplace에 먼저 올린 서비스입니다. 다른 대학과 기관도 도입할 수 있습니다.</p></div>
+<div class="head"><span class="eyebrow">HAI(Higher-education AI) Ecosystems</span><h2>수업 설계부터 평가·분석까지, {len(SERVICES)}개 서비스.</h2><p class="lead">한림대학교가 직접 개발해 수업에서 검증한 뒤 KELI Marketplace에 먼저 올린 서비스입니다. 다른 대학과 기관도 도입할 수 있습니다.</p></div>
 {tabs('home-svc', [(a[0], a[1]) for a in AREAS])}
 <div class="grid g4" data-items="home-svc" style="margin-top:24px">{cards}</div>
 <div class="cta" style="margin-top:40px"><div class="acts"><a class="btn" href="experience.html">HAI 체험관</a><a class="btn ghost" href="demos.html">전체 데모 영상</a><a class="btn ghost" href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a></div></div>
@@ -2298,7 +2308,7 @@ def page_about():
 <section class="hero" style="padding-top:48px"><div class="wrap">
 <span class="eyebrow">KELI란</span>
 <h1>한림대가 먼저 만들고 검증한 것을,<br>여러 대학이 나누어 씁니다.</h1>
-<p class="lead">KELI는 한림대학교가 자체 개발한 고등교육 맞춤형 AI 교육 서비스 HAI Ecosystems를 국내외 대학·기관에 제공하고, 함께 검증·확산하는 고등교육 AI 공유 플랫폼입니다.</p>
+<p class="lead">KELI는 한림대학교가 자체 개발한 고등교육 맞춤형 AI 교육 서비스 HAI(Higher-education AI) Ecosystems를 국내외 대학·기관에 제공하고, 함께 검증·확산하는 고등교육 AI 공유 플랫폼입니다.</p>
 <div class="chips"><span class="chip">주관 · 한림대학교 KELI 사무국</span><span class="chip">대상 · 국내외 대학·기관·기업</span><span class="chip">제공 · 무상 시범 도입 → 유상 정식 도입</span></div>
 </div></section>
 {brand_video_html(compact=True)}
@@ -2370,7 +2380,7 @@ def page_services():
     cards = ''.join(svc_card(s) for s in SERVICES)
     body = crumb((None, 'HAI Ecosystems')) + f'''
 <section class="hero" style="padding-top:48px"><div class="wrap">
-<span class="eyebrow">HAI Ecosystems · Hallym AI</span>
+<span class="eyebrow">HAI Ecosystems · HAI(Higher-education AI)</span>
 <h1>한림대학교가 수업에서 써 온<br>AI 교육 서비스.</h1>
 <p class="lead">직접 개발해 수업에서 검증한 뒤 KELI Marketplace에 먼저 올린 서비스입니다. 다른 대학과 기관도 도입할 수 있습니다.</p>
 <div class="acts"><a class="btn" href="experience.html">HAI 체험관</a><a class="btn ghost" href="demos.html">전체 데모 영상</a><a class="btn ghost" href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI 활용 매뉴얼</a><a class="more" href="curriculum.html">수업에 결합하는 방법</a></div>
@@ -2907,7 +2917,7 @@ def page_demos():
     body += f'<script>{TRIAL_JS}</script>'
     write('demos.html', '전체 데모 영상 · KELI', body)
 
-# ------------------------------------------------------------------ 나에게 맞는 한림 AI 찾기(전공박람회 체험 이벤트의 온라인판 · 개인정보 받지 않음)
+# ------------------------------------------------------------------ 나에게 맞는 HAI 찾기(전공박람회 체험 이벤트의 온라인판 · 개인정보 받지 않음)
 FINDER_Q = [
     {'who': 'eumi', 'q': '안녕하세요! 저는 이음이예요. 먼저, 어떤 분이신가요?', 'opts': [
         ('학생이에요', {'student': 3}), ('교수자예요', {'prof': 3}), ('연구자·대학원생이에요', {'research': 3, 'student': 1}), ('직원(행정)이에요', {'staff': 3})]},
@@ -2962,7 +2972,7 @@ FINDER_JS = r"""(function(){
     st.innerHTML='<div class="fd-q"><img src="'+AV[q.who]+'" alt="" class="fd-av"><div class="fd-bubble"><span class="fd-who">'+NM[q.who]+' · 질문 '+(step+1)+'/'+D.q.length+'</span><p>'+esc(q.q)+'</p></div></div><div class="fd-opts">'+q.opts.map(function(o,i){ return '<button type="button" class="fd-opt" data-i="'+i+'">'+esc(o[0])+'</button>'; }).join('')+'</div>'+(step?'<button type="button" class="fd-back">← 이전 질문</button>':'');
     var f=st.querySelector('.fd-opt'); if(f&&step) f.focus(); }
   function result(){ bar.style.width='100%'; var w={}; ans.forEach(function(a){ for(var k in a) w[k]=(w[k]||0)+a[k]; });
-    var need=Object.keys(D.q[1].opts[ans.idx1][1])[0], ty=D.types[need]||['한림 AI 탐험가',''];
+    var need=Object.keys(D.q[1].opts[ans.idx1][1])[0], ty=D.types[need]||['HAI 탐험가',''];
     var list=Object.keys(D.svc).map(function(k){ var s=D.svc[k], sc=0; s.tags.forEach(function(t){ sc+=(w[t]||0); }); if(s.soon) sc-=0.5; if(s.try) sc+=0.3; return {k:k,s:s,sc:sc}; }).sort(function(a,b){ return b.sc-a.sc; }).slice(0,3);
     st.innerHTML='<div class="fd-res"><div class="fd-q"><img src="'+AV.irumi+'" alt="" class="fd-av"><div class="fd-bubble"><span class="fd-who">이루미 · 결과</span><p>당신은 <b>'+esc(ty[0])+'</b> 유형이에요!</p><p class="small">'+esc(ty[1])+'</p></div></div>'
       +'<div class="fd-picks">'+list.map(function(x,i){ var s=x.s; return '<div class="fd-pick"><span class="fd-rank">추천 '+(i+1)+'</span><strong><a href="'+s.page+'">'+esc(s.name)+'</a></strong>'+(s.soon?' <span class="badge soon">준비 중</span>':'')+'<span class="small muted">'+esc(s.one)+'</span><div class="vbtns">'
@@ -2980,7 +2990,7 @@ FINDER_JS = r"""(function(){
 })();"""
 def finder_html():
     return f"""<div class="finder"><div class="fd-intro"><div class="fd-duo"><img src="media/mascot/eumi.png" alt="이음이"><img src="media/mascot/irumi.png" alt="이루미"></div>
-<div><h3>나에게 딱 맞는 한림 AI 찾기</h3><p class="small muted">이음이·이루미의 질문 5개에 답하면, 나에게 맞는 한림 AI 유형과 추천 서비스 3개를 1분 만에 알려 드려요. 이름·학번 같은 개인정보는 묻지 않아요.</p>
+<div><span class="eyebrow" style="display:block;text-align:left;margin:0 0 4px">Hi, AI</span><h3>나에게 맞는 HAI 찾기</h3><p class="small muted">이음이·이루미의 질문 5개에 답하면, 나에게 맞는 HAI 유형과 추천 서비스 3개를 1분 만에 알려 드려요. 이름·학번 같은 개인정보는 묻지 않아요.</p>
 <button type="button" class="btn fd-start">시작하기</button></div></div>
 <div class="fd-bar" aria-hidden="true"><i></i></div><div class="fd-stage" aria-live="polite"></div></div>
 <script>window.KELI_FINDER={finder_data()};</script><script>{FINDER_JS}</script>"""
@@ -3133,10 +3143,10 @@ def page_experience():
                  f'<div class="grid g3 vids fgrid">{"".join(follow_card(d) for d in items)}</div>')
     body = crumb(('services.html', 'HAI Ecosystems'), (None, 'HAI 체험관')) + f"""
 <section class="hero" style="padding-top:48px;padding-bottom:36px"><div class="wrap"><span class="eyebrow">HAI Ecosystems · 체험관</span><h1>로그인 없이,<br>브라우저에서 바로 체험합니다.</h1>
-<p class="lead">이음이·이루미와 함께 나에게 맞는 한림 AI를 찾고, 미니 체험판과 영상·매뉴얼로 바로 써 봅니다.</p>
-<div class="acts"><a class="btn" href="#find">나에게 맞는 한림 AI 찾기</a><a class="btn ghost" href="#try">바로 체험</a><a class="btn ghost" href="#real">실제 서비스 체험{'' if TRIALS else ' <span class="badge soon later">추후 공개</span>'}</a><a class="btn ghost" href="#follow">전체 데모 영상 및 데모 신청</a><a class="more" href="services.html">서비스 목록</a></div>{MKT_NOTICE}</div></section>
+<p class="lead">이음이·이루미와 함께 나에게 맞는 HAI를 찾고, 미니 체험판과 영상·매뉴얼로 바로 써 봅니다.</p>
+<div class="acts"><a class="btn" href="#find">나에게 맞는 HAI 찾기</a><a class="btn ghost" href="#try">바로 체험</a><a class="btn ghost" href="#real">실제 서비스 체험{'' if TRIALS else ' <span class="badge soon later">추후 공개</span>'}</a><a class="btn ghost" href="#follow">전체 데모 영상 및 데모 신청</a><a class="more" href="services.html">서비스 목록</a></div>{MKT_NOTICE}</div></section>
 <section class="sec" id="find" style="padding-top:8px"><div class="wrap narrow" style="max-width:980px">
-<div class="row" style="margin-bottom:14px"><h2 style="font-size:28px">나에게 맞는 한림 AI 찾기</h2><span class="muted small">질문 5개 · 1분</span></div>
+<div class="row" style="margin-bottom:14px"><h2 style="font-size:28px">나에게 맞는 HAI 찾기</h2><span class="muted small">질문 5개 · 1분</span></div>
 {finder_html()}
 </div></section>
 <section class="sec" id="try" style="padding-top:0"><div class="wrap">
@@ -3359,7 +3369,7 @@ ONE_EN = {'keli': 'Higher-education AI sharing platform', 'hai-ai': 'Integrated 
 def page_en():
     svc = ''.join(f'<a class="svc" href="service-{s["slug"]}.html"><div class="body"><span class="k">{E(AREA_EN.get(s["area"], s["area"]))}</span><strong>{E(s["name"])}</strong><p>{E(ONE_EN.get(s["slug"], ""))}</p></div></a>' for s in SERVICES)
     body = f'''
-<section class="hero"><div class="wrap"><span class="eyebrow">K-University AI EdTech and Learning Initiative</span><h1 class="en">A higher-education AI ecosystem,<br>built together by universities.</h1><p class="lead">KELI is a national-level shared platform. Hallym University develops and classroom-tests AI education services (HAI Ecosystems) and provides them to universities and institutions in Korea and abroad.</p><div class="acts"><a class="btn" href="#contact">Contact us</a><a class="more" href="index.html" lang="ko">한국어</a></div></div></section>
+<section class="hero"><div class="wrap"><span class="eyebrow">K-University AI EdTech and Learning Initiative</span><h1 class="en">A higher-education AI ecosystem,<br>built together by universities.</h1><p class="lead">KELI is a national-level shared platform. Hallym University develops and classroom-tests AI education services — HAI (Higher-education AI) Ecosystems — and provides them to universities and institutions in Korea and abroad.</p><div class="acts"><a class="btn" href="#contact">Contact us</a><a class="more" href="index.html" lang="ko">한국어</a></div></div></section>
 <section class="sec alt"><div class="wrap"><div class="head"><h2>What KELI offers.</h2></div><div class="grid g3">
 <div class="card"><h3>HAI Ecosystems</h3><p>19 AI education services developed and classroom-tested by Hallym University, from course design to assessment and analytics.</p></div>
 <div class="card"><h3>KELI Marketplace</h3><p>An online portal to browse services and request adoption.</p></div>

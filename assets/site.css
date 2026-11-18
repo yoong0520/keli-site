@@ -56,7 +56,7 @@ a.btn.ghost, .util a.btn.ghost { color: var(--fg); }
 .hdr .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 56px; }
 .brand { font-weight: 800; font-size: 20px; letter-spacing: .06em; color: var(--fg); }
 .brand:hover { text-decoration: none; } .brand img { display: block; height: 28px; width: auto; }
-.nav { display: flex; align-items: center; gap: 28px; }
+.nav { display: flex; align-items: center; gap: 28px; } .nav.aligned { flex: 1; gap: 0; justify-content: flex-start; } .nav.aligned a { flex: none; }
 .nav a { color: var(--fg); font-size: 16px; font-weight: 600; letter-spacing: -.01em; padding: 6px 0; transition: color .15s; }
 .nav a.on { color: var(--accent); font-weight: 700; }
 .util { display: flex; align-items: center; gap: 14px; }
@@ -504,6 +504,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .mega-intro { display: flex; flex-direction: column; gap: 8px; align-self: stretch; padding: 4px 32px 4px 0; border-right: 1px solid var(--line); }
 .mega-intro .eyebrow { display: block; text-align: left; font-size: 12px; letter-spacing: .04em; color: var(--accent); margin: 0; } .mega-intro strong { font-size: 20px; line-height: 1.35; letter-spacing: -.01em; } .mega-intro p { margin: 0 0 6px; font-size: 14px; line-height: 1.65; color: var(--muted); } .mega-intro .more { font-size: 14px; }
 .mega-cols { display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; }
+@media (min-width: 1025px) { .mega-cols { grid-template-columns: repeat(5, auto); justify-content: space-between; gap: 24px; } .mega-col-title { white-space: nowrap; } .mega-col li a { white-space: nowrap; } .mega-inner { grid-template-columns: 200px 1fr; gap: 32px; } }
 .mega-col-title { display: block; font-size: 16px; font-weight: 700; color: var(--fg); padding-bottom: 10px; margin-bottom: 8px; border-bottom: 2px solid var(--fg); }
 .mega-col-title:hover { text-decoration: none; color: var(--accent); border-color: var(--accent); }
 .mega-col ul { list-style: none; margin: 0; padding: 0; } .mega-col li a { display: block; padding: 6px 0; font-size: 15px; color: var(--muted); line-height: 1.5; } .mega-col li a:hover, .mega-col li a:focus-visible { color: var(--accent); text-decoration: none; font-weight: 600; }

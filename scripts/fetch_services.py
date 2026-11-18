@@ -8,13 +8,16 @@
 - HAI 활용 매뉴얼(haimanual.csedu4all.com)의 「수업의 순간마다」 6단계 배치도 함께 읽어 manual_stages 에 넣는다.
 - 실패하면 기존 파일을 그대로 둔다(배포는 계속 진행).
 """
-import json, sys, os, re, hashlib, datetime, urllib.request
+import re, json, sys, os, re, hashlib, datetime, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from media import localize
 
 PORTAL = 'https://ai.hallym.ac.kr'
 API = PORTAL + '/api/v1/hallym-services'
 MANUAL = 'https://haimanual.csedu4all.com'
+def hai(t):
+    """서비스 설명의 「한림 AI」는 「HAI」로 쓴다(단, 다른 사이트 이름 「한림 AI 교육 포털」은 그대로)."""
+    return re.sub(r'한림\s?AI(?!\s*교육\s*포털)', 'HAI', t or '')
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'assets', 'services.live.json')
 UA = {'User-Agent': 'KELI-site services fetcher (+https://keli-aied.org/)', 'Accept': 'application/json, text/html'}
 STAGE_KEYS = ['design', 'content', 'class', 'practice', 'assess', 'analysis']   # 매뉴얼 01~06 순서
@@ -71,8 +74,8 @@ def main():
                 'id': s.get('id'), 'name': s['name'].strip(), 'title': s['name'].strip(),
                 'category': cat.get('name', '기타'), 'category_order': cat.get('display_order') or 99,
                 'status': s.get('status', ''), 'launch_date': s.get('launch_date'),
-                'summary': (s.get('summary') or s.get('description') or '').strip(),
-                'description': (s.get('description') or s.get('summary') or '').strip(),
+                'summary': hai((s.get('summary') or s.get('description') or '').strip()),
+                'description': hai((s.get('description') or s.get('summary') or '').strip()),
                 'target_roles': [t.strip() for t in str(s.get('target_roles') or '').split(',') if t.strip()],
                 'url': (s.get('service_url') or '').strip(),
                 'icon': icon_local or icon_remote, 'icon_remote': icon_remote,
