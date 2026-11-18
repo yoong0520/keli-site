@@ -1442,7 +1442,7 @@ def header(current):
         f'<details class="mgrp" name="mnav"{" open" if _gopen(h, subs) else ""}><summary>{L(t)}{CHEV}</summary><div class="msub">'
         + (f'<a href="{h}" class="mall">{(L(t) + " overview") if en else (t + " 첫 화면")}<span aria-hidden="true">›</span></a>' if all(it[0] != h for it in subs) else '')
         + ''.join(_msub(it) for it in subs) + '</div></details>' for h, t, subs in MEGA)
-        + ('<div class="mfoot"><a href="search.html">Search</a><a href="index.html" lang="ko">한국어</a></div></div>' if en else '<div class="mfoot"><a href="search.html">검색</a><a href="en.html">English</a></div></div>'))
+        + ('<div class="mfoot"><a href="search.html">Search</a><a href="index.html" lang="ko">한국어</a></div></div>' if en else '<div class="mfoot"><a href="search.html">검색</a><a href="' + ('en.html' if current == 'index.html' else 'en-' + current) + '" data-lang-switch>English</a></div></div>'))
     cols = ''.join(f'<div class="mega-col" data-menu="{h}"><a class="mega-col-title" href="{h}">{L(t)}</a><ul>' + ''.join(_sub_c(it) for it in subs) + '</ul></div>' for h, t, subs in MEGA)
     mega = f'''<div class="mega" id="mega" aria-hidden="true"><div class="wrap mega-inner">
 <div class="mega-intro">{('<span class="eyebrow">Hallym University KELI</span><strong>Higher-education AI<br>sharing platform</strong><p>AI education services classroom-tested at Hallym University, shared with universities and institutions. Detail pages are currently available in Korean.</p><a class="more" href="#contact">Contact us</a><a class="more" href="demos.html">All demo videos</a><a class="more feat" href="experience.html">HAI Experience Center</a>') if en else ('<span class="eyebrow">한림대학교 KELI</span><strong>고등교육 AI<br>공유 플랫폼</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="more" href="join.html#inquiry">도입 문의</a><a class="more" href="demos.html">전체 데모 영상</a><a class="more feat" href="experience.html">HAI 체험관</a>')}<a class="more" href="{OLD_MARKET}">Marketplace</a></div>
@@ -1453,7 +1453,7 @@ def header(current):
 <nav class="nav" aria-label="{'Main menu' if en else '주요 메뉴'}">{links}</nav>
 <div class="util">
 <a class="ico txt" href="search.html" aria-label="{'Search' if en else '검색'}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></a>
- {'<a class="txt" href="index.html" lang="ko">KOR</a>' if en else '<a class="txt" href="en.html">ENG</a>'}
+ {'<a class="txt" href="index.html" lang="ko">KOR</a>' if en else '<a class="txt" href="' + ('en.html' if current == 'index.html' else 'en-' + current) + '" data-lang-switch>ENG</a>'}
 <a class="btn sm" href="{'#contact' if en else 'join.html#inquiry'}">{'Contact us' if en else '도입 문의'}</a>
 <button class="burger" aria-label="{'Open menu' if en else '메뉴 열기'}" aria-expanded="false" aria-controls="mnav"><svg class="b-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="b-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 </div></div>

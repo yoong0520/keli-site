@@ -3,3 +3,6 @@ __pycache__/
 index.artifact.html
 old-keli/
 _manual_pages/
+en-*.html
+assets/site.en.js
+content/i18n/en.json

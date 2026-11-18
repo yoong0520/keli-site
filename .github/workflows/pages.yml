@@ -10,6 +10,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  models: read   # 영어판 번역(GitHub Models)
 concurrency:
   group: pages
   cancel-in-progress: true
@@ -45,6 +46,23 @@ jobs:
         run: python3 scripts/fetch_services.py
       - name: Build site from content/*.json and live feeds (gen/gen2.py)
         run: python3 gen/gen2.py
+      - name: Restore English translation cache
+        uses: actions/cache/restore@v4
+        with:
+          path: content/i18n/en.json
+          key: en-i18n-${{ github.run_id }}
+          restore-keys: en-i18n-
+      - name: Build English pages (en-*.html) — new strings via GitHub Models
+        run: python3 scripts/build_en.py
+        timeout-minutes: 25
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Save English translation cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: content/i18n/en.json
+          key: en-i18n-${{ github.run_id }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
