@@ -53,7 +53,8 @@ def frame(theme, side_html, top, main, aside=''):
 def login(theme, hero, panel, fields, btns, done='로그인되었어요. 「다음」을 눌러 안으로 들어가 보세요.', foot='', extra=''):
     """로그인 화면. hero=(작은 글, 큰 제목, 설명[, 칩들]) · fields=[(이름, 자리글, type)] · btns=[(글, 주단추?, 목표?)]"""
     chips = ''.join(f'<i>{c}</i>' for c in (hero[3] if len(hero) > 3 else []))
-    f = ''.join(f'<label>{n}<input type="{t}" placeholder="{ph}" autocomplete="off"></label>' for n, ph, t in fields)
+    # 체험 화면이라 브라우저에 저장된 실제 아이디·비밀번호가 자동으로 채워지지 않게 한다(읽기 전용으로 두었다가 누르면 풀림)
+    f = ''.join(f'<label>{n}<input type="{t}" placeholder="{ph}" autocomplete="{"new-password" if t == "password" else "off"}" name="mk-{k}-{abs(hash(ph)) % 9999}" data-lpignore="true" data-1p-ignore readonly data-ro></label>' for k, (n, ph, t) in enumerate(fields))
     b = ''.join(f'<button type="button" class="mk-btn wide{"" if pri else " soft"}" data-show="[data-done]"{" data-goal" if goal else ""}>{t}</button>' for t, pri, goal in btns)
     return (f'<div class="mk mk-login" style="{theme}"><div class="mk-hero"><small>{hero[0]}</small><b>{hero[1]}</b><span>{hero[2]}</span><div class="mk-hchips">{chips}</div></div>'
             f'<div class="mk-lg"><small>{panel[0]}</small><h3>{panel[1]}</h3>{f}{extra}{b}<p class="mk-ok" data-done hidden>{ic("check", 15)}{done}</p>{("<p class=mk-ref>" + foot + "</p>") if foot else ""}</div></div>')
@@ -912,7 +913,7 @@ def _medlearn():
         return frame(TH, '', ('MedLearn-X', '수업 흐름'), BAR('수업 흐름 개요') + '<p>MedLearn-X는 수업 전, 수업 중, 수업 후의 전 과정을 통합적으로 지원해요. 단계를 눌러 보세요.</p><div class="mk-flow">' + fl + '</div>' + ''.join(f'<div class="mk-box tint" data-fd="{k}" hidden><b>{k + 1}. {t}</b><span>{d}</span></div>' for k, (t, d) in enumerate(F)))
     def qr():
         main = (BAR('학생 접속') + '<div class="mk-two"><div class="mk-box" style="align-items:center;text-align:center"><b>수업 QR</b><div style="width:110px;height:110px;border-radius:8px;background:repeating-conic-gradient(#0f172a 0 25%,#fff 0 50%) 0 0/22px 22px"></div><span class="mk-ref">교수님이 화면에 띄운 QR을 스마트폰으로 스캔해요.</span></div>'
-                '<div class="mk-box"><b>MedLearn-X Studio</b><label class="mk-f">아이디<input type="text" id="mkid" placeholder="아이디를 입력하세요" autocomplete="off"></label><p class="mk-demo" data-need hidden>아이디를 먼저 입력해 주세요.</p>'
+                '<div class="mk-box"><b>MedLearn-X Studio</b><label class="mk-f">아이디<input type="text" id="mkid" placeholder="아이디를 입력하세요" autocomplete="off" name="mk-qr-id" data-lpignore="true" data-1p-ignore readonly data-ro></label><p class="mk-demo" data-need hidden>아이디를 먼저 입력해 주세요.</p>'
                 '<button type="button" class="mk-btn wide" data-req="#mkid" data-show="[data-in]" data-goal>로그인</button>' + toast('data-in', '수업에 접속했어요. 학생은 아이디만 입력하면 들어올 수 있어요.') + '</div></div>')
         return frame(TH, '', ('MedLearn-X', '학생 접속'), main)
     I = 'media/walk/hai-medlearn-x/'

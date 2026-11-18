@@ -3045,7 +3045,7 @@ WALK_JS = r"""(function(){
       end.hidden=false; prev.disabled=false; return; }
     var s=w.steps[i], z=S[i]||(S[i]={}), k=kind(s), open=(k==='view'||z.ok), isUi=(k==='ui');
     shot.classList.toggle('ui',isUi); main.classList.toggle('uimode',isUi); if(s.img) big.href=s.img; if(isUi&&s.img){ orig.href=s.img; orig.hidden=false; }
-    if(isUi){ if(!keepUi){ ui.innerHTML=s.ui; shot.scrollTop=0; shot.classList.remove('zoom'); } }
+    if(isUi){ if(!keepUi){ ui.innerHTML=s.ui; shot.scrollTop=0; shot.classList.remove('zoom'); each('input[data-ro]',function(x){ x.value=''; var un=function(){ x.removeAttribute('readonly'); }; x.addEventListener('pointerdown',un); x.addEventListener('focus',un); }); setTimeout(function(){ each('input[data-ro]',function(x){ if(x.hasAttribute('readonly')) x.value=''; }); },300); } }
     else { ui.innerHTML=''; if(img.getAttribute('src')!==s.img) img.src=s.img; img.alt=s.title; }
     shot.classList.toggle('play',!open&&k==='tap'); shot.classList.toggle('solved',!!z.ok&&k==='tap'); shot.classList.toggle('hinted',!!z.hint&&!z.ok&&k==='tap');
     av.src=(i%2?'media/mascot/irumi.png':'media/mascot/eumi.png');
