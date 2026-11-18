@@ -1412,6 +1412,7 @@ def header(current):
         return f'<a href="{sh}"{_ext(sh)}>{st}</a>' + (('<div class="msub2">' + ''.join(f'<a href="{kh}">{kt}</a>' for kh, kt in kids) + '</div>') if kids else '')
     def _sub_c(it):
         sh, st = it[0], it[1]; kids = it[2] if len(it) > 2 else []
+        if sh == OLD_MARKET: return f'<li class="has-sub"><a href="{sh}"{_ext(sh)}>{L(st)}</a></li>'   # HAI Ecosystems 와 같은 굵기·색
         if sh == 'experience.html': return f'<li class="feat"><a href="{sh}">{L(st)}<span class="mtag">{"Try" if en else "체험"}</span></a></li>'   # 돋보이게
         return f'<li class="{"has-sub" if kids else ""}"><a href="{sh}"{_ext(sh)}>{L(st)}</a>' + (('<ul>' + ''.join(f'<li><a href="{kh}">{L(kt)}</a></li>' for kh, kt in kids) + '</ul>') if kids else '') + '</li>'
     def _cur(h): return h.split('#')[0] == current
