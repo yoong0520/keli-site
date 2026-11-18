@@ -102,6 +102,22 @@
    ]
   },
   {
+   "id": "hai-tutor",
+   "name": "HAI-Tutor / AI 조교",
+   "portalName": "HAI-Tutor",
+   "videos": [],
+   "manuals": [
+    {
+     "label": "공통 매뉴얼",
+     "url": "https://ai.hallym.ac.kr/media/uploads/guides/7ee14e77cd1649fbae98177aa678eef3.pdf"
+    },
+    {
+     "label": "교수자 AI튜터_사용자 가이드_교수용(HAI-Tutor)",
+     "url": "https://ai.hallym.ac.kr/media/uploads/guides/ai_tutor_professor_manual.pdf"
+    }
+   ]
+  },
+  {
    "id": "hai-math",
    "name": "HAI-MathTutor",
    "portalName": "HAI-MathTutor",

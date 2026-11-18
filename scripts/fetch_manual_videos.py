@@ -26,7 +26,7 @@ def main():
                     emb = f'https://www.youtube-nocookie.com/embed/{y.group(1)}?autoplay=1&rel=0' if y else (f'https://www.youtube-nocookie.com/embed/videoseries?list={pl.group(1)}' if pl else u)
                 vids.append({'label': v.get('label') or '영상', 'type': v.get('type') or '', 'url': u, 'embed': emb})
             mans = [{'label': (m.get('type') or '') + ' ' + (m.get('label') or '매뉴얼'), 'url': m.get('url')} for m in (s.get('manuals') or []) if m.get('url') and (m.get('kind') == 'pdf')]
-            if vids:   # 체험관에서 함께 쓰려고 매뉴얼(PDF) 주소도 넣는다
+            if vids or mans:   # 체험관·데모 영상에서 함께 쓰려고 매뉴얼(PDF)만 있는 서비스도 넣는다
                 items.append({'id': s.get('id'), 'name': s.get('name'), 'portalName': s.get('portalName') or '', 'videos': vids, 'manuals': mans})
         if not items: raise RuntimeError('no videos')
         kst = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))

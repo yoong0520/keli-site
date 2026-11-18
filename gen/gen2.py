@@ -1925,12 +1925,20 @@ def try_card(t):
             f'<div class="vbtns"><button type="button" class="btn sm" data-try="{t["svc"]}">바로 체험하기</button>'
             + (f'<a class="btn ghost sm" href="{page}">서비스 소개</a>' if page else '') + '</div></div>')
 def _man_label(l):
-    l = re.sub(r'^공통\s+', '', (l or '매뉴얼').strip())
-    return re.sub(r'^(교수자|학생|교수)\s+(?=\S*용)', '', l)   # '교수자 교수용 매뉴얼' → '교수용 매뉴얼'
+    """매뉴얼 단추 이름: '공통 매뉴얼'→'매뉴얼', '교수자 AI튜터_사용자 가이드_교수용(…)'→'교수용 가이드', '학생 LXP 학생용 매뉴얼'→'학생용 매뉴얼'"""
+    l = (l or '매뉴얼').strip(); m = re.match(r'^(공통|교수자|교수|학생)\s+(.*)$', l)
+    if not m: return l
+    who, rest = m.group(1), m.group(2).strip() or '매뉴얼'
+    kind = '가이드' if '가이드' in rest else '매뉴얼'
+    if who == '공통': return rest if (len(rest) <= 26 and '_' not in rest) else kind
+    return ('교수용 ' if who.startswith('교수') else '학생용 ') + kind
 def follow_card(d, pre='try'):
     vs = d.get('videos') or []
     mans = manuals_for(d['name'])
     slug = svc_slug_of(d['name']); dem = demo_url(slug) if slug else ''
+    if not mans and slug:   # 매뉴얼 사이트에 없으면 서비스 정보(포털)의 매뉴얼을 쓴다
+        _sv = next((x for x in SERVICES if x['slug'] == slug), None)
+        if _sv and _sv.get('manual'): mans = [{'label': '매뉴얼', 'url': _sv['manual']}]
     st = '<span class="badge live">운영 중</span>' if d.get('status') == 'live' else '<span class="badge soon">준비 중</span>'
     media = f'<img src="{d["thumb"]}" alt="" loading="lazy">' if d.get('thumb') else f'<span class="vid-ph"><span>{E(d["name"])}</span></span>'
     steps = ('<ol class="try-steps">' + ('<li>영상으로 사용 흐름을 봅니다.</li>' if vs else '')
