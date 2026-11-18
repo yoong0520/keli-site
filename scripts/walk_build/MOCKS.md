@@ -8,6 +8,6 @@
 ## 진행
 
 - [x] hai-docs
-- [ ] hai-tutor · hai-mate · hai-gpt · hai-mathtutor
+- [x] hai-tutor · hai-mate · hai-gpt · hai-mathtutor
 - [ ] lxp · hai-forum · hai-fist · hai-lens · hai-way · hai-research
 - [ ] hai-bdpi · hai-check · hai-lrs · hai-sync · hai-security · hai-pbl · hai-epilearn · hai-medlearn-x

@@ -3061,6 +3061,7 @@ WALK_JS = r"""(function(){
     if(el.hasAttribute('data-on')) Array.prototype.forEach.call(el.parentNode.children,function(c){ c.classList.toggle('on',c===el); });
     if((a=el.getAttribute('data-filter'))){ var n=0; each('[data-cat]',function(x){ var ok=(a==='all'||x.getAttribute('data-cat')===a); x.hidden=!ok; if(ok) n++; }); each('[data-empty]',function(x){ x.hidden=n>0; }); each('[data-search]',function(x){ x.value=''; }); }
     if((a=el.getAttribute('data-set'))){ var p=a.split('|'); each(p[0],function(x){ x.textContent=p[1]; }); }
+    each(el.getAttribute('data-clear'),function(c){ if(c.getContext){ c.getContext('2d').clearRect(0,0,c.width,c.height); c._len=0; } });
     if((a=el.getAttribute('data-step'))){ each('[data-stepper]>*',function(x,k){ x.classList.toggle('on',k<=+a); }); }
     each(el.getAttribute('data-hide'),function(x){ x.hidden=true; });
     if(val!=null) each(el.getAttribute('data-echo'),function(x){ x.textContent=val; });
@@ -3074,7 +3075,14 @@ WALK_JS = r"""(function(){
   ui.addEventListener('input',function(e){ var si=e.target.closest('[data-search]'); if(!si) return; var v=si.value.trim().toLowerCase(), n=0; each('[data-cat]',function(x){ var ok=!v||x.textContent.toLowerCase().indexOf(v)>=0; x.hidden=!ok; if(ok) n++; }); each('[data-empty]',function(x){ x.hidden=n>0; }); each('[data-filter]',function(x){ x.classList.toggle('on',x.getAttribute('data-filter')==='all'); });
     if(si.hasAttribute('data-goal')&&S[i]&&!S[i].ok){ clearTimeout(tmr2); if(v) tmr2=setTimeout(function(){ fin(true); },900); } });
   function uiClick(e){ if(busy) return; var gg=e.target.closest('[data-go]'); if(gg){ i=+gg.getAttribute('data-go'); render(); return; } var fl=e.target.closest('[data-fill]'); if(fl){ var f=ui.querySelector('form[data-form]'), inp=f&&f.querySelector('[data-in]'); if(inp){ inp.value=fl.getAttribute('data-fill'); inp.focus(); } return; }
-    var el=e.target.closest('[data-on],[data-filter],[data-set],[data-show],[data-hide],[data-step],[data-check],[data-goal]'); if(el&&ui.contains(el)&&el.tagName!=='FORM'&&!el.matches('input,textarea,select,label')) act(el,null); }
+    var el=e.target.closest('[data-on],[data-filter],[data-set],[data-show],[data-hide],[data-step],[data-check],[data-clear],[data-goal]'); if(el&&ui.contains(el)&&el.tagName!=='FORM'&&!el.matches('input,textarea,select,label,canvas')) act(el,null); }
+  // 손글씨 칸: canvas[data-draw] 에 손가락·마우스로 그린다(목표면 조금 그렸을 때 성공)
+  var pen=null;
+  ui.addEventListener('pointerdown',function(e){ var c=e.target.closest('canvas[data-draw]'); if(!c) return; e.preventDefault(); var r=c.getBoundingClientRect(), d=window.devicePixelRatio||1; if(!c._ok){ c.width=r.width*d; c.height=r.height*d; c._ok=true; c._len=0; }
+    var g=c.getContext('2d'); g.setTransform(d,0,0,d,0,0); g.lineWidth=3; g.lineCap='round'; g.lineJoin='round'; g.strokeStyle='#111827'; pen={c:c,g:g,x:e.clientX-r.left,y:e.clientY-r.top}; try{ c.setPointerCapture(e.pointerId); }catch(_){} });
+  ui.addEventListener('pointermove',function(e){ if(!pen) return; var r=pen.c.getBoundingClientRect(), x=e.clientX-r.left, y=e.clientY-r.top; pen.g.beginPath(); pen.g.moveTo(pen.x,pen.y); pen.g.lineTo(x,y); pen.g.stroke(); pen.c._len+=Math.abs(x-pen.x)+Math.abs(y-pen.y); pen.x=x; pen.y=y; });
+  function penUp(){ if(!pen) return; var c=pen.c; pen=null; each('[data-drawhint]',function(x){ x.hidden=true; }); if(c.hasAttribute('data-goal')&&c._len>40&&S[i]&&!S[i].ok) fin(true); }
+  ui.addEventListener('pointerup',penUp); ui.addEventListener('pointercancel',penUp);
   function open(k, from){ if(!D[k]) return; cur=k; i=0; S=[]; last=from; tt.textContent=D[k].name; m.hidden=false; document.body.style.overflow='hidden'; shot.classList.remove('zoom'); zb.setAttribute('aria-pressed','false'); zb.textContent='🔍 확대'; render(); q('.vmodal-x').focus();
     try{ if(window.KELI_API&&navigator.sendBeacon) navigator.sendBeacon(window.KELI_API+'/api/hit', new Blob([JSON.stringify({t:'click',p:location.pathname,x:'walk:'+k})],{type:'text/plain'})); }catch(e){} }
   function close(){ clearInterval(tmr); clearTimeout(tmr2); ui.innerHTML=''; m.hidden=true; document.body.style.overflow=''; if(last) last.focus(); }

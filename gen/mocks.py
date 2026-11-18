@@ -8,6 +8,7 @@
   data-show-now=S  바로 보이기 · data-wait=S  잠깐(1.1초) 보였다 숨기기(입력 중 표시) · data-show=S  그 뒤에 보이기 · data-hide=S  숨기기
   data-echo=S      폼에 쓴 글을 S 에 넣기 · data-set="S|글"  S 의 글자를 바꾸기 · data-step=N  [data-stepper] 의 N 번째까지 .on
   data-check="묶음|정답번호"  묶음 안에서 .on 인 것이 정답이면 [data-right], 아니면 [data-wrong], 안 골랐으면 [data-need] 보이기(any = 아무거나 정답)
+  canvas[data-draw] 손글씨 칸(목표면 조금 그렸을 때 성공) · data-clear=S  손글씨 지우기
   data-go=N        N번째 미션 화면으로 가기(옆 메뉴) · data-fill=글  폼 입력칸에 글 넣기 · form[data-form data-sample=예시 data-note=S data-log=S data-more=글]
 """
 from html import escape as E
@@ -251,7 +252,98 @@ def _mate():
         dict(title='결과를 다시 살펴봐요', text='제출 후에도 문항별 정답·오답과 해설을 다시 볼 수 있어요. 결과는 교수님 화면에도 반영돼요.', do='왼쪽 목록에서 1번 문항을 눌러 정답과 해설을 다시 확인해 보세요.', ui=result(), img=I + '5.jpg'),
     ]
 
-MOCKS = {'hai-docs': _docs(), 'hai-tutor': _tutor(), 'hai-mate': _mate()}
+EG = '<span class="mk-eg">체험용 예시 답변</span>'
+
+# ------------------------------------------------------------------ HAI-GPT (빠른 시작 안내)
+def _gpt():
+    TH = '--mk:#6d3fe0;--mk-side:#2a1a66'
+    HIST = ['첨부된 견적서의 서비스의…', 'RAG 기반 LLM 챗봇 설계…', '오늘의 날씨 정보 확인 및 조회', '프로그래밍 조건문의 개념과…']
+    def sd():
+        return side('HAI-GPT', '', [('', [('new', 'chat', '새 채팅'), ('stu', 'edit', '스튜디오'), ('sto', 'mark', '스토어'), ('prj', 'doc', '프로젝트')]),
+                                    ('에이전트', [('dr', 'search', 'Deep Research'), ('kd', 'chart', 'Korea in Data'), ('ld', 'shield', 'Law in Data'), ('im', 'edit', '이미지 생성'), ('vd', 'send', '비디오 생성'), ('pt', 'doc', '프레젠테이션'), ('vo', 'bell', '음성 대화'), ('mt', 'doc', '회의록')])],
+                    'new', go={'new': 1}, light=True, mid='<span class="mk-grp">내 채팅 내역</span>' + ''.join(f'<span class="mk-hist">{h}</span>' for h in HIST))
+    def top(agent, goal=False):
+        return ('<div class="mk-topbar"><div class="mk-pills" title="모델 선택"><button type="button" class="' + ('' if agent else 'on') + '" data-on data-hide="[data-sa]" data-show="[data-nm]">Grok 4.1 Fast</button>'
+                '<button type="button" class="' + ('on' if agent else '') + '" data-on data-hide="[data-nm]" data-show="[data-sa]"' + (' data-goal' if goal else '') + '>Super Agent</button></div><span class="mk-chip">한림대학교 구성원</span></div>')
+    Q1 = '프로그래밍 조건문의 개념을 쉽게 설명해 줘'
+    def main_chat():
+        hello = '<div class="mk-hello" data-hello><b>무엇을 도와드릴까요?</b><div class="mk-chips"><button type="button" data-fill="' + Q1 + '">예시: ' + Q1 + '</button></div></div>'
+        body = demo(Q1) + "<p>조건문은 <b>'만약 ~라면 ~한다'</b>처럼, 조건이 참인지 거짓인지에 따라 서로 다른 명령을 실행하게 하는 문장이에요.</p><p>예를 들어 점수가 60점 이상이면 '합격', 아니면 '불합격'을 출력하게 할 수 있어요. 대부분의 언어에서 <b>if / else</b>로 써요.</p>" + EG
+        return frame(TH, sd(), ('HAI-GPT', '새 채팅'), top(False) + '<div class="mk-log" id="mklog">' + hello + me('', 'data-qa hidden') + dots() + ai(body, 'data-a hidden') + '</div>' + inbar(Q1, '메시지를 입력하세요.', True))
+    def agent_pick():
+        return frame(TH, sd(), ('HAI-GPT', '모델 선택'), top(False, True) + '<div class="mk-log"><div class="mk-hello" data-nm><b>무엇을 도와드릴까요?</b><span>위쪽 모델 선택에서 쓰고 싶은 모델을 고를 수 있어요.</span></div>'
+                     '<div class="mk-hello" data-sa hidden><b style="color:var(--mk)">Super Agent</b><b>물어보기만 하세요.<br>나머지는 알아서 합니다.</b><span>도구 이름이나 옵션을 외울 필요가 없어요. 한국어 한 줄로 원하는 것을 말하면 돼요.</span></div></div>'
+                     '<div class="mk-inbar" style="position:static"><input type="text" placeholder="메시지를 입력하세요." aria-label="입력"><span class="mk-send" style="opacity:.5">' + ic('send', 15) + '</span></div>')
+    Q2 = '이 논문 두 편 핵심 비교표 만들고, 발표용 PPT 5장 같이 만들어 줘.'
+    RES = ('<p>요청하신 작업을 한 번에 진행했어요.</p><ul class="mk-ck"><li>논문 두 편의 핵심 내용 정리</li><li>핵심 비교표 작성</li><li>발표용 PPT 5장 구성</li></ul>'
+           f'<p><span class="mk-filechip">{ic("doc", 13)}<span data-f1>논문_비교_발표자료.pptx</span></span> <span class="mk-filechip">{ic("doc", 13)}논문_비교_발표자료.pdf</span></p><span class="mk-eg">체험용 예시 결과 · 파일은 만들어지지 않아요</span>')
+    def make():
+        hello = ('<div class="mk-hello" data-hello><b style="color:var(--mk)">Super Agent</b><b>물어보기만 하세요. 나머지는 알아서 합니다.</b><div class="mk-chips"><button type="button" data-fill="' + Q2 + '">' + Q2 + '</button>'
+                 '<button type="button" data-fill="매출 엑셀 분석해서 월별 트렌드 차트 그리고 PDF 한 권으로 묶어 줘.">매출 엑셀 분석해서 월별 트렌드 차트 그리고 PDF 한 권으로 묶어 줘.</button></div></div>')
+        return frame(TH, sd(), ('HAI-GPT', 'Super Agent'), top(True) + '<div class="mk-log" id="mklog">' + hello + me('', 'data-qa hidden') + dots() + ai(demo(Q2) + RES, 'data-a hidden') + '</div>'
+                     + inbar(Q2, '만들고 싶은 것을 한 줄로 말해 보세요.', True, pre=f'<span class="mk-ghost" title="파일 첨부">{ic("clip", 16)}</span>'))
+    Q3 = '3페이지 표를 막대차트로 바꿔 줘'
+    def fix():
+        body = demo(Q3) + f'<p>3페이지의 표만 막대차트로 바꿨어요. 나머지 페이지는 그대로예요.</p><p><span class="mk-filechip">{ic("doc", 13)}논문_비교_발표자료_수정.pptx</span></p><span class="mk-eg">체험용 예시 결과</span>'
+        return frame(TH, sd(), ('HAI-GPT', 'Super Agent'), top(True) + '<div class="mk-log" id="mklog">' + me(Q2).replace(' data-q', '') + ai(RES) + me('', 'data-qa hidden') + dots() + ai(body, 'data-a hidden')
+                     + '<div class="mk-chips" data-hello><button type="button" data-fill="' + Q3 + '">' + Q3 + '</button><button type="button" data-fill="한글 요약본도 같이 만들어 줘">한글 요약본도 같이 만들어 줘</button></div></div>' + inbar(Q3, '고치고 싶은 부분만 말해 보세요.', True))
+    I = 'media/walk/hai-gpt/'
+    return [
+        dict(title='한림 계정으로 로그인해요', text='기존 한림 계정(SSO) 그대로 로그인하면 HAI-GPT 메인 채팅 화면으로 들어가요.', do='「로그인」을 눌러 한림 계정으로 들어가 보세요.', img=I + '1.jpg',
+             ui=login(TH, ('HALLYM UNIVERSITY', 'The New Hallym,<br>K-University of the Future', '한림대학교 통합 로그인'), ('한국어 · English', '로그인'), [('ID', 'ID', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True)], foot='비밀번호 초기화 · 도움말')),
+        dict(title='메인 채팅 화면에서 시작해요', text='로그인하면 HAI-GPT 메인 채팅 화면이 열려요. 아래 입력창에 궁금한 것을 바로 물어볼 수 있어요.', do='입력창에 궁금한 것을 쓰고 보내 보세요. 비워 둔 채 보내면 예시 질문이 입력돼요.', ui=main_chat(), img=I + '2.jpg'),
+        dict(title='Super Agent 모드를 켜요', text='상단 모델 선택에서 「Super Agent」를 눌러요. 도구 이름을 외울 필요 없이 원하는 것을 한국어 한 줄로 말하면 돼요.', do='위쪽 모델 선택에서 「Super Agent」를 눌러 보세요.', ui=agent_pick(), img=I + '3.jpg'),
+        dict(title='무엇이든 만들어 달라고 해요', text='문서(한글·PDF), PPT, 이미지, 짧은 영상, 음악, 음성, 웹페이지, 다이어그램, 데이터 분석까지 한 번에 만들 수 있어요.', do='만들고 싶은 것을 한 줄로 써서 보내 보세요. 예시 요청을 눌러도 돼요.', ui=make(), img=I + '4.jpg'),
+        dict(title='결과를 부분만 고쳐요', text='“3페이지 표를 막대차트로 바꿔 줘”처럼 후속 요청으로 일부만 고치면 처음부터 다시 만들지 않아도 돼요. 첨부 파일을 먼저 올리고 요청해도 좋아요.', do='고치고 싶은 부분만 후속 메시지로 보내 보세요.', ui=fix(), img=I + '5.jpg'),
+    ]
+
+# ------------------------------------------------------------------ HAI-MathTutor (학생용 매뉴얼)
+def _math():
+    TH = '--mk:#4f46e5;--mk-side:#1e1b4b'
+    PROB = '극한 lim<sub>n→∞</sub> <sup>n</sup>√(n!) / n 의 값은?'
+    def sd(active):
+        return side('HAI-MathTutor', '', [('', [('home', 'home', '홈'), ('tut', 'user', '내 튜터'), ('hw', 'edit', '내 과제')])], active, user=('학생', '수학 튜터'), light=True, go={'home': 0})
+    def home():
+        T = [('2026년 1학기 선형대수 튜터', 4, 3), ('중간고사 대비 튜터', 4, 3), ('중간고사 대비 수학튜터', 2, 3), ('2027년 1학기 중간고사 튜터', 2, 3)]
+        rows = ''.join(f'<div class="mk-rowbtn" style="cursor:default"><span><b>{n}</b> <span style="color:var(--mk)">0%</span></span><small>자율학습 {a}문제 중 0풀이 · 과제 {b}문제 중 0풀이</small></div>' for n, a, b in T)
+        stats = ''.join(f'<div class="mk-stat"><small>{l}</small><b>{v}</b></div>' for l, v in [('총 풀이', '0문제'), ('전체 정답률', '0%'), ('AI 질문 횟수', '0회'), ('연속 학습일', '0일'), ('평균 풀이 시간', '0분')])
+        main = ('<p class="mk-ref">4월 9일 목요일 · 나른한 오후네요. 잠시 집중해서 실력을 쌓아봐요!</p><div class="mk-h"><h3>나의 학습 현황</h3></div>' + rows + f'<div class="mk-stats">{stats}</div>'
+                '<div class="mk-box tint" data-list hidden><b>내 튜터 4개</b><span>나에게 배정된 튜터 목록이에요. 튜터를 고르면 자율학습 문제와 과제를 풀 수 있어요.</span><div class="mk-pills">' + ''.join(f'<span>{n}</span>' for n, a, b in T) + '</div></div>')
+        return frame(TH, sd('home').replace('<span class="mk-nav">' + ic('user') + '내 튜터</span>', '<button type="button" class="mk-nav" data-on data-show="[data-list]" data-goal>' + ic('user') + '내 튜터</button>'), ('HAI-MathTutor', '홈'), main)
+    def tools(guide_goal=False):
+        return ('<div class="mk-topbar"><div class="mk-h"><h3>함수의 극한</h3><span class="mk-badge">MATH</span></div><span class="mk-row"><button type="button" class="mk-btn sm line" data-show="[data-guide]"' + (' data-goal' if guide_goal else '') + '>' + ic('doc', 14) + '가이드</button>'
+                '<button type="button" class="mk-btn sm line" data-go="4">' + ic('chat', 14) + 'AI 튜터</button></span></div><div class="mk-box"><span class="mk-chip">문제</span><p style="font-size:15px"><b>' + PROB + '</b></p></div>')
+    GUIDE = ('<div class="mk-modal" data-guide hidden><div class="mk-row"><b>가이드 · 함수의 극한</b><button type="button" class="mk-btn sm line" data-hide="[data-guide]">닫기</button></div><span class="mk-lbl">필요한 개념</span>'
+             '<p>1. 극한(limits): 수열이나 함수의 값이 무한히 가까워지는 값을 평가하는 개념입니다.<br>2. 계승(factorial): n!은 1부터 n까지의 모든 자연수의 곱입니다.<br>3. 멱(power): a<sup>n</sup>은 a가 n번 곱해진 것입니다.</p>'
+             '<span class="mk-lbl">관련 공식·정리</span><p>1. 스털링 근사(Stirling\'s Approximation): n! ≈ √(2πn) (n/e)<sup>n</sup><br>2. (1 + 1/n)<sup>n</sup> 형태의 극한은 e로 수렴합니다.</p></div>')
+    def write(goal):
+        pad = ('<div class="mk-f">최종 답안을 작성해주세요<div class="mk-drawwrap"><canvas data-draw id="mkans"' + (' data-goal' if goal == 'draw' else '') + ' aria-label="답안 손글씨 칸"></canvas><span data-drawhint>여기에 손가락이나 마우스로 답을 써 보세요</span></div></div>'
+               '<div class="mk-f">풀이 과정을 작성해주세요 (수식/숫자/영어 가능)<div class="mk-drawwrap"><canvas data-draw id="mksol" style="height:110px" aria-label="풀이 손글씨 칸"></canvas></div></div>'
+               '<div class="mk-row"><button type="button" class="mk-btn sm line" data-clear="#mkans,#mksol">지우기</button><button type="button" class="mk-btn" data-show="[data-sent]">답안 제출</button></div>' + toast('data-sent', '답안을 제출했어요. 자동으로 채점돼 결과를 바로 볼 수 있어요.'))
+        return frame(TH, sd('tut'), ('HAI-MathTutor', '문제 풀이'), tools(goal == 'guide') + GUIDE + pad)
+    def result():
+        main = (tools() + GUIDE + '<div class="mk-modal"><div class="mk-row"><b>결과</b><span class="mk-st ing">오답</span></div><div class="mk-box"><span class="mk-lbl">내 답안</span><b>27</b></div>'
+                '<button type="button" class="mk-rowbtn" data-show="[data-sol]" data-goal><b>정답 및 해설 보기</b><span>›</span></button><button type="button" class="mk-rowbtn" data-show="[data-fr]"><b>친구 풀이 보기</b><span>›</span></button>'
+                '<div class="mk-box tint" data-sol hidden><b>정답: 1/e</b><span>스털링 근사 n! ≈ √(2πn)(n/e)<sup>n</sup>을 쓰면 <sup>n</sup>√(n!)은 n이 커질수록 n/e에 가까워져요. 따라서 n으로 나눈 값은 1/e로 수렴해요.</span><span class="mk-eg">체험용 예시 해설</span></div>'
+                '<p class="mk-demo" data-fr hidden>체험판에는 친구 풀이가 들어 있지 않아요. 실제 서비스에서는 다른 학생의 풀이를 볼 수 있어요.</p></div>')
+        return frame(TH, sd('tut'), ('HAI-MathTutor', '채점 결과'), main)
+    Q = '극한이 뭐예요?'
+    def tutor():
+        body = demo(Q) + '<p><b>극한의 정의</b><br>극한은 x가 어떤 값에 가까워질 때, 함수값 f(x)가 어떤 값에 가까워지는지를 보는 개념이에요.</p><p>예를 들어 f(x) = 2x + 1 에서 x가 3에 가까워지면 f(x)는 7에 가까워져요. 이것을 lim<sub>x→3</sub> (2x + 1) = 7 이라고 써요.</p>'
+        aside = ('<aside class="mk-aside" style="width:250px"><b>' + ic('chat', 14) + ' AI 튜터</b><small style="color:#6b7280">문제에 대해 궁금한 것을 질문해 보세요</small><div class="mk-log" id="mklog" style="min-height:160px">'
+                 + '<div class="mk-chips" data-hello><button type="button" data-fill="' + Q + '">' + Q + '</button></div>' + me('', 'data-qa hidden') + dots('T') + ai(body, 'data-a hidden', 'T') + '</div>' + inbar(Q, '질문을 입력하세요…', True) + '</aside>')
+        main = tools() + GUIDE + '<div class="mk-f">최종 답안을 작성해주세요<div class="mk-drawwrap"><canvas data-draw id="mkans" aria-label="답안 손글씨 칸"></canvas><span data-drawhint>손글씨 답안 칸</span></div></div>'
+        return frame(TH, sd('tut'), ('HAI-MathTutor', 'AI 튜터'), main, aside).replace('class="mk-aside" style', 'class="mk-aside mk-keep" style')
+    I = 'media/walk/hai-mathtutor/'
+    return [
+        dict(title='나의 학습 현황을 봐요', text='홈에서 배정된 튜터별 진도와 정답률, 풀이 기록을 한눈에 봐요. 「내 튜터」를 누르면 나에게 배정된 튜터 목록이 나와요.', do='왼쪽 메뉴에서 「내 튜터」를 눌러 배정된 튜터 목록을 열어 보세요.', ui=home(), img=I + '1.jpg'),
+        dict(title='답을 손글씨로 써요', text='문제를 보고 최종 답안과 풀이 과정을 손글씨로 자유롭게 써요. 이미지로 올려 제출할 수도 있어요.', do='「최종 답안」 칸에 손가락이나 마우스로 답을 써 보세요.', ui=write('draw'), img=I + '2.jpg'),
+        dict(title='막히면 가이드를 열어요', text='「가이드」를 누르면 문제에 필요한 개념과 관련 공식을 정리해 보여 줘요.', do='「가이드」를 눌러 문제에 필요한 개념을 확인해 보세요.', ui=write('guide'), img=I + '3.jpg'),
+        dict(title='바로 채점 결과를 확인해요', text='답안을 제출하면 자동으로 채점돼 정답인지 바로 알 수 있어요. 정답과 해설, 친구 풀이도 볼 수 있어요.', do='「정답 및 해설 보기」를 눌러 풀이를 확인해 보세요.', ui=result(), img=I + '4.jpg'),
+        dict(title='AI 튜터에게 물어봐요', text='「AI 튜터」 창에서 개념을 물으면 예시와 함께 차근차근 설명해 줘요.', do='AI 튜터 입력칸에 궁금한 개념을 써서 보내 보세요.', ui=tutor(), img=I + '5.jpg'),
+    ]
+
+MOCKS = {'hai-docs': _docs(), 'hai-tutor': _tutor(), 'hai-mate': _mate(), 'hai-gpt': _gpt(), 'hai-mathtutor': _math()}
 
 MK_CSS = r"""
 /* 체험용 화면(목업) 공통 */
@@ -312,8 +404,10 @@ MK_CSS = r"""
 .mk-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; } .mk-tile { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 8px; border: 1px solid #e5e9f2; border-radius: 12px; background: #fff; text-align: center; } .mk-tile small { color: #6b7280; font-size: 11px; } .mk-tile .mk-ic { color: var(--mk); } .mk-tile.on { border-color: var(--mk); background: #f3f7ff; }
 .mk-code { padding: 12px 14px; border-radius: 10px; background: #0b1020; color: #d6e2ff; font: 12.5px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; min-height: 90px; } textarea.mk-code { width: 100%; border: 0; }
 .mk-center { margin: auto; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; } .mk-up { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; padding: 22px 12px; border: 2px dashed #cbd5e1; border-radius: 12px; background: #fff; color: #64748b; } .mk-up:hover { border-color: var(--mk); color: var(--mk); }
+.mk canvas[data-draw] { display: block; width: 100%; height: 150px; border: 1px dashed #b8c4d9; border-radius: 10px; background: #fff; touch-action: none; cursor: crosshair; } .mk-drawwrap { position: relative; } .mk-drawwrap > span { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; color: #94a3b8; pointer-events: none; }
+.mk-eg { align-self: flex-start; padding: 1px 8px; border-radius: 6px; background: #fff7e6; color: #92400e; font-size: 11px; } .mk-topbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .mk-filechip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px; background: #eef2f8; font-size: 12px; } .mk-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .mk-grow { flex: 1; }
-@container (max-width: 700px) { .mk-aside { display: none; } }
+@container (max-width: 700px) { .mk-aside { display: none; } .mk { flex-wrap: wrap; } .mk-aside.mk-keep { display: flex; width: 100% !important; border-left: 0; border-top: 1px solid #e5e9f2; } }
 @container (max-width: 560px) { .mk-hero { display: none; } .mk-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .mk-two { grid-template-columns: 1fr; } .mk-bar2 { grid-template-columns: 72px 1fr 40px; } .mk-side { display: none; } .mk-top { display: flex; align-items: center; gap: 8px; margin: -16px -14px 0; padding: 9px 14px; background: var(--mk-side); color: #fff; } .mk-top span { opacity: .8; font-size: 12px; } .mk-main { padding: 16px 14px; } .mk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .mk-grid.two, .mk-srcs, .mk-fields { grid-template-columns: 1fr; } .mk-block { margin-left: 0; } }
 @media (max-width: 860px) { .walk-main.uimode { grid-template-rows: minmax(0, 56%) minmax(0, 1fr); } .walk-shot.ui { padding: 0; } .mk { min-height: 100%; border-radius: 0; } .mk-main { max-height: none; } }
 """
