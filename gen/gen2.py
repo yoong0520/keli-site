@@ -398,6 +398,7 @@ a.btn.ghost, .util a.btn.ghost { color: var(--fg); }
 .badge { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--bg2); color: var(--muted); }
 .badge.live { background: var(--ok-bg); color: var(--ok); }
 .badge.soon { background: var(--soon-bg); color: var(--soon); }
+.badge.later { margin-left: 6px; padding: 3px 10px; border-radius: 9px; font-size: 13px; font-weight: 800; vertical-align: middle; white-space: nowrap; } h2 .badge.later { font-size: 14px; vertical-align: 4px; }
 .badge.pink { background: var(--pink); color: #1d1d1f; }
 /* header */
 .hdr { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--line); }
@@ -3125,7 +3126,7 @@ def page_experience():
     body = crumb(('services.html', 'HAI Ecosystems'), (None, 'HAI 체험관')) + f"""
 <section class="hero" style="padding-top:48px;padding-bottom:36px"><div class="wrap"><span class="eyebrow">HAI Ecosystems · 체험관</span><h1>로그인 없이,<br>브라우저에서 바로 체험합니다.</h1>
 <p class="lead">이음이·이루미와 함께 나에게 맞는 한림 AI를 찾고, 미니 체험판과 영상·매뉴얼로 바로 써 봅니다.</p>
-<div class="acts"><a class="btn" href="#find">나에게 맞는 한림 AI 찾기</a><a class="btn ghost" href="#try">바로 체험</a><a class="btn ghost" href="#real">실제 서비스 체험</a><a class="btn ghost" href="#follow">전체 데모 영상 및 데모 신청</a><a class="more" href="services.html">서비스 목록</a></div>{MKT_NOTICE}</div></section>
+<div class="acts"><a class="btn" href="#find">나에게 맞는 한림 AI 찾기</a><a class="btn ghost" href="#try">바로 체험</a><a class="btn ghost" href="#real">실제 서비스 체험{'' if TRIALS else ' <span class="badge soon later">추후 공개</span>'}</a><a class="btn ghost" href="#follow">전체 데모 영상 및 데모 신청</a><a class="more" href="services.html">서비스 목록</a></div>{MKT_NOTICE}</div></section>
 <section class="sec" id="find" style="padding-top:8px"><div class="wrap narrow" style="max-width:980px">
 <div class="row" style="margin-bottom:14px"><h2 style="font-size:28px">나에게 맞는 한림 AI 찾기</h2><span class="muted small">질문 5개 · 1분</span></div>
 {finder_html()}
@@ -3136,7 +3137,7 @@ def page_experience():
 <div class="grid g3 walk-grid">{''.join(walk_card(x) for x in SERVICES if x['slug'] in WALKS) or '<div class="empty">직접 해 보기를 준비하고 있습니다.</div>'}</div>
 </div></section>
 <section class="sec" id="real" style="padding-top:0"><div class="wrap">
-<div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">실제 서비스 체험</h2><span class="muted small">{len(TRIALS)}개 서비스</span></div>
+<div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">실제 서비스 체험{'' if TRIALS else ' <span class="badge soon later">추후 공개</span>'}</h2><span class="muted small">{(str(len(TRIALS)) + '개 서비스') if TRIALS else '준비 중'}</span></div>
 <p class="note" style="margin:0 0 18px">개발 기업이 제공한 체험 계정이나 체험 링크로 실제 서비스를 직접 써 봅니다. 체험 계정은 여러 사람이 함께 쓰므로 개인정보나 중요한 자료를 올리지 마세요.</p>
 {('<div class="grid g3 trial-grid">' + ''.join(f'<div class="trial-card"><strong class="t"><a href="{svc_page_of(x["name"])}">{E(x["name"])}</a></strong><span class="small muted">{E(x.get("one") or "")}</span>{trial_box(x["slug"], x["name"])}</div>' for x in SERVICES if x["slug"] in TRIALS) + '</div>') if TRIALS else '<div class="empty">기업별 체험 계정을 준비하고 있습니다. 준비되는 대로 이곳과 각 서비스 페이지에 열어 드립니다.</div>'}
 </div></section>

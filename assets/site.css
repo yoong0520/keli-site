@@ -49,6 +49,7 @@ a.btn.ghost, .util a.btn.ghost { color: var(--fg); }
 .badge { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--bg2); color: var(--muted); }
 .badge.live { background: var(--ok-bg); color: var(--ok); }
 .badge.soon { background: var(--soon-bg); color: var(--soon); }
+.badge.later { margin-left: 6px; padding: 3px 10px; border-radius: 9px; font-size: 13px; font-weight: 800; vertical-align: middle; white-space: nowrap; } h2 .badge.later { font-size: 14px; vertical-align: 4px; }
 .badge.pink { background: var(--pink); color: #1d1d1f; }
 /* header */
 .hdr { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--line); }
