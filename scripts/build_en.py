@@ -128,7 +128,11 @@ def _plain(val, fn):
 
 
 # ---------------------------------------------------------------- 번역(GitHub Models)
+FAILS = [0]   # 번역 서버가 계속 실패하면 멈추고, 번역 못 한 글자는 한국어로 둔 채 배포를 이어 간다
+
 def translate_batch(items, token):
+    if FAILS[0] >= 4:
+        return None
     prompt = ('Translate each Korean UI/web text in the JSON array into natural, concise English for a university EdTech website. '
               'Return ONLY a JSON array of the same length and order. Keep numbers, dates, URLs, file names, product names, emoji, '
               'symbols like ①·→★ and any HTML entities as they are. Replace Korean corner brackets 「」 with double quotes. '
@@ -139,7 +143,13 @@ def translate_batch(items, token):
                                      headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'Accept': 'application/json'})
         try:
             with urllib.request.urlopen(req, timeout=120) as r:
-                txt = json.loads(r.read())['choices'][0]['message']['content'].strip()
+                raw = r.read().decode('utf-8', 'replace')
+            try:
+                txt = json.loads(raw)['choices'][0]['message']['content'].strip()
+            except Exception:
+                print('  bad response:', raw[:300].replace('\n', ' '), file=sys.stderr)
+                FAILS[0] += 1
+                return None
             txt = re.sub(r'^```(?:json)?\s*|\s*```$', '', txt)
             arr = json.loads(txt)
             if isinstance(arr, list) and len(arr) == len(items):
@@ -153,7 +163,9 @@ def translate_batch(items, token):
                 return None
             time.sleep(wait)
         except Exception as e:
-            print('  error', e, file=sys.stderr); time.sleep(5)
+            print('  error', e, file=sys.stderr); FAILS[0] += 1; time.sleep(3)
+        if FAILS[0] >= 4:
+            return None
     return None
 
 
@@ -163,7 +175,7 @@ def fill(missing, cache, token, budget):
     def flush():
         nonlocal batch, size, sent
         if not batch: return
-        if sent >= budget: batch, size = [], 0; return
+        if sent >= budget or FAILS[0] >= 4: batch, size = [], 0; return
         res = translate_batch(batch, token); sent += 1
         if res is None and len(batch) > 1:   # 한꺼번에 실패하면 반씩 나눠 다시
             half = len(batch) // 2; a, b = batch[:half], batch[half:]
