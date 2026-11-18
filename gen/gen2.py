@@ -1890,7 +1890,7 @@ def try_card(t):
             f'<p class="small muted">{E(t["pitch"])}</p><ol class="try-steps">{steps}</ol>'
             f'<div class="vbtns"><button type="button" class="btn sm" data-try="{t["svc"]}">바로 체험하기</button>'
             + (f'<a class="btn ghost sm" href="{page}">서비스 소개</a>' if page else '') + '</div></div>')
-def follow_card(d):
+def follow_card(d, pre='try'):
     vs = d.get('videos') or []
     mans = manuals_for(d['name'])
     slug = svc_slug_of(d['name']); dem = demo_url(slug) if slug else ''
@@ -1904,7 +1904,7 @@ def follow_card(d):
     btns += (f'<a class="btn ghost sm" href="{dem}">데모 신청</a>' if dem else '')
     page = svc_page_of(d['name'])
     nm = f'<a href="{page}">{E(d["name"])}</a>' if page else E(d['name'])
-    return (f'<div class="vid" id="try-{d["id"]}">'
+    return (f'<div class="vid" id="{pre}-{d["id"]}">'
             f'<button type="button" class="vid-play" data-vmodal="{E(vs[0]["embed"])}" data-vtitle="{E(d["name"] + " · " + vs[0]["label"])}" aria-label="{E(d["name"])} 영상 보기">{media}<span class="play"></span></button>'
             f'<div class="vid-body"><span class="m">{E(d.get("category", ""))} {st}</span><strong class="t">{nm}</strong>'
             f'<span class="small muted">{E(d.get("summary", ""))}</span>{steps}<div class="vbtns">{btns}</div></div></div>')
@@ -2712,7 +2712,7 @@ def page_demos():
         secs += f'''
 <section class="sec" style="padding-top:0"><div class="wrap">
 <div class="row" style="margin-bottom:16px"><h2 style="font-size:26px">{E(cat)}</h2><span class="muted small">{len(items)}건</span></div>
-<div class="grid g3 vids">{''.join(demo_card(d) for d in items)}</div>
+<div class="grid g3 vids">{''.join(follow_card(d, 'demo') for d in items)}</div>
 </div></section>'''
     body = crumb(('services.html', 'HAI Ecosystems'), (None, '전체 데모 영상')) + f'''
 <section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap"><span class="eyebrow">HAI Ecosystems · 데모 영상</span><h1>서비스를 먼저<br>영상으로 봅니다.</h1><p class="lead">한림 AI 교육 포털에 등록된 서비스별 데모 영상을 한곳에 모았습니다. 썸네일을 누르면 이 자리에서 바로 재생됩니다.</p>
