@@ -734,8 +734,88 @@ def _lrs():
         dict(title='선배들의 수강 경험을 참고해요', text='선배 후기를 바탕으로 과목의 학습 부담과 진로 도움 정도를 네 영역으로 나눠 보여 줘요.', do='「힘들지만 남는 수업」 칸을 눌러 보세요.', ui=senior(), img=I + '5.jpg'),
     ]
 
+# ------------------------------------------------------------------ HAI-Sync (소개자료)
+def _sync():
+    TH = '--mk:#7c3aed;--mk-side:#1e1b4b'
+    NAV = '<div class="mk-topbar"><div class="mk-h"><h3>3주차 1차시 - 아들의 지능은 엄마가 결정한다</h3></div><span class="mk-chip">생명과학의 세계</span></div>'
+    def tabs(on, goal=''):
+        return '<div class="mk-tabs">' + ''.join(f'<button type="button" class="{"on" if k == on else ""}" data-on data-hide="[data-tb]" data-show="[data-tb={chr(39)}{k}{chr(39)}]"{" data-goal" if t == goal else ""}>{t}</button>' for k, t in enumerate(['요약', '퀴즈', '게임'])) + '</div>'
+    SUM = ('<div class="mk-box" data-tb="0"{H0}><b>요약</b><span>본 강의는 유전적 변이의 기본 개념인 드노보 변이(De novo variant)부터 최신 유전학의 핵심인 다인자 유전(Polygenic) 모델까지 폭넓게 다룹니다.</span>'
+           '<b>드노보 변이(De novo variant)의 정의와 발생 과정 <span class="mk-chip">수업 녹음</span> <span class="mk-chip">강의자료</span></b><span>드노보(De novo)는 \'새롭게 발생한\'이라는 의미로, 부모에게는 없지만 자녀에게 처음 나타나는 유전 변이를 뜻해요.</span>'
+           '<div class="mk-row"><button type="button" class="mk-btn sm soft" data-show="[data-src]"{G0}>' + ic('doc', 14) + '강의자료 보기</button><button type="button" class="mk-btn sm" data-go="4">AI에게 질문하기</button></div>'
+           '<div class="mk-box tint" data-src hidden><b>원문 출처</b><span>요약 문단마다 근거가 된 강의자료 쪽과 수업 녹음 구간이 연결돼 있어 원문을 바로 확인할 수 있어요.</span><span class="mk-filechip">' + ic('doc', 13) + '[학습자료] 생명과학의 세계 · 3주차 강의자료</span></div></div>')
+    OPT = ['염색체(Chromosome)', '유전자(Gene)', '아미노산(Amino acid)', '표현형(Phenotype)', '대립유전자(Allele)']
+    QUIZ = ('<div class="mk-box" data-tb="1"{H1}><span class="mk-chip">Q1 · 용어 퀴즈</span><b>다음 설명에 알맞은 용어를 고르시오.</b><span>설명: 단백질을 생성하는 유전 정보의 기본 단위로, 모든 사람이 공통적으로 보유하고 있는 생물학적 설계도를 의미한다.</span>'
+            '<div class="mk-opts" id="mko">' + ''.join(f'<button type="button" class="mk-opt" data-on>{o}</button>' for o in OPT) + '</div><p class="mk-demo" data-need hidden>먼저 답을 하나 골라 주세요.</p>'
+            '<div class="mk-box tint" data-right hidden><b>정답이에요! 유전자(Gene)</b></div><div class="mk-box tint" data-wrong hidden><b>아쉬워요. 정답은 유전자(Gene)예요.</b></div><div class="mk-row end"><button type="button" class="mk-btn sm" data-check="#mko|1">정답 확인</button></div></div>')
+    GAME = '<div class="mk-box" data-tb="2" hidden><b>학습 게임</b><span class="mk-ref">회차 내용으로 만든 학습 게임이에요. 체험판에는 들어 있지 않아요.</span></div>'
+    def setup(goal):
+        def lst(items, kind): return ''.join(f'<button type="button" class="mk-rowbtn" data-tg><span>[{kind}] {t}</span><small>OFF</small></button>' for t in items)
+        main = ('<div class="mk-modal"><div class="mk-row"><b>회차 설정</b><span class="mk-ref">3주차 1차시</span></div><div class="mk-two"><div class="mk-box" id="mkdoc"><div class="mk-row"><b>강의자료 저장소 <small>(53개)</small></b><button type="button" class="mk-btn sm" style="background:#b91c1c" data-show="[data-nf]"' + (' data-goal' if goal == 'add' else '') + '>강의자료 추가하기</button></div>'
+                + '<button type="button" class="mk-rowbtn" data-tg data-nf hidden><span>[학습자료] 새로 올린 강의자료.pdf (체험용)</span><small>OFF</small></button>' + lst(['생명과학의 세계_150202_헤이크로바이올…', '생명과학의 세계_150201_마이크로바이옴…'], '학습자료') + '</div>'
+                '<div class="mk-box"><div class="mk-row"><b>녹음본 저장소 <small>(57개)</small></b><span class="mk-btn sm" style="background:#b91c1c;cursor:default">녹음본 추가하기</span></div>' + lst(['생명과학의 세계_140202_식물의 저대사산물과…', '생명과학의 세계_140201_식물의 저대사산물과…'], '녹음본') + '</div></div>'
+                '<p class="mk-demo" data-need hidden>회차에 쓸 강의자료를 하나 이상 눌러 골라 주세요.</p><div class="mk-row end"><span class="mk-btn sm line" style="cursor:default">닫기</span><button type="button" class="mk-btn sm" data-allon="#mkdoc" data-wait="[data-mk]" data-show="[data-made]"' + (' data-goal' if goal == 'make' else '') + '>적용하고 콘텐츠 생성</button></div>'
+                '<p class="mk-note" data-mk hidden><span>AI가 강의자료와 녹음을 학습하고 있어요…</span></p><div class="mk-box tint" data-made hidden><b>회차별 학습 콘텐츠가 만들어졌어요</b><span>요약 노트, 연습 퀴즈, 학습 게임, AI 튜터가 이 회차에 준비됐어요.</span><span class="mk-eg">체험용 예시</span></div></div>')
+        return frame(TH, '', ('HAI-Sync', '회차 설정'), main)
+    Q = '유전자와 대립유전자의 차이가 무엇인가요?'
+    def tutor():
+        body = (demo(Q) + '<p>제공된 강의자료에 따르면, <b>유전자(Gene)</b>는 단백질을 만들어내는 정보의 단위로 모든 사람이 가지고 있는 반면, <b>대립유전자(Allele)</b>는 유전자 DNA 상의 변화, 즉 유전 변이에 해당해 사람마다 다르게 나타나요.</p>'
+                '<p class="mk-ref">근거 ' + f'<span class="mk-filechip">{ic("doc", 13)}수업 녹음본 · 녹음 구간 #3 (6:01 – 9:33)</span></p>')
+        return frame(TH, '', ('HAI-Sync', 'AI 튜터'), NAV + '<div class="mk-log" id="mklog"><div class="mk-hello" data-hello><b>대화형 AI 튜터</b><span>무엇이든 질문하면 강의 내용에 근거해 답하고, 근거 페이지까지 짚어 줘요.</span><div class="mk-chips"><button type="button" data-fill="' + Q + '">' + Q + '</button></div></div>'
+                     + me('', 'data-qa hidden') + dots() + ai(body, 'data-a hidden') + '</div>' + inbar(Q, '무엇이든 물어보세요…', True, more='체험판에서는 예시 질문 하나에만 답해 드려요. 실제 서비스에서는 올린 강의자료와 녹음을 근거로 답합니다.'))
+    I = 'media/walk/hai-sync/'
+    return [
+        dict(title='강의자료와 녹음을 올려요', text='교수님은 강의자료와 수업 녹음을 올리기만 하면 되고, 학생은 언제든 질문하며 복습해요.', do='「강의자료 추가하기」를 눌러 강의자료를 올려 보세요.', ui=setup('add'), img=I + '2.jpg'),
+        dict(title='강의자료·녹음을 자동으로 학습해요', text='자료와 녹음을 올리면 AI가 회차별 학습 콘텐츠를 자동으로 만들어요.', do='쓸 강의자료를 눌러 고른 뒤 「적용하고 콘텐츠 생성」을 눌러 보세요.', ui=setup('make'), img=I + '2.jpg'),
+        dict(title='AI 요약 노트로 복습해요', text='회차 전체를 구조화한 요약 노트에 문단마다 강의자료·녹음 출처가 붙어 있어 원문을 바로 확인해요.', do='요약 노트에서 「강의자료 보기」를 눌러 원문 출처를 확인해 보세요.', ui=frame(TH, '', ('HAI-Sync', '요약 노트'), NAV + tabs(0) + SUM.replace('{H0}', '').replace('{G0}', ' data-goal') + QUIZ.replace('{H1}', ' hidden') + GAME), img=I + '3.jpg'),
+        dict(title='퀴즈와 게임으로 반복해요', text='회차마다 연습 퀴즈와 학습 게임으로 재미있게 반복 학습해요.', do='「퀴즈」 탭을 눌러 연습 퀴즈를 열고 풀어 보세요.', ui=frame(TH, '', ('HAI-Sync', '퀴즈'), NAV + tabs(0, '퀴즈') + SUM.replace('{H0}', '').replace('{G0}', '') + QUIZ.replace('{H1}', ' hidden') + GAME), img=I + '4.jpg'),
+        dict(title='AI 튜터에게 언제든 물어봐요', text='궁금한 건 대화형 AI 튜터에게 물어보면 강의 내용을 근거로 답하고 근거 페이지까지 짚어 줘요.', do='AI 튜터에게 궁금한 것을 써서 보내 보세요. 비워 둔 채 보내면 예시 질문이 입력돼요.', ui=tutor(), img=I + '5.jpg'),
+    ]
+
+# ------------------------------------------------------------------ HAI-Security (소개자료)
+def _security():
+    TH = '--mk:#2563eb;--mk-side:#0f172a'
+    def sd(active, prof=False):
+        items = [('ov', 'chart', '과목 관리'), ('pr', 'user', '진도 관리'), ('qz', 'edit', '퀴즈 관리')] if prof else [('dash', 'home', '대시보드'), ('crs', 'doc', '과목'), ('my', 'chart', '내 진도'), ('qna', 'chat', '문의사항'), ('ntc', 'bell', '공지사항')]
+        return side('HAI-Security', '', [('', items)], active, user=(('교수자', '관리자') if prof else ('학생', '수강생')), light=True, go=({} if prof else {'dash': 0, 'crs': 1}))
+    def dash():
+        main = ('<div class="mk-h"><h3>대시보드</h3></div><p class="mk-ref">수강 중인 과목과 학습 진행 상황을 한눈에 확인하세요.</p>'
+                '<button type="button" class="mk-box tint" style="text-align:left" data-show="[data-st]" data-goal><b>오늘의 학습을 시작할 준비가 되었습니다</b><span>과목에 등록하면 이곳에서 실습 시나리오·퀴즈와 나의 진도를 확인할 수 있습니다.</span></button>'
+                '<div class="mk-stats"><div class="mk-stat"><small>수강 과목</small><b>1</b></div><div class="mk-stat"><small>평균 학습 완료율</small><b>25%</b></div><div class="mk-stat"><small>해결 시나리오</small><b>0</b></div></div>'
+                '<div class="mk-two"><div class="mk-box"><b>공지사항</b><span class="mk-ref">등록된 공지사항이 없습니다.</span></div><div class="mk-box"><b>오늘의 학습 포커스</b><span>네트워크 보안</span></div></div>' + toast('data-st', '오늘의 학습을 시작했어요. 「다음」을 눌러 실습으로 들어가 보세요.'))
+        return frame(TH, sd('dash'), ('HAI-Security', '대시보드'), main)
+    Q = '학습 목표를 알려줄 수 있어?'
+    def lab():
+        body = demo(Q) + '<p>학습 목표는 다음과 같습니다.</p><p>1. Wireshark의 패킷 목록, 패킷 상세 정보, 원시 바이트 영역을 구분할 수 있습니다.<br>2. 캡처 필터와 디스플레이 필터의 차이를 설명할 수 있습니다.<br>3. ARP, ICMP, DNS, TCP, HTTP 패킷의 주요 필드를 찾을 수 있습니다.<br>4. TCP 3-way handshake와 하나의 TCP 스트림을 추적할 수 있습니다.</p>'
+        aside = ('<aside class="mk-aside mk-keep" style="width:260px"><b>' + ic('chat', 14) + ' AI 튜터</b><div class="mk-log" id="mklog" style="min-height:150px"><div class="mk-chips" data-hello><button type="button" data-fill="' + Q + '">' + Q + '</button></div>' + me('', 'data-qa hidden') + dots('T') + ai(body, 'data-a hidden', 'T') + '</div>' + inbar(Q, '질문을 입력하세요…', True) + '</aside>')
+        main = ('<div class="mk-h"><h3>Wireshark로 시작하는 네트워크 패킷 분석</h3><span class="mk-badge">실습</span></div><div class="mk-box"><b>실습 개요</b><table class="mk-tbl"><tr><th>항목</th><th>내용</th></tr><tr><td>난이도</td><td>초급</td></tr><tr><td>권장 시간</td><td>150분</td></tr><tr><td>실습 도구</td><td>Wireshark 4.x 권장</td></tr><tr><td>제출물</td><td>문항 답안, 필터식, 캡처 화면, 사고분석 보고서</td></tr></table></div>'
+                '<div class="mk-box"><b>학습 목표</b><span class="mk-ref">실습을 마치면 Wireshark 화면 구성과 필터, 주요 프로토콜 패킷을 읽을 수 있어요. 막히면 AI 튜터에게 물어보세요.</span></div>')
+        return frame(TH, sd('crs'), ('HAI-Security', 'AI Tutor'), main, aside)
+    def ctf(goal):
+        L = ['Aug 21, 2025 @ 02:00:01.894　Microsoft-Windows-Sysmon/Operational　process_create', 'Aug 21, 2025 @ 02:00:00.917　Microsoft-Windows-Sysmon/Operational　network_connect', 'Aug 21, 2025 @ 01:59:58.004　Microsoft-Windows-Security-Auditing　logon']
+        rows = ''.join(f'<button type="button" class="mk-rowbtn" style="font:11.5px ui-monospace,monospace" data-on data-show="[data-ld]"{" data-goal" if goal == "log" and k == 0 else ""}><span>{l}</span></button>' for k, l in enumerate(L))
+        main = ('<div class="mk-h"><h3>실전형 CTF 플랫폼</h3><span class="mk-badge">2,847 hits</span></div><p class="mk-ref">실제 공격 데이터를 분석해 위협 행위를 찾아내는 문제예요. 로그를 눌러 자세히 살펴보세요.</p><div class="mk-opts">' + rows + '</div>'
+                '<div class="mk-box tint" data-ld hidden><b>로그 상세</b><span style="font:11.5px ui-monospace,monospace">event_data.Image: C:\\Windows\\System32\\cmd.exe<br>event_data.ParentImage: (상위 프로세스)<br>computer_name: DESKTOP-…</span><span class="mk-eg">체험용 예시 로그</span></div>'
+                '<div class="mk-box"><b>정답(플래그) 제출</b><div class="mk-row"><input type="text" id="mkflag" class="mk-grow" placeholder="찾아낸 답을 입력하세요" aria-label="정답 입력"><button type="button" class="mk-btn sm" data-req="#mkflag" data-show="[data-sb]"' + (' data-goal' if goal == 'flag' else '') + '>제출</button></div>'
+                '<p class="mk-demo" data-need hidden>답을 먼저 입력해 주세요.</p>' + toast('data-sb', '답을 제출했어요. 자동 채점 결과가 바로 나와요. (체험판에서는 채점되지 않아요)') + '</div>')
+        return frame(TH, sd('crs'), ('HAI-Security', 'CTF'), main)
+    def prof():
+        main = ('<div class="mk-row"><div class="mk-h"><h3>강좌 종합 현황</h3></div><span class="mk-row"><span class="mk-btn sm line" style="cursor:default">퀴즈 운영</span><button type="button" class="mk-btn sm" data-show="[data-pg]" data-goal>상세 진도 보기</button></span></div>'
+                '<div class="mk-stats"><div class="mk-stat"><small>수강생</small><b>7명</b></div><div class="mk-stat"><small>평균 진도</small><b>6.4%</b></div><div class="mk-stat"><small>진행 중 과제</small><b>1</b></div><div class="mk-stat"><small>퀴즈</small><b>7</b></div></div>'
+                '<div class="mk-box" data-pg hidden><div class="mk-row"><b>학생별 진도</b><span class="mk-eg">체험용 예시</span></div><div class="mk-bars">' + ''.join(f'<div class="mk-bar2"><span>학생 {k + 1}</span><i style="--v:{v}%"></i><b>{v}%</b></div>' for k, v in enumerate([25, 10, 5, 0])) + '</div></div>'
+                '<div class="mk-box"><b>확인이 필요한 학습자</b><span class="mk-ref">진도가 낮거나 오래 접속하지 않은 학생을 먼저 보여 줘요.</span></div>')
+        return frame(TH, sd('ov', True), ('HAI-Security', '교수(관리자) 화면'), main)
+    I = 'media/walk/hai-security/'
+    return [
+        dict(title='학습자 대시보드에서 시작해요', text='오늘의 학습, 진행 중인 과제와 문제 풀이 현황을 대시보드에서 확인해요.', do='「오늘의 학습을 시작할 준비가 되었습니다」 알림을 눌러 학습을 시작해 보세요.', ui=dash(), img=I + '2.jpg'),
+        dict(title='AI 튜터와 함께 공부해요', text='실습하다 막히면 AI 튜터에게 질문하며 스스로 답을 찾아가요.', do='AI 튜터에게 궁금한 것을 써서 보내 보세요. 비워 둔 채 보내면 예시 질문이 입력돼요.', ui=lab(), img=I + '3.jpg'),
+        dict(title='실전형 CTF 문제를 풀어요', text='실제 공격 데이터를 분석해 위협 행위를 찾아내는 문제를 풀어요.', do='로그 목록에서 맨 위 기록을 눌러 자세히 살펴보세요.', ui=ctf('log'), img=I + '4.jpg'),
+        dict(title='답을 제출하고 자동 채점을 받아요', text='찾아낸 답을 제출하면 자동 채점 시스템이 바로 결과를 알려 줘요.', do='정답 칸에 답을 쓰고 「제출」을 눌러 보세요.', ui=ctf('flag'), img=I + '4.jpg'),
+        dict(title='교수님은 학습 현황을 관리해요', text='교수(관리자) 화면에서 문제와 시나리오를 관리하고 학생들의 학습 현황을 확인해요.', do='「상세 진도 보기」를 눌러 학생별 진도를 확인해 보세요.', ui=prof(), img=I + '5.jpg'),
+    ]
+
 MOCKS = {'hai-docs': _docs(), 'hai-tutor': _tutor(), 'hai-mate': _mate(), 'hai-gpt': _gpt(), 'hai-mathtutor': _math(), 'lxp': _lxp(), 'hai-forum': _forum(), 'hai-fist': _fist(), 'hai-lens': _lens(), 'hai-way': _way(), 'hai-research': _research(),
-         'hai-bdpi': _bdpi(), 'hai-check': _check(), 'hai-lrs': _lrs()}
+         'hai-bdpi': _bdpi(), 'hai-check': _check(), 'hai-lrs': _lrs(), 'hai-sync': _sync(), 'hai-security': _security()}
 
 MK_CSS = r"""
 /* 체험용 화면(목업) 공통 */
