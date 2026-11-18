@@ -1,0 +1,11 @@
+name: Manual pages (one-off)
+on: workflow_dispatch
+jobs:
+  pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+      - run: python3 scripts/manual_pages.py
+      - uses: actions/upload-artifact@v4
+        with: { name: manual-pages, path: _manual_pages, retention-days: 7 }
