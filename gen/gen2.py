@@ -556,6 +556,13 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .trial-copy { margin-left: 6px; border: 0; background: none; color: #047857; font: inherit; font-size: 12px; text-decoration: underline; cursor: pointer; }
 .trial-card { display: flex; flex-direction: column; gap: 6px; padding: 20px; border: 1px solid var(--line); border-radius: 18px; background: #fff; } .trial-card .t { font-size: 19px; } .trial-card .trial { margin: 8px 0 0; }
 .vid-cover { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #e9edf5; } .vid-cover img { width: 100%; height: 100%; object-fit: cover; display: block; } .vid-soon { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,.92); font-size: 14px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+/* 전체 데모 영상 카드: 같은 줄의 카드끼리 제목·설명·단계·단추·문서 높이를 맞춘다(subgrid) */
+.vids.fgrid { row-gap: 0; }
+.fcard { display: grid; grid-template-rows: subgrid; grid-row: span 8; gap: 0; align-content: start; margin-bottom: 44px; }
+.fcard > .vid-body { display: contents; }
+.fcard .vid-body > .m { margin-top: 14px; } .fcard .vid-body > .t { margin-top: 6px; } .fcard .vid-body > .small { margin-top: 6px; align-self: start; }
+.fcard .vid-body > .try-steps { margin: 12px 0 0; align-self: start; } .fcard .vid-body > .vbtns { margin-top: 14px; align-self: start; align-content: flex-start; } .fcard .vid-body > .vbtns.docs { margin-top: 8px; } .fcard .vid-body > .vbtns:empty { margin: 0; } .fcard .vid-body > .trial { margin: 12px 0 0; align-self: start; }
+@supports not (grid-template-rows: subgrid) { .fcard { display: flex; flex-direction: column; } .fcard > .vid-body { display: flex; flex-direction: column; } }
 .try-grid { gap: 20px; } .try-card { display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
 .try-top { display: flex; gap: 14px; align-items: center; } .try-ic { font-size: 30px; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 14px; background: color-mix(in srgb, var(--accent, #0B5CFF) 8%, #fff); flex: none; }
 .try-top .m { display: block; font-size: 13px; color: var(--muted); } .try-top .t { font-size: 20px; font-weight: 700; }
@@ -1926,15 +1933,15 @@ def follow_card(d, pre='try'):
              + ('<li>매뉴얼(PDF)을 펼쳐 화면을 따라가 봅니다.</li>' if mans else '')
              + ('<li>Marketplace에서 데모를 신청해 직접 써 봅니다.</li>' if dem else '<li>도입 문의로 체험 방법을 안내받습니다.</li>') + '</ol>')
     btns = ''.join(vbtn(d['name'], v, cls='btn sm', label=('영상 보기' if len(vs) == 1 else v['label'])) for v in vs)
-    btns += ''.join(f'<a class="btn ghost sm" href="{E(m["url"])}" target="_blank" rel="noopener">{E((m["label"] or "매뉴얼").replace("공통 ", "").strip())}(PDF)</a>' for m in mans)
-    btns += (f'<a class="btn ghost sm" href="{dem}">데모 신청</a>' if dem else '')
+    docs = ''.join(f'<a class="btn ghost sm" href="{E(m["url"])}" target="_blank" rel="noopener">{E((m["label"] or "매뉴얼").replace("공통 ", "").strip())}(PDF)</a>' for m in mans)
+    docs += (f'<a class="btn ghost sm" href="{dem}">데모 신청</a>' if dem else '')
     page = svc_page_of(d['name'])
     nm = f'<a href="{page}">{E(d["name"])}</a>' if page else E(d['name'])
     play = (f'<button type="button" class="vid-play" data-vmodal="{E(vs[0]["embed"])}" data-vtitle="{E(d["name"] + " · " + vs[0]["label"])}" aria-label="{E(d["name"])} 영상 보기">{media}<span class="play"></span></button>'
             if vs else f'<div class="vid-cover">{media}<span class="vid-soon">영상 준비 중</span></div>')
-    return (f'<div class="vid" id="{pre}-{d["id"]}">' + play +
+    return (f'<div class="vid fcard" id="{pre}-{d["id"]}">' + play +
             f'<div class="vid-body"><span class="m">{E(d.get("category", ""))} {st}</span><strong class="t">{nm}</strong>'
-            f'<span class="small muted">{E(d.get("summary", ""))}</span>{steps}<div class="vbtns">{btns}</div>{trial_box(slug, d["name"], True) if slug else ""}</div></div>')
+            f'<span class="small muted">{E(d.get("summary", ""))}</span>{steps}<div class="vbtns">{btns}</div><div class="vbtns docs">{docs}</div>{trial_box(slug, d["name"], True) if slug else ""}</div></div>')
 
 DEMO_NOTE = f'서비스별 영상은 HAI 활용 매뉴얼 사이트(haimanual.csedu4all.com)의 「영상 보기」와 같은 영상을 매일 자동으로 가져오며, 서비스 정보는 한림 AI 교육 포털(ai.hallym.ac.kr/hallym-ai)에서 가져옵니다. <span data-demo-date>{E(DEMOS.get("fetched_at", ""))}</span> 기준 {len({d["service_id"] for d in DEMO_ITEMS})}개 서비스 · 영상 {len(DEMO_ITEMS)}건.'
 
@@ -2741,7 +2748,7 @@ def page_demos():
         secs += f'''
 <section class="sec" style="padding-top:0"><div class="wrap">
 <div class="row" style="margin-bottom:16px"><h2 style="font-size:26px">{E(cat)}</h2><span class="muted small">{len(items)}건</span></div>
-<div class="grid g3 vids">{''.join(follow_card(d, 'demo') for d in items)}</div>
+<div class="grid g3 vids fgrid">{''.join(follow_card(d, 'demo') for d in items)}</div>
 </div></section>'''
     body = crumb(('services.html', 'HAI Ecosystems'), (None, '전체 데모 영상')) + f'''
 <section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap"><span class="eyebrow">HAI Ecosystems · 데모 영상</span><h1>서비스를 먼저<br>영상으로 봅니다.</h1><p class="lead">한림 AI 교육 포털에 등록된 서비스별 데모 영상을 한곳에 모았습니다. 썸네일을 누르면 이 자리에서 바로 재생됩니다.</p>
@@ -2769,7 +2776,7 @@ def page_experience():
     for cat in DEMO_CATS:
         items = [d for d in DEMO_ITEMS if d.get('category') == cat]
         secs += (f'<div class="row" style="margin:28px 0 14px"><h3 style="font-size:22px">{E(cat)}</h3><span class="muted small">{len(items)}건</span></div>'
-                 f'<div class="grid g3 vids">{"".join(follow_card(d) for d in items)}</div>')
+                 f'<div class="grid g3 vids fgrid">{"".join(follow_card(d) for d in items)}</div>')
     body = crumb(('services.html', 'HAI Ecosystems'), (None, 'HAI 체험관')) + f"""
 <section class="hero" style="padding-top:48px;padding-bottom:36px"><div class="wrap"><span class="eyebrow">HAI Ecosystems · 체험관</span><h1>로그인 없이,<br>브라우저에서 바로 체험합니다.</h1>
 <p class="lead">HAI Ecosystems의 핵심 기능을 미니 체험판으로 직접 써 보고, 모든 서비스는 영상과 매뉴얼로 따라 해 봅니다.</p>
