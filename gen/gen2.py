@@ -2771,7 +2771,7 @@ def page_experience():
     body = crumb(('services.html', 'HAI Ecosystems'), (None, 'HAI 체험관')) + f"""
 <section class="hero" style="padding-top:48px;padding-bottom:36px"><div class="wrap"><span class="eyebrow">HAI Ecosystems · 체험관</span><h1>로그인 없이,<br>브라우저에서 바로 체험합니다.</h1>
 <p class="lead">HAI Ecosystems의 핵심 기능을 미니 체험판으로 직접 써 보고, 모든 서비스는 영상과 매뉴얼로 따라 해 봅니다.</p>
-<div class="acts"><a class="btn" href="#try">바로 체험</a><a class="btn ghost" href="#real">실제 서비스 체험</a><a class="btn ghost" href="#follow">영상으로 따라 하기</a><a class="more" href="services.html">서비스 목록</a></div>{MKT_NOTICE}</div></section>
+<div class="acts"><a class="btn" href="#try">바로 체험</a><a class="btn ghost" href="#real">실제 서비스 체험</a><a class="btn ghost" href="#follow">전체 데모 영상 및 데모 신청</a><a class="more" href="services.html">서비스 목록</a></div>{MKT_NOTICE}</div></section>
 <section class="sec" id="try" style="padding-top:8px"><div class="wrap">
 <div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">바로 체험</h2><span class="muted small">미니 체험판 {len(TRY_DEMOS)}종</span></div>
 <p class="note" style="margin:0 0 18px">미니 체험판은 각 서비스의 핵심 기능을 맛볼 수 있도록 KELI 사무국이 만든 <b>체험용 축소판</b>입니다. 실제 서비스와 화면·기능·AI 모델이 다릅니다. 이름·학번·연락처 같은 개인정보는 입력하지 마세요. 입력한 내용은 답변을 만드는 데에만 쓰고 저장하지 않습니다.</p>
@@ -2783,7 +2783,7 @@ def page_experience():
 {('<div class="grid g3 trial-grid">' + ''.join(f'<div class="trial-card"><strong class="t"><a href="{svc_page_of(x["name"])}">{E(x["name"])}</a></strong><span class="small muted">{E(x.get("one") or "")}</span>{trial_box(x["slug"], x["name"])}</div>' for x in SERVICES if x["slug"] in TRIALS) + '</div>') if TRIALS else '<div class="empty">기업별 체험 계정을 준비하고 있습니다. 준비되는 대로 이곳과 각 서비스 페이지에 열어 드립니다.</div>'}
 </div></section>
 <section class="sec alt" id="follow"><div class="wrap">
-<div class="row" style="margin-bottom:4px"><h2 style="font-size:28px">영상으로 따라 하기</h2><span class="muted small">{len(DEMO_ITEMS)}개 서비스</span></div>
+<div class="row" style="margin-bottom:4px"><h2 style="font-size:28px">전체 데모 영상 및 데모 신청</h2><span class="muted small">{len(DEMO_ITEMS)}개 서비스</span></div>
 <p class="note" style="margin:0">영상으로 사용 흐름을 보고, 매뉴얼(PDF)로 화면을 따라가 본 뒤, Marketplace에서 데모를 신청해 직접 써 보세요.</p>
 {secs}
 <p class="note" style="margin-top:24px">{DEMO_NOTE} 영상과 매뉴얼의 저작권은 한림대학교와 각 개발 기업에 있습니다.</p>
