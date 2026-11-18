@@ -555,6 +555,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .trial-acct { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 14px; } .trial-acct code { background: #fff; border: 1px solid #a7f3d0; border-radius: 6px; padding: 1px 6px; margin-left: 4px; }
 .trial-copy { margin-left: 6px; border: 0; background: none; color: #047857; font: inherit; font-size: 12px; text-decoration: underline; cursor: pointer; }
 .trial-card { display: flex; flex-direction: column; gap: 6px; padding: 20px; border: 1px solid var(--line); border-radius: 18px; background: #fff; } .trial-card .t { font-size: 19px; } .trial-card .trial { margin: 8px 0 0; }
+.vid-cover { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #e9edf5; } .vid-cover img { width: 100%; height: 100%; object-fit: cover; display: block; } .vid-soon { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,.92); font-size: 14px; font-weight: 700; color: var(--muted); white-space: nowrap; }
 .try-grid { gap: 20px; } .try-card { display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
 .try-top { display: flex; gap: 14px; align-items: center; } .try-ic { font-size: 30px; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 14px; background: color-mix(in srgb, var(--accent, #0B5CFF) 8%, #fff); flex: none; }
 .try-top .m { display: block; font-size: 13px; color: var(--muted); } .try-top .t { font-size: 20px; font-weight: 700; }
@@ -1843,7 +1844,7 @@ DEMO_ITEMS = []
 for _d in DEMOS.get('items', []):
     if any(_svc_n(_d['name']) == _svc_n(x['name']) for x in DEMO_ITEMS): continue
     _v = videos_for(_d['name'])
-    if _v: DEMO_ITEMS.append(dict(_d, videos=_v, embed=_v[0]['embed']))
+    DEMO_ITEMS.append(dict(_d, videos=_v, embed=(_v[0]['embed'] if _v else '')))   # 영상이 아직 없는 서비스도 '영상 준비 중'으로 보여 준다
 DEMO_CATS = []
 for _d in DEMO_ITEMS:
     if _d.get('category') not in DEMO_CATS: DEMO_CATS.append(_d.get('category'))
@@ -1921,7 +1922,7 @@ def follow_card(d, pre='try'):
     slug = svc_slug_of(d['name']); dem = demo_url(slug) if slug else ''
     st = '<span class="badge live">운영 중</span>' if d.get('status') == 'live' else '<span class="badge soon">준비 중</span>'
     media = f'<img src="{d["thumb"]}" alt="" loading="lazy">' if d.get('thumb') else f'<span class="vid-ph"><span>{E(d["name"])}</span></span>'
-    steps = ('<ol class="try-steps"><li>영상으로 사용 흐름을 봅니다.</li>'
+    steps = ('<ol class="try-steps">' + ('<li>영상으로 사용 흐름을 봅니다.</li>' if vs else '')
              + ('<li>매뉴얼(PDF)을 펼쳐 화면을 따라가 봅니다.</li>' if mans else '')
              + ('<li>Marketplace에서 데모를 신청해 직접 써 봅니다.</li>' if dem else '<li>도입 문의로 체험 방법을 안내받습니다.</li>') + '</ol>')
     btns = ''.join(vbtn(d['name'], v, cls='btn sm', label=('영상 보기' if len(vs) == 1 else v['label'])) for v in vs)
@@ -1929,8 +1930,9 @@ def follow_card(d, pre='try'):
     btns += (f'<a class="btn ghost sm" href="{dem}">데모 신청</a>' if dem else '')
     page = svc_page_of(d['name'])
     nm = f'<a href="{page}">{E(d["name"])}</a>' if page else E(d['name'])
-    return (f'<div class="vid" id="{pre}-{d["id"]}">'
-            f'<button type="button" class="vid-play" data-vmodal="{E(vs[0]["embed"])}" data-vtitle="{E(d["name"] + " · " + vs[0]["label"])}" aria-label="{E(d["name"])} 영상 보기">{media}<span class="play"></span></button>'
+    play = (f'<button type="button" class="vid-play" data-vmodal="{E(vs[0]["embed"])}" data-vtitle="{E(d["name"] + " · " + vs[0]["label"])}" aria-label="{E(d["name"])} 영상 보기">{media}<span class="play"></span></button>'
+            if vs else f'<div class="vid-cover">{media}<span class="vid-soon">영상 준비 중</span></div>')
+    return (f'<div class="vid" id="{pre}-{d["id"]}">' + play +
             f'<div class="vid-body"><span class="m">{E(d.get("category", ""))} {st}</span><strong class="t">{nm}</strong>'
             f'<span class="small muted">{E(d.get("summary", ""))}</span>{steps}<div class="vbtns">{btns}</div>{trial_box(slug, d["name"], True) if slug else ""}</div></div>')
 
