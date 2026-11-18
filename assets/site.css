@@ -214,6 +214,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .fcard .vid-body > .m { margin-top: 14px; } .fcard .vid-body > .t { margin-top: 6px; } .fcard .vid-body > .small { margin-top: 6px; align-self: start; }
 .fcard .vid-body > .try-steps { margin: 12px 0 0; align-self: start; } .fcard .vid-body > .vbtns { margin-top: 14px; align-self: start; align-content: flex-start; } .fcard .vid-body > .vbtns.docs { margin-top: 8px; } .fcard .vid-body > .vbtns:empty { margin: 0; } .fcard .vid-body > .trial { margin: 12px 0 0; align-self: start; }
 @supports not (grid-template-rows: subgrid) { .fcard { display: flex; flex-direction: column; } .fcard > .vid-body { display: flex; flex-direction: column; } }
+.btn.btn-demo { background: #fff; color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); } .btn.btn-demo:hover { background: var(--accent); color: #fff; }
 .try-grid { gap: 20px; } .try-card { display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
 .try-top { display: flex; gap: 14px; align-items: center; } .try-ic { font-size: 30px; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 14px; background: color-mix(in srgb, var(--accent, #0B5CFF) 8%, #fff); flex: none; }
 .try-top .m { display: block; font-size: 13px; color: var(--muted); } .try-top .t { font-size: 20px; font-weight: 700; }

@@ -563,6 +563,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .fcard .vid-body > .m { margin-top: 14px; } .fcard .vid-body > .t { margin-top: 6px; } .fcard .vid-body > .small { margin-top: 6px; align-self: start; }
 .fcard .vid-body > .try-steps { margin: 12px 0 0; align-self: start; } .fcard .vid-body > .vbtns { margin-top: 14px; align-self: start; align-content: flex-start; } .fcard .vid-body > .vbtns.docs { margin-top: 8px; } .fcard .vid-body > .vbtns:empty { margin: 0; } .fcard .vid-body > .trial { margin: 12px 0 0; align-self: start; }
 @supports not (grid-template-rows: subgrid) { .fcard { display: flex; flex-direction: column; } .fcard > .vid-body { display: flex; flex-direction: column; } }
+.btn.btn-demo { background: #fff; color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); } .btn.btn-demo:hover { background: var(--accent); color: #fff; }
 .try-grid { gap: 20px; } .try-card { display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
 .try-top { display: flex; gap: 14px; align-items: center; } .try-ic { font-size: 30px; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 14px; background: color-mix(in srgb, var(--accent, #0B5CFF) 8%, #fff); flex: none; }
 .try-top .m { display: block; font-size: 13px; color: var(--muted); } .try-top .t { font-size: 20px; font-weight: 700; }
@@ -1923,6 +1924,9 @@ def try_card(t):
             f'<p class="small muted">{E(t["pitch"])}</p><ol class="try-steps">{steps}</ol>'
             f'<div class="vbtns"><button type="button" class="btn sm" data-try="{t["svc"]}">바로 체험하기</button>'
             + (f'<a class="btn ghost sm" href="{page}">서비스 소개</a>' if page else '') + '</div></div>')
+def _man_label(l):
+    l = re.sub(r'^공통\s+', '', (l or '매뉴얼').strip())
+    return re.sub(r'^(교수자|학생|교수)\s+(?=\S*용)', '', l)   # '교수자 교수용 매뉴얼' → '교수용 매뉴얼'
 def follow_card(d, pre='try'):
     vs = d.get('videos') or []
     mans = manuals_for(d['name'])
@@ -1933,8 +1937,8 @@ def follow_card(d, pre='try'):
              + ('<li>매뉴얼(PDF)을 펼쳐 화면을 따라가 봅니다.</li>' if mans else '')
              + ('<li>Marketplace에서 데모를 신청해 직접 써 봅니다.</li>' if dem else '<li>도입 문의로 체험 방법을 안내받습니다.</li>') + '</ol>')
     btns = ''.join(vbtn(d['name'], v, cls='btn sm', label=('영상 보기' if len(vs) == 1 else v['label'])) for v in vs)
-    docs = ''.join(f'<a class="btn ghost sm" href="{E(m["url"])}" target="_blank" rel="noopener">{E((m["label"] or "매뉴얼").replace("공통 ", "").strip())}(PDF)</a>' for m in mans)
-    docs += (f'<a class="btn ghost sm" href="{dem}">데모 신청</a>' if dem else '')
+    docs = ''.join(f'<a class="btn ghost sm" href="{E(m["url"])}" target="_blank" rel="noopener">{E(_man_label(m["label"]))}(PDF)</a>' for m in mans)
+    btns += (f'<a class="btn sm btn-demo" href="{dem}">데모 신청</a>' if dem else '')
     page = svc_page_of(d['name'])
     nm = f'<a href="{page}">{E(d["name"])}</a>' if page else E(d['name'])
     play = (f'<button type="button" class="vid-play" data-vmodal="{E(vs[0]["embed"])}" data-vtitle="{E(d["name"] + " · " + vs[0]["label"])}" aria-label="{E(d["name"])} 영상 보기">{media}<span class="play"></span></button>'
