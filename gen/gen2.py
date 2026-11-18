@@ -3132,7 +3132,7 @@ def page_experience():
 </div></section>
 <section class="sec" id="try" style="padding-top:0"><div class="wrap">
 <div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">바로 체험</h2><span class="muted small">직접 해 보기 {len(WALKS)}종</span></div>
-<p class="note" style="margin:0 0 18px">이음이·이루미가 내는 미션에 따라 서비스의 실제 화면에서 단추와 입력창을 직접 찾아 눌러 봅니다. 화면은 서비스 매뉴얼에서 가져온 체험용이라 눌러도 실제로 저장되거나 전송되지는 않습니다. 「AI 미니 체험」이 있는 서비스는 KELI 사무국이 만든 체험용 축소판으로 핵심 기능을 직접 써 볼 수 있습니다(실제 서비스와 다르며, 개인정보는 입력하지 마세요).</p>
+<p class="note" style="margin:0 0 18px">이음이·이루미가 내는 미션에 따라, 서비스 화면에서 단추를 누르고 글을 입력하며 직접 써 봅니다. 화면은 서비스 매뉴얼·소개자료에 실린 화면을 본떠 다시 만든 체험용이라 실제 서비스와 연결되어 있지 않고, 입력한 내용은 저장되거나 전송되지 않습니다. 「AI 미니 체험」이 있는 서비스는 KELI 사무국이 만든 체험용 축소판으로 핵심 기능을 직접 써 볼 수 있습니다(실제 서비스와 다르며, 개인정보는 입력하지 마세요).</p>
 <div class="grid g3 walk-grid">{''.join(walk_card(x) for x in SERVICES if x['slug'] in WALKS) or '<div class="empty">직접 해 보기를 준비하고 있습니다.</div>'}</div>
 </div></section>
 <section class="sec" id="real" style="padding-top:0"><div class="wrap">

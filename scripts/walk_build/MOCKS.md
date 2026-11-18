@@ -9,5 +9,11 @@
 
 - [x] hai-docs
 - [x] hai-tutor · hai-mate · hai-gpt · hai-mathtutor
-- [ ] lxp · hai-forum · hai-fist · hai-lens · hai-way · hai-research
-- [ ] hai-bdpi · hai-check · hai-lrs · hai-sync · hai-security · hai-pbl · hai-epilearn · hai-medlearn-x
+- [x] lxp · hai-forum · hai-fist · hai-lens · hai-way · hai-research
+- [x] hai-bdpi · hai-check · hai-lrs · hai-sync · hai-security · hai-pbl · hai-epilearn · hai-medlearn-x
+
+## 확인받을 것(개발 기업)
+
+- 「체험용 예시」로 표시한 답변·초안·수치·문항은 매뉴얼에 없어 사무국이 예시로 넣은 것이다.
+- HAI-PBL 은 소개자료에 화면이 작게만 실려 있어 기능 설명에 맞춰 화면을 새로 구성했다.
+- HAI-Research 는 실제 연구자 이름·논문을 가리고 「연구자 A/B/C」로 바꿨다.

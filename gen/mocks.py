@@ -814,8 +814,118 @@ def _security():
         dict(title='교수님은 학습 현황을 관리해요', text='교수(관리자) 화면에서 문제와 시나리오를 관리하고 학생들의 학습 현황을 확인해요.', do='「상세 진도 보기」를 눌러 학생별 진도를 확인해 보세요.', ui=prof(), img=I + '5.jpg'),
     ]
 
+# ------------------------------------------------------------------ HAI-PBL (소개자료 — 화면이 작게만 실려 있어 기능 소개에 맞춰 체험용으로 구성)
+def _pbl():
+    TH = '--mk:#0d9488;--mk-side:#134e4a'
+    EGP = '<span class="mk-eg">체험용 예시 화면</span>'
+    def sd(active):
+        return side('HAI-PBL', '와우 아이디어스', [('', [('prj', 'doc', '프로젝트'), ('board', 'edit', '아이디어 보드'), ('dash', 'chart', '작업장 대시보드'), ('port', 'mark', '포트폴리오'), ('eval', 'check', '평가')])], active, user=('학생', '3모둠'), go={'prj': 1, 'board': 2, 'port': 3, 'eval': 4})
+    def device():
+        def box(k, w, t, hid): return f'<div class="mk-box" data-dv="{k}"{hid} style="width:{w};max-width:100%;margin:0 auto;border:3px solid #0f172a;border-radius:14px"><b>{t} 화면</b><div class="mk-pills"><span class="on">프로젝트</span><span>아이디어 보드</span><span>포트폴리오</span></div><span class="mk-ref">같은 주소로 접속해도 화면 크기에 맞게 배치가 바뀌어요.</span></div>'
+        pick = ''.join(f'<button type="button" class="{"on" if k == 0 else ""}" data-on data-hide="[data-dv]" data-show="[data-dv={chr(39)}{k}{chr(39)}]"{" data-goal" if k == 2 else ""}>{t}</button>' for k, t in enumerate(['PC', '태블릿', '스마트폰']))
+        return frame(TH, sd('prj'), ('HAI-PBL', '어디서나 접속'), '<div class="mk-row"><div class="mk-h"><h3>웹 기반 반응형 플랫폼</h3></div>' + EGP + '</div><div class="mk-tabs">' + pick + '</div>' + box(0, '100%', 'PC', '') + box(1, '70%', '태블릿', ' hidden') + box(2, '230px', '스마트폰', ' hidden'))
+    def project():
+        ST = ['문제 정의', '자료 조사', '아이디어 발상', '해결안 설계', '발표·성찰']
+        fl = '<i>→</i>'.join(f'<button type="button" class="{"on" if k == 0 else ""}" data-on>{t}</button>' for k, t in enumerate(ST))
+        main = ('<div class="mk-row"><div class="mk-h"><h3>프로젝트 구성</h3></div>' + EGP + '</div><p class="mk-ref">수업 설계를 프로젝트 단위로 재구성해요. 단계를 눌러 지금 진행 중인 단계를 바꿔 보세요.</p><div class="mk-flow">' + fl + '</div>'
+                '<div class="mk-row"><b>작업장 대시보드</b><button type="button" class="mk-btn sm" data-show="[data-ds]" data-goal>학생 활동 통계 보기</button></div>'
+                '<div class="mk-box" data-ds hidden><div class="mk-bars">' + ''.join(f'<div class="mk-bar2"><span>{l}</span><i style="--v:{v}%"></i><b>{v}%</b></div>' for l, v in [('1모둠', 80), ('2모둠', 65), ('3모둠', 90)]) + '</div><span class="mk-ref">모둠별 활동량을 보고 맞춤형 피드백을 줄 수 있어요.</span></div>')
+        return frame(TH, sd('prj'), ('HAI-PBL', '프로젝트'), main)
+    def board():
+        main = ('<div class="mk-row"><div class="mk-h"><h3>IDEA BOARD</h3><span class="mk-st ing">실시간</span></div>' + EGP + '</div><div class="mk-box tint"><span class="mk-lbl">토의 주제</span><b>우리 학교 급식 잔반을 줄이려면?</b></div>'
+                '<div class="mk-grid" id="mklog"><div class="mk-card" style="background:#fef9c3">먹을 만큼만 담는 자율 배식</div><div class="mk-card" style="background:#dcfce7">잔반 없는 날 스티커 모으기</div><div class="mk-card" style="background:#dbeafe" data-qa hidden><span data-q></span></div></div>'
+                + inbar('메뉴를 미리 투표로 정하기', '아이디어를 적어 붙여 보세요…', True, show='[data-posted]', hide='[data-none]', more='아이디어를 더 붙였어요.') + toast('data-posted', '내 아이디어 카드가 보드에 붙었어요. 모둠 친구들이 실시간으로 볼 수 있어요.'))
+        return frame(TH, sd('board'), ('HAI-PBL', '아이디어 보드'), main)
+    def port():
+        S = ['김하늘', '이도윤', '박서연']
+        lst = ''.join(f'<button type="button" class="mk-rowbtn" data-on data-set="[data-pn]|{n}" data-show="[data-pf]"{" data-goal" if k == 0 else ""}><span><b>{n}</b><small>활동 기록 {12 - k * 3}건</small></span><span>›</span></button>' for k, n in enumerate(S))
+        main = ('<div class="mk-row"><div class="mk-h"><h3>학생별 포트폴리오</h3></div>' + EGP + f'</div><div class="mk-two"><div class="mk-opts">{lst}</div><div class="mk-box" data-pf hidden><b><span data-pn>김하늘</span> 학생의 포트폴리오</b>'
+                '<span>1주차　문제 정의 활동지 제출</span><span>2주차　자료 조사 발표</span><span>3주차　아이디어 보드 참여 8회</span><span class="mk-ref">활동 기록이 쌓여 성장 과정을 관찰할 수 있어요.</span></div></div>')
+        return frame(TH, sd('port'), ('HAI-PBL', '포트폴리오'), main)
+    def evalu():
+        C = ['문제 해결에 기여했나요?', '모둠 활동에 협력했나요?', '자기 생각을 잘 표현했나요?']
+        rows = ''.join(f'<div class="mk-box"><b>{c}</b><div class="mk-scale" data-sc>' + ''.join(f'<button type="button" data-on>{o}</button>' for o in ['노력 필요', '보통', '잘함', '매우 잘함']) + '</div></div>' for c in C)
+        main = ('<div class="mk-row"><div class="mk-h"><h3>동료 평가 (루브릭 상호평가)</h3></div>' + EGP + '</div><p class="mk-ref">교사 평가(포트폴리오)와 동료 평가(루브릭 상호평가)로 과정중심 종합 평가를 해요. 모둠 친구 「이도윤」을 평가해 보세요.</p>' + rows
+                + '<p class="mk-demo" data-need hidden>모든 항목을 평가해 주세요.</p><div class="mk-row end"><button type="button" class="mk-btn" data-allon="[data-sc]" data-show="[data-ev]" data-goal>평가 제출</button></div>' + toast('data-ev', '동료 평가를 제출했어요. 결과는 과정중심 종합 평가에 반영돼요.'))
+        return frame(TH, sd('eval'), ('HAI-PBL', '평가'), main)
+    I = 'media/walk/hai-pbl/'
+    return [
+        dict(title='어디서나 접속하는 웹 플랫폼', text='PC, 태블릿, 스마트폰 어디서나 웹으로 바로 접속하는 반응형 PBL 협업 플랫폼이에요.', do='화면 종류에서 「스마트폰」을 눌러 화면이 어떻게 바뀌는지 보세요.', ui=device(), img=I + '1.jpg'),
+        dict(title='프로젝트를 체계적으로 구성해요', text='수업 설계를 프로젝트 단위로 재구성하고, 작업장 대시보드에서 학생 활동 통계와 맞춤형 피드백을 확인해요.', do='「학생 활동 통계 보기」를 눌러 작업장 대시보드를 확인해 보세요.', ui=project(), img=I + '2.jpg'),
+        dict(title='실시간으로 아이디어를 모아요', text='아이디어 보드와 화상 연결로 실시간 토의·토론 수업을 해요.', do='아이디어를 적어 보드에 붙여 보세요. 비워 둔 채 보내면 예시가 입력돼요.', ui=board(), img=I + '3.jpg'),
+        dict(title='학생별 포트폴리오가 쌓여요', text='활동 기록이 학생별 포트폴리오로 쌓여 성장 과정을 관찰할 수 있어요.', do='학생 목록에서 첫 번째 학생을 눌러 포트폴리오를 열어 보세요.', ui=port(), img=I + '4.jpg'),
+        dict(title='과정중심으로 평가해요', text='교사 평가(포트폴리오)와 동료 평가(루브릭 상호평가)로 과정중심 종합 평가를 해요.', do='세 항목을 모두 평가한 뒤 「평가 제출」을 눌러 보세요.', ui=evalu(), img=I + '5.jpg'),
+    ]
+
+# ------------------------------------------------------------------ HAI-EpiLearn · HAI-MedLearnX (의과대학 코스웨어 매뉴얼 — 화면 구성이 같아 한 틀로 만든다)
+def _studio(slug, brand, course, los, book, extras, pod, T):
+    TH = '--mk:#4f46e5;--mk-side:#1e1b4b'
+    TILES = [('edit', '수업 자료 생성', 'AI를 활용한 자동 콘텐츠 생성 및 편집'), ('doc', '수업 자료 편집', '기존 수업 자료 수정 및 관리'), ('user', '수업 진행', '실시간 수업 진행 및 학생 모니터링'), ('chart', '학습 분석', '학생 성과 분석 및 통계 확인')]
+    BAR = lambda t: f'<div class="mk-topbar"><div class="mk-h"><h3>{t}</h3></div><span class="mk-chip">{course}</span></div>'
+    def dash():
+        tiles = ''.join(f'<button type="button" class="mk-tile" data-on data-show="[data-tl]"{" data-goal" if k == 0 else ""}>{ic(i, 22)}<b>{t}</b><small>{d}</small></button>' for k, (i, t, d) in enumerate(TILES))
+        return frame(TH, '', (brand, '교수자 대시보드'), BAR('교수자 대시보드') + f'<p class="mk-center" style="margin:4px auto"><b>{course}</b><span class="mk-ref">원하는 기능을 선택해주세요</span></p><div class="mk-tiles">{tiles}</div>' + toast('data-tl', '기능 화면으로 이동해요. 상단 툴바의 수업 목록을 누르면 코스 목록으로 돌아가요.'))
+    def make():
+        lo = ''.join(f'<span>{k + 1}. {t}</span>' for k, t in enumerate(los))
+        ex = ''.join(f'<button type="button" class="mk-rowbtn" data-tg><span>{t}</span><small>OFF</small></button>' for t in extras) or '<span class="mk-ref">자료가 없습니다</span>'
+        main = (BAR('1단계 - 자료 선택') + f'<div class="mk-box"><div class="mk-row"><b>학습 목표</b><span class="mk-pills"><button type="button" data-tg>Bloom\'s Taxonomy <small>OFF</small></button></span></div>{lo}</div>'
+                f'<div class="mk-two"><div class="mk-box" id="mkbk"><b>교재 목록</b><button type="button" class="mk-rowbtn" data-tg><span>{book}</span><small>OFF</small></button></div><div class="mk-box"><b>부가자료 목록</b>{ex}</div></div>'
+                '<p class="mk-demo" data-need hidden>교재 목록에서 교재를 1개 이상 선택해 주세요.</p><button type="button" class="mk-btn wide" data-allon="#mkbk" data-wait="[data-mk]" data-show="[data-made]" data-goal>AI 콘텐츠 생성 시작</button>'
+                '<p class="mk-note" data-mk hidden><span>AI가 팟캐스트, 강의노트, 퀴즈, 사례를 만들고 있어요…</span></p><div class="mk-box tint" data-made hidden><b>콘텐츠 생성이 끝났어요</b><span>2단계 「콘텐츠 확인」에서 탭별로 검토하고 고칠 수 있어요.</span><span class="mk-eg">체험용 예시 · 실제로는 몇 분 정도 걸려요</span></div>')
+        return frame(TH, '', (brand, '수업 자료 생성'), main)
+    def review():
+        tabs = ''.join(f'<button type="button" class="{"on" if k == 0 else ""}" data-on data-hide="[data-rv]" data-show="[data-rv={chr(39)}{0 if k == 0 else (2 if "사전퀴즈" in t else 9)}{chr(39)}]"{" data-goal" if "사전퀴즈" in t else ""}>{t}</button>' for k, t in enumerate(T))
+        main = (BAR('2단계 - 생성된 콘텐츠 확인') + f'<div class="mk-tabs">{tabs}</div><div class="mk-box" data-rv="0"><div class="mk-row"><b>팟캐스트 관리</b><span class="mk-eg">매뉴얼 화면을 옮긴 예시</span></div><b>{pod[0]}</b><span class="mk-ref">{pod[1]}</span>'
+                f'<div class="mk-stats"><div class="mk-stat"><small>재생 시간</small><b>{pod[2]}</b></div><div class="mk-stat"><small>스크립트 길이</small><b>{pod[3]}</b></div></div><div class="mk-pills">' + ''.join(f'<span>{x}</span>' for x in pod[4]) + '</div></div>'
+                f'<div class="mk-box" data-rv="2" hidden><b>사전퀴즈 검토</b><span>학습 목표에 맞춰 만든 사전퀴즈 문항이 목록으로 보여요.</span><span class="mk-ref">문항과 보기, 정답, 해설을 검토하고 고칠 수 있어요. (체험판에는 문항 내용이 들어 있지 않아요)</span></div>'
+                '<p class="mk-demo" data-rv="9" hidden>체험판에는 팟캐스트와 사전퀴즈 탭만 들어 있어요.</p>')
+        return frame(TH, '', (brand, '콘텐츠 확인'), main)
+    return TH, BAR, dash, make, review
+
+def _epilearn():
+    los = ['역학의 개념을 설명할 수 있다.', '역학의 쓰임새를 열거할 수 있다.', '역학이 거둔 역사적 성과를 설명할 수 있다.']
+    TH, BAR, dash, make, review = _studio('hai-epilearn', 'EpiLearn Studio', '1주차', los, 'Basic epidemiology_1주차', [], ('예방의학 핵심 정리 90초 세션', '예방 단계, 선별검사, 민감도와 특이도를 요약한 음성 콘텐츠', '02:00', '733자', ['1차예방', '선별검사', '2차예방', '민감도', '공중보건']), ['팟캐스트', '강의록', '사전퀴즈', '케이스', '사후퀴즈'])
+    def ana():
+        L = [('LO1', los[0], 74), ('LO2', los[1], 56), ('LO3', los[2], 64)]
+        cards = ''.join(f'<button type="button" class="mk-card" data-on data-hide="[data-ld]" data-show="[data-ld={chr(39)}{k}{chr(39)}]"{" data-goal" if k == 0 else ""}><span class="mk-row"><span class="mk-chip">{c}</span><b style="color:var(--mk);font-size:17px">{v}%</b></span><strong>{t}</strong><span class="mk-bar2" style="grid-template-columns:1fr"><i style="--v:{v}%"></i></span></button>' for k, (c, t, v) in enumerate(L))
+        det = ''.join(f'<p class="mk-note" data-ld="{k}" hidden><span><b>{c}</b> 달성률 {v}% · 이 목표와 연결된 문항의 정답·오답 분포를 보고 다음 수업에서 보완할 내용을 정해요.</span></p>' for k, (c, t, v) in enumerate(L))
+        main = (BAR('학습성과') + '<p class="mk-ref">학습목표(LO) 달성 현황과 퀴즈 오답 분포를 확인합니다.</p><div class="mk-stats"><div class="mk-stat"><small>수강생</small><b>30명</b></div><div class="mk-stat"><small>문항 수</small><b>12개</b></div><div class="mk-stat"><small>전체 정답률</small><b>65%</b></div></div>'
+                f'<b>학습목표(LO) 달성 현황</b><div class="mk-grid">{cards}</div>{det}')
+        return frame(TH, '', ('EpiLearn Studio', '학습 분석'), main)
+    I = 'media/walk/hai-epilearn/'
+    return [
+        dict(title='EPI-Learn Studio에 로그인해요', text='브라우저에서 EPI-Learn Studio에 접속해 로그인해요. 수업 전·중·후 전 과정을 한 곳에서 지원해요.', do='아이디와 비밀번호 칸을 확인하고 「로그인」을 눌러 보세요.', img=I + '1.jpg',
+             ui=login(TH, ('HALLYM UNIVERSITY COLLEGE OF MEDICINE', 'EpiLearn Studio', '사회의학 수업을 위한 AI 코스웨어'), ('EpiLearn', 'Studio'), [('아이디', '아이디를 입력하세요', 'text'), ('비밀번호', '비밀번호를 입력하세요', 'password')], [('로그인', True, True)], foot='교수자 또는 학생 계정으로 로그인하세요')),
+        dict(title='교수자 대시보드에서 기능을 골라요', text='코스를 선택하면 수업 자료 생성, 수업 자료 편집, 수업 진행, 학습 분석 네 가지 기능 타일이 보여요.', do='네 가지 기능 가운데 「수업 자료 생성」을 눌러 보세요.', ui=dash(), img=I + '2.jpg'),
+        dict(title='자료를 고르고 AI 생성을 시작해요', text='학습 목표와 교재를 고르면 AI가 팟캐스트, 강의노트, 퀴즈, 사례를 한 번에 만들어요.', do='교재를 눌러 고른 뒤 「AI 콘텐츠 생성 시작」을 눌러 보세요.', ui=make(), img=I + '3.jpg'),
+        dict(title='생성된 콘텐츠를 검토해요', text='팟캐스트, 강의록, 사전퀴즈, 케이스, 사후퀴즈를 탭별로 검토하고 필요한 부분을 고쳐요.', do='「사전퀴즈」 탭을 눌러 생성된 퀴즈를 검토해 보세요.', ui=review(), img=I + '4.jpg'),
+        dict(title='학습 성과를 분석해요', text='수업이 끝나면 학습목표(LO) 달성 현황과 퀴즈 오답 분포를 확인해 다음 수업 설계에 반영해요.', do='첫 번째 학습목표(LO1) 카드를 눌러 달성 현황을 살펴보세요.', ui=ana(), img=I + '5.jpg'),
+    ]
+
+def _medlearn():
+    los = ['떨림 및 이상운동 증상을 보이는 환자에 대한 전반적인 진료 접근법을 이해한다.', '떨림이 있는 사람에게서 진단에 필요한 검사를 선택할 수 있다.', '병적 떨림이 있는 사람에게서 원인에 따른 치료 계획을 세울 수 있다.']
+    TH, BAR, dash, make, review = _studio('hai-medlearn-x', 'MedLearn-X Studio', '떨림 운동이상(CP2)', los, '신경학(8) + Neurology', ['떨림 운동이상(CP2)', 'Consensus Statement on the Classification of Tremors', 'Systematic clinical approach for diagnosing upper…'],
+                                          ('자율신경계와 연령·질환의 관계', '교감·부교감 균형을 다룬 음성 콘텐츠', '01:26', '702자', ['연령에 따른 교감 우세', '신경-내분비 상호작용', '파킨슨 감별']), ['팟캐스트 검토', '사전퀴즈 검토', '케이스 검토', '사후퀴즈 검토', '기타 데이터 선택'])
+    def flow():
+        F = [('콘텐츠 생성', '교수자가 학습 목표와 교재를 골라 AI로 수업 자료를 만들어요.'), ('검수', '만든 콘텐츠를 탭별로 검토하고 고쳐요.'), ('배포', '학생에게 팟캐스트와 사전퀴즈를 배포해요.'), ('학습', '수업 전 예습, 수업 중 임상 증례 기반 토론, 수업 후 사후퀴즈로 학습해요.'), ('분석', '사전·사후 평가 결과와 학습 데이터를 분석해요.'), ('재생성', '분석 결과를 반영해 다음 차시 자료를 다시 만들어요.')]
+        fl = '<i>→</i>'.join(f'<button type="button" data-on data-hide="[data-fd]" data-show="[data-fd={chr(39)}{k}{chr(39)}]"{" data-goal" if k == 0 else ""}>{t}</button>' for k, (t, d) in enumerate(F))
+        return frame(TH, '', ('MedLearn-X', '수업 흐름'), BAR('수업 흐름 개요') + '<p>MedLearn-X는 수업 전, 수업 중, 수업 후의 전 과정을 통합적으로 지원해요. 단계를 눌러 보세요.</p><div class="mk-flow">' + fl + '</div>' + ''.join(f'<div class="mk-box tint" data-fd="{k}" hidden><b>{k + 1}. {t}</b><span>{d}</span></div>' for k, (t, d) in enumerate(F)))
+    def qr():
+        main = (BAR('학생 접속') + '<div class="mk-two"><div class="mk-box" style="align-items:center;text-align:center"><b>수업 QR</b><div style="width:110px;height:110px;border-radius:8px;background:repeating-conic-gradient(#0f172a 0 25%,#fff 0 50%) 0 0/22px 22px"></div><span class="mk-ref">교수님이 화면에 띄운 QR을 스마트폰으로 스캔해요.</span></div>'
+                '<div class="mk-box"><b>MedLearn-X Studio</b><label class="mk-f">아이디<input type="text" id="mkid" placeholder="아이디를 입력하세요" autocomplete="off"></label><p class="mk-demo" data-need hidden>아이디를 먼저 입력해 주세요.</p>'
+                '<button type="button" class="mk-btn wide" data-req="#mkid" data-show="[data-in]" data-goal>로그인</button>' + toast('data-in', '수업에 접속했어요. 학생은 아이디만 입력하면 들어올 수 있어요.') + '</div></div>')
+        return frame(TH, '', ('MedLearn-X', '학생 접속'), main)
+    I = 'media/walk/hai-medlearn-x/'
+    return [
+        dict(title='수업 전·중·후를 하나로', text='콘텐츠 생성 → 검수 → 배포 → 학습 → 분석 → 재생성의 흐름으로 의학교육 수업 전 과정을 지원해요.', do='흐름의 첫 단계 「콘텐츠 생성」을 눌러 설명을 확인해 보세요.', ui=flow(), img=I + '1.jpg'),
+        dict(title='학생은 QR로 바로 들어와요', text='교수님이 수업 QR을 띄우면 학생은 스마트폰으로 스캔해 아이디만 입력하고 접속해요.', do='아이디 칸에 아무 아이디나 쓰고 「로그인」을 눌러 보세요.', ui=qr(), img=I + '2.jpg'),
+        dict(title='교수자 대시보드에서 시작해요', text='수업 자료 생성, 자료 편집, 수업 진행, 학습 분석 네 가지 기능을 타일로 골라요.', do='네 가지 기능 가운데 「수업 자료 생성」을 눌러 보세요.', ui=dash(), img=I + '3.jpg'),
+        dict(title='AI로 수업 자료를 만들어요', text='학습 목표와 교재(PDF)를 고르면 AI가 팟캐스트, 강의노트, 퀴즈, 임상 증례를 자동으로 만들어요.', do='교재를 눌러 고른 뒤 「AI 콘텐츠 생성 시작」을 눌러 보세요.', ui=make(), img=I + '4.jpg'),
+        dict(title='만든 콘텐츠를 확인해요', text='팟캐스트, 사전퀴즈, 케이스, 사후퀴즈를 탭별로 검토·수정하고 수업용 영상도 추가해요.', do='「사전퀴즈 검토」 탭을 눌러 생성된 퀴즈를 검토해 보세요.', ui=review(), img=I + '5.jpg'),
+    ]
+
 MOCKS = {'hai-docs': _docs(), 'hai-tutor': _tutor(), 'hai-mate': _mate(), 'hai-gpt': _gpt(), 'hai-mathtutor': _math(), 'lxp': _lxp(), 'hai-forum': _forum(), 'hai-fist': _fist(), 'hai-lens': _lens(), 'hai-way': _way(), 'hai-research': _research(),
-         'hai-bdpi': _bdpi(), 'hai-check': _check(), 'hai-lrs': _lrs(), 'hai-sync': _sync(), 'hai-security': _security()}
+         'hai-bdpi': _bdpi(), 'hai-check': _check(), 'hai-lrs': _lrs(), 'hai-sync': _sync(), 'hai-security': _security(), 'hai-pbl': _pbl(), 'hai-epilearn': _epilearn(), 'hai-medlearn-x': _medlearn()}
 
 MK_CSS = r"""
 /* 체험용 화면(목업) 공통 */
