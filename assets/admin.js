@@ -71,7 +71,13 @@
     var text = JSON.stringify(obj, null, 2) + '\n';
     return putFile(path, b64enc(text), message, state.sha[path]).then(function (j) { state.sha[path] = j.content.sha; return j; })
       .catch(function (e) {
-        if (e.status === 409 || e.status === 422) { return getFile(path).then(function (f) { state.sha[path] = f.sha; return putFile(path, b64enc(text), message, f.sha); }).then(function (j) { state.sha[path] = j.content.sha; return j; }); }
+        if (e.status === 409 || e.status === 422) {   // 다른 창(또는 다른 사람)이 먼저 저장했다 → 옛 내용으로 덮어쓰지 않고 멈춘다
+          return getFile(path).then(function (f) {
+            var mine = text.trim(), theirs = (f.text || '').trim();
+            if (theirs === mine) { state.sha[path] = f.sha; return { content: { sha: f.sha } }; }
+            var err = new Error('다른 창이나 다른 관리자가 이 내용을 먼저 고쳤습니다. 옛 내용으로 덮어쓰지 않도록 저장을 멈췄습니다. 화면을 새로고침(F5)한 뒤 다시 고쳐 저장해 주세요.'); err.stale = true; throw err;
+          });
+        }
         throw e;
       });
   }
@@ -148,7 +154,7 @@
   function newId(p) { return p + Date.now().toString(36); }
   function dk(x) { var n = String((x && (x.date || x.start || x.posted || x.period)) || '').match(/\d+/g) || []; return n.length && +n[0] > 1900 ? (+n[0]) * 10000 + (+(n[1] || 0)) * 100 + (+(n[2] || 0)) : 0; }
   function sortNotices(items) { return items.slice().sort(function (a, b) { if (!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1; return dk(b) - dk(a); }); }
-  function fail(e) { toast('저장 실패: ' + e.message, 6000); }
+  function fail(e) { toast('저장 실패: ' + e.message, e.stale ? 12000 : 6000); }
   function head(eyebrow, title, desc, metaHtml) {
     return '<div class="cms-head"><div><p class="eyebrow">' + esc(eyebrow) + '</p><h2>' + esc(title) + '</h2>' + (desc ? '<p>' + esc(desc) + '</p>' : '') + '</div>' + (metaHtml ? '<div class="meta">' + metaHtml + '</div>' : '') + '</div>';
   }

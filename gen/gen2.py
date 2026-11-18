@@ -307,7 +307,8 @@ def banner_html():
     until = (b.get('until') or '').strip()
     if until:
         try:
-            if _dt.date.today() > _dt.date.fromisoformat(until.replace('.', '-')[:10]):
+            _kst = (_dt.datetime.utcnow() + _dt.timedelta(hours=9)).date()   # 배포 서버는 UTC — 한국 날짜로 비교
+            if _kst > _dt.date.fromisoformat(until.replace('.', '-')[:10]):
                 return ''
         except Exception:
             pass
