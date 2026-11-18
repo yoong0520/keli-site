@@ -5,6 +5,8 @@ on:
       keys: { description: 'comma-separated keys (empty=all)', default: '' }
       scale: { description: 'max page size px', default: '1400' }
       pages: { description: 'key:3,5;key2:4 (only these pages, with image boxes)', default: '' }
+env:
+  TZ: Asia/Seoul
 jobs:
   pages:
     runs-on: ubuntu-latest

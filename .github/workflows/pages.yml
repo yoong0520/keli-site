@@ -13,6 +13,8 @@ permissions:
 concurrency:
   group: pages
   cancel-in-progress: true
+env:
+  TZ: Asia/Seoul   # 날짜·시간은 언제나 한국 시간으로
 jobs:
   deploy:
     runs-on: ubuntu-latest

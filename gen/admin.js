@@ -87,7 +87,7 @@
   function fmtSize(b) { return b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; }
   var PART = CFG.part || 50 * 1048576, SINGLE = CFG.single || 90 * 1048576;   // 조각 크기 · 한 번에 올리는 한도(Cloudflare 요청 한도 100MB 아래)
   function uploadFile(file, onProgress) {
-    var d = new Date(), ym = d.getFullYear() + '/' + String(d.getMonth() + 1).padStart(2, '0');
+    var ym = kstNow().slice(0, 7).replace('-', '/');
     var path = 'content/files/' + ym + '/' + Date.now().toString(36) + '_' + safeName(file.name);
     if (!SERVER || !SERVER_FILES) {
       if (file.size > 100 * 1048576) return Promise.reject(new Error('100MB 를 넘는 파일은 올릴 수 없습니다(관리자 서버에 파일 창고를 연결하면 제한이 없어집니다)'));
@@ -123,7 +123,7 @@
     clearTimeout(pollT);
     return gh('/repos/' + CFG.repo + '/actions/runs?per_page=1&branch=' + CFG.branch).then(function (j) {
       var r = (j.workflow_runs || [])[0]; if (!r) { deployState('idle', '배포 기록 없음'); return; }
-      var when = new Date(r.created_at).toLocaleString('ko-KR', { hour12: false, month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      var when = new Date(r.created_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', hour12: false, month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
       if (r.status !== 'completed') { deployState('running', '배포 중 · 1~2분'); pollT = setTimeout(function () { checkDeploy(true); }, 10000); return; }
       if (r.conclusion === 'success') deployState('ok', '반영 완료 · ' + when + (keep ? ' · 방금 저장한 내용이 올라갔습니다' : ''));
       else deployState('fail', '배포 실패 · <a href="' + esc(r.html_url) + '" target="_blank" rel="noopener">기록 보기</a>');
@@ -148,7 +148,8 @@
     ['services', 'events', 'press', 'videos'].forEach(function (k) { var f = state.feeds[k]; if (f) map[k] = (f.items || []).length + (k === 'press' && state.feeds.unn ? (state.feeds.unn.items || []).length : 0); });
     qsa('[data-cnt]').forEach(function (e) { var v = map[e.getAttribute('data-cnt')]; e.textContent = v == null ? '' : v; });
   }
-  function today() { var d = new Date(); return d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + String(d.getDate()).padStart(2, '0'); }
+  function kstNow() { return new Date(Date.now() + 9 * 3600000).toISOString(); }   // 날짜는 언제나 한국 시간(KST)으로
+  function today() { return kstNow().slice(0, 10).replace(/-/g, '.'); }
   function toIso(s) { var m = String(s || '').match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? m[1] + '-' + m[2].padStart(2, '0') + '-' + m[3].padStart(2, '0') : ''; }
   function fromIso(s) { var m = String(s || '').match(/(\d{4})-(\d{2})-(\d{2})/); return m ? m[1] + '.' + m[2] + '.' + m[3] : (s || today()); }
   function newId(p) { return p + Date.now().toString(36); }
@@ -399,7 +400,7 @@
     function save(publish) {
       var t = qs('#n-title').value.trim(); var msg = qs('#n-title-msg'); if (!t) { msg.style.display = 'block'; qs('#n-title').focus(); return; } msg.style.display = 'none';
       var btn = qs('#n-save'); btn.disabled = true; btn.textContent = '저장 중…';
-      it.title = t; it.cat = qs('#n-cat').value; it.date = fromIso(qs('#n-date').value); it.summary = qs('#n-summary').value.trim(); it.link = qs('#n-link').value.trim(); it.body = editor.body(); it.pinned = qs('#n-pin').checked; it.published = publish == null ? qs('#n-pub').checked : publish; it.files = files; it.updated = new Date().toLocaleString('ko-KR', { hour12: false });
+      it.title = t; it.cat = qs('#n-cat').value; it.date = fromIso(qs('#n-date').value); it.summary = qs('#n-summary').value.trim(); it.link = qs('#n-link').value.trim(); it.body = editor.body(); it.pinned = qs('#n-pin').checked; it.published = publish == null ? qs('#n-pub').checked : publish; it.files = files; it.updated = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', hour12: false });
       if (isNew) state.notices.items = [it].concat(state.notices.items || []);
       saveJson('content/notices.json', state.notices, (isNew ? '공지 등록: ' : '공지 수정: ') + t + (it.published ? '' : ' (비공개)')).then(function () { try { localStorage.removeItem(draftKey); } catch (e2) {} afterSave(it.published ? '게시했습니다' : '비공개로 저장했습니다'); isNew = false; location.hash = '#notices/' + it.id; route(); }).catch(function (e2) { fail(e2); btn.disabled = false; btn.textContent = '게시하기'; });
     }
@@ -561,7 +562,7 @@
       var cb = qs('#inq-csv'); if (cb) cb.addEventListener('click', function () {
         var cols = ['ref', 'ts', 'type', 'org', 'name', 'email', 'tel', 'services', 'course', 'body', 'status', 'note', 'mailed'];
         var lines = [cols.join(',')].concat((d.items || []).map(function (x) { return cols.map(function (k) { var v = k === 'ts' ? new Date(x.ts + 9 * 3600000).toISOString().slice(0, 16).replace('T', ' ') : k === 'type' ? (T[x.type] || x.type) : (x[k] == null ? '' : x[k]); return '"' + String(v).replace(/"/g, '""') + '"'; }).join(','); }));
-        var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\n')], { type: 'text/csv' })); a.download = 'KELI_문의함_' + new Date().toISOString().slice(0, 10) + '.csv'; a.click();
+        var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\n')], { type: 'text/csv' })); a.download = 'KELI_문의함_' + kstNow().slice(0, 10) + '.csv'; a.click();
       });
     }).catch(function (e) { view.innerHTML = H + '<div class="panel"><p>불러오지 못했습니다: ' + esc(e.message) + '</p></div>'; });
   }
@@ -654,7 +655,7 @@
     return gh('/repos/' + CFG.repo + '/commits?per_page=40&sha=' + CFG.branch).then(function (list) {
       view.innerHTML = head('Hallym University / Website CMS', '게시 기록', '이 화면에서 저장한 내용과 자동 배포 기록입니다. 각 줄의 "보기"에서 그때의 파일 내용을 볼 수 있어 잘못 지운 글도 복구할 수 있습니다.') +
         '<div class="panel"><div class="hist">' + (list || []).map(function (c) {
-          var m = (c.commit.message || '').split('\n')[0]; var who = (c.author && c.author.login) || (c.commit.author && c.commit.author.name) || ''; var when = new Date(c.commit.author.date).toLocaleString('ko-KR', { hour12: false });
+          var m = (c.commit.message || '').split('\n')[0]; var who = (c.author && c.author.login) || (c.commit.author && c.commit.author.name) || ''; var when = new Date(c.commit.author.date).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', hour12: false });
           return '<div class="h"><div><div>' + esc(m) + '</div><div class="m">' + esc(who) + ' · ' + esc(when) + '</div></div><a class="btn ghost xs" href="' + esc(c.html_url) + '" target="_blank" rel="noopener">보기</a></div>';
         }).join('') + '</div></div>' +
         '<p class="small muted" style="margin-top:12px">되돌리기: "보기"에서 바뀐 파일(content/notices.json 등)의 이전 내용을 복사해 두고, 소식·공지 화면에서 같은 글을 다시 올리면 됩니다. 사무국(033-248-3242)에 알려 주시면 대신 복구해 드립니다.</p>';
