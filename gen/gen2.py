@@ -2770,7 +2770,7 @@ TRY_JS = r"""(function(){
       .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return {ok:r.ok, status:r.status, j:j}; }); })
       .then(function(x){ w.className='try-msg bot';
         if(x.ok&&x.j.answer){ w.innerHTML=fmt(x.j.answer); msgs.push({role:'assistant',content:x.j.answer}); }
-        else { msgs.pop(); w.innerHTML=esc(x.status===404?'미니 체험판을 준비하고 있어요. 조금만 기다려 주세요.':(x.j.error||'잠시 뒤에 다시 해 주세요.')); } })
+        else { msgs.pop(); w.innerHTML=esc((x.status===404||x.status===401)?'미니 체험판을 준비하고 있어요. 조금만 기다려 주세요.':(x.j.error||'잠시 뒤에 다시 해 주세요.')); } })
       .catch(function(){ msgs.pop(); w.className='try-msg bot'; w.innerHTML='연결이 원활하지 않아요. 잠시 뒤에 다시 해 주세요.'; })
       .then(function(){ busy=false; log.scrollTop=log.scrollHeight; }); }
   document.addEventListener('click', function(e){ var b=e.target.closest('[data-try]'); if(b){ e.preventDefault(); open(b.getAttribute('data-try'), b); return; } if(e.target.closest('[data-tclose]')) close(); });
