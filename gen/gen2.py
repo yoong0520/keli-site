@@ -430,6 +430,7 @@ a.btn.ghost, .util a.btn.ghost { color: var(--fg); }
 .mnav .msub a.on { color: var(--accent); font-weight: 700; background: color-mix(in srgb, var(--accent) 8%, transparent); }
 .mnav .msub2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 4px 4px 10px; }
 .mnav .msub2 a { display: flex; align-items: center; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 14px; line-height: 1.3; }
+.mnote { margin: -2px 2px 12px; font-size: 13px; color: var(--muted); }
 .mfoot { display: flex; gap: 10px; margin-top: 20px; } .mfoot a { flex: 1; text-align: center; padding: 12px; border: 1px solid var(--line); border-radius: 999px; font-size: 15px; font-weight: 600; }
 @media (min-width: 861px) { .hdr .mnav { display: none !important; } }
 html.mnav-lock { overflow: hidden; } body.mnav-on .kchat-fab, body.mnav-on .kchat { display: none !important; }
@@ -1066,7 +1067,7 @@ JS = r"""
   var qs=function(s,r){return (r||document).querySelector(s)}, qsa=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
   // mobile nav
   var b=qs('.burger'), m=qs('.mnav');
-  if(b&&m){ var setM=function(o){ m.setAttribute('data-open',o?'1':'0'); b.setAttribute('aria-expanded',String(o)); b.setAttribute('aria-label',o?'메뉴 닫기':'메뉴 열기'); document.documentElement.classList.toggle('mnav-lock',o); document.body.classList.toggle('mnav-on',o); };
+  if(b&&m){ var setM=function(o){ m.setAttribute('data-open',o?'1':'0'); b.setAttribute('aria-expanded',String(o)); b.setAttribute('aria-label',document.documentElement.lang==='en'?(o?'Close menu':'Open menu'):(o?'메뉴 닫기':'메뉴 열기')); document.documentElement.classList.toggle('mnav-lock',o); document.body.classList.toggle('mnav-on',o); };
     b.addEventListener('click',function(){ setM(m.getAttribute('data-open')!=='1'); });
     m.addEventListener('click',function(e){ if(e.target.closest('a')) setM(false); });
     document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&m.getAttribute('data-open')==='1'){ setM(false); b.focus(); } });
@@ -1117,7 +1118,7 @@ JS = r"""
   function nrm(t){ return String(t||'').toLowerCase().replace(/[^a-z0-9가-힣]/g,''); }
   if(svc){ var ns=nrm(svc); qsa('input[name="services"]').forEach(function(c){ if(c.value===svc||nrm(c.value).indexOf(ns)===0) c.checked=true; }); }
   // copy buttons
-  qsa('[data-copy]').forEach(function(btn){ btn.addEventListener('click',function(){ var t=btn.getAttribute('data-copy'); function ok(){ btn.textContent='복사됨'; setTimeout(function(){btn.textContent='복사';},1500);} if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok,function(){ fallback(); }); } else fallback(); function fallback(){ var s=document.createElement('textarea'); s.value=t; document.body.appendChild(s); s.select(); try{document.execCommand('copy'); ok();}catch(e){} document.body.removeChild(s);} }); });
+  qsa('[data-copy]').forEach(function(btn){ btn.addEventListener('click',function(){ var t=btn.getAttribute('data-copy'); var EN=document.documentElement.lang==='en'; function ok(){ btn.textContent=EN?'Copied':'복사됨'; setTimeout(function(){btn.textContent=EN?'Copy':'복사';},1500);} if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok,function(){ fallback(); }); } else fallback(); function fallback(){ var s=document.createElement('textarea'); s.value=t; document.body.appendChild(s); s.select(); try{document.execCommand('copy'); ok();}catch(e){} document.body.removeChild(s);} }); });
   // stats: admin-entered numbers (assets/stats.json) + live course count (assets/stats.live.json) + count-up
   (function(){
     if(!qsa('[data-stat]').length) return;
@@ -1385,54 +1386,66 @@ MEGA = [
     ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료')]),
 ]
 
+MENU_EN = {'KELI 소개': 'About KELI', 'KELI 협의체 참여': 'Join the Consortium', '아카이브': 'Archive', '소식': 'News', '비전': 'Vision', 'KELI 협의체': 'KELI Consortium', '조직도': 'Organization',
+           'AI 학습 지원': 'AI Learning Support', 'AI 교수 지원': 'AI Teaching Support', 'AI 연구 지원': 'AI Research Support', 'AI 진로·취업': 'AI Career & Jobs', 'AI 플랫폼': 'AI Platforms',
+           'AI 의료교육': 'AI Medical Education', 'AI 행정 지원': 'AI Administration', 'AI 운영 지원': 'AI Operations', '전체 데모 영상': 'All demo videos', 'HAI 체험관': 'HAI Experience Center',
+           '참여 방법 · 절차': 'How to join', '참여 기관': 'Member institutions', '도입 문의': 'Contact us', '매뉴얼 · 소개자료': 'Manuals & brochures', '기술 동향 · 연구': 'Tech trends & research',
+           '실증 사례집': 'Case studies', '공지사항': 'Notices', '행사': 'Events', '영상': 'Videos', '뉴스레터 · 보도자료': 'Newsletter & press'}
 def header(current):
+    en = current == 'en.html'
+    L = (lambda t: MENU_EN.get(t, t)) if en else (lambda t: t)
     def on(h):
         if h == 'news.html' and current in NEWS_PAGES: return ' class="on"'
         if h == 'services.html' and (current.startswith('service') or current == 'curriculum.html'): return ' class="on"'
         return ' class="on"' if h == current else ''
-    links = ''.join(f'<a href="{h}"{on(h)} data-menu="{h}">{t}</a>' for h, t in NAV)
+    links = ''.join(f'<a href="{h}"{on(h)} data-menu="{h}">{L(t)}</a>' for h, t in NAV)
     def _sub_m(it):
         sh, st = it[0], it[1]; kids = it[2] if len(it) > 2 else []
         return f'<a href="{sh}"{_ext(sh)}>{st}</a>' + (('<div class="msub2">' + ''.join(f'<a href="{kh}">{kt}</a>' for kh, kt in kids) + '</div>') if kids else '')
     def _sub_c(it):
         sh, st = it[0], it[1]; kids = it[2] if len(it) > 2 else []
-        return f'<li class="{"has-sub" if kids else ""}"><a href="{sh}"{_ext(sh)}>{st}</a>' + (('<ul>' + ''.join(f'<li><a href="{kh}">{kt}</a></li>' for kh, kt in kids) + '</ul>') if kids else '') + '</li>'
+        return f'<li class="{"has-sub" if kids else ""}"><a href="{sh}"{_ext(sh)}>{L(st)}</a>' + (('<ul>' + ''.join(f'<li><a href="{kh}">{L(kt)}</a></li>' for kh, kt in kids) + '</ul>') if kids else '') + '</li>'
     def _cur(h): return h.split('#')[0] == current
     def _msub(it):
         sh, st = it[0], it[1]; kids = it[2] if len(it) > 2 else []
         if kids:
-            return (f'<a href="{sh}"{_ext(sh)}{" class=\"on\"" if _cur(sh) and "#" not in sh else ""}>{st} 전체 보기<span aria-hidden="true">›</span></a>'
-                    '<div class="msub2">' + ''.join(f'<a href="{kh}"{" class=\"on\"" if _cur(kh) and "#" not in kh else ""}>{kt}</a>' for kh, kt in kids) + '</div>')
-        return f'<a href="{sh}"{_ext(sh)}{" class=\"on\"" if _cur(sh) and "#" not in sh else ""}>{st}<span aria-hidden="true">{"↗" if _ext(sh) or "keliedu.org" in str(sh) else "›"}</span></a>'
+            return (f'<a href="{sh}"{_ext(sh)}{" class=\"on\"" if _cur(sh) and "#" not in sh else ""}>{("All " + L(st)) if en else (st + " 전체 보기")}<span aria-hidden="true">›</span></a>'
+                    '<div class="msub2">' + ''.join(f'<a href="{kh}"{" class=\"on\"" if _cur(kh) and "#" not in kh else ""}>{L(kt)}</a>' for kh, kt in kids) + '</div>')
+        return f'<a href="{sh}"{_ext(sh)}{" class=\"on\"" if _cur(sh) and "#" not in sh else ""}>{L(st)}<span aria-hidden="true">{"↗" if _ext(sh) or "keliedu.org" in str(sh) else "›"}</span></a>'
     def _gopen(h, subs):
         if on(h): return True
         hs = [it[0] for it in subs] + [k[0] for it in subs if len(it) > 2 for k in it[2]]
         return any(_cur(x) for x in hs)
     CHEV = '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'
-    mquick = (f'<div class="mq"><a class="pri" href="experience.html">HAI 체험관<small>서비스를 직접 눌러 보며 체험</small></a>'
-              f'<a href="services.html">HAI Ecosystems<small>AI 서비스 한눈에 보기</small></a>'
-              f'<a href="demos.html">전체 데모 영상<small>영상 보고 데모 신청</small></a>'
-              f'<a href="{OLD_MARKET}">Marketplace<small>회원가입 후 도입·구독</small></a></div>')
+    mquick = ((f'<div class="mq"><a class="pri" href="experience.html">HAI Experience Center<small>Try the services hands-on</small></a>'
+               f'<a href="services.html">HAI Ecosystems<small>All AI services at a glance</small></a>'
+               f'<a href="demos.html">Demo videos<small>Watch and request a demo</small></a>'
+               f'<a href="{OLD_MARKET}">Marketplace<small>Sign up to adopt or subscribe</small></a></div>'
+               f'<p class="mnote">Detail pages are currently available in Korean.</p>') if en else
+              (f'<div class="mq"><a class="pri" href="experience.html">HAI 체험관<small>서비스를 직접 눌러 보며 체험</small></a>'
+               f'<a href="services.html">HAI Ecosystems<small>AI 서비스 한눈에 보기</small></a>'
+               f'<a href="demos.html">전체 데모 영상<small>영상 보고 데모 신청</small></a>'
+               f'<a href="{OLD_MARKET}">Marketplace<small>회원가입 후 도입·구독</small></a></div>'))
     mlinks = ('<div class="mnav-in">' + mquick + ''.join(
-        f'<details class="mgrp" name="mnav"{" open" if _gopen(h, subs) else ""}><summary>{t}{CHEV}</summary><div class="msub">'
-        + (f'<a href="{h}" class="mall">{t} 첫 화면<span aria-hidden="true">›</span></a>' if all(it[0] != h for it in subs) else '')
+        f'<details class="mgrp" name="mnav"{" open" if _gopen(h, subs) else ""}><summary>{L(t)}{CHEV}</summary><div class="msub">'
+        + (f'<a href="{h}" class="mall">{(L(t) + " overview") if en else (t + " 첫 화면")}<span aria-hidden="true">›</span></a>' if all(it[0] != h for it in subs) else '')
         + ''.join(_msub(it) for it in subs) + '</div></details>' for h, t, subs in MEGA)
-        + '<div class="mfoot"><a href="search.html">검색</a><a href="en.html">English</a></div></div>')
-    cols = ''.join(f'<div class="mega-col" data-menu="{h}"><a class="mega-col-title" href="{h}">{t}</a><ul>' + ''.join(_sub_c(it) for it in subs) + '</ul></div>' for h, t, subs in MEGA)
+        + ('<div class="mfoot"><a href="search.html">Search</a><a href="index.html" lang="ko">한국어</a></div></div>' if en else '<div class="mfoot"><a href="search.html">검색</a><a href="en.html">English</a></div></div>'))
+    cols = ''.join(f'<div class="mega-col" data-menu="{h}"><a class="mega-col-title" href="{h}">{L(t)}</a><ul>' + ''.join(_sub_c(it) for it in subs) + '</ul></div>' for h, t, subs in MEGA)
     mega = f'''<div class="mega" id="mega" aria-hidden="true"><div class="wrap mega-inner">
-<div class="mega-intro"><span class="eyebrow">한림대학교 KELI</span><strong>고등교육 AI<br>공유 플랫폼</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="more" href="join.html#inquiry">도입 문의</a><a class="more" href="demos.html">전체 데모 영상</a><a class="more" href="{OLD_MARKET}">Marketplace</a></div>
+<div class="mega-intro">{('<span class="eyebrow">Hallym University KELI</span><strong>Higher-education AI<br>sharing platform</strong><p>AI education services classroom-tested at Hallym University, shared with universities and institutions. Detail pages are currently available in Korean.</p><a class="more" href="#contact">Contact us</a><a class="more" href="demos.html">All demo videos</a>') if en else ('<span class="eyebrow">한림대학교 KELI</span><strong>고등교육 AI<br>공유 플랫폼</strong><p>한림대학교가 수업에서 검증한 AI 교육 서비스를 대학·기관과 함께 씁니다.</p><a class="more" href="join.html#inquiry">도입 문의</a><a class="more" href="demos.html">전체 데모 영상</a>')}<a class="more" href="{OLD_MARKET}">Marketplace</a></div>
 <div class="mega-cols">{cols}</div>
 </div></div>'''
     return f'''<header class="hdr"><div class="wrap bar">
-<a class="brand" href="index.html" aria-label="KELI 홈"><img src="assets/img/keli-logo.png" alt="KELI" width="62" height="28"></a>
-<nav class="nav" aria-label="주요 메뉴">{links}</nav>
+<a class="brand" href="{'en.html' if en else 'index.html'}" aria-label="{'KELI home' if en else 'KELI 홈'}"><img src="assets/img/keli-logo.png" alt="KELI" width="62" height="28"></a>
+<nav class="nav" aria-label="{'Main menu' if en else '주요 메뉴'}">{links}</nav>
 <div class="util">
-<a class="ico txt" href="search.html" aria-label="검색"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></a>
-<a class="txt" href="en.html">ENG</a>
-<a class="btn sm" href="join.html#inquiry">도입 문의</a>
-<button class="burger" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mnav"><svg class="b-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="b-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+<a class="ico txt" href="search.html" aria-label="{'Search' if en else '검색'}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></a>
+ {'<a class="txt" href="index.html" lang="ko">KOR</a>' if en else '<a class="txt" href="en.html">ENG</a>'}
+<a class="btn sm" href="{'#contact' if en else 'join.html#inquiry'}">{'Contact us' if en else '도입 문의'}</a>
+<button class="burger" aria-label="{'Open menu' if en else '메뉴 열기'}" aria-expanded="false" aria-controls="mnav"><svg class="b-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="b-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 </div></div>
-<nav class="mnav" id="mnav" data-open="0" aria-label="모바일 메뉴">{mlinks}</nav>
+<nav class="mnav" id="mnav" data-open="0" aria-label="{'Mobile menu' if en else '모바일 메뉴'}">{mlinks}</nav>
 {mega}
 </header><div class="dim" id="dim"></div>'''
 
@@ -1447,6 +1460,17 @@ FOOTER = f'''<footer class="ftr"><div class="wrap">
 </div>
 <div class="bot"><span>주관 한림대학교 · 후원 교육부 글로컬대학30 · © Hallym University</span><span><a href="privacy.html"><strong>개인정보처리방침</strong></a> · <a href="en.html">English</a> · <a href="admin.html">관리자</a></span></div>
 </div></footer>'''
+FOOTER_EN = f'''<footer class="ftr"><div class="wrap">
+<div class="cols">
+<div class="col"><strong>KELI Secretariat, Hallym University</strong><span>Center for AI Education Advancement</span>
+<span class="copy">{EMAIL} <button type="button" data-copy="{EMAIL}">Copy</button></span>
+<span>1 Hallymdaehak-gil, Chuncheon, Gangwon State, 24252, Republic of Korea</span>
+<a href="{INSTA}" target="_blank" rel="noopener">Instagram @hallym_keli</a><a href="{YOUTUBE_KELI}" target="_blank" rel="noopener">YouTube KELI Secretariat</a></div>
+<div class="col"><strong>Quick links</strong><a href="services.html">HAI Ecosystems</a><a href="{OLD_MARKET}">Marketplace</a><a href="#contact">Contact us</a><a href="archive.html">Archive</a><a href="newsletter.html">Newsletter</a></div>
+<div class="col"><strong>Related sites</strong><a href="https://www.hallym.ac.kr" target="_blank" rel="noopener">Hallym University</a><a href="https://hallym-ai-next.foamymole15.chatgpt.site/#services" target="_blank" rel="noopener">Institute for AI Education Innovation</a><a href="https://aiadvcenter.csedu4all.com" target="_blank" rel="noopener">Center for AI Education Advancement</a><a href="https://ai.hallym.ac.kr" target="_blank" rel="noopener">Hallym AI Education Portal</a><a href="{MANUAL_SITE}" target="_blank" rel="noopener">HAI User Manual</a></div>
+</div>
+<div class="bot"><span>Hosted by Hallym University · Supported by the Ministry of Education (Glocal University 30) · © Hallym University</span><span><a href="privacy.html"><strong>Privacy Policy</strong></a> · <a href="index.html" lang="ko">한국어</a> · <a href="admin.html">Admin</a></span></div>
+</div></footer>'''
 
 CSS_V = hashlib.md5(CSS.encode('utf-8')).hexdigest()[:8]
 ADMIN_V = hashlib.md5(b''.join(open(os.path.join(BASE, 'gen', f), 'rb').read() for f in ('admin.js', 'templates.js'))).hexdigest()[:8]   # 관리자 화면은 admin.js·templates.js 가 바뀔 때마다 새로 받게
@@ -1456,17 +1480,22 @@ JS_V = hashlib.md5((JS + open(os.path.join(BASE, 'gen', 'chat.js'), encoding='ut
 
 def chat_widget(fname):
     en = fname == 'en.html'
+    T = (dict(name='Iru-mi', sub='KELI mascot · AI guide', face='media/mascot/irumi.png', lang='Language', close='Close', ph='Ask me anything', q='Question', send='Send',
+              note='Answers are generated by AI from this site. Please confirm details with the secretariat (contact@keliedu.org).', fab='Ask Iru-mi') if en else
+         dict(name='이음이', sub='KELI 사무국 마스코트 · AI 안내', face='media/mascot/eumi.png', lang='언어', close='닫기', ph='무엇이든 물어보세요', q='질문', send='보내기',
+              note='AI가 사이트 내용을 바탕으로 답해요. 정확한 사항은 사무국(033-248-3242)로 전화해 주세요.', fab='이음이에게 물어보기'))
     return f'''<div class="kchat" id="kchat" data-lang="{'en' if en else 'ko'}" hidden>
-<div class="kc-head"><img class="kc-face" src="media/mascot/eumi.png" alt=""><div class="kc-who"><strong class="kc-name">이음이</strong><span class="kc-sub">KELI 사무국 마스코트 · AI 안내</span></div><div class="kc-lang" role="group" aria-label="언어"><button type="button" data-lang="ko" aria-pressed="true">한국어</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div><button type="button" class="kc-x" aria-label="닫기">✕</button></div>
+<div class="kc-head"><img class="kc-face" src="{T['face']}" alt=""><div class="kc-who"><strong class="kc-name">{T['name']}</strong><span class="kc-sub">{T['sub']}</span></div><div class="kc-lang" role="group" aria-label="{T['lang']}"><button type="button" data-lang="ko" aria-pressed="{'false' if en else 'true'}" lang="ko">한국어</button><button type="button" data-lang="en" aria-pressed="{'true' if en else 'false'}">EN</button></div><button type="button" class="kc-x" aria-label="{T['close']}">✕</button></div>
 <div class="kc-body" aria-live="polite"></div>
 <div class="kc-quick"></div>
-<form class="kc-form"><input class="kc-in" type="text" autocomplete="off" placeholder="무엇이든 물어보세요" aria-label="질문"><button type="submit" class="kc-send" aria-label="보내기">↑</button></form>
-<p class="kc-note">AI가 사이트 내용을 바탕으로 답해요. 정확한 사항은 사무국(033-248-3242)로 전화해 주세요.</p>
+<form class="kc-form"><input class="kc-in" type="text" autocomplete="off" placeholder="{T['ph']}" aria-label="{T['q']}"><button type="submit" class="kc-send" aria-label="{T['send']}">↑</button></form>
+<p class="kc-note">{T['note']}</p>
 </div>
-<button type="button" class="kchat-fab" id="kchat-fab" aria-label="이음이에게 물어보기" aria-expanded="false"><img src="media/mascot/eumi.png" alt=""><span class="kc-hi">{'Ask Iru-mi' if en else '이음이에게 물어보기'}</span></button>'''
+<button type="button" class="kchat-fab" id="kchat-fab" aria-label="{T['fab']}" aria-expanded="false"><img src="{T['face']}" alt=""><span class="kc-hi">{T['fab']}</span></button>'''
 
 SEO = SITE_CFG.get('seo') or {}
 KEYWORDS = 'KELI, 켈리, 한림대학교 KELI, 한림대 KELI, KELI 플랫폼, 고등교육 AI 공유 플랫폼, AI 교육 서비스, HAI Ecosystems, 에듀테크, 글로컬대학30, K-University AI EdTech and Learning Initiative'
+KEYWORDS_EN = 'KELI, Hallym University, K-University AI EdTech and Learning Initiative, higher-education AI sharing platform, AI education services, HAI Ecosystems, EdTech, Glocal University 30'
 OG_IMAGE = SITE_URL + 'assets/img/og.png'
 NOINDEX = {'admin.html', 'search.html'}
 
@@ -1514,7 +1543,7 @@ def seo_head(fname, title, desc):
         bits.append('<meta name="robots" content="noindex, nofollow">')
     else:
         bits.append('<meta name="robots" content="index, follow, max-image-preview:large">')
-        bits.append(f'<meta name="keywords" content="{KEYWORDS}">')
+        bits.append(f'<meta name="keywords" content="{KEYWORDS_EN if en else KEYWORDS}">')
     if SEO.get('google'): bits.append(f'<meta name="google-site-verification" content="{E(SEO["google"])}">')
     if SEO.get('naver'): bits.append(f'<meta name="naver-site-verification" content="{E(SEO["naver"])}">')
     bits += [
@@ -1557,7 +1586,7 @@ def doc(fname, title, body, desc='한림대학교 KELI 플랫폼(K-University AI
 <main id="main"{' class="cms-root"' if is_admin else ''}>
 {body}
 </main>
-{'' if is_admin else FOOTER}
+{'' if is_admin else (FOOTER_EN if fname == 'en.html' else FOOTER)}
 {'' if is_admin or not BOT.get('enabled', True) else chat_widget(fname)}<script>window.KELI_HIDDEN={json.dumps({k: [str(x) for x in HIDDEN.get(k, [])] for k in ('events', 'press', 'videos', 'unn', 'services')}, ensure_ascii=False)};window.KELI_API={json.dumps(((SITE_CFG.get('admin') or {}).get('api') or '').strip())};</script>
 <script src="assets/site.js?v={JS_V}"></script>{'<script src="assets/templates.js?v=' + ADMIN_V + '"></script><script src="assets/admin.js?v=' + ADMIN_V + '"></script>' if fname == 'admin.html' else ''}"""
     if not skeleton:
@@ -3257,10 +3286,18 @@ def page_search():
 '''
     write('search.html', '검색 · KELI', body)
 
+ONE_EN = {'keli': 'Higher-education AI sharing platform', 'hai-ai': 'Integrated portal for AI services', 'hai-fist': 'AI courseware for forensic science', 'hai-mate': 'AI tutor for course operation',
+          'hai-mathtutor': 'AI math tutor', 'hai-sync': 'AI learning partner', 'hai-tutor': 'Course-specific intelligent tutor with RAG, developed at Hallym University',
+          'lxp': 'AI-based learning experience platform (LXP)', 'hai-forum': 'Active-learning platform', 'hai-bdpi': 'Personality assessment', 'hai-check': 'AI adaptive assessment platform',
+          'hai-coder': 'AI coding courseware', 'hai-security': 'Network security courseware', 'hai-lens': 'AI lecture analysis system', 'hai-pbl': 'PBL collaboration platform',
+          'hai-research': 'AI researcher matching', 'hai-way': 'AI career design platform', 'hai-gpt': 'Generative AI platform with multi-LLM chatbots for all university members',
+          'hai-lrs': 'Learning data analytics infrastructure', 'smartlead': 'Integrated platform for lectures, attendance, assignments, exams and notices',
+          'hai-llm': 'Generative AI for universities: ask, compare and create documents', 'hai-epilearn': 'AI courseware for social medicine at the College of Medicine',
+          'hai-medlearn-x': 'AI medical education platform', 'hai-docs': 'AI administration platform', 'hai-tag': 'KELI service usage, read through data'}
 def page_en():
-    svc = ''.join(f'<a class="svc" href="service-{s["slug"]}.html"><div class="body"><span class="k">{E(AREA_EN.get(s["area"], s["area"]))}</span><strong>{E(s["name"])}</strong><p>{E(s["one"])}</p></div></a>' for s in SERVICES)
+    svc = ''.join(f'<a class="svc" href="service-{s["slug"]}.html"><div class="body"><span class="k">{E(AREA_EN.get(s["area"], s["area"]))}</span><strong>{E(s["name"])}</strong><p>{E(ONE_EN.get(s["slug"], ""))}</p></div></a>' for s in SERVICES)
     body = f'''
-<section class="hero"><div class="wrap"><span class="eyebrow">K-University AI EdTech and Learning Initiative</span><h1 class="en">A higher-education AI ecosystem,<br>built together by universities.</h1><p class="lead">KELI is a national-level shared platform. Hallym University develops and classroom-tests AI education services (HAI Ecosystems) and provides them to universities and institutions in Korea and abroad.</p><div class="acts"><a class="btn" href="#contact">Contact us</a><a class="more" href="index.html">한국어</a></div></div></section>
+<section class="hero"><div class="wrap"><span class="eyebrow">K-University AI EdTech and Learning Initiative</span><h1 class="en">A higher-education AI ecosystem,<br>built together by universities.</h1><p class="lead">KELI is a national-level shared platform. Hallym University develops and classroom-tests AI education services (HAI Ecosystems) and provides them to universities and institutions in Korea and abroad.</p><div class="acts"><a class="btn" href="#contact">Contact us</a><a class="more" href="index.html" lang="ko">한국어</a></div></div></section>
 <section class="sec alt"><div class="wrap"><div class="head"><h2>What KELI offers.</h2></div><div class="grid g3">
 <div class="card"><h3>HAI Ecosystems</h3><p>19 AI education services developed and classroom-tested by Hallym University, from course design to assessment and analytics.</p></div>
 <div class="card"><h3>KELI Marketplace</h3><p>An online portal to browse services and request adoption.</p></div>
