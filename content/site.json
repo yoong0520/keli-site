@@ -1,29 +1,37 @@
 {
- "_안내": "홈 첫 화면 문구와 상단 배너. 관리자 화면(홈 화면)에서 고칩니다. 비워 두면 기본 문구를 씁니다.",
- "hero": {},
- "banner": {
-  "on": true,
-  "text": "11월 18일(수) 전공박람회 KELI 부스 체험 이벤트 「나에게 딱 맞는 한림 AI 찾기」 — 참여하면 상품 증정!",
-  "link": "notice-nmwbobw3j.html",
-  "until": "2026-11-18"
- },
- "admin": {
-  "api": "https://keli-admin.quiet-waterfall-20bb.workers.dev"
- },
- "seo": {
-  "google": "Uw2MEDV9OKAmqKJ8nBXUt478e_Z1PQPTIf7dK9J5Aj4",
-  "naver": "9166c8a69e220e364be41389c19abb585f7abd03"
- },
- "brand_video": {
-  "on": true,
-  "eyebrow": "KELI Alliance 출범 · 브랜딩 영상",
-  "title": "AI로 연결되는 새로운 교육.",
-  "lead": "한림대학교의 AI 교육 경험이 다른 대학으로 이어지고, 더 넓은 세상으로 나아갑니다. 2026년 10월 20일 출범한 KELI Alliance의 비전을 41초에 담았습니다.",
-  "hd": "content/files/2026/11/video/keli-alliance-brand-1080p.mp4",
-  "sd": "content/files/2026/11/video/keli-alliance-brand-720p.mp4",
-  "poster": "content/files/2026/11/video/keli-alliance-brand-poster.jpg",
-  "duration": "0:41",
-  "notice": "notice-n6.html",
-  "copyright": ""
- }
+  "_안내": "홈 첫 화면 문구와 상단 배너. 관리자 화면(홈 화면)에서 고칩니다. 비워 두면 기본 문구를 씁니다.",
+  "hero": {
+    "eyebrow": "",
+    "title": "",
+    "lead": "",
+    "cta1_label": "",
+    "cta1_href": "",
+    "cta2_label": "",
+    "cta2_href": ""
+  },
+  "banner": {
+    "on": false,
+    "text": "11월 18일(수) 전공박람회 KELI 부스 체험 이벤트 「나에게 딱 맞는 한림 AI 찾기」 — 참여하면 상품 증정!",
+    "link": "notice-nmwbobw3j.html",
+    "until": "2026-11-18"
+  },
+  "admin": {
+    "api": "https://keli-admin.quiet-waterfall-20bb.workers.dev"
+  },
+  "seo": {
+    "google": "Uw2MEDV9OKAmqKJ8nBXUt478e_Z1PQPTIf7dK9J5Aj4",
+    "naver": "9166c8a69e220e364be41389c19abb585f7abd03"
+  },
+  "brand_video": {
+    "on": true,
+    "eyebrow": "KELI Alliance 출범 · 브랜딩 영상",
+    "title": "AI로 연결되는 새로운 교육.",
+    "lead": "한림대학교의 AI 교육 경험이 다른 대학으로 이어지고, 더 넓은 세상으로 나아갑니다. 2026년 10월 20일 출범한 KELI Alliance의 비전을 41초에 담았습니다.",
+    "hd": "content/files/2026/11/video/keli-alliance-brand-1080p.mp4",
+    "sd": "content/files/2026/11/video/keli-alliance-brand-720p.mp4",
+    "poster": "content/files/2026/11/video/keli-alliance-brand-poster.jpg",
+    "duration": "0:41",
+    "notice": "notice-n6.html",
+    "copyright": ""
+  }
 }
