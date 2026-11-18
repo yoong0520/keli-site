@@ -9,6 +9,7 @@
   data-echo=S      폼에 쓴 글을 S 에 넣기 · data-set="S|글"  S 의 글자를 바꾸기 · data-step=N  [data-stepper] 의 N 번째까지 .on
   data-check="묶음|정답번호"  묶음 안에서 .on 인 것이 정답이면 [data-right], 아니면 [data-wrong], 안 골랐으면 [data-need] 보이기(any = 아무거나 정답)
   data-tg          누를 때마다 .on 켜고 끄기(안의 small 글자를 ON/OFF 로)
+  data-allon=S     S 묶음마다 .on 이 하나씩 있어야 함(없으면 [data-need])
   data-req=S       S 칸에 글이 없으면 [data-need] 를 보이고 멈춤
   canvas[data-draw] 손글씨 칸(목표면 조금 그렸을 때 성공) · data-clear=S  손글씨 지우기
   data-go=N        N번째 미션 화면으로 가기(옆 메뉴) · data-fill=글  폼 입력칸에 글 넣기 · form[data-form data-sample=예시 data-note=S data-log=S data-more=글]
@@ -619,7 +620,122 @@ def _research():
         dict(title='RFP 파일로 연구자를 찾아요', text='과제 제안요청서(RFP) 파일을 첨부하면 그 내용에 맞는 연구자를 찾아 줘요.', do='입력창 왼쪽 클립 단추를 눌러 RFP 파일을 첨부해 보세요.', ui=s5(), img=I + '5.jpg'),
     ]
 
-MOCKS = {'hai-docs': _docs(), 'hai-tutor': _tutor(), 'hai-mate': _mate(), 'hai-gpt': _gpt(), 'hai-mathtutor': _math(), 'lxp': _lxp(), 'hai-forum': _forum(), 'hai-fist': _fist(), 'hai-lens': _lens(), 'hai-way': _way(), 'hai-research': _research()}
+# ------------------------------------------------------------------ HAI-BDPI (응시자 매뉴얼)
+def _bdpi():
+    TH = '--mk:#0d9488;--mk-side:#134e4a'
+    BAR = '<div class="mk-box" style="background:var(--mk);color:#fff;border:0;flex-direction:row;justify-content:space-between"><b>BDPI 성격검사</b><span>로그아웃</span></div>'
+    def intro():
+        main = (BAR + '<div class="mk-box"><b>BDPI 성격검사</b><span>안녕하세요. 응시하실 검사는 \'한국형 다차원 성격검사\'인 BDPI(Bright and Dark Personality Inventory)입니다.</span>'
+                '<span>정답이 있는 검사가 아니니 평소 자신의 모습에 가깝게 솔직하게 응답해 주세요.</span>'
+                '<span class="mk-ref">검사를 시작하려면 [시작]을, 이미 응시했다면 [결과 확인]을 눌러 주세요.</span></div>'
+                '<div class="mk-row end"><button type="button" class="mk-btn" data-show="[data-st]" data-goal>시작</button><button type="button" class="mk-btn soft" data-go="3">결과 확인</button></div>' + toast('data-st', '검사를 시작했어요. 「다음」을 눌러 문항에 응답해 보세요.'))
+        return frame(TH, '', ('BDPI', '검사 안내문'), main)
+    def items():
+        IT = ['나는 새로운 사람을 만나는 것이 즐겁다.', '나는 계획을 세워 일을 처리하는 편이다.', '나는 사소한 일에도 쉽게 걱정한다.', '나는 다른 사람의 감정을 잘 알아차린다.']
+        sc = ''.join(f'<div class="mk-box"><b>{k + 1}　{t}</b><div class="mk-scale" data-sc>' + ''.join(f'<button type="button" data-on>{o}</button>' for o in ['전혀 그렇지 않다', '그렇지 않다', '그렇다', '매우 그렇다']) + '</div></div>' for k, t in enumerate(IT))
+        main = (BAR + '<div class="mk-row"><b>다음의 문항을 보고 가장 자신의 모습과 가깝다고 생각하는 것에 응답해주세요.</b><span class="mk-eg">체험용 예시 문항</span></div>' + sc
+                + '<p class="mk-demo" data-need hidden>모든 문항에 응답해야 다음 페이지로 넘어갈 수 있어요.</p><div class="mk-row end"><button type="button" class="mk-btn" data-allon="[data-sc]" data-show="[data-nx]" data-goal>다음으로</button></div>' + toast('data-nx', '응답을 저장하고 다음 페이지로 넘어갔어요.'))
+        return frame(TH, '', ('BDPI', '성격검사 응시'), main)
+    def result(goal):
+        R = ['2026_08_12_한림이_6회차', '2026_08_12_한림이_5회차', '2026_08_11_한림이_4회차']
+        rows = ''.join(f'<div class="mk-rowbtn" style="cursor:default"><span>{r}</span><span class="mk-row"><button type="button" class="mk-btn sm line" data-show="[data-rp]"{" data-goal" if goal == "view" and k == 0 else ""}>보고서 보기</button>'
+                       f'<button type="button" class="mk-btn sm" data-show="[data-dl]"{" data-goal" if goal == "pdf" and k == 0 else ""}>PDF 다운로드</button></span></div>' for k, r in enumerate(R))
+        main = (BAR + '<div class="mk-two"><div class="mk-box"><b>본인확인</b><span>성명　한림이</span><span>학번　H1234</span></div><div class="mk-box"><b>결과안내</b><span><b>한림이</b>님의 BDPI 성격검사가 종료되었습니다.</span></div></div>'
+                '<div class="mk-box"><b>결과 보고서</b>' + rows + '</div>'
+                '<div class="mk-box" data-rp hidden style="background:linear-gradient(160deg,#bbf7d0,#86efac);border:0;align-items:center;text-align:center;padding:26px 14px"><b style="font-size:19px">5요인 성격 모델 기반<br>한국형 다차원 성격 검사</b><span>Bright Dark Personality Inventory</span><small>결과 보고서가 새 창에서 열려요. 요인별 프로파일과 해석을 볼 수 있어요.</small></div>'
+                + toast('data-dl', 'PDF로 내려받았어요. (체험판에서는 파일이 만들어지지 않아요)'))
+        return frame(TH, '', ('BDPI', '결과 확인'), main)
+    I = 'media/walk/hai-bdpi/'
+    return [
+        dict(title='학번으로 로그인해요', text='한림대학교 통합 로그인 화면에서 학번과 비밀번호로 로그인해요.', do='학번과 비밀번호 칸을 확인하고 「로그인」을 눌러 보세요.', img=I + '1.jpg',
+             ui=login(TH, ('HALLYM UNIVERSITY', 'The New Hallym,<br>K-University of the Future', '한림대학교 통합 로그인'), ('한국어 · English', '로그인'), [('ID', 'ID', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True)], foot='비밀번호 초기화 · 도움말')),
+        dict(title='검사를 시작해요', text='검사 안내문을 읽고 「시작」을 누르면 성격검사가 시작돼요. 이미 응시했다면 「결과 확인」으로 바로 갈 수 있어요.', do='안내문을 읽었다면 「시작」을 눌러 검사를 시작해 보세요.', ui=intro(), img=I + '2.jpg'),
+        dict(title='문항에 응답해요', text='각 문항에 솔직하게 응답하고 「다음으로」를 눌러요. 모든 문항에 답해야 다음 페이지로 넘어가요.', do='네 문항에 모두 응답한 뒤 「다음으로」를 눌러 보세요.', ui=items(), img=I + '3.jpg'),
+        dict(title='결과 보고서를 확인해요', text='검사가 끝나면 결과 보고서가 만들어져요. 「보고서 보기」를 누르면 새 창에서 결과를 확인할 수 있어요.', do='첫 번째 보고서의 「보고서 보기」를 눌러 보세요.', ui=result('view'), img=I + '4.jpg'),
+        dict(title='결과를 모아 보고 내려받아요', text='지금까지 응시한 회차별 보고서를 모아 보고, PDF 파일로 내려받을 수 있어요.', do='첫 번째 보고서의 「PDF 다운로드」를 눌러 보세요.', ui=result('pdf'), img=I + '5.jpg'),
+    ]
+
+# ------------------------------------------------------------------ HAI-Check (LIVECAT 관리자 매뉴얼)
+def _check():
+    TH = '--mk:#1e40af;--mk-side:#1e3a6e'
+    def sd(active):
+        return side('LIVECAT', '', [('', [('test', 'edit', 'TEST 등록'), ('pool', 'doc', '문항 pool'), ('res', 'chart', '결과 관리'), ('bank', 'mark', '문항은행'), ('org', 'user', '조직 권한 관리')])], active, go={'bank': 1, 'pool': 2, 'test': 3, 'res': 4})
+    def flow():
+        F = [('문항 등록', '문항의 분류·등급 등 기본 정보를 정하고 문항은행에 문항을 등록해요.'), ('문항Pool 생성', '이번 시험에 쓸 문항을 골라 시험지(문항Pool)를 만들어요.'), ('시험 생성', '문항Pool을 골라 시험(Test)을 만들고 응시자와 안내 문구를 설정해요.'), ('URL 배포', '시험마다 만들어지는 URL을 응시자에게 알려요.'), ('응시', '응시자는 URL로 접속해 웹에서 시험을 봐요.'), ('결과 확인', '응시 결과를 확인하고 엑셀 결과표로 내려받아요.')]
+        fl = '<i>→</i>'.join(f'<button type="button" data-on data-hide="[data-fd]" data-show="[data-fd={chr(39)}{k}{chr(39)}]"{" data-goal" if k == 0 else ""}>{t}</button>' for k, (t, d) in enumerate(F))
+        ds = ''.join(f'<div class="mk-box tint" data-fd="{k}" hidden><b>{k + 1}. {t}</b><span>{d}</span></div>' for k, (t, d) in enumerate(F))
+        return frame(TH, sd(''), ('LIVECAT', '소개'), '<div class="mk-h"><h3>LIVECAT 소개</h3></div><p>LIVECAT의 기능 및 사용 상세 흐름은 아래와 같습니다. 단계를 눌러 보세요.</p><div class="mk-flow">' + fl + '</div>' + ds + '<p class="mk-ref">CBT(컴퓨터 기반 시험)와 맞춤형 CAT(적응형 시험)를 모두 웹에서 운영해요.</p>')
+    def item():
+        def row(l, opts, on=0, goal=False): return f'<div class="mk-f">{l}<div class="mk-pills">' + ''.join(f'<button type="button" class="{"on" if k == on else ""}" data-on{" data-goal data-show=[data-ar]" if goal and k == 0 else ""}>{o}</button>' for k, o in enumerate(opts)) + '</div></div>'
+        main = ('<div class="mk-h"><h3>문항 등록</h3><span class="mk-badge">기본정보</span></div><div class="mk-box">' + row('① 교수명', ['홍길동'], 0) + row('② 영역', ['인지검사', '성격검사'], -1, True) + row('③ 문항구성유형', ['단일문항', '세트문항'], 0)
+                + row('④ 분류', ['선택 안 함', '대분류', '중분류'], 0) + row('⑤ 문항등급', ['본문항', '예비문항'], 0) + row('⑥ 문항응답유형', ['선택형', '서술형'], 0) + '</div>' + toast('data-ar', '영역을 「인지검사」로 정했어요. 나머지 기본 정보도 눌러서 바꿔 볼 수 있어요.'))
+        return frame(TH, sd('bank'), ('LIVECAT', '문항 등록'), main)
+    def table(title, heads, rows, btn, form, done):
+        tb = '<table class="mk-tbl"><tr>' + ''.join(f'<th>{h}</th>' for h in heads) + '</tr>' + ''.join('<tr>' + ''.join(f'<td>{c}</td>' for c in r) + '</tr>' for r in rows) + '<tr data-new hidden class="on">' + ''.join(f'<td>{c}</td>' for c in rows[0][:-1]) + '<td><span class="mk-st ing">방금 등록</span></td></tr></table>'
+        return (f'<div class="mk-row"><div class="mk-h"><h3>{title}</h3></div><button type="button" class="mk-btn sm" style="background:#dc2626" data-show="[data-fm]" data-goal>{btn}</button></div>{tb}'
+                f'<div class="mk-modal" data-fm hidden><b>{btn}</b>{form}<p class="mk-demo" data-need hidden>이름을 먼저 써 주세요.</p><div class="mk-row end"><button type="button" class="mk-btn sm line" data-hide="[data-fm]">취소</button><button type="button" class="mk-btn sm" data-req="#mknm" data-hide="[data-fm]" data-show="[data-new],[data-dn]">등록</button></div></div>' + toast('data-dn', done))
+    def pool():
+        main = table('구성중인 문항 Pool 목록', ['문항Pool명', '영역', 'Model', '확정여부', '사용여부'], [['CBT 2', '인지검사', 'CBT-시험지형', '확정', '<span class="mk-st ok">사용</span>'], ['CAT 2', '인지검사', 'CAT-Rasch', '확정', '<span class="mk-st ok">사용</span>']], '새 문항Pool 등록',
+                     '<label class="mk-f">문항Pool명<input type="text" id="mknm" placeholder="예: 중간고사 시험지"></label><div class="mk-f">담을 문항 (눌러서 고르기)<div class="mk-pills"><button type="button" data-tg>문항 1</button><button type="button" data-tg>문항 2</button><button type="button" data-tg>문항 3</button></div></div>', '새 문항Pool을 등록했어요. 문항Pool은 이번 시험의 시험지예요.')
+        return frame(TH, sd('pool'), ('LIVECAT', '문항 pool'), main)
+    def test():
+        main = table('등록중인 TEST 목록', ['조직명', '시험명', '진행', '등록자', '상태'], [['한림대', '중간고사', 'step3단계', '홍길동', '<span class="mk-st ok">완료</span>'], ['한림대', 'CAT 테스트', 'step3단계', '홍길동', '<span class="mk-st ok">완료</span>']], '새 TEST 등록',
+                     '<label class="mk-f">TEST 명<input type="text" id="mknm" placeholder="예: 기말고사"></label><label class="mk-f">문항Pool<select><option>CBT 2</option><option>CAT 2</option></select></label><label class="mk-f">응시자 안내 문구<textarea placeholder="응시자에게 보일 안내 문구"></textarea></label>', '새 시험을 만들었어요. 시험마다 응시용 URL이 만들어져요.')
+        return frame(TH, sd('test'), ('LIVECAT', 'TEST 등록'), main)
+    def res():
+        main = ('<div class="mk-h"><h3>결과관리</h3></div><table class="mk-tbl"><tr><th>조직명</th><th>테스트명</th><th>응시인원</th><th>진행일</th></tr><tr class="on"><td>한림대</td><td><button type="button" data-show="[data-pv]">중간고사</button></td><td>0/22</td><td>2026-08-18 ~ 2026-08-18</td></tr><tr><td>한림대</td><td>CAT 테스트</td><td>0/22</td><td>2026-08-18 ~ 2026-08-18</td></tr></table>'
+                '<div class="mk-modal" data-pv><b>미리보기</b><span class="mk-lbl">TEST 기본정보</span><span>TEST 명　중간고사<br>대상자 정보　지속관리형 · 22명<br>TEST url　https://…/takerlogin (응시용 주소)</span><span class="mk-lbl">결과관리</span>'
+                '<div class="mk-row"><span>결과표</span><button type="button" class="mk-btn sm" style="background:#15803d" data-show="[data-dl]" data-goal>' + ic('down', 14) + '다운로드</button></div>' + toast('data-dl', '응시 결과를 엑셀 결과표로 내려받았어요. (체험판에서는 파일이 만들어지지 않아요)') + '</div>')
+        return frame(TH, sd('res'), ('LIVECAT', '결과 관리'), main)
+    I = 'media/walk/hai-check/'
+    return [
+        dict(title='전체 흐름을 먼저 봐요', text='문항 등록 → 문항Pool 생성 → 시험 생성 → URL 배포 → 응시 → 결과 확인 순서로 진행해요. CBT와 맞춤형 CAT 모두 웹에서 운영해요.', do='흐름의 첫 단계 「문항 등록」을 눌러 설명을 확인해 보세요.', ui=flow(), img=I + '1.jpg'),
+        dict(title='문항을 등록해요', text='문항의 분류와 등급 등 기본 정보를 정하고 문항을 등록해요.', do='기본 정보에서 「② 영역」을 「인지검사」로 골라 보세요.', ui=item(), img=I + '2.jpg'),
+        dict(title='문항Pool(시험지)을 구성해요', text='문항Pool은 시험지와 같아요. 「문항Pool구성」 → 「새 문항Pool 등록」에서 이번 시험에 쓸 문항을 골라 담아요.', do='「새 문항Pool 등록」을 눌러 등록 창을 열어 보세요.', ui=pool(), img=I + '3.jpg'),
+        dict(title='시험(Test)을 만들어요', text='「Test 등록」에서 「새 Test 등록」을 눌러 시험을 만들고 응시자와 안내 문구를 설정해요.', do='「새 TEST 등록」을 눌러 등록 창을 열어 보세요.', ui=test(), img=I + '4.jpg'),
+        dict(title='결과를 확인하고 내려받아요', text='「결과 관리」에서 검사를 고르고 「다운로드」를 누르면 응시 결과를 엑셀 결과표로 받을 수 있어요.', do='미리보기 아래 결과표의 「다운로드」를 눌러 보세요.', ui=res(), img=I + '5.jpg'),
+    ]
+
+# ------------------------------------------------------------------ HAI-LRS (학생 대시보드 안내)
+def _lrs():
+    TH = '--mk:#0d9488;--mk-side:#134e4a'
+    HEAD = '<div class="mk-row"><div class="mk-h"><h3>HAI-LRS 학습분석</h3></div><div class="mk-pills"><span class="on">학생</span><span>교수</span><span>운영자</span></div></div><p class="mk-ref">학생　사회학과 4학년 (이름과 학번은 가렸어요)</p>'
+    def bar(l, v, pct, goal=False, key=''): return f'<button type="button" class="mk-bar2" data-on data-hide="[data-bd]" data-show="[data-bd={chr(39)}{key}{chr(39)}]"{" data-goal" if goal else ""}><span>{l}</span><i style="--v:{pct}%"></i><b>{v}</b></button>'
+    def home():
+        C = [('진로 경험 레이더', '상위 1%', '비교과 · 가장 높은 축', True), ('나의 역량 프로필', '탐구 36%', '가장 두터운 이수 역량', False), ('마이크로디그리 진행', '8/13과목', '가장 가까운 과정 · 일반사회학전공트랙', False), ('선배 수강 경험', '1,639과목', '부담 × 진로 도움 사분면', False)]
+        cards = ''.join(f'<button type="button" class="mk-card" data-on data-show="[data-cd]"{" data-goal" if g else ""}><span class="mk-ref">{t}</span><strong style="font-size:18px;color:var(--mk)">{v}</strong><span class="mk-chip">{d}</span></button>' for t, v, d, g in C)
+        return frame(TH, '', ('HAI-LRS', '학습분석'), HEAD + f'<div class="mk-grid two">{cards}</div><div class="mk-box tint" data-cd hidden><b>카드를 누르면 자세한 분석으로 들어가요</b><span>동기 대비 나의 경험 위치, 이수 과목이 쌓아 준 역량, 마이크로디그리까지 남은 과목, 선배들의 수강 경험을 차례로 볼 수 있어요.</span></div>')
+    def radar():
+        B = [('수강·이수(전공)', 54), ('성취', 98), ('비교과', 100), ('상담', 41), ('어학·수상', 100)]
+        return frame(TH, '', ('HAI-LRS', '진로 경험 레이더'), HEAD + '<div class="mk-box"><div class="mk-row"><b>진로 경험 레이더 <small>동기 대비 나의 경험 위치 확인</small></b></div><b style="font-size:20px;color:var(--mk)">상위 1% <span class="mk-chip">비교과 · 가장 높은 축</span></b>'
+                     '<span class="mk-ref">동기 속 내 위치(백분위)</span><div class="mk-bars">' + ''.join(bar(l, v, v, l == '비교과', str(k)) for k, (l, v) in enumerate(B)) + '</div>'
+                     + ''.join(f'<p class="mk-note" data-bd="{k}" hidden><span><b>{l}</b> 영역에서 나는 동기 가운데 백분위 {v}에 있어요.</span></p>' for k, (l, v) in enumerate(B)) + '<span class="mk-ref">사회과학대학 동기 116명 기준 · 8학기차 시점 · 백분위 33 미만 축은 없음</span></div>')
+    def comp():
+        B = [('탐구', 36), ('기술', 33), ('도전', 16), ('직무', 15)]
+        return frame(TH, '', ('HAI-LRS', '나의 역량 프로필'), HEAD + '<div class="mk-box"><b>나의 역량 프로필 <small>이수 과목 기반 나의 역량 구성 분석</small></b><b style="font-size:20px;color:var(--mk)">탐구 36% <span class="mk-chip">가장 두터운 이수 역량</span></b>'
+                     '<span class="mk-ref">들은 과목이 쌓아 준 역량 (Hi FIVE 누적 · 2026-2 · 커버리지 61.9%)</span><div class="mk-bars">' + ''.join(bar(l, f'{v}%', v * 2.5, l == '탐구', str(k)) for k, (l, v) in enumerate(B)) + '</div>'
+                     + ''.join(f'<p class="mk-note" data-bd="{k}" hidden><span>이수한 과목 가운데 <b>{l}</b> 역량에 기여한 비중이 {v}%예요.</span></p>' for k, (l, v) in enumerate(B)) + '</div>')
+    def micro():
+        B = [('일반사회학전공트랙', '8/13', 62), ('문화기획 전공트랙', '4/7', 57), ('글로벌 지속가능발전트랙', '8/20', 40), ('기후변화정책트랙', '8/20', 40)]
+        return frame(TH, '', ('HAI-LRS', '마이크로디그리 진행'), HEAD + '<div class="mk-box"><b>마이크로디그리 진행 <small>이수 과목과 트랙 요건의 겹침 확인</small></b><b style="font-size:20px;color:var(--mk)">8/13과목 <span class="mk-chip">가장 가까운 과정 · 일반사회학전공트랙</span></b>'
+                     '<span class="mk-ref">이미 들은 과목으로 채워진 트랙</span><div class="mk-bars" style="--w:150px">' + ''.join(bar(l, v, p, k == 0, str(k)).replace('class="mk-bar2"', 'class="mk-bar2" style="grid-template-columns:150px 1fr 44px"') for k, (l, v, p) in enumerate(B)) + '</div>'
+                     + ''.join(f'<p class="mk-note" data-bd="{k}" hidden><span><b>{l}</b>: 요건 과목 가운데 {v}를 이미 들었어요. 상세에서 남은 과목을 볼 수 있어요.</span></p>' for k, (l, v, p) in enumerate(B)) + '<span class="mk-ref">겹침 상위 4개 트랙 · 상세에서 과정을 눌러 남은 과목을 보세요</span></div>')
+    def senior():
+        Q = [('쉽고 남는 수업', 364), ('힘들지만 남는 수업', 456), ('쉽고 가벼운 수업', 455), ('힘들고 가벼운 수업', 364)]
+        return frame(TH, '', ('HAI-LRS', '선배 수강 경험'), HEAD + '<div class="mk-box"><b>선배 수강 경험 <small>과목별 학습 부담과 진로 도움 비교</small></b><span class="mk-ref">선배 후기 1,639과목 · 부담 × 진로 도움 사분면</span><div class="mk-quad">'
+                     + ''.join(f'<button type="button" data-on data-hide="[data-bd]" data-show="[data-bd={chr(39)}{k}{chr(39)}]"{" data-goal" if k == 1 else ""}><span>{l}</span><b>{v}</b></button>' for k, (l, v) in enumerate(Q)) + '</div>'
+                     + ''.join(f'<p class="mk-note" data-bd="{k}" hidden><span>선배들이 <b>{l}</b>으로 평가한 과목이 {v}개예요. 상세에서 과목별 한 줄 평가를 볼 수 있어요.</span></p>' for k, (l, v) in enumerate(Q)) + '<span class="mk-ref">내가 들은 42과목의 부담 중앙값 68.1 (전체 72.2)</span></div>')
+    I = 'media/walk/hai-lrs/'
+    return [
+        dict(title='나의 학습 대시보드를 열어요', text='학생 대시보드에서는 진로 경험, 역량 프로필, 마이크로디그리 진행, 선배 수강 경험을 카드로 한눈에 봐요.', do='대시보드에서 「진로 경험 레이더」 카드를 눌러 보세요.', ui=home(), img=I + '1.jpg'),
+        dict(title='진로 경험 레이더를 봐요', text='수강·성취·비교과·상담·어학·수상 다섯 축에서 동기들과 비교한 나의 위치(백분위)를 확인해요.', do='다섯 축 가운데 값이 가장 높은 「비교과」 막대를 눌러 보세요.', ui=radar(), img=I + '2.jpg'),
+        dict(title='나의 역량 프로필을 확인해요', text='지금까지 들은 과목이 어떤 역량을 얼마나 쌓아 주었는지 비율로 보여 줘요.', do='가장 두터운 역량인 「탐구」 막대를 눌러 보세요.', ui=comp(), img=I + '3.jpg'),
+        dict(title='마이크로디그리에 얼마나 가까운지 봐요', text='이미 들은 과목이 어느 마이크로디그리 트랙 요건과 겹치는지, 몇 과목이 남았는지 확인해요.', do='가장 가까운 과정 「일반사회학전공트랙」을 눌러 보세요.', ui=micro(), img=I + '4.jpg'),
+        dict(title='선배들의 수강 경험을 참고해요', text='선배 후기를 바탕으로 과목의 학습 부담과 진로 도움 정도를 네 영역으로 나눠 보여 줘요.', do='「힘들지만 남는 수업」 칸을 눌러 보세요.', ui=senior(), img=I + '5.jpg'),
+    ]
+
+MOCKS = {'hai-docs': _docs(), 'hai-tutor': _tutor(), 'hai-mate': _mate(), 'hai-gpt': _gpt(), 'hai-mathtutor': _math(), 'lxp': _lxp(), 'hai-forum': _forum(), 'hai-fist': _fist(), 'hai-lens': _lens(), 'hai-way': _way(), 'hai-research': _research(),
+         'hai-bdpi': _bdpi(), 'hai-check': _check(), 'hai-lrs': _lrs()}
 
 MK_CSS = r"""
 /* 체험용 화면(목업) 공통 */
@@ -682,6 +798,9 @@ MK_CSS = r"""
 .mk-code { padding: 12px 14px; border-radius: 10px; background: #0b1020; color: #d6e2ff; font: 12.5px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; min-height: 90px; } textarea.mk-code { width: 100%; border: 0; }
 .mk-center { margin: auto; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; } .mk-up { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; padding: 22px 12px; border: 2px dashed #cbd5e1; border-radius: 12px; background: #fff; color: #64748b; } .mk-up:hover { border-color: var(--mk); color: var(--mk); }
 .mk canvas[data-draw] { display: block; width: 100%; height: 150px; border: 1px dashed #b8c4d9; border-radius: 10px; background: #fff; touch-action: none; cursor: crosshair; } .mk-drawwrap { position: relative; } .mk-drawwrap > span { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; color: #94a3b8; pointer-events: none; }
+.mk-scale { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; } .mk-scale button { padding: 7px 4px; border: 1px solid #dbe3f0; border-radius: 9px; background: #fff; font-size: 11.5px; color: #475569; } .mk-scale button.on { background: var(--mk); border-color: var(--mk); color: #fff; font-weight: 700; }
+.mk-flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; } .mk-flow button { padding: 8px 12px; border: 1px solid #dbe3f0; border-radius: 10px; background: #fff; font-weight: 700; } .mk-flow button.on { background: var(--mk); border-color: var(--mk); color: #fff; } .mk-flow i { font-style: normal; color: #94a3b8; }
+.mk-quad { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .mk-quad button { display: flex; flex-direction: column; gap: 6px; padding: 14px; border: 1px solid #e5e9f2; border-radius: 12px; background: #fff; text-align: left; } .mk-quad button b { font-size: 20px; } .mk-quad button.on { background: var(--mk); border-color: var(--mk); color: #fff; }
 .mk-eg { align-self: flex-start; padding: 1px 8px; border-radius: 6px; background: #fff7e6; color: #92400e; font-size: 11px; } .mk-topbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .mk-filechip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px; background: #eef2f8; font-size: 12px; } .mk-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .mk-grow { flex: 1; }
 @container (max-width: 700px) { .mk-aside { display: none; } .mk { flex-wrap: wrap; } .mk-aside.mk-keep { display: flex; width: 100% !important; border-left: 0; border-top: 1px solid #e5e9f2; } }

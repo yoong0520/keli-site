@@ -3057,6 +3057,7 @@ WALK_JS = r"""(function(){
   function reveal(sel){ var lastEl=null; each(sel,function(x){ x.hidden=false; lastEl=x; }); if(lastEl&&lastEl.scrollIntoView) lastEl.scrollIntoView({block:'nearest'}); }
   function act(el,val){ var a, z=S[i], goal=el.hasAttribute('data-goal');
     if((a=el.getAttribute('data-req'))){ var rq=ui.querySelector(a); each('[data-need]',function(x){ x.hidden=true; }); if(rq&&!String(rq.value||'').trim()){ reveal('[data-need]'); rq.focus(); return; } }   // 먼저 써야 하는 칸: data-req="칸"
+    if((a=el.getAttribute('data-allon'))){ var miss2=false; each('[data-need]',function(x){ x.hidden=true; }); each(a,function(g){ if(!g.querySelector('.on')) miss2=true; }); if(miss2){ reveal('[data-need]'); return; } }   // 묶음마다 하나씩 골라야 함: data-allon="묶음들"
     if((a=el.getAttribute('data-check'))){ var cp=a.split('|'), grp=ui.querySelector(cp[0]), pick=-1; if(grp) Array.prototype.forEach.call(grp.children,function(c,k){ if(c.classList.contains('on')) pick=k; });   // 고른 답 확인: data-check="묶음|정답 번호(0부터, any=아무거나)"
       each('[data-need],[data-right],[data-wrong]',function(x){ x.hidden=true; }); if(pick<0){ reveal('[data-need]'); return; } reveal((cp[1]==='any'||pick===+cp[1])?'[data-right]':'[data-wrong]'); }
     if(el.hasAttribute('data-on')) Array.prototype.forEach.call(el.parentNode.children,function(c){ c.classList.toggle('on',c===el); });
@@ -3077,7 +3078,7 @@ WALK_JS = r"""(function(){
     if(si.hasAttribute('data-goal')&&S[i]&&!S[i].ok){ clearTimeout(tmr2); if(v) tmr2=setTimeout(function(){ fin(true); },900); } });
   function uiClick(e){ if(busy) return; var gg=e.target.closest('[data-go]'); if(gg){ i=+gg.getAttribute('data-go'); render(); return; } var tg=e.target.closest('[data-tg]'); if(tg){ var ton=tg.classList.toggle('on'), sm=tg.querySelector('small'); if(sm) sm.textContent=ton?'ON':'OFF'; return; }
     var fl=e.target.closest('[data-fill]'); if(fl){ var f=ui.querySelector('form[data-form]'), inp=f&&f.querySelector('[data-in]'); if(inp){ inp.value=fl.getAttribute('data-fill'); inp.focus(); } return; }
-    var el=e.target.closest('[data-on],[data-filter],[data-set],[data-show],[data-hide],[data-step],[data-check],[data-req],[data-clear],[data-goal]'); if(el&&ui.contains(el)&&el.tagName!=='FORM'&&!el.matches('input,textarea,select,label,canvas')) act(el,null); }
+    var el=e.target.closest('[data-on],[data-filter],[data-set],[data-show],[data-hide],[data-step],[data-check],[data-req],[data-allon],[data-clear],[data-goal]'); if(el&&ui.contains(el)&&el.tagName!=='FORM'&&!el.matches('input,textarea,select,label,canvas')) act(el,null); }
   // 손글씨 칸: canvas[data-draw] 에 손가락·마우스로 그린다(목표면 조금 그렸을 때 성공)
   var pen=null;
   ui.addEventListener('pointerdown',function(e){ var c=e.target.closest('canvas[data-draw]'); if(!c) return; e.preventDefault(); var r=c.getBoundingClientRect(), d=window.devicePixelRatio||1; if(!c._ok){ c.width=r.width*d; c.height=r.height*d; c._ok=true; c._len=0; }
