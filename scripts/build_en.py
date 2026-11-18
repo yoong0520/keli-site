@@ -209,12 +209,38 @@ PATTERNS = [
     (r'(\d{4})\. (\d+)\. (\d+)\. 기준', lambda m: f'As of {m.group(1)}.{int(m.group(2)):02d}.{int(m.group(3)):02d}'),
     (r'(\d{4}\.\d{2}\.\d{2})\(([월화수목금토일])\)(.*)', lambda m: f'{m.group(1)} ({DOW[m.group(2)]}){m.group(3)}' if not re.search('[가-힣]', m.group(3)) else None),
 ]
-def pattern(k):
+PATTERNS += [
+    (r'(\d[\d,]*)개', lambda m: m.group(1)),
+    (r'(\d[\d,]*)건', lambda m: f'{m.group(1)} items'),
+    (r'기준 (\d+)개\)\.', lambda m: f'— {m.group(1)} in total).'),
+    (r'기준 (\d+)건\.', lambda m: f'— {m.group(1)} items.'),
+    (r'서비스 (\d+)', lambda m: f'Services {m.group(1)}'),
+    (r'조회수 ([\d,]+)회', lambda m: f'{m.group(1)} views'),
+    (r'(\d+)개월 전', lambda m: f'{m.group(1)} month{"s" if m.group(1) != "1" else ""} ago'),
+    (r'(\d+)년 전', lambda m: f'{m.group(1)} year{"s" if m.group(1) != "1" else ""} ago'),
+    (r'(\d+)주 전', lambda m: f'{m.group(1)} week{"s" if m.group(1) != "1" else ""} ago'),
+    (r'(\d+)일 전', lambda m: f'{m.group(1)} day{"s" if m.group(1) != "1" else ""} ago'),
+    (r'목록은 한림 AI 교육 포털\(ai\.hallym\.ac\.kr/hallym-ai\)에서 매일 자동으로 가져옵니다 · (\d{4})\. (\d+)\. (\d+)\. 기준\.', lambda m: f'The list is pulled automatically every day from the Hallym AI Education Portal (ai.hallym.ac.kr/hallym-ai) · as of {m.group(1)}.{int(m.group(2)):02d}.{int(m.group(3)):02d}.'),
+    (r'한림대학교 보도자료\(hallym\.ac\.kr › 홍보 › 보도자료\) 중 제목에 KELI 또는 켈리가 들어간 글 (\d+)건과, 한국대학신문\(news\.unn\.net\)에서 「한림대 KELI」·「한림대 켈리」로 검색한 기사 (\d+)건을 자동으로 가져옵니다\.', lambda m: f'Pulled automatically: {m.group(1)} Hallym University press releases (hallym.ac.kr › PR › Press releases) with KELI in the title, and {m.group(2)} Korea University News (news.unn.net) articles found by searching "Hallym KELI."'),
+]
+def pattern(k, look=None):
     for rx, f in PATTERNS:
         m = re.fullmatch(rx, k)
         if m:
             r = f(m)
             if r: return r
+    w = re.sub(r'\(([월화수목금토일])\)', lambda m: f' ({DOW[m.group(1)]})', k)   # 날짜 뒤 요일
+    if w != k and not HAN.search(w): return w
+    m = re.fullmatch(r'(.+?)\(시범 운영 서비스\) (데모 영상|영상 보기)', k)
+    if m and not HAN.search(m.group(1)):
+        return f'{m.group(1)} (pilot service) ' + ('demo video' if m.group(2) == '데모 영상' else 'watch video')
+    if look and ' · ' in k:   # "행사 · 날짜" 처럼 가운뎃점으로 이은 문구는 조각마다 번역
+        parts = []
+        for x in k.split(' · '):
+            y = x if not HAN.search(x) else (look(x) or pattern(x, look))
+            if not y or HAN.search(y): return None
+            parts.append(y)
+        return ' · '.join(parts)
     return None
 
 # ---------------------------------------------------------------- 영어판 쓰기
@@ -235,7 +261,7 @@ def main():
     for p in pages:
         walk_html(open(os.path.join(ROOT, p), encoding='utf-8').read(), collect)
     walk_js(site_js, collect)
-    missing = [k for k in need if k not in cache and k not in fix and not pattern(k)]
+    missing = [k for k in need if k not in cache and k not in fix and not pattern(k, lambda x: fix.get(x) or cache.get(x))]
     print(f'pages {len(pages)} · strings {len(need)} · cached {len(need) - len(missing)} · new {len(missing)}', flush=True)
     token = os.environ.get('GITHUB_TOKEN') or os.environ.get('GH_TOKEN')
     if missing and token and os.environ.get('EN_MT', '') == '1':   # 자동 번역 서버는 EN_MT=1 일 때만(GitHub Models 는 2026년 서비스 종료로 응답하지 않음)
@@ -246,7 +272,7 @@ def main():
 
     def tr(t):
         k = norm(t)
-        return fix.get(k) or cache.get(k) or pattern(k) or t
+        return fix.get(k) or cache.get(k) or pattern(k, lambda x: fix.get(x) or cache.get(x)) or t
     ko = set(pages) | {'index.html'}
     def link(m):
         pg, rest = m.group(2), m.group(3) or ''
