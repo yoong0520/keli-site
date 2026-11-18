@@ -238,7 +238,7 @@ def _load_notices():
     items = _load_json(os.path.join(CONTENT, 'notices.json'), {}).get('items', [])
     items = [n for n in items if n.get('published', True) and n.get('title')]
     items.sort(key=dkey, reverse=True)   # 최신순(날짜 표기가 달라도 바르게)
-    items.sort(key=lambda n: 0 if n.get('pinned') else 1)
+    # 모든 게시물은 최신 날짜순(고정 글도 날짜 순서대로, 「고정」 표시만 붙인다)
     return items
 def dkey(x):
     """게시물 날짜 → 정렬 키. '2026.11.12' · '2026-11-12' · '2026.10' · '2026' 같은 표기를 모두 (연, 월, 일)로 맞춘다."""
