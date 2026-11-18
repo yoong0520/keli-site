@@ -601,14 +601,34 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .walk-n { position: absolute; left: 12px; top: 12px; padding: 3px 10px; border-radius: 999px; background: rgba(11,92,255,.92); color: #fff; font-size: 12px; font-weight: 700; }
 .walk-body { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px 18px; flex: 1; } .walk-body .m { font-size: 13px; color: var(--muted); } .walk-body .t { font-size: 18px; } .walk-body .vbtns { margin-top: auto; padding-top: 10px; }
 .walk-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; } .walk-modal[hidden] { display: none; }
-.walk-panel { position: relative; width: min(1360px, 100%); max-height: calc(100vh - 32px); display: flex; flex-direction: column; background: #fff; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.35); overflow: hidden; }
+.walk-panel { position: relative; width: min(1360px, 100%); max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); display: flex; flex-direction: column; background: #fff; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.35); overflow: hidden; }
 .walk-sub { font-size: 12px; font-weight: 700; color: var(--accent); }
-.walk-main { display: grid; grid-template-columns: minmax(0, 2.4fr) minmax(290px, 1fr); min-height: 0; flex: 1; }
-.walk-shot { position: relative; background: #eef2f8; display: flex; align-items: center; justify-content: center; padding: 14px; min-height: 0; overflow: auto; } .walk-zoom { display: contents; cursor: zoom-in; } .walk-big { position: absolute; right: 18px; bottom: 18px; padding: 4px 12px; border-radius: 999px; background: rgba(15,23,42,.72); color: #fff; font-size: 12px; font-weight: 700; text-decoration: none; } .walk-big[hidden] { display: none; } .walk-shot img { max-width: 100%; max-height: calc(100vh - 130px); cursor: zoom-in; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 18px rgba(0,0,0,.12); background: #fff; } .walk-shot.fin img { opacity: .35; }
+.walk-main { display: grid; grid-template-columns: minmax(0, 2.4fr) minmax(300px, 1fr); min-height: 0; flex: 1; }
+.walk-shotwrap { position: relative; min-height: 0; min-width: 0; display: flex; background: #eef2f8; }
+.walk-shot { position: relative; flex: 1; min-width: 0; min-height: 0; display: flex; padding: 14px; overflow: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+.walk-shot img { margin: auto; max-width: 100%; max-height: calc(100vh - 150px); object-fit: contain; border-radius: 8px; box-shadow: 0 4px 18px rgba(0,0,0,.12); background: #fff; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.walk-shot.zoom img { max-width: none; max-height: none; width: 180%; } .walk-shot.fin img { opacity: .35; } .walk-shot.play img { cursor: pointer; }
+.walk-hot { position: absolute; border: 0; padding: 0; background: transparent; border-radius: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; } .walk-hot[hidden] { display: none; }
+.walk-hot:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.walk-shot:not(.play):not(.solved) .walk-hot { display: none; }
+.walk-shot.hinted .walk-hot { background: rgba(11,92,255,.10); box-shadow: 0 0 0 3px var(--accent); animation: walkPulse 1.1s ease-in-out infinite; }
+.walk-shot.solved .walk-hot { background: rgba(22,163,74,.10); box-shadow: 0 0 0 3px #16a34a; pointer-events: none; animation: walkPop .45s ease-out; }
+.walk-shot.solved .walk-hot::after { content: '✓'; position: absolute; right: -10px; top: -10px; width: 24px; height: 24px; border-radius: 50%; background: #16a34a; color: #fff; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+@keyframes walkPulse { 0%, 100% { box-shadow: 0 0 0 3px var(--accent), 0 0 0 4px rgba(11,92,255,.35); } 50% { box-shadow: 0 0 0 3px var(--accent), 0 0 0 16px rgba(11,92,255,0); } }
+@keyframes walkPop { 0% { transform: scale(.85); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
+.walk-miss { position: absolute; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: rgba(220,38,38,.92); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; pointer-events: none; animation: walkMiss .8s ease-out forwards; } .walk-miss[hidden] { display: none; }
+@keyframes walkMiss { 0% { transform: scale(.4); opacity: 0; } 25% { transform: scale(1.1); opacity: 1; } 70% { opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+.walk-type { position: absolute; z-index: 2; min-height: 36px; padding: 6px 12px; background: #fff; border: 2px solid var(--accent); border-radius: 10px; font-size: 14px; line-height: 1.5; color: #111; pointer-events: none; box-shadow: 0 6px 18px rgba(0,0,0,.18); } .walk-type[hidden] { display: none; }
+.walk-type::after { content: ''; display: inline-block; vertical-align: -2px; width: 2px; height: 1.1em; background: var(--accent); margin-left: 2px; animation: walkBlink 1s steps(1) infinite; } @keyframes walkBlink { 50% { opacity: 0; } }
+.walk-tools { position: absolute; right: 14px; bottom: 14px; display: flex; gap: 6px; z-index: 3; } .walk-tools[hidden] { display: none; }
+.walk-tools > * { padding: 5px 12px; border: 0; border-radius: 999px; background: rgba(15,23,42,.74); color: #fff; font: inherit; font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; }
 .walk-side { display: flex; flex-direction: column; gap: 14px; padding: 18px 20px; overflow-y: auto; } .walk-side .fd-bubble p.walk-h { font-size: 17px; } .walk-side .fd-bubble p.walk-t { white-space: pre-line; line-height: 1.7; color: var(--ink); }
-.walk-dots { display: flex; gap: 6px; align-items: center; } .walk-dots button { width: 26px; height: 6px; border: 0; border-radius: 99px; background: #dbe3f0; cursor: pointer; padding: 0; } .walk-dots button.ok { background: #93b4f5; } .walk-dots button.on { background: var(--accent); } .walk-dots span { opacity: .3; font-size: 14px; } .walk-dots span.on { opacity: 1; }
-.walk-end { display: flex; flex-wrap: wrap; gap: 8px; } .walk-nav { display: flex; justify-content: space-between; margin-top: auto; } .walk-nav button[disabled] { opacity: .35; cursor: default; }
-@media (max-width: 860px) { .walk-modal { padding: 0; } .walk-panel { max-height: 100vh; height: 100vh; border-radius: 0; } .walk-main { grid-template-columns: 1fr; grid-template-rows: auto 1fr; overflow-y: auto; } .walk-shot img { max-height: 46vh; } }
+.walk-side .fd-bubble.shake { animation: walkShake .35s; } @keyframes walkShake { 20% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 80% { transform: translateX(-3px); } }
+.walk-hint { margin-top: 10px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font: inherit; font-size: 13px; font-weight: 700; color: var(--accent); cursor: pointer; } .walk-hint[hidden] { display: none; }
+.walk-opts { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; } .walk-opts[hidden] { display: none; } .walk-opts .btn { justify-content: flex-start; text-align: left; white-space: normal; height: auto; padding: 9px 14px; line-height: 1.4; } .walk-opts .btn.no { opacity: .45; text-decoration: line-through; }
+.walk-dots { display: flex; gap: 6px; align-items: center; } .walk-dots button { width: 26px; height: 8px; border: 0; border-radius: 99px; background: #dbe3f0; cursor: pointer; padding: 0; } .walk-dots button.ok { background: #86d0a3; } .walk-dots button.star { background: #f5b301; } .walk-dots button.on { outline: 2px solid var(--accent); outline-offset: 2px; } .walk-dots span { opacity: .3; font-size: 14px; } .walk-dots span.on { opacity: 1; }
+.walk-end { display: flex; flex-wrap: wrap; gap: 8px; } .walk-end[hidden] { display: none; } .walk-nav { display: flex; justify-content: space-between; margin-top: auto; } .walk-nav button[disabled] { opacity: .35; cursor: default; }
+@media (max-width: 860px) { .walk-modal { padding: 0; } .walk-panel { max-height: 100vh; max-height: 100dvh; height: 100vh; height: 100dvh; border-radius: 0; } .walk-main { grid-template-columns: 1fr; grid-template-rows: minmax(0, 46%) minmax(0, 1fr); } .walk-shot { padding: 8px; } .walk-shot img { max-height: 100%; } .walk-shot.zoom img { width: 230%; } .walk-side { padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px)); gap: 10px; } .walk-tools { right: 8px; bottom: 8px; } }
 .try-grid { gap: 20px; } .try-card { display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
 .try-top { display: flex; gap: 14px; align-items: center; } .try-ic { font-size: 30px; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 14px; background: color-mix(in srgb, var(--accent, #0B5CFF) 8%, #fff); flex: none; }
 .try-top .m { display: block; font-size: 13px; color: var(--muted); } .try-top .t { font-size: 20px; font-weight: 700; }
@@ -1389,7 +1409,7 @@ def header(current):
         hs = [it[0] for it in subs] + [k[0] for it in subs if len(it) > 2 for k in it[2]]
         return any(_cur(x) for x in hs)
     CHEV = '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'
-    mquick = (f'<div class="mq"><a class="pri" href="experience.html">HAI 체험관<small>서비스를 바로 따라 해 보기</small></a>'
+    mquick = (f'<div class="mq"><a class="pri" href="experience.html">HAI 체험관<small>서비스를 직접 눌러 보며 체험</small></a>'
               f'<a href="services.html">HAI Ecosystems<small>AI 서비스 한눈에 보기</small></a>'
               f'<a href="demos.html">전체 데모 영상<small>영상 보고 데모 신청</small></a>'
               f'<a href="{OLD_MARKET}">Marketplace<small>회원가입 후 도입·구독</small></a></div>')
@@ -2935,41 +2955,72 @@ def walk_data(only=None):
 def walk_card(x):
     w = WALKS[x['slug']]; ai = any(t['svc'] == x['slug'] for t in TRY_DEMOS)
     img = w['steps'][1 if len(w['steps']) > 1 else 0]['img']; soon = ' · <span class="badge soon">준비 중</span>' if x.get('status') == 'soon' else ''
-    return (f'<div class="walk-card"><button type="button" class="walk-thumb" data-walk="{x["slug"]}" aria-label="{E(x["name"])} 따라 해 보기"><img src="{img}" alt="" loading="lazy"><span class="walk-n">{len(w["steps"])}단계</span></button>'
+    return (f'<div class="walk-card"><button type="button" class="walk-thumb" data-walk="{x["slug"]}" aria-label="{E(x["name"])} 직접 해 보기"><img src="{img}" alt="" loading="lazy"><span class="walk-n">미션 {len(w["steps"])}개</span></button>'
             f'<div class="walk-body"><span class="m">{E(AREA_LABEL.get(x["area"], x["area"]))}{soon}</span>'
             f'<strong class="t"><a href="service-{x["slug"]}.html">{E(x["name"])}</a></strong><span class="small muted">{E(w.get("lead") or x.get("head") or x.get("one") or "")}</span>'
-            f'<div class="vbtns"><button type="button" class="btn sm" data-walk="{x["slug"]}">따라 해 보기</button>'
+            f'<div class="vbtns"><button type="button" class="btn sm" data-walk="{x["slug"]}">직접 해 보기</button>'
             + (f'<button type="button" class="btn ghost sm" data-try="{x["slug"]}">AI 미니 체험</button>' if ai else '') + '</div></div></div>')
 def walk_modal_html(only=None):
     return f"""<div class="walk-modal" hidden role="dialog" aria-modal="true" aria-labelledby="walk-title"><div class="try-bg" data-wclose></div><div class="walk-panel">
-<div class="try-head"><div><span class="walk-sub">바로 체험 · 따라 해 보기</span><h2 id="walk-title">따라 해 보기</h2></div><button type="button" class="vmodal-x" data-wclose aria-label="닫기">&times;</button></div>
-<div class="walk-main"><div class="walk-shot"><a class="walk-zoom" href="#" target="_blank" rel="noopener" title="새 창에서 크게 보기"><img alt=""></a><a class="walk-big" href="#" target="_blank" rel="noopener">크게 보기 ↗</a></div>
-<div class="walk-side"><div class="walk-dots"></div><div class="fd-q"><img src="media/mascot/eumi.png" alt="" class="fd-av walk-av"><div class="fd-bubble"><span class="fd-who walk-step"></span><p class="walk-h"></p><p class="small walk-t"></p></div></div>
+<div class="try-head"><div><span class="walk-sub">바로 체험 · 직접 해 보기</span><h2 id="walk-title">직접 해 보기</h2></div><button type="button" class="vmodal-x" data-wclose aria-label="닫기">&times;</button></div>
+<div class="walk-main"><div class="walk-shotwrap"><div class="walk-shot"><img alt="" draggable="false"><button type="button" class="walk-hot" hidden></button><span class="walk-miss" hidden aria-hidden="true">✕</span><span class="walk-type" hidden></span></div>
+<div class="walk-tools"><button type="button" class="walk-zoomb" aria-pressed="false">🔍 확대</button><a class="walk-big" href="#" target="_blank" rel="noopener">원본 ↗</a></div></div>
+<div class="walk-side"><div class="walk-dots"></div><div class="fd-q"><img src="media/mascot/eumi.png" alt="" class="fd-av walk-av"><div class="fd-bubble" aria-live="polite"><span class="fd-who walk-step"></span><p class="walk-h"></p><p class="small walk-t"></p><div class="walk-opts" hidden></div><button type="button" class="walk-hint" hidden>💡 힌트 보기</button></div></div>
 <div class="walk-end" hidden></div>
 <div class="walk-nav"><button type="button" class="btn ghost sm walk-prev">← 이전</button><button type="button" class="btn sm walk-next">다음 →</button></div>
-<p class="try-foot" style="padding:0;margin-top:10px">화면 출처: 서비스 매뉴얼 · ←/→ 키로도 넘길 수 있어요</p></div></div>
+<p class="try-foot" style="padding:0;margin-top:10px">화면 출처: 서비스 매뉴얼(실제 화면을 본뜬 체험용이며 입력한 내용은 저장되지 않아요)</p></div></div>
 </div></div>
 <script>window.KELI_WALK={json.dumps(walk_data(only), ensure_ascii=False)};</script><script>{WALK_JS}</script>"""
 WALK_JS = r"""(function(){
-  var m=document.querySelector('.walk-modal'); if(!m) return; var D=window.KELI_WALK||{}, cur=null, i=0, last=null;
-  var img=m.querySelector('.walk-shot img'), zl=m.querySelectorAll('.walk-zoom,.walk-big'), dots=m.querySelector('.walk-dots'), h=m.querySelector('.walk-h'), t=m.querySelector('.walk-t'), sn=m.querySelector('.walk-step'), av=m.querySelector('.walk-av'), end=m.querySelector('.walk-end'), prev=m.querySelector('.walk-prev'), next=m.querySelector('.walk-next'), tt=m.querySelector('#walk-title');
+  var m=document.querySelector('.walk-modal'); if(!m) return; var D=window.KELI_WALK||{}, cur=null, i=0, last=null, S=[], busy=false, tmr=null;
+  var q=function(s){ return m.querySelector(s); };
+  var shot=q('.walk-shot'), img=q('.walk-shot img'), hot=q('.walk-hot'), miss=q('.walk-miss'), typ=q('.walk-type'), big=q('.walk-big'), zb=q('.walk-zoomb'), dots=q('.walk-dots'), h=q('.walk-h'), t=q('.walk-t'), sn=q('.walk-step'), av=q('.walk-av'), opts=q('.walk-opts'), hint=q('.walk-hint'), end=q('.walk-end'), prev=q('.walk-prev'), next=q('.walk-next'), tt=q('#walk-title'), bub=q('.walk-side .fd-bubble');
   function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-  function render(){ var w=D[cur], n=w.steps.length, done=(i>=n);
-    dots.innerHTML=w.steps.map(function(_,k){ return '<button type="button" class="'+(k<i?'ok ':'')+(k===i?'on':'')+'" data-k="'+k+'" aria-label="'+(k+1)+'단계"></button>'; }).join('')+'<span class="'+(done?'on':'')+'">🎉</span>';
-    if(!done){ var st=w.steps[i]; img.src=st.img; img.alt=st.title; zl.forEach(function(a){ a.href=st.img; a.hidden=false; }); img.closest('.walk-shot').classList.remove('fin'); av.src=(i%2?'media/mascot/irumi.png':'media/mascot/eumi.png'); sn.textContent=(i%2?'이루미':'이음이')+' · '+(i+1)+'/'+n+'단계'; h.textContent=st.title; t.textContent=st.text||''; end.hidden=true; m.querySelector('.walk-side .fd-q').hidden=false; next.textContent=(i===n-1?'완료 →':'다음 →'); next.hidden=false; }
-    else { img.closest('.walk-shot').classList.add('fin'); m.querySelector('.walk-big').hidden=true; m.querySelector('.walk-side .fd-q').hidden=false; av.src='media/mascot/irumi.png'; sn.textContent='이루미 · 완료!'; h.textContent=w.name+' 따라 해 보기를 마쳤어요!'; t.textContent='이제 직접 써 볼 차례예요.'; next.hidden=true;
+  function kind(s){ return s.hot?'tap':(s.q?'quiz':'view'); }
+  function place(){ var s=cur&&D[cur].steps[i]; if(!s||!s.hot||!img.offsetWidth){ hot.hidden=true; return; }
+    var W=img.offsetWidth, H=img.offsetHeight, x=img.offsetLeft+s.hot[0]*W, y=img.offsetTop+s.hot[1]*H, w=(s.hot[2]-s.hot[0])*W, hh=(s.hot[3]-s.hot[1])*H, mn=40;
+    typ.style.left=x+'px'; typ.style.top=Math.max(img.offsetTop, y+hh/2-18)+'px'; typ.style.maxWidth=Math.max(140, img.offsetLeft+W-x-4)+'px'; typ.style.minWidth=Math.min(Math.max(w,140), Math.max(140, img.offsetLeft+W-x-4))+'px';
+    if(w<mn){ x-=(mn-w)/2; w=mn; } if(hh<mn){ y-=(mn-hh)/2; hh=mn; }
+    hot.style.left=x+'px'; hot.style.top=y+'px'; hot.style.width=w+'px'; hot.style.height=hh+'px'; hot.hidden=false; }
+  function who(){ return (i%2?'이루미':'이음이'); }
+  function render(){ clearInterval(tmr); busy=false; var w=D[cur], n=w.steps.length, done=(i>=n);
+    dots.innerHTML=w.steps.map(function(s,k){ var z=S[k]||{}; return '<button type="button" class="'+(z.ok?'ok ':'')+(z.star?'star ':'')+(k===i?'on':'')+'" data-k="'+k+'" aria-label="'+(k+1)+'단계'+(z.ok?' 성공':'')+'"></button>'; }).join('')+'<span class="'+(done?'on':'')+'">🎉</span>';
+    miss.hidden=true; typ.hidden=true; opts.hidden=true; opts.innerHTML=''; hint.hidden=true; shot.classList.toggle('fin',done); q('.walk-tools').hidden=done;
+    if(done){ hot.hidden=true; shot.classList.remove('play','solved','hinted'); var ms=0, ok=0, stars=0; w.steps.forEach(function(s,k){ if(kind(s)!=='view'){ ms++; if(S[k]&&S[k].ok){ ok++; if(S[k].star) stars++; } } });
+      av.src='media/mascot/irumi.png'; sn.textContent='이루미 · 완료!'; h.textContent=w.name+' 체험을 마쳤어요!'; t.textContent=(ms?('미션 '+ms+'개 중 '+ok+'개 성공'+(stars?' · 힌트 없이 '+stars+'개 '+new Array(stars+1).join('★'):'')+'\n'):'')+'이제 직접 써 볼 차례예요.'; next.hidden=true;
       end.innerHTML=(w.trial?'<a class="btn sm" href="'+esc(w.trial)+'" target="_blank" rel="noopener">실제 서비스 체험 ↗</a>':'')+(w.ai?'<button type="button" class="btn sm" data-try="'+w.ai+'">AI 미니 체험</button>':'')+(w.video?'<button type="button" class="btn ghost sm" data-vmodal="'+esc(w.video)+'" data-vtitle="'+esc(w.name)+' · 영상">▶ 영상 보기</button>':'')+(w.demo?'<a class="btn sm btn-demo" href="'+w.demo+'">데모 신청</a>':'')+(w.manual?'<a class="btn ghost sm" href="'+esc(w.manual)+'" target="_blank" rel="noopener">매뉴얼(PDF)</a>':'')+'<a class="btn ghost sm" href="'+w.page+'">서비스 소개</a><button type="button" class="btn ghost sm walk-again">처음부터</button>';
-      end.hidden=false; }
-    prev.disabled=(i===0); }
-  function open(k, from){ if(!D[k]) return; cur=k; i=0; last=from; tt.textContent=D[k].name; m.hidden=false; document.body.style.overflow='hidden'; render(); next.focus();
+      end.hidden=false; prev.disabled=false; return; }
+    var s=w.steps[i], z=S[i]||(S[i]={}), k=kind(s), open=(k==='view'||z.ok);
+    if(img.getAttribute('src')!==s.img) img.src=s.img; img.alt=s.title; big.href=s.img;
+    shot.classList.toggle('play',!open&&k==='tap'); shot.classList.toggle('solved',!!z.ok&&k==='tap'); shot.classList.toggle('hinted',!!z.hint&&!z.ok&&k==='tap');
+    av.src=(i%2?'media/mascot/irumi.png':'media/mascot/eumi.png');
+    if(open){ sn.textContent=who()+' · '+(i+1)+'/'+n+'단계'+(z.ok?' · 성공! '+(z.star?'★':''):''); h.textContent=s.title; t.textContent=s.text||''; next.textContent=(i===n-1?'완료 →':'다음 →'); next.className='btn sm walk-next'; }
+    else { sn.textContent=who()+' · 미션 '+(i+1)+'/'+n; h.textContent=(k==='tap'?(s['do']||'화면에서 눌러 보세요.'):s.q.ask); t.textContent=(k==='tap'?(z.hint?'힌트: 반짝이는 곳을 눌러 보세요.':'화면에서 직접 찾아 눌러 보세요.'):'알맞은 것을 골라 보세요.'); next.textContent='건너뛰기'; next.className='btn ghost sm walk-next';
+      if(k==='tap'){ hint.hidden=!!z.hint; hot.setAttribute('aria-label', s['do']||'여기를 누르세요'); }
+      else { opts.hidden=false; opts.innerHTML=s.q.opts.map(function(o,j){ return '<button type="button" class="btn ghost sm" data-o="'+j+'">'+esc(o)+'</button>'; }).join(''); } }
+    end.hidden=true; next.hidden=false; prev.disabled=(i===0); place(); }
+  function fin(){ var z=S[i]; z.ok=true; z.star=!z.hint&&!z.miss; render(); next.focus(); }
+  function solve(){ var s=D[cur].steps[i], z=S[i]; if(z.ok||busy) return;
+    if(s.type){ busy=true; var k=0; typ.textContent=''; typ.hidden=false; shot.classList.remove('hinted'); tmr=setInterval(function(){ k++; typ.textContent=s.type.slice(0,k); if(k>=s.type.length){ clearInterval(tmr); setTimeout(fin, 700); } }, 45); }
+    else fin(); }
+  function missed(e){ var z=S[i]; z.miss=(z.miss||0)+1; var r=shot.getBoundingClientRect(); miss.style.left=(e.clientX-r.left+shot.scrollLeft)+'px'; miss.style.top=(e.clientY-r.top+shot.scrollTop)+'px'; miss.hidden=true; void miss.offsetWidth; miss.hidden=false;
+    bub.classList.remove('shake'); void bub.offsetWidth; bub.classList.add('shake');
+    if(z.miss>=2&&!z.hint){ z.hint=true; shot.classList.add('hinted'); hint.hidden=true; t.textContent='힌트: 반짝이는 곳을 눌러 보세요.'; } else if(!z.hint) t.textContent='앗, 거기가 아니에요. 다시 찾아볼까요?'; }
+  function open(k, from){ if(!D[k]) return; cur=k; i=0; S=[]; last=from; tt.textContent=D[k].name; m.hidden=false; document.body.style.overflow='hidden'; shot.classList.remove('zoom'); zb.setAttribute('aria-pressed','false'); zb.textContent='🔍 확대'; render(); q('.vmodal-x').focus();
     try{ if(window.KELI_API&&navigator.sendBeacon) navigator.sendBeacon(window.KELI_API+'/api/hit', new Blob([JSON.stringify({t:'click',p:location.pathname,x:'walk:'+k})],{type:'text/plain'})); }catch(e){} }
-  function close(){ m.hidden=true; document.body.style.overflow=''; if(last) last.focus(); }
+  function close(){ clearInterval(tmr); m.hidden=true; document.body.style.overflow=''; if(last) last.focus(); }
+  img.addEventListener('load', place); window.addEventListener('resize', function(){ if(!m.hidden) place(); });
   document.addEventListener('click', function(e){ var b=e.target.closest('[data-walk]'); if(b){ e.preventDefault(); open(b.getAttribute('data-walk'), b); return; }
     if(m.hidden) return; if(e.target.closest('[data-wclose]')){ close(); return; }
-    if(e.target.closest('.walk-next')){ i++; render(); return; } if(e.target.closest('.walk-prev')){ if(i>0){ i--; render(); } return; }
-    if(e.target.closest('.walk-again')){ i=0; render(); return; } var d=e.target.closest('.walk-dots button'); if(d){ i=+d.getAttribute('data-k'); render(); return; }
+    if(e.target.closest('.walk-hot')){ solve(); return; }
+    if(e.target===img&&shot.classList.contains('play')&&!busy){ missed(e); return; }
+    if(e.target.closest('.walk-hint')){ var z=S[i]; z.hint=true; shot.classList.add('hinted'); hint.hidden=true; t.textContent='힌트: 반짝이는 곳을 눌러 보세요.'; if(hot.scrollIntoView) hot.scrollIntoView({block:'nearest',inline:'nearest'}); return; }
+    var o=e.target.closest('.walk-opts [data-o]'); if(o){ var s=D[cur].steps[i], z2=S[i]; if(+o.getAttribute('data-o')===s.q.ans){ z2.ok=true; z2.star=!z2.miss; render(); next.focus(); } else { z2.miss=(z2.miss||0)+1; o.disabled=true; o.classList.add('no'); t.textContent='아쉬워요, 다시 골라 볼까요?'; bub.classList.remove('shake'); void bub.offsetWidth; bub.classList.add('shake'); } return; }
+    if(e.target.closest('.walk-zoomb')){ var on=!shot.classList.contains('zoom'); shot.classList.toggle('zoom',on); zb.setAttribute('aria-pressed',String(on)); zb.textContent=on?'🔍 축소':'🔍 확대'; place(); if(on&&!hot.hidden&&S[i]&&(S[i].hint||S[i].ok)&&hot.scrollIntoView) hot.scrollIntoView({block:'center',inline:'center'}); return; }
+    if(e.target.closest('.walk-next')){ if(busy) return; i++; render(); return; } if(e.target.closest('.walk-prev')){ if(i>0&&!busy){ i--; render(); } return; }
+    if(e.target.closest('.walk-again')){ i=0; S=[]; render(); return; } var d=e.target.closest('.walk-dots button'); if(d&&!busy){ i=+d.getAttribute('data-k'); render(); return; }
     if(e.target.closest('[data-try],[data-vmodal]')){ close(); } });
-  document.addEventListener('keydown', function(e){ if(m.hidden) return; if(e.key==='Escape') close(); else if(e.key==='ArrowRight'&&i<D[cur].steps.length){ i++; render(); } else if(e.key==='ArrowLeft'&&i>0){ i--; render(); } });
+  document.addEventListener('keydown', function(e){ if(m.hidden||busy) return; if(e.key==='Escape') close(); else if(e.key==='ArrowRight'&&i<D[cur].steps.length){ i++; render(); } else if(e.key==='ArrowLeft'&&i>0){ i--; render(); } });
 })();"""
 
 def try_modal_html():
@@ -2999,9 +3050,9 @@ def page_experience():
 {finder_html()}
 </div></section>
 <section class="sec" id="try" style="padding-top:0"><div class="wrap">
-<div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">바로 체험</h2><span class="muted small">따라 해 보기 {len(WALKS)}종</span></div>
-<p class="note" style="margin:0 0 18px">서비스 매뉴얼의 실제 화면을 한 장씩 넘기며 이음이·이루미의 안내대로 사용 흐름을 따라 해 봅니다. 「AI 미니 체험」이 있는 서비스는 KELI 사무국이 만든 체험용 축소판으로 핵심 기능을 직접 써 볼 수 있습니다(실제 서비스와 다르며, 개인정보는 입력하지 마세요).</p>
-<div class="grid g3 walk-grid">{''.join(walk_card(x) for x in SERVICES if x['slug'] in WALKS) or '<div class="empty">따라 해 보기를 준비하고 있습니다.</div>'}</div>
+<div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">바로 체험</h2><span class="muted small">직접 해 보기 {len(WALKS)}종</span></div>
+<p class="note" style="margin:0 0 18px">이음이·이루미가 내는 미션에 따라 서비스의 실제 화면에서 단추와 입력창을 직접 찾아 눌러 봅니다. 화면은 서비스 매뉴얼에서 가져온 체험용이라 눌러도 실제로 저장되거나 전송되지는 않습니다. 「AI 미니 체험」이 있는 서비스는 KELI 사무국이 만든 체험용 축소판으로 핵심 기능을 직접 써 볼 수 있습니다(실제 서비스와 다르며, 개인정보는 입력하지 마세요).</p>
+<div class="grid g3 walk-grid">{''.join(walk_card(x) for x in SERVICES if x['slug'] in WALKS) or '<div class="empty">직접 해 보기를 준비하고 있습니다.</div>'}</div>
 </div></section>
 <section class="sec" id="real" style="padding-top:0"><div class="wrap">
 <div class="row" style="margin-bottom:8px"><h2 style="font-size:28px">실제 서비스 체험</h2><span class="muted small">{len(TRIALS)}개 서비스</span></div>
