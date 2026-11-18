@@ -439,7 +439,187 @@ def _forum():
         dict(title='소크라틱 토론에 참여해요', text='교수님이 던진 질문에 내 생각을 쓰고, 이어지는 후속 질문에 답하며 생각을 깊게 다듬어요.', do='교수님의 질문에 내 생각을 써서 보내 보세요. 비워 둔 채 보내면 예시 답이 입력돼요.', ui=socratic(), img=I + '5.jpg'),
     ]
 
-MOCKS = {'hai-docs': _docs(), 'hai-tutor': _tutor(), 'hai-mate': _mate(), 'hai-gpt': _gpt(), 'hai-mathtutor': _math(), 'lxp': _lxp(), 'hai-forum': _forum()}
+# ------------------------------------------------------------------ HAI-Fist (운영자/사용자 매뉴얼)
+def _fist():
+    TH = '--mk:#1f3a8a;--mk-side:#0f1b3d'
+    def sd(active):
+        return side('FIST AI 코스웨어', '융합과학수사학과', [('', [('dash', 'home', '강의 대시보드'), ('plan', 'doc', '강의계획서 생성'), ('make', 'edit', '수업 자료 생성'), ('edit', 'doc', '수업 자료 편집'), ('ana', 'chart', '학습 분석')])], active,
+                    user=('교수자', '범죄수사절차법1'), light=True, go={'dash': 0, 'plan': 1, 'make': 2, 'edit': 3, 'ana': 4})
+    WK = ['범죄수사절차법 개요', '수사의 기본원칙', '수사기관의 종류와 권한', '수사절차']
+    def dash():
+        rows = ''.join(f'<div class="mk-rowbtn" style="cursor:default"><span>{k + 1}주차　<b>{w}</b></span><span class="mk-pills"><span>예정</span><span>시험 설정</span></span></div>' for k, w in enumerate(WK))
+        main = ('<div class="mk-h"><h3>범죄수사절차법1</h3></div><b>강의 진행 현황 요약</b><div class="mk-two"><div class="mk-box"><span class="mk-lbl">CURRENT WEEK</span><b>1주차 범죄수사절차법 개요</b><span class="mk-st ok" style="align-self:flex-start">진행 중</span></div>'
+                '<div class="mk-box"><span class="mk-lbl">UPCOMING</span><b>예정된 수업 없음</b><span class="mk-ref">다음 차시 수업이 없습니다.</span></div></div><b>전체 강의 일정</b>'
+                '<div class="mk-box tint"><div class="mk-row"><span><b>강의계획서를 생성해주세요</b><br><span class="mk-ref">강의계획서 생성이 진행 중입니다. 이어서 작성하세요.</span></span><button type="button" class="mk-btn sm dark" data-show="[data-go1]" data-goal>이어서 작성</button></div></div>'
+                + toast('data-go1', '강의계획서 작성 화면으로 이어져요. 「다음」을 눌러 주차별 구성을 확인해 보세요.') + rows)
+        return frame(TH, sd('dash'), ('FIST', '강의 대시보드'), main)
+    def plan():
+        rows = ''.join(f'<div class="mk-rowbtn" style="cursor:default"><span><b>{k + 1}주차</b>　{w}<small>교재 제{k + 1}장 · 2차시</small></span><span class="mk-pills"><span>차시 조정</span></span></div>' for k, w in enumerate(WK))
+        main = ('<div class="mk-h"><h3>강의계획서 생성</h3><span class="mk-badge">주차별 수업 배정</span></div><p class="mk-ref">교재를 분석해 만든 주차·차시별 수업 구성이에요. 학사 일정에 맞게 순서와 교재 범위를 조정할 수 있어요.</p>' + rows
+                + '<div class="mk-row"><button type="button" class="mk-btn line">이전</button><button type="button" class="mk-btn dark mk-grow" style="justify-content:center" data-show="[data-nx]" data-goal>다음: 학습 목표 생성</button></div>' + toast('data-nx', '주차 구성을 확정하고 학습 목표 생성 단계로 넘어갔어요.'))
+        return frame(TH, sd('plan'), ('FIST', '강의계획서'), main)
+    def make():
+        ty = ''.join(f'<button type="button" class="mk-tile{" on" if k < 2 else ""}" data-tg><b>{t}</b><small>{"ON" if k < 2 else "OFF"}</small></button>' for k, t in enumerate(['강의록', '강의장표', '팟캐스트', '마인드맵', '퀴즈', '사례(TBL)']))
+        main = ('<div class="mk-h"><h3>수업 자료 생성</h3><span class="mk-badge">1주차 1차시</span></div><div class="mk-box"><b>파일 업로드</b><div class="mk-pills"><span class="on">주교재</span><span>부가자료</span></div>'
+                f'<span class="mk-filechip">{ic("doc", 13)}제1주차_형사절차의 이해_교재.pdf</span><span class="mk-filechip">{ic("doc", 13)}제1주차_형사절차기초_20260212.pdf</span></div>'
+                f'<div class="mk-box"><b>만들 자료 유형 <small>(눌러서 켜고 끄기)</small></b><div class="mk-tiles" style="grid-template-columns:repeat(3,minmax(0,1fr))">{ty}</div></div>'
+                '<div class="mk-row"><span class="mk-ref">선택된 자료 2개</span><button type="button" class="mk-btn dark" data-wait="[data-mk]" data-show="[data-made]" data-goal>자료 생성 시작</button></div>'
+                '<p class="mk-note" data-mk hidden><span>AI가 교재를 분석해 자료를 만들고 있어요…</span></p><div class="mk-box tint" data-made hidden><b>자료 생성이 끝났어요</b><span>켜 둔 유형의 자료가 차시별로 만들어졌어요. 「수업 자료 편집」에서 검토하고 고칠 수 있어요.</span><span class="mk-eg">체험용 예시 · 실제로는 몇 분 정도 걸려요</span></div>')
+        return frame(TH, sd('make'), ('FIST', '수업 자료 생성'), main)
+    def edit():
+        th = ''.join(f'<button type="button" class="mk-rowbtn{" on" if k == 0 else ""}" data-on data-set="[data-sn]|{k + 1}"><span>{k + 1}　{t}</span></button>' for k, t in enumerate(['표지', '학습 목표', '형사절차의 흐름', '수사기관 비교']))
+        main = ('<div class="mk-h"><h3>수업 자료 편집</h3><span class="mk-badge">강의장표</span></div><div class="mk-two" style="grid-template-columns:150px 1fr"><div class="mk-opts">' + th + '</div>'
+                '<div class="mk-box" style="background:linear-gradient(135deg,#1e3a8a,#0ea5e9);color:#fff;border:0;min-height:170px;justify-content:center;align-items:center;text-align:center"><b style="font-size:18px">범죄수사절차법 개요(상)</b><span>수사기관의 권한과 형사사법 체계의 이해</span><small>1주차 강의 · 장표 <span data-sn>1</span> / 30</small></div></div>'
+                '<div class="mk-row"><button type="button" class="mk-btn dark" data-show="[data-ai]" data-goal>콘텐츠 편집</button><button type="button" class="mk-btn line">배포 설정</button></div>'
+                '<div class="mk-box" data-ai hidden><b>AI 수정 요청</b><textarea id="mkfx" placeholder="예: 3번 장표에 실제 사례를 하나 추가해 줘"></textarea><p class="mk-demo" data-need hidden>수정 방향을 먼저 써 주세요.</p><div class="mk-row end"><button type="button" class="mk-btn sm" data-req="#mkfx" data-show="[data-fxd]">AI에게 수정 요청</button></div>'
+                + toast('data-fxd', '수정 방향을 AI에게 전달했어요. 고친 장표를 다시 검토할 수 있어요. (체험판에서는 장표가 바뀌지 않아요)') + '</div>')
+        return frame(TH, sd('edit'), ('FIST', '수업 자료 편집'), main)
+    def ana():
+        bars = ''.join(f'<div class="mk-bar2"><span>{l}</span><i style="--v:{v}%"></i><b>{v}%</b></div>' for l, v in [('학생 참여도', 50), ('사전문항 평균', 67), ('사후문항 평균', 40), ('Q&A 활동', 30)])
+        main = ('<div class="mk-row"><div class="mk-h"><h3>주차별 학생 성과 분석 대시보드</h3></div><span class="mk-row"><select aria-label="주차"><option>1주차: 범죄수사절차법 개요(상)</option></select><button type="button" class="mk-btn sm dark" data-show="[data-dl]" data-goal>' + ic('down', 14) + '리포트 다운로드</button></span></div>'
+                '<div class="mk-stats"><div class="mk-stat"><small>팟캐스트 시청 인원</small><b>13명</b></div><div class="mk-stat"><small>시청 완료율</small><b>50%</b></div><div class="mk-stat"><small>사전문항 평균</small><b>66.7</b></div><div class="mk-stat"><small>사후문항 평균</small><b>40</b></div></div>'
+                f'<div class="mk-box"><div class="mk-row"><b>학습성과 요약</b><span class="mk-eg">체험용 예시 수치</span></div><div class="mk-bars">{bars}</div></div>' + toast('data-dl', '분석 보고서를 내려받았어요. (체험판에서는 파일이 만들어지지 않아요)'))
+        return frame(TH, sd('ana'), ('FIST', '학습 분석'), main)
+    I = 'media/walk/hai-fist/'
+    return [
+        dict(title='강의 대시보드에서 시작해요', text='담당 강의를 고르면 진행 중인 주차, 예정 수업, 공지를 한 화면에서 보고 강의계획서·자료 생성·시험 설정으로 이동해요.', do='「강의계획서를 생성해주세요」 알림의 「이어서 작성」을 눌러 보세요.', ui=dash(), img=I + '1.jpg'),
+        dict(title='AI가 교재로 강의계획서를 만들어요', text='교재를 올리면 AI가 분석해 강의계획서 초안을 만들어요. 주차·차시별 수업 구성과 교재 범위를 학사 일정에 맞게 조정해요.', do='주차 구성을 확인했다면 「다음: 학습 목표 생성」을 눌러 보세요.', ui=plan(), img=I + '2.jpg'),
+        dict(title='수업 자료를 생성해요', text='차시마다 강의록, 강의장표, 팟캐스트, 마인드맵, 퀴즈 등 필요한 자료 유형을 골라 AI로 만들어요.', do='만들 자료 유형을 눌러 고른 뒤 「자료 생성 시작」을 눌러 보세요.', ui=make(), img=I + '3.jpg'),
+        dict(title='만든 자료를 AI와 함께 다듬어요', text='강의장표를 미리 보며 고칠 장표를 고르고, 수정 방향을 AI에게 요청해 내용을 보완해요.', do='「콘텐츠 편집」을 눌러 AI 수정 요청 칸을 열어 보세요.', ui=edit(), img=I + '4.jpg'),
+        dict(title='학습성과를 분석해요', text='학생 참여도, 평가 결과, Q&A 활동, AI 활용 이력으로 학습성과를 확인하고 분석 보고서를 내려받아요.', do='「리포트 다운로드」를 눌러 분석 보고서를 받아 보세요.', ui=ana(), img=I + '5.jpg'),
+    ]
+
+# ------------------------------------------------------------------ HAI-Lens (사용자 매뉴얼)
+def _lens():
+    TH = '--mk:#ea580c;--mk-side:#431407'
+    SUBJ = [('HAI-LENS 시연', 'DEMO-LIVE-101 · 2026-2학기'), ('파이썬 프로그래밍', 'PY-101-DEMO · 2026-1학기'), ('CUDA Programming', 'CUDA-101-DEMO · 2026-1'), ('운영체제', 'os-DEMO · 2026-1')]
+    def sd(active=0):
+        return side('HAILENS', '', [('과목', [(f's{k}', 'doc', n) for k, (n, c) in enumerate(SUBJ)])], f's{active}', user=('데모 교수1', '교수'), light=True, go={'s0': 2})
+    def pick():
+        rows = ''.join(f'<button type="button" class="mk-rowbtn" data-on data-show="[data-in]"{" data-goal" if k == 0 else ""}><span><small>0{k + 1}</small><b>{n}</b><small>{c}</small></span><span>→</span></button>' for k, (n, c) in enumerate(SUBJ))
+        return frame(TH, sd(-1), ('HAILENS', '홈'), '<div class="mk-center" style="margin:6px auto"><h3 style="margin:0;font-size:18px">과목을 선택하세요</h3><span class="mk-ref">선택하면 강의 시작, 자료 관리와 지난 리포트를 확인할 수 있습니다.</span></div>' + rows + toast('data-in', '과목 홈으로 들어왔어요. 강의 시작, 강의 자료, 지난 강의를 볼 수 있어요.'))
+    def upload():
+        main = ('<div class="mk-h"><h3>강의 자료</h3><span class="mk-badge">HAI-LENS 시연</span></div><div class="mk-two"><div class="mk-box" style="min-height:190px"><span class="mk-lbl">미리보기</span><span class="mk-center mk-ref" data-pv0>파일을 선택하면 미리보기가 표시됩니다</span>'
+                '<div class="mk-sheet" data-pv hidden><p class="c" style="letter-spacing:0">인공지능 시대를 위한 운영체제</p><p style="text-align:center">1 / 24</p></div></div>'
+                '<div class="mk-box"><button type="button" class="mk-up" data-hide="[data-pv0],[data-none]" data-show="[data-pv],[data-fl]" data-goal>' + ic('down', 20) + '<b>클릭하거나 드래그</b><small>여러 PDF 파일을 한 번에 업로드 가능</small></button><span class="mk-lbl">업로드된 파일</span>'
+                '<span class="mk-ref" data-none>업로드된 파일이 없습니다</span><span class="mk-filechip" data-fl hidden>' + ic('doc', 13) + '운영체제_파일시스템.pdf (체험용)</span><span class="mk-ref">PDF만 지원됩니다. PPT는 PDF로 저장해서 올려 주세요.</span></div></div>')
+        return frame(TH, sd(0), ('HAILENS', '강의 자료'), main)
+    def start():
+        main = ('<div class="mk-box"><div class="mk-row"><span><b style="font-size:17px">HAI-LENS 시연</b><br><small>시연용</small></span><span class="mk-row"><button type="button" class="mk-btn" data-hide="[data-idle]" data-show="[data-rec]" data-goal>▶ 강의 시작</button><span class="mk-btn line" style="cursor:default">강의 자료 업로드</span></span></div>'
+                '<div class="mk-stats"><div class="mk-stat"><b>0회</b><small>총 강의 횟수</small></div><div class="mk-stat"><b>—</b><small>총 강의 시간</small></div><div class="mk-stat"><b>0건</b><small>분석 완료</small></div></div></div>'
+                '<div class="mk-box" data-idle><b>지난 강의</b><span class="mk-ref">아직 진행한 강의가 없습니다.</span></div>'
+                '<div class="mk-box" data-rec hidden style="background:#0b1020;color:#fff;border:0"><div class="mk-row"><b>발표 화면</b><span class="mk-st ing">● 녹화 중</span></div><div class="mk-center" style="padding:18px 0"><b style="font-size:16px">인공지능 시대를 위한 운영체제</b><small>슬라이드 <span data-pg>1</span> / 24</small></div>'
+                '<div class="mk-row"><span class="mk-pills"><button type="button" data-set="[data-pg]|1">이전</button><button type="button" data-set="[data-pg]|2">다음</button></span><button type="button" class="mk-btn sm" data-show="[data-end]">강의 종료</button></div>'
+                + toast('data-end', '강의를 마치고 분석을 시작했어요. 화면을 닫아도 분석은 계속돼요.').replace('mk-ok"', 'mk-ok" style="color:#86efac"') + '</div>')
+        return frame(TH, sd(0), ('HAILENS', '과목 홈'), main)
+    def report():
+        bars = ''.join(f'<div class="mk-bar2"><span>{l}</span><i style="--v:{v * 20}%"></i><b>{v}</b></div>' for l, v in [('도입', 3.8), ('전개', 3.4), ('마무리', 2.6), ('전체', 3.3)])
+        main = ('<div class="mk-box" style="background:#fff7ed;border-color:#fed7aa"><div class="mk-row"><b style="font-size:16px">강의 분석 결과</b><b style="font-size:26px;color:var(--mk)">3.3<small> / 5</small></b></div>'
+                '<span>본 강의는 운영체제의 핵심 요소인 파일 시스템의 개념과 구조를 체계적으로 다루고 있습니다. 도입부에서 이전 수업과의 연계성을 확보하고 학습 목표를 명확히 제시한 점이 우수하며, 본론에서는 복잡한 기술적 개념을 반복 설명과 요약을 통해 효과적으로 전달합니다. 다만, 학습자의 참여를 유도하는 질문이나 상호작용이 부족하고, 마무리 단계에서 학습 내용을 정리하는 요약 과정이 미흡하여 보완이 필요합니다.</span>'
+                '<div class="mk-row"><span class="mk-pills"><span>개선 우선 6개</span><span>강점 11개</span></span><span class="mk-row"><button type="button" class="mk-btn sm line" data-show="[data-dl]">리포트 다운로드</button><button type="button" class="mk-btn sm" data-show="[data-tl]" data-goal>강의 흐름 탐색 →</button></span></div></div>'
+                + toast('data-dl', '리포트를 내려받았어요. (체험판에서는 파일이 만들어지지 않아요)') + toast('data-tl', '타임라인 화면으로 이동해요. 「다음」을 눌러 구간별로 돌아보세요.')
+                + f'<div class="mk-box"><div class="mk-row"><b>강의 한눈에 보기 · 구간 점수 형상</b><span class="mk-eg">체험용 예시 점수</span></div><div class="mk-bars">{bars}</div></div>')
+        return frame(TH, sd(0), ('HAILENS', '리포트 요약'), main)
+    def timeline():
+        SEG = [('구간 1 · 도입', '00:00 – 00:11', "강의 제목 '인공지능 시대를 위한 운영체제'와 강의교안 이용 안내를 담은 표지 슬라이드를 제시하고 있습니다."), ('구간 2 · 전개', '00:11 – 12:40', '파일 시스템의 개념과 구조를 슬라이드 순서에 따라 설명하고, 핵심 용어를 반복해 정리합니다.'), ('구간 3 · 마무리', '12:40 – 27:34', '학습 내용을 정리하는 요약이 짧아, 다음 차시 예고와 함께 핵심 정리를 보완하면 좋습니다.')]
+        segs = ''.join(f'<button type="button" class="mk-rowbtn{" on" if k == 0 else ""}" data-on data-hide="[data-ob]" data-show="[data-ob={chr(39)}{k}{chr(39)}]"><span><b>{n}</b><small>{t}</small></span></button>' for k, (n, t, o) in enumerate(SEG))
+        obs = ''.join(f'<div class="mk-box" data-ob="{k}"{"" if k == 0 else " hidden"}><span class="mk-lbl">관찰 내용</span><span>{o}</span>{"" if k == 0 else chr(60) + "span class=mk-eg" + chr(62) + "체험용 예시" + chr(60) + "/span" + chr(62)}</div>' for k, (n, t, o) in enumerate(SEG))
+        main = ('<div class="mk-h"><h3>강의 흐름</h3><span class="mk-badge">00:00 – 27:34</span></div><div class="mk-two"><div class="mk-box" style="background:#0b1020;color:#fff;border:0;min-height:170px;align-items:center;justify-content:center;text-align:center"><b>인공지능 시대를 위한 운영체제</b>'
+                '<button type="button" class="mk-btn" style="border-radius:999px" data-hide="[data-pl0]" data-show="[data-pl]" data-goal>▶ 재생</button><small data-pl0>슬라이드 · 영상 · 음성을 함께 볼 수 있어요</small><small data-pl hidden>재생 중 · 구간 1 (체험판에는 영상이 들어 있지 않아요)</small></div>'
+                f'<div class="mk-opts">{segs}</div></div>{obs}')
+        return frame(TH, sd(0), ('HAILENS', '타임라인'), main)
+    I = 'media/walk/hai-lens/'
+    return [
+        dict(title='과목을 골라요', text='로그인하면 담당 과목이 보여요. 과목을 누르면 강의 시작, 강의 자료, 지난 강의로 들어가요.', do='과목 목록에서 「HAI-LENS 시연」을 눌러 보세요.', ui=pick(), img=I + '1.jpg'),
+        dict(title='강의 자료(PDF)를 올려요', text='수업에 쓸 PDF 슬라이드를 올려요. 리포트에서 어느 슬라이드에서 무슨 말을 했는지 함께 보여 줘요.', do='「클릭하거나 드래그」 영역을 눌러 PDF 슬라이드를 올려 보세요.', ui=upload(), img=I + '2.jpg'),
+        dict(title='강의를 진행해요', text='강의를 시작하면 발표 화면으로 바뀌어요. 슬라이드를 넘긴 시점이 기록되고, 필기 도구도 쓸 수 있어요. 마치면 「강의 종료」로 분석을 시작해요.', do='「강의 시작」을 눌러 발표 화면으로 들어가 보세요.', ui=start(), img=I + '3.jpg'),
+        dict(title='리포트 요약을 확인해요', text='종합 점수와 강의 총평, 8개 영역별 점수와 진단, 먼저 고칠 점과 잘하고 있는 점을 한눈에 봐요.', do='「강의 흐름 탐색」을 눌러 타임라인으로 가 보세요.', ui=report(), img=I + '4.jpg'),
+        dict(title='강의 흐름을 구간별로 돌아봐요', text='타임라인에서 구간별 점수 흐름을 보고, 원하는 구간의 슬라이드·영상·음성과 관찰 내용을 함께 확인해요.', do='「재생」을 눌러 이 구간의 강의를 다시 봐요. 오른쪽 구간도 눌러 보세요.', ui=timeline(), img=I + '5.jpg'),
+    ]
+
+# ------------------------------------------------------------------ HAI-Way (학생용 매뉴얼)
+def _way():
+    TH = '--mk:#6d4fe0;--mk-side:#3b2a8f'
+    def sd(active, goal=''):
+        h = side('HAI-Way', '', [('', [('dash', 'home', '대시보드'), ('cur', 'doc', '커리큘럼 추천'), ('job', 'user', '직무 매칭'), ('dbl', 'edit', '복수전공 추천'), ('pf', 'mark', '포트폴리오'), ('rec', 'search', '채용공고 추천')])], active,
+                 go={'dash': 1, 'cur': 2, 'job': 3}, top='<div class="mk-course" style="background:rgba(255,255,255,.12);border:0;color:#fff"><b>학생</b><small>데이터사이언스학부 데이터테크전공<br>선택 직무: 시스템소프트웨어개발자<br>진로 설계 진행률 20%</small></div>')
+        return h.replace('data-go="2">', 'data-on data-goal data-hide="[data-c0]" data-show="[data-c1]">') if goal == 'cur' else h
+    def dash():
+        sk = ''.join(f'<span>{x}</span>' for x in ['자료구조', '알고리즘', '데이터베이스', '운영체제', '통계', '파이썬'])
+        bars = ''.join(f'<div class="mk-bar2"><span>{l}</span><i style="--v:{v * 3}%"></i><b>{v}%</b></div>' for l, v in [('응용 능력', 28), ('개발적 사고력', 25), ('이론 설명 능력', 22), ('논리적 분석력', 18), ('기초이론 이해', 6)])
+        main = ('<div class="mk-h"><h3>대시보드</h3></div><div class="mk-box"><b>전공 기반 추천</b><span class="mk-ref">전공 설명과 연계 직무를 먼저 확인하세요.</span><div class="mk-two"><span><span class="mk-lbl">전공</span><br><b>데이터테크전공</b></span>'
+                '<span><span class="mk-lbl">추천 직무</span><br><span class="mk-pills"><span>시스템소프트웨어개발자</span><span>응용소프트웨어개발자</span><span>데이터분석가</span></span></span></div></div>'
+                f'<button type="button" class="mk-card" data-on data-show="[data-sk]" data-goal><strong>핵심 역량</strong><span class="mk-ref">현재까지 학습한 과목 기반으로 분석한 대표 스킬</span><span class="mk-pills">{sk}</span><span class="mk-bars">{bars}</span></button>'
+                '<div class="mk-box tint" data-sk hidden><b>과목 기반 스킬 통계</b><span>지금까지 들은 과목의 스킬셋을 분석한 결과예요. 가장 높은 「응용 능력」을 살릴 수 있는 직무를 추천해 줘요.</span></div>'
+                '<div class="mk-box"><div class="mk-row"><b>나의 질문 기록</b><span class="mk-eg">체험용 예시 수치</span></div><div class="mk-bars"><div class="mk-bar2"><span>3월</span><i style="--v:85%"></i><b>34</b></div><div class="mk-bar2"><span>4월</span><i style="--v:55%"></i><b>22</b></div><div class="mk-bar2"><span>5월</span><i style="--v:8%"></i><b>3</b></div></div></div>')
+        return frame(TH, sd('dash'), ('HAI-Way', '대시보드'), main)
+    def cur():
+        C = [('511644', 'C프로그래밍', '3학년', '3', '90%'), ('506203', '컴퓨터프로그래밍', '4학년', '3', '85%'), ('511702', '자료구조', '2학년', '3', '82%')]
+        tb = '<table class="mk-tbl"><tr><th>과목번호</th><th>과목명</th><th>학년(수준)</th><th>학점</th><th>매칭도</th></tr>' + ''.join(f'<tr><td>{a}</td><td>{b}</td><td>{c}</td><td>{d}</td><td><span class="mk-st ok">{e}</span></td></tr>' for a, b, c, d, e in C) + '</table>'
+        main = ('<div class="mk-h"><h3>커리큘럼 추천</h3></div><div class="mk-box" data-c0><span class="mk-ref">왼쪽 메뉴에서 「커리큘럼 추천」을 누르면 희망 직무에 맞는 과목 로드맵을 만들어 줘요.</span></div>'
+                '<div data-c1 hidden style="display:flex;flex-direction:column;gap:12px"><div class="mk-box"><b>시스템소프트웨어개발자 학습 로드맵</b><div class="mk-pills"><span class="on">기초</span><span>C프로그래밍</span><span>자료구조</span><span class="on">응용</span><span>운영체제</span><span>시스템프로그래밍</span><span class="on">심화</span><span>임베디드시스템</span></div></div>'
+                f'<div class="mk-box"><div class="mk-row"><b>2026-1학기 추천 커리큘럼</b><span class="mk-eg">체험용 예시 과목</span></div><span class="mk-ref">시스템소프트웨어개발자를 위한 맞춤 추천이에요. 기초부터 차근차근 들을 수 있게 순서를 잡아 줘요.</span>{tb}</div></div>')
+        return frame(TH, sd('dash', 'cur'), ('HAI-Way', '커리큘럼 추천'), main)
+    def job(tab):
+        tabs = ''.join(f'<button type="button" class="{"on" if k == 2 else ""}" data-on data-hide="[data-jt]" data-show="[data-jt={chr(39)}{k}{chr(39)}]"{" data-goal" if k == tab else ""}>{t}</button>' for k, t in enumerate(['커리큘럼 기반 매칭', '성향검사 기반 매칭', '선택한 희망 직무']))
+        bars = ''.join(f'<div class="mk-bar2"><span>{l}</span><i style="--v:{v}%"></i><b>{v}%</b></div>' for l, v in [('기초 단계', 65), ('응용 단계', 60)])
+        p0 = ('<div data-jt="0" hidden style="display:flex;flex-direction:column;gap:12px"><div class="mk-box tint"><b>직무 학습 로드맵</b><span>내가 들은 과목의 스킬셋을 기준으로 나와 가장 가까운 직무와, 그 직무에 필요한 과목 로드맵을 추천해요.</span></div>'
+              f'<div class="mk-box"><b>학습 단계별 적합도</b><div class="mk-bars">{bars}</div></div><div class="mk-grid"><div class="mk-card"><strong>VFX아티스트(일반)</strong><span class="mk-ref">영상 특수효과 제작</span></div><div class="mk-card"><strong>VFX디자이너</strong><span class="mk-ref">시각효과 디자인</span></div><div class="mk-card on"><strong>시스템소프트웨어개발자</strong><span class="mk-ref">운영체제·시스템 개발</span></div></div></div>')
+        p1 = ('<div data-jt="1" hidden style="display:flex;flex-direction:column;gap:12px"><div class="mk-box tint"><b>직업성향검사 기반 직무 매칭</b><span>STRONG 직무 성향검사 결과를 바탕으로 나에게 맞는 직무를 추천하고, 왜 맞는지 설명해 줘요.</span></div>'
+              '<div class="mk-box"><div class="mk-row"><b>STRONG 검사 결과</b><span class="mk-eg">체험용 예시 결과</span></div><div class="mk-bars">' + ''.join(f'<div class="mk-bar2"><span>{l}</span><i style="--v:{v}%"></i><b>{v}</b></div>' for l, v in [('탐구형(I)', 82), ('현실형(R)', 64), ('관습형(C)', 51), ('예술형(A)', 38)]) + '</div><span>탐구형이 가장 높아요. 분석하고 문제를 푸는 일을 좋아하는 성향이라 개발·데이터 분석 직무와 잘 맞아요.</span></div></div>')
+        p2 = '<div class="mk-box" data-jt="2"><b>선택한 희망 직무</b><span>시스템소프트웨어개발자</span><span class="mk-ref">위 탭을 눌러 다른 기준으로 나에게 맞는 직무를 찾아볼 수 있어요.</span></div>'
+        return frame(TH, sd('job'), ('HAI-Way', '직무 매칭'), '<div class="mk-h"><h3>직무 매칭</h3></div><div class="mk-tabs">' + tabs + '</div>' + p0 + p1 + p2)
+    I = 'media/walk/hai-way/'
+    return [
+        dict(title='한림 SSO로 로그인해요', text='한림대학교 계정(SSO)으로 바로 로그인해요.', do='「로그인」을 눌러 한림 SSO로 들어가 보세요.', img=I + '1.jpg',
+             ui=login(TH, ('HALLYM UNIVERSITY', 'Think Beyond,<br>Together Grow', '한림대학교 통합 로그인'), ('한국어 · English', '로그인'), [('ID', 'ID', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True)], foot='비밀번호 초기화 · 도움말')),
+        dict(title='나의 대시보드를 봐요', text='전공 로드맵과 지금까지 들은 과목의 스킬셋 분석, 추천 직무를 대시보드로 확인해요.', do='「핵심 역량」 영역을 눌러 나의 스킬셋 분석을 확인해 보세요.', ui=dash(), img=I + '2.jpg'),
+        dict(title='희망 직무에 맞는 커리큘럼을 받아요', text='희망 직무를 고르면 그 직무에 필요한 스킬셋을 기준으로 들어야 할 과목 로드맵을 만들어 줘요.', do='왼쪽 메뉴에서 「커리큘럼 추천」을 눌러 보세요.', ui=cur(), img=I + '3.jpg'),
+        dict(title='나와 가까운 직무를 찾아요', text='내가 들은 과목의 스킬셋을 바탕으로 나와 가장 가까운 직무와 그 직무를 위한 로드맵을 추천해요.', do='「커리큘럼 기반 매칭」 탭을 눌러 나와 가까운 직무를 확인해 보세요.', ui=job(0), img=I + '4.jpg'),
+        dict(title='성향검사로 직무를 매칭해요', text='STRONG 직무 성향검사 결과를 바탕으로 나에게 맞는 직무를 추천하고 설명해 줘요.', do='「성향검사 기반 매칭」 탭을 눌러 보세요.', ui=job(1), img=I + '5.jpg'),
+    ]
+
+# ------------------------------------------------------------------ HAI-Research (일반 사용자 매뉴얼)
+def _research():
+    TH = '--mk:#0d9488;--mk-side:#0f2f4a'
+    TOP = '<div class="mk-box" style="background:var(--mk-side);color:#fff;border:0;flex-direction:row;justify-content:space-between;align-items:center"><b>한림대학교 · 연구자 탐색</b><span class="mk-pills"><span>매뉴얼 보기</span><span>연구자 로그인</span></span></div>'
+    CARDS = [('연구자 A', '의학과', '줄기세포·조직 재생'), ('연구자 B', '바이오메디컬학과', '재생의학 소재'), ('연구자 C', '의학과', '임상 적용 연구')]
+    def cards(goal=False):
+        return ('<div class="mk-box" data-a{H}><b>매칭된 연구자의 상세 정보를 제공합니다</b><div class="mk-srcs">' + ''.join(f'<button type="button" class="mk-src" data-on data-hide="[data-pf]" data-show="[data-pf={chr(39)}{k}{chr(39)}]"{" data-goal" if goal and k == 0 else ""}><strong>{n}</strong><span>소속 {d}</span><span>연구분야 {f}</span></button>' for k, (n, d, f) in enumerate(CARDS)) + '</div>'
+                + ''.join(f'<div class="mk-box tint" data-pf="{k}" hidden><div class="mk-row"><b>{n} 교수님</b><span class="mk-btn sm" style="cursor:default">프로필</span></div><span>소속: {d} · 연구분야: {f}</span><span class="mk-ref">주요 논문·과제·특허 목록과 연락처를 볼 수 있어요. (체험판에서는 실제 연구자 정보를 가렸어요)</span></div>' for k, (n, d, f) in enumerate(CARDS)) + '</div>')
+    def chat(sample, ans, goal, answered=False, extra='', pre='', hide='[data-hello]'):
+        hid = '' if answered else ' hidden'
+        left = ('<div class="mk-log" id="mklog">' + ai('연구자를 찾으세요? 협업 내용 또는 RFP를 입력해보세요.', '', 'AI') + me(sample if answered else '', 'data-qa' + hid) + dots() + ai(demo(sample) + ans, 'data-a' + hid) + extra + '</div>'
+                + inbar(sample, '찾고 싶은 기술을 입력해보세요 (예: 의료분야 AI 데이터…)', goal, pre=pre, hide=hide, more='체험판에서는 예시 요청 하나에만 답해 드려요. 실제 서비스에서는 연구자 데이터에서 맞는 분을 찾아 줘요.'))
+        return left
+    Q1 = '줄기세포 기반 재생의학 연구를 함께할 공동 연구자를 찾고 있어'
+    A1 = '<p>줄기세포 기반 재생의학 분야에서 임상 적용 경험과 다양한 조직 재생 연구 실적을 보유한 교수님들이 추천됩니다. 오른쪽(아래)에서 연구자별 상세 정보를 확인해 보세요.</p>'
+    def s1(): return frame(TH, '', ('HAI-Research', '연구자 탐색'), TOP + chat(Q1, A1, True) + cards().replace('{H}', ' hidden'))
+    def s2(): return frame(TH, '', ('HAI-Research', '연구자 프로필'), TOP + '<div class="mk-log">' + me(Q1).replace(' data-q', '') + ai(A1) + '</div>' + cards(True).replace('{H}', ''))
+    def s3():
+        main = (TOP + '<div class="mk-row"><b>검색 결과</b><button type="button" class="mk-btn sm line" data-show="[data-w]">검색 가중치</button></div>' + cards().replace('{H}', '')
+                + '<div class="mk-modal" data-w><b>검색 가중치</b><div class="mk-two"><label class="mk-f">주저자 (1~3)<input type="text" value="1" inputmode="numeric"><small style="font-weight:400">주저자 논문이 많은 교수님이 더 많이 검색됩니다.</small></label>'
+                '<label class="mk-f">최근 연구 (년도 1~5 / 배수 1~3)<input type="text" value="2년 · 1배"><small style="font-weight:400">최근에 발간한 논문에 가중치를 더 줍니다.</small></label></div>'
+                '<div class="mk-row end"><button type="button" class="mk-btn sm line" data-hide="[data-w]">취소</button><button type="button" class="mk-btn sm" data-hide="[data-w]" data-show="[data-rs]" data-goal>재검색</button></div></div>' + toast('data-rs', '가중치를 반영해 연구자를 다시 찾았어요.'))
+        return frame(TH, '', ('HAI-Research', '검색 가중치'), main)
+    Q4 = '의료분야 AI 팀 빌딩해줘'
+    A4 = ('<p>의료 분야 AI 주제를 세부 연구로 나누고, 주제마다 맞는 교수님을 묶어 팀을 구성했어요.</p><p><b>#1</b> 의료 영상 진단을 위한 인공지능 모델 개발<br><b>#2</b> 환자 데이터 기반 질병 예측 인공지능 알고리즘 연구<br><b>#3</b> 의료 기록 자동 분석을 위한 자연어처리 기술 적용<br><b>#4</b> 웨어러블 헬스케어 데이터의 AI 기반 건강 모니터링</p>'
+          '<p class="mk-ref">세부 주제별 추천 연구자는 「프로필 전체보기」에서 확인할 수 있어요.</p>')
+    def s4(): return frame(TH, '', ('HAI-Research', '팀 빌딩'), TOP + chat(Q4, A4, True))
+    def s5():
+        clip = f'<button type="button" class="mk-ghost" style="border:0;background:none" data-show="[data-rfp]" data-goal aria-label="파일 첨부">{ic("clip", 18)}</button>'
+        ans = '<p>RFP 내용을 분석해 과제에 맞는 연구자를 찾았어요. 요구 기술과 연구 실적이 가까운 순서로 보여 줘요.</p><span class="mk-eg">체험용 예시 답변</span>'
+        return frame(TH, '', ('HAI-Research', 'RFP로 찾기'), TOP + chat('첨부한 RFP에 맞는 연구자를 찾아줘', ans, False, extra='<span class="mk-filechip" data-rfp hidden>' + ic('doc', 13) + 'RFP_예시.hwp 첨부됨 (체험용)</span>', pre=clip, hide='[data-none]'))
+    I = 'media/walk/hai-research/'
+    return [
+        dict(title='협업 내용을 채팅으로 입력해요', text='찾고 싶은 기술이나 협업 내용을 채팅으로 입력하면, 연구 실적을 바탕으로 맞는 연구자를 추천해 줘요.', do='입력창에 찾고 싶은 협업 내용을 써서 보내 보세요. 비워 둔 채 보내면 예시가 입력돼요.', ui=s1(), img=I + '1.jpg'),
+        dict(title='연구자 프로필을 자세히 봐요', text='추천된 연구자 카드를 누르면 소속, 연구 분야, 주요 논문·과제·특허를 자세히 볼 수 있어요.', do='매칭된 연구자 카드 가운데 첫 번째 카드를 눌러 상세 정보를 열어 보세요.', ui=s2(), img=I + '2.jpg'),
+        dict(title='검색 가중치로 다시 찾아요', text='주저자 논문 수나 최근 연구에 가중치를 주어, 원하는 기준에 더 맞는 연구자를 다시 찾아요.', do='가중치를 고쳐 본 뒤 「재검색」을 눌러 다시 찾아보세요.', ui=s3(), img=I + '3.jpg'),
+        dict(title='팀 빌딩을 요청해요', text='주제를 말하면 세부 연구로 나누고, 주제별로 맞는 연구자를 묶어 팀 구성을 제안해요.', do='입력창에 팀 빌딩을 요청해 보세요. 비워 둔 채 보내면 예시가 입력돼요.', ui=s4(), img=I + '4.jpg'),
+        dict(title='RFP 파일로 연구자를 찾아요', text='과제 제안요청서(RFP) 파일을 첨부하면 그 내용에 맞는 연구자를 찾아 줘요.', do='입력창 왼쪽 클립 단추를 눌러 RFP 파일을 첨부해 보세요.', ui=s5(), img=I + '5.jpg'),
+    ]
+
+MOCKS = {'hai-docs': _docs(), 'hai-tutor': _tutor(), 'hai-mate': _mate(), 'hai-gpt': _gpt(), 'hai-mathtutor': _math(), 'lxp': _lxp(), 'hai-forum': _forum(), 'hai-fist': _fist(), 'hai-lens': _lens(), 'hai-way': _way(), 'hai-research': _research()}
 
 MK_CSS = r"""
 /* 체험용 화면(목업) 공통 */
@@ -491,13 +671,14 @@ MK_CSS = r"""
 .mk-btn.wide { justify-content: center; width: 100%; height: 40px; } .mk-btn.soft { background: #e3ecff; color: var(--mk) !important; } .mk-btn.line { background: #fff; border: 1px solid #dbe3f0; color: #334155 !important; } .mk-btn.sm { height: 30px; padding: 0 11px; font-size: 12px; } .mk-btn.dark { background: #0f172a; }
 .mk-modal { display: flex; flex-direction: column; gap: 12px; padding: 16px 18px; border-radius: 14px; background: #fff; border: 1px solid #e5e9f2; box-shadow: 0 10px 30px rgba(15,23,42,.12); } .mk-dim { background: #e9edf5; }
 .mk-box { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border: 1px solid #e5e9f2; border-radius: 12px; background: #fff; } .mk-box.tint { background: #f3f7ff; border-color: #d3e0ff; } .mk-lbl { font-size: 12px; font-weight: 700; color: #64748b; }
-.mk-pills { display: flex; flex-wrap: wrap; gap: 6px; } .mk-pills > * { padding: 3px 10px; border: 1px solid #dbe3f0; border-radius: 999px; background: #fff; font-size: 12px; color: #475569; } .mk-pills > .on { background: var(--mk); border-color: var(--mk); color: #fff; font-weight: 700; }
+.mk-pills { display: flex; flex-wrap: wrap; gap: 6px; } .mk .mk-pills > * { padding: 3px 10px; border: 1px solid #dbe3f0; border-radius: 999px; background: #fff; font-size: 12px; color: #475569; } .mk .mk-pills > .on { background: var(--mk); border-color: var(--mk); color: #fff; font-weight: 700; }
 .mk-opts { display: flex; flex-direction: column; gap: 6px; } .mk-opt { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid #e5e9f2; border-radius: 10px; background: #fff; text-align: left; } .mk-opt::before { content: ''; flex: none; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #cbd5e1; } .mk-opt.on { border-color: var(--mk); background: #f3f7ff; } .mk-opt.on::before { border-color: var(--mk); background: radial-gradient(var(--mk) 45%, #fff 50%); }
 .mk-tbl { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e5e9f2; border-radius: 10px; overflow: hidden; font-size: 12.5px; } .mk-tbl th { padding: 8px 10px; background: #f1f5fb; color: #64748b; font-weight: 700; text-align: left; white-space: nowrap; } .mk-tbl td { padding: 9px 10px; border-top: 1px solid #f1f4f9; } .mk-tbl tr.on td { background: #f3f7ff; } .mk-tbl button { border: 0; background: none; padding: 0; color: inherit; text-align: left; font-weight: 700; }
 .mk-rowbtn { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 12px 14px; border: 1px solid #e5e9f2; border-radius: 12px; background: #fff; text-align: left; } .mk-rowbtn:hover, .mk-card[type=button]:hover, .mk-opt:hover { border-color: var(--mk); } .mk-rowbtn small { display: block; color: #6b7280; font-weight: 400; }
 .mk-bars { display: flex; flex-direction: column; gap: 8px; } .mk-bar2 { display: grid; grid-template-columns: 96px 1fr 44px; align-items: center; gap: 8px; width: 100%; padding: 4px 6px; border: 0; border-radius: 8px; background: none; text-align: right; font-size: 12.5px; } .mk-bar2 i { display: block; height: 16px; border-radius: 5px; background: #e8edf5; overflow: hidden; } .mk-bar2 i::after { content: ''; display: block; height: 100%; width: var(--v); background: var(--mk); border-radius: 5px; } .mk-bar2 b { text-align: left; } .mk-bar2.on, button.mk-bar2:hover { background: #eef4ff; }
 .mk-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; } .mk-stat { display: flex; flex-direction: column; gap: 2px; padding: 12px; border: 1px solid #e5e9f2; border-radius: 12px; background: #fff; text-align: left; } .mk-stat small { color: #6b7280; } .mk-stat b { font-size: 20px; }
 .mk-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; } .mk-tile { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 8px; border: 1px solid #e5e9f2; border-radius: 12px; background: #fff; text-align: center; } .mk-tile small { color: #6b7280; font-size: 11px; } .mk-tile .mk-ic { color: var(--mk); } .mk-tile.on { border-color: var(--mk); background: #f3f7ff; }
+.mk textarea.mk-code { background: #0b1020; color: #d6e2ff; border: 0; }
 .mk-code { padding: 12px 14px; border-radius: 10px; background: #0b1020; color: #d6e2ff; font: 12.5px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; min-height: 90px; } textarea.mk-code { width: 100%; border: 0; }
 .mk-center { margin: auto; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; } .mk-up { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; padding: 22px 12px; border: 2px dashed #cbd5e1; border-radius: 12px; background: #fff; color: #64748b; } .mk-up:hover { border-color: var(--mk); color: var(--mk); }
 .mk canvas[data-draw] { display: block; width: 100%; height: 150px; border: 1px dashed #b8c4d9; border-radius: 10px; background: #fff; touch-action: none; cursor: crosshair; } .mk-drawwrap { position: relative; } .mk-drawwrap > span { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; color: #94a3b8; pointer-events: none; }
