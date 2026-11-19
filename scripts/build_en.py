@@ -241,6 +241,15 @@ def pattern(k, look=None):
     m = re.fullmatch(r'(.+?)\(시범 운영 서비스\) (데모 영상|영상 보기)', k)
     if m and not HAN.search(m.group(1)):
         return f'{m.group(1)} (pilot service) ' + ('demo video' if m.group(2) == '데모 영상' else 'watch video')
+    if look:
+        m = re.fullmatch(r'(.+?) \| KELI (플랫폼|아카이브) · 한림대학교', k)
+        if m:
+            y = look(m.group(1)) or pattern(m.group(1), look)
+            if y and not HAN.search(y): return f'{y} | KELI {"Platform" if m.group(2) == "플랫폼" else "Archive"} · Hallym University'
+        m = re.fullmatch(r'(.+?) 대표 사진', k)
+        if m:
+            y = look(m.group(1)) or pattern(m.group(1), look)
+            if y and not HAN.search(y): return f'{y} — main photo'
     if look and ' · ' in k:   # "행사 · 날짜" 처럼 가운뎃점으로 이은 문구는 조각마다 번역
         parts = []
         for x in k.split(' · '):
@@ -269,6 +278,7 @@ def main():
         walk_html(open(os.path.join(ROOT, p), encoding='utf-8').read(), collect)
     walk_js(site_js, collect)
     missing = [k for k in need if k not in cache and k not in fix and not pattern(k, lambda x: fix.get(x) or cache.get(x))]
+    for k in sorted(missing)[:80]: print('    new:', k[:160], flush=True)
     print(f'pages {len(pages)} · strings {len(need)} · cached {len(need) - len(missing)} · new {len(missing)}', flush=True)
     url = os.environ.get('TRANSLATE_URL') or ((site_api().rstrip('/') + '/api/translate') if site_api() else '')
     if missing and url and os.environ.get('ACTIONS_ID_TOKEN_REQUEST_URL'):   # GitHub Actions 배포 때만 자동 번역
