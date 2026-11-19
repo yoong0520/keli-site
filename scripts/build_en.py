@@ -161,7 +161,9 @@ def translate_batch(items, url):
                 arr = json.loads(r.read().decode('utf-8', 'replace')).get('items')
             if isinstance(arr, list) and len(arr) == len(items):
                 FAILS[0] = 0
-                return [x if (x and not HAN.search(x.replace('한국어', ''))) else '' for x in map(str, arr)]
+                out = [x if (x and not HAN.search(x.replace('한국어', ''))) else '' for x in map(str, arr)]
+                # 검색 목록처럼 소문자로 바꾼 원문은 번역도 소문자로
+                return [(y.lower() if (y and k == k.lower() and re.search('[a-z]', k)) else y) for k, y in zip(items, out)]
             print('  bad response length', file=sys.stderr); return None
         except urllib.error.HTTPError as e:
             body = e.read().decode('utf-8', 'replace')[:200]
