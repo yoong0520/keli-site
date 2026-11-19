@@ -60,6 +60,14 @@
 - 집계 방식: 쿠키 없음 · IP 저장 안 함(날마다 바뀌는 해시로 "하루 단위 고유 방문자"만 셈) · 검색 로봇과 관리자 화면 제외 · 400일 지난 기록 자동 삭제. 사무국 PC 는 "내 방문은 집계에서 제외"를 켜 두면 됩니다.
 - 사이트에 올라가 있는 `assets/site.js` 끝부분(gen/track.js)이 방문을 보냅니다. `SITE_URL`·`ALLOW_ORIGINS` 에 적힌 사이트에서 온 기록만 받습니다.
 
+## 9. 영어판 자동 번역 켜기 (2026-11-19 추가, 카드 불필요 · 비밀 값 추가 없음)
+새 공지·행사·보도처럼 한국어 문구가 새로 생기면, 사이트 배포(GitHub Actions) 때 이 서버의 `/api/translate` 로 보내 영어로 바꿉니다.
+1. 워커 → "Edit code" → `keli-admin.js` 를 통째로 다시 붙여 넣고 → "Deploy". (Edit code 에서 `api/translate` 가 검색되면 새 코드)
+2. 그 밖에 넣을 것은 없습니다. 번역 AI 는 7단계 챗봇과 같은 것(Workers AI `AI`, 또는 `ANTHROPIC_API_KEY`)을 씁니다.
+- 인증: 비밀번호 대신 GitHub 가 서명한 배포 작업 토큰(OIDC)을 확인합니다. `REPO`(yoong0520/keli-site) 저장소의 배포만 번역을 요청할 수 있어 외부에서 함부로 쓸 수 없습니다.
+- 사람이 검수한 번역(`content/i18n/en_base.json`)이 늘 먼저 쓰이고, 자동 번역은 그 밖의 새 문구에만 쓰입니다. 자동 번역이 어색하면 en_base.json 에 고친 번역을 넣으면 됩니다.
+- 워커가 옛 코드이거나 AI 가 연결되지 않았으면 번역만 건너뛰고(그 문구는 한국어로 남음) 배포는 그대로 됩니다.
+
 ## 확인 · 문제 해결
 - 서버 주소를 브라우저에서 열면 `{"ok":true,"service":"KELI admin server","setup":true}` 가 보여야 합니다(`setup:true` = 아직 관리자 없음).
 - "관리자 서버에 연결하지 못했습니다": 주소 오타, 또는 3단계 `ALLOW_ORIGINS` 에 `https://keli-aied.org` 가 없음.

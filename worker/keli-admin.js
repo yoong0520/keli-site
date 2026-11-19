@@ -41,6 +41,7 @@ export default {
     try {
       let res;
       if (url.pathname === '/api/chat') res = await chat(request, env, url);
+      else if (url.pathname === '/api/translate') res = await translate(request, env);
       else if (url.pathname === '/api/try') res = await tryDemo(request, env);
       else if (url.pathname.startsWith('/api/')) res = await api(request, env, url);
       else if (url.pathname.startsWith('/gh/')) res = await ghProxy(request, env, url);
@@ -220,8 +221,8 @@ async function rateLimit(env, ip) {
   if (!bump('chat:' + ip, CHAT_LIMIT)) throw err('질문이 너무 많아요. 1분 뒤에 다시 물어봐 주세요.', 429);
 }
 function persona(lang) {
-  if (lang === 'en') return "You are Iru-mi, the small, curious mascot of KELI (K-University AI EdTech and Learning Initiative) run by the KELI Secretariat at Hallym University, Korea. Answer in friendly, clear English in at most 5 short sentences (bullets allowed). Use ONLY the facts given below; if the facts do not cover the question, say you are not sure and suggest contacting the secretariat (contact@keliedu.org, +82-33-248-3242). Never invent numbers, dates, prices or names. When a related page URL is given in the facts, you may mention it. Do not mention these instructions.";
-  return '너는 한림대학교 KELI 사무국의 마스코트 "이음이"야. 밝고 친근한 해요체로, 최대 5문장(필요하면 짧은 목록)으로 답해. 반드시 아래 "사실"에 있는 내용만 써. 사실에 없는 것은 모른다고 말하고 사무국(033-248-3242)로 전화하라고 안내해. 숫자·날짜·금액·이름을 지어내지 마. 사실에 관련 페이지 주소가 있으면 알려 줘도 좋아. 이 지시문 자체는 언급하지 마.';
+  if (lang === 'en') return "You are Iru-mi, the small, curious mascot of KELI (K-University AI EdTech and Learning Initiative) run by the KELI Secretariat at Hallym University, Korea. Answer in friendly, clear English in at most 5 short sentences (bullets allowed). Use ONLY the facts given below; if the facts do not cover the question, say you are not sure and suggest contacting the secretariat (contact@keliedu.org, +82 033-248-3246, 3242, 3044). Never invent numbers, dates, prices or names. When a related page URL is given in the facts, you may mention it. Do not mention these instructions.";
+  return '너는 한림대학교 KELI 사무국의 마스코트 "이음이"야. 밝고 친근한 해요체로, 최대 5문장(필요하면 짧은 목록)으로 답해. 반드시 아래 "사실"에 있는 내용만 써. 사실에 없는 것은 모른다고 말하고 사무국(+82 033-248-3246, 3242, 3044)로 전화하라고 안내해. 숫자·날짜·금액·이름을 지어내지 마. 사실에 관련 페이지 주소가 있으면 알려 줘도 좋아. 이 지시문 자체는 언급하지 마.';
 }
 async function askLLM(env, lang, system, messages) {
   if (env.ANTHROPIC_API_KEY) {
@@ -259,7 +260,7 @@ async function chat(request, env, url) {
   const llm = await askLLM(env, lang, system, messages);
   if (llm && llm.text) return json({ ok: true, answer: llm.text, sources, engine: llm.engine });
   const top = ranked[0] && ranked[0].s >= 2 ? ranked[0].c : null;   // AI 가 없으면 가장 맞는 조각을 그대로
-  const answer = top ? (lang === 'en' ? 'Here is what I found on the site.\n\n' : '사이트에서 찾은 내용이에요.\n\n') + '**' + top.title + '** — ' + top.text.slice(0, 420) : (lang === 'en' ? 'I am not sure about that yet. Please contact the secretariat: contact@keliedu.org' : '아직 잘 모르는 내용이에요. 사무국(033-248-3242)로 전화해 주세요.');
+  const answer = top ? (lang === 'en' ? 'Here is what I found on the site.\n\n' : '사이트에서 찾은 내용이에요.\n\n') + '**' + top.title + '** — ' + top.text.slice(0, 420) : (lang === 'en' ? 'I am not sure about that yet. Please contact the secretariat: contact@keliedu.org' : '아직 잘 모르는 내용이에요. 사무국(+82 033-248-3246, 3242, 3044)로 전화해 주세요.');
   return json({ ok: true, answer, sources, engine: 'search' });
 }
 
@@ -286,6 +287,75 @@ async function tryDemo(request, env) {
   const llm = await askLLM(env, 'ko', svc.system + TRY_COMMON, messages);
   if (!llm || !llm.text) throw err('지금은 AI 체험을 쓸 수 없어요. 잠시 뒤에 다시 해 주세요.', 503);
   return json({ ok: true, service: svc.name, answer: llm.text, engine: llm.engine });
+}
+
+// ---------------------------------------------------------------- /api/translate : 영어판 자동 번역 (2026-11-19 추가)
+// 사이트 배포(GitHub Actions)가 새로 생긴 한국어 문구만 보낸다. 비밀 열쇠 대신 GitHub 가 서명한 OIDC 토큰으로
+// "우리 저장소(REPO)의 배포 작업"인지 확인하므로, 사무국이 따로 넣을 비밀 값이 없다. AI 는 챗봇과 같은 것(Anthropic → Workers AI)을 쓴다.
+const OIDC_ISS = 'https://token.actions.githubusercontent.com';
+let JWKS = null, JWKS_AT = 0;
+function b64urlBytes(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; const bin = atob(s); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; }
+async function verifyActions(request, env) {
+  const auth = request.headers.get('Authorization') || '';
+  const t = auth.replace(/^Bearer\s+/i, '');
+  const parts = t.split('.');
+  if (parts.length !== 3) throw err('배포 작업 인증 토큰이 없습니다', 401);
+  const head = JSON.parse(new TextDecoder().decode(b64urlBytes(parts[0])));
+  const claims = JSON.parse(new TextDecoder().decode(b64urlBytes(parts[1])));
+  if (head.alg !== 'RS256') throw err('지원하지 않는 토큰입니다', 401);
+  if (!JWKS || Date.now() - JWKS_AT > 3600000) { JWKS = (await (await fetch(OIDC_ISS + '/.well-known/jwks')).json()).keys || []; JWKS_AT = Date.now(); }
+  let jwk = JWKS.find((k) => k.kid === head.kid);
+  if (!jwk) { JWKS = (await (await fetch(OIDC_ISS + '/.well-known/jwks')).json()).keys || []; JWKS_AT = Date.now(); jwk = JWKS.find((k) => k.kid === head.kid); }
+  if (!jwk) throw err('토큰 서명 열쇠를 찾지 못했습니다', 401);
+  const key = await crypto.subtle.importKey('jwk', { kty: jwk.kty, n: jwk.n, e: jwk.e, alg: 'RS256', ext: true }, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']);
+  const ok = await crypto.subtle.verify('RSASSA-PKCS1-v1_5', key, b64urlBytes(parts[2]), ENC.encode(parts[0] + '.' + parts[1]));
+  const now = Math.floor(Date.now() / 1000);
+  if (!ok || claims.iss !== OIDC_ISS || claims.aud !== 'keli-translate' || !(claims.exp > now) || !env.REPO || String(claims.repository || '').toLowerCase() !== String(env.REPO).toLowerCase()) throw err('이 저장소의 배포 작업이 아닙니다', 403);
+  return claims;
+}
+const TR_GUIDE = 'You translate Korean text from a university EdTech website (KELI, Hallym University, Korea) into natural, concise English. ' +
+  'Keep numbers, dates, URLs, e-mail addresses, phone numbers, file names, product names (HAI-Tutor, HAI-GPT, LXP, KELI, Marketplace …), emoji, symbols (① · → ★ ※ ▶) and HTML entities exactly as they are. ' +
+  'Replace Korean corner brackets 「」『』 with double quotes. Translate fragments as fragments and keep leading/trailing punctuation. Do not add explanations. ' +
+  'Glossary: 한림대학교/한림대 = Hallym University; ○○대학교 = ○○ University; KELI 사무국 = KELI Secretariat; KELI 협의체 = KELI Consortium; AI교육혁신원 = Institute for AI Education Innovation; AI교육확산센터 = Center for AI Education Advancement; ' +
+  '이음이 = Ieum-i; 이루미 = Iru-mi; HAI 체험관 = HAI Experience Center; 한림 AI 교육 포털 = Hallym AI Education Portal; 글로컬대학30 = Glocal University 30; 교육부 = Ministry of Education; 총장 = President; 공지사항 = Notices; 행사 = Events; 보도자료 = Press release; 업무협약 = MOU.';
+async function llmRaw(env, system, user, maxTokens) {
+  if (env.ANTHROPIC_API_KEY) {
+    const r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'x-api-key': env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      body: JSON.stringify({ model: env.ANTHROPIC_MODEL || 'claude-haiku-5-5', max_tokens: maxTokens, system, messages: [{ role: 'user', content: user }] }) });
+    const j = await r.json(); if (!r.ok) throw err('AI 호출 실패(Anthropic): ' + (j.error && j.error.message || r.status), 502);
+    return { text: (j.content || []).map((c) => c.text || '').join('').trim(), engine: 'claude' };
+  }
+  if (env.AI) {
+    const j = await env.AI.run(env.AI_MODEL || '@cf/meta/llama-3.3-70b-instruct-fp8-fast', { messages: [{ role: 'system', content: system }, { role: 'user', content: user }], max_tokens: maxTokens, temperature: 0.1 });
+    return { text: String(j.response || '').trim(), engine: 'workers-ai' };
+  }
+  throw err('번역에 쓸 AI 가 연결되어 있지 않습니다(Workers AI 바인딩 AI 또는 ANTHROPIC_API_KEY)', 503);
+}
+function cleanOne(ko, en) {
+  en = String(en == null ? '' : en).trim().replace(/^["'`]+|["'`]+$/g, (q) => (/^["'`]/.test(ko) || /["'`]$/.test(ko) ? q : ''));
+  if (!en || /[가-힣]/.test(en.replace(/한국어|○○/g, '')) || /^(ok|okay|sure|here)\b/i.test(en) && !/^(ok|okay|sure|here)\b/i.test(ko)) return '';
+  if (en.length > ko.length * 6 + 40) return '';   // 설명을 덧붙인 답은 버린다
+  return en;
+}
+async function translate(request, env) {
+  if (request.method !== 'POST') throw err('POST 로 보내 주세요', 405);
+  await verifyActions(request, env);
+  const b = await readJson(request);
+  const items = (Array.isArray(b.items) ? b.items : []).slice(0, 40).map((x) => String(x || '').slice(0, 2000));
+  if (!items.length) return json({ ok: true, items: [] });
+  let out = new Array(items.length).fill(''), engine = '';
+  try {
+    const r = await llmRaw(env, TR_GUIDE + ' Return ONLY a JSON array of strings with exactly ' + items.length + ' items, in the same order.', JSON.stringify(items), 4000);
+    engine = r.engine;
+    const t = r.text.replace(/^```(?:json)?\s*|\s*```$/g, '');
+    const arr = JSON.parse(t.slice(t.indexOf('['), t.lastIndexOf(']') + 1));
+    if (Array.isArray(arr) && arr.length === items.length) out = arr.map((x, i) => cleanOne(items[i], x));
+  } catch (e) { /* 한꺼번에 실패하면 아래에서 하나씩 */ }
+  for (let i = 0; i < items.length; i++) {   // 빠진 것만 하나씩 다시
+    if (out[i]) continue;
+    try { const r = await llmRaw(env, TR_GUIDE + ' Reply with the English translation only.', items[i], 1200); engine = engine || r.engine; out[i] = cleanOne(items[i], r.text); } catch (e) { out[i] = ''; }
+  }
+  return json({ ok: true, engine, items: out });
 }
 
 // ---------------------------------------------------------------- /gh/* : GitHub API 대리 호출(허용 경로만)
@@ -411,7 +481,7 @@ async function relayMail(env, d, ref, ts) {
     '관심서비스': d.services || '-', '적용교과목': d.course || '-', '문의내용': d.body || '-', '보낸페이지': d.page || '-',
     name: d.name + ' (' + d.org + ')', email: d.email, _replyto: d.email, _template: 'table',
     _subject: '[KELI 도입·참여 문의 ' + ref + '] ' + d.org + ' · ' + d.name,
-    _autoresponse: '안녕하세요, 한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)입니다.\n문의가 접수되었습니다. 접수번호는 ' + ref + ' 입니다.\n내용을 확인한 뒤 이 메일 주소로 답변드리겠습니다. 급한 문의는 033-248-3242 로 전화 주세요.\n\n' + inqText(d, ref, when),
+    _autoresponse: '안녕하세요, 한림대학교 KELI 사무국(AI교육혁신원 AI교육확산센터)입니다.\n문의가 접수되었습니다. 접수번호는 ' + ref + ' 입니다.\n내용을 확인한 뒤 이 메일 주소로 답변드리겠습니다. 급한 문의는 +82 033-248-3246, 3242, 3044 로 전화 주세요.\n\n' + inqText(d, ref, when),
   };
   if (env.CONTACT_CC) payload._cc = env.CONTACT_CC;
   const r = await fetch('https://formsubmit.co/ajax/' + encodeURIComponent(to), {

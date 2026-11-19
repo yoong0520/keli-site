@@ -9,8 +9,7 @@ on:
 permissions:
   contents: read
   pages: write
-  id-token: write
-  models: read   # 영어판 번역(GitHub Models)
+  id-token: write   # Pages 배포 + 영어판 자동 번역(KELI 워커가 이 토큰으로 저장소 확인)
 concurrency:
   group: pages
   cancel-in-progress: true
@@ -52,12 +51,12 @@ jobs:
           path: content/i18n/en.json
           key: en-i18n-${{ github.run_id }}
           restore-keys: en-i18n-
-      - name: Build English pages (en-*.html) — new strings via GitHub Models
+      - name: Build English pages (en-*.html) — new strings via KELI worker /api/translate
         run: python3 scripts/build_en.py
         timeout-minutes: 20
         continue-on-error: true   # 번역이 실패해도 사이트 배포는 계속
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EN_BUDGET: '60'
       - name: Save English translation cache
         if: always()
         uses: actions/cache/save@v4

@@ -2,8 +2,9 @@
 """영어판 페이지 만들기 — gen/gen2.py 가 만든 한국어 페이지(*.html)마다 영어판 en-<페이지>.html 을 만든다.
 
 - 페이지의 한국어 문구(본문 글자, 안내 글, 버튼, 체험 화면 속 글자, 화면 스크립트 속 글자)를 모아 번역한다.
-- 번역은 content/i18n/en.json 에 쌓아 두고 다시 쓴다. 새 문구만 GitHub Models(AI 번역)로 번역한다
-  (GITHUB_TOKEN 이 있고 models 권한이 있을 때). 번역하지 못한 문구는 한국어 그대로 둔다(배포는 멈추지 않는다).
+- 검수한 번역은 content/i18n/en_base.json, 자동 번역은 content/i18n/en.json(Actions 캐시)에 쌓아 두고 다시 쓴다.
+  새 문구만 KELI 관리자 서버(Cloudflare 워커)의 /api/translate 로 자동 번역한다(배포 작업의 OIDC 토큰으로 인증).
+  번역하지 못한 문구는 한국어 그대로 둔다(배포는 멈추지 않는다).
 - 영어판 안의 링크는 영어판끼리 이어지고, ENG 단추는 KOR(같은 페이지의 한국어판)로 바뀐다.
 - 사람이 고친 번역은 content/i18n/en_fix.json 에 { "한국어": "English" } 로 넣으면 그것이 먼저 쓰인다.
 """
@@ -130,42 +131,48 @@ def _plain(val, fn):
 # ---------------------------------------------------------------- 번역(GitHub Models)
 FAILS = [0]   # 번역 서버가 계속 실패하면 멈추고, 번역 못 한 글자는 한국어로 둔 채 배포를 이어 간다
 
-def translate_batch(items, token):
-    if FAILS[0] >= 4:
+def site_api():
+    try:
+        return (json.load(open(os.path.join(ROOT, 'content', 'site.json'), encoding='utf-8')).get('admin') or {}).get('api', '')
+    except Exception:
+        return ''
+
+
+def oidc_token():
+    """GitHub Actions 가 서명한 신분증(OIDC). 워커가 이것으로 '우리 저장소의 배포 작업'인지 확인한다."""
+    u, t = os.environ.get('ACTIONS_ID_TOKEN_REQUEST_URL'), os.environ.get('ACTIONS_ID_TOKEN_REQUEST_TOKEN')
+    if not (u and t): return None
+    req = urllib.request.Request(u + '&audience=keli-translate', headers={'Authorization': 'Bearer ' + t})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.loads(r.read())['value']
+
+
+def translate_batch(items, url):
+    """KELI 관리자 서버(Cloudflare 워커)의 /api/translate 로 보낸다. 실패하면 None(한국어 그대로 둠)."""
+    if FAILS[0] >= 3:
         return None
-    prompt = ('Translate each Korean UI/web text in the JSON array into natural, concise English for a university EdTech website. '
-              'Return ONLY a JSON array of the same length and order. Keep numbers, dates, URLs, file names, product names, emoji, '
-              'symbols like ①·→★ and any HTML entities as they are. Replace Korean corner brackets 「」 with double quotes. '
-              'If an item is a fragment, translate it as a fragment. Do not add explanations.\n' + GLOSSARY + '\n\n' + json.dumps(items, ensure_ascii=False))
-    body = json.dumps({'model': MODEL, 'temperature': 0.1, 'messages': [{'role': 'user', 'content': prompt}]}).encode()
-    for attempt in range(5):
-        req = urllib.request.Request('https://models.github.ai/inference/chat/completions', data=body,
-                                     headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'Accept': 'application/json'})
+    for attempt in range(3):
         try:
-            with urllib.request.urlopen(req, timeout=120) as r:
-                raw = r.read().decode('utf-8', 'replace')
-            try:
-                txt = json.loads(raw)['choices'][0]['message']['content'].strip()
-            except Exception:
-                print('  bad response:', raw[:300].replace('\n', ' '), file=sys.stderr)
-                FAILS[0] += 1
-                return None
-            txt = re.sub(r'^```(?:json)?\s*|\s*```$', '', txt)
-            arr = json.loads(txt)
+            tok = oidc_token()
+            if not tok: FAILS[0] = 99; return None
+            req = urllib.request.Request(url, data=json.dumps({'items': items}, ensure_ascii=False).encode('utf-8'),
+                                         headers={'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json', 'Origin': 'https://keli-aied.org', 'User-Agent': 'KELI-build'})
+            with urllib.request.urlopen(req, timeout=180) as r:
+                arr = json.loads(r.read().decode('utf-8', 'replace')).get('items')
             if isinstance(arr, list) and len(arr) == len(items):
-                return [str(x) for x in arr]
-            print('  length mismatch', len(arr), len(items), file=sys.stderr)
-            return None
+                FAILS[0] = 0
+                return [x if (x and not HAN.search(x.replace('한국어', ''))) else '' for x in map(str, arr)]
+            print('  bad response length', file=sys.stderr); return None
         except urllib.error.HTTPError as e:
-            wait = int(e.headers.get('retry-after') or 0) or (20 * (attempt + 1))
-            print('  http', e.code, 'wait', wait, file=sys.stderr)
-            if e.code in (401, 403) or wait > 600:
-                return None
-            time.sleep(wait)
+            body = e.read().decode('utf-8', 'replace')[:200]
+            print('  http', e.code, body, file=sys.stderr)
+            if e.code in (401, 403, 404, 405, 503):   # 워커가 아직 옛 코드이거나 AI 가 없음 → 이번 배포에서는 그만
+                FAILS[0] = 99; return None
+            FAILS[0] += 1
+            if FAILS[0] >= 3: return None
+            time.sleep(5 * (attempt + 1))
         except Exception as e:
-            print('  error', e, file=sys.stderr); FAILS[0] += 1; time.sleep(3)
-        if FAILS[0] >= 4:
-            return None
+            print('  error', e, file=sys.stderr); FAILS[0] += 1; time.sleep(5)
     return None
 
 
@@ -175,7 +182,7 @@ def fill(missing, cache, token, budget):
     def flush():
         nonlocal batch, size, sent
         if not batch: return
-        if sent >= budget or FAILS[0] >= 4: batch, size = [], 0; return
+        if sent >= budget or FAILS[0] >= 3: batch, size = [], 0; return
         res = translate_batch(batch, token); sent += 1
         if res is None and len(batch) > 1:   # 한꺼번에 실패하면 반씩 나눠 다시
             half = len(batch) // 2; a, b = batch[:half], batch[half:]
@@ -188,7 +195,7 @@ def fill(missing, cache, token, budget):
         json.dump(cache, open(CACHE, 'w', encoding='utf-8'), ensure_ascii=False, indent=0, sort_keys=True)
         print(f'  translated {len(cache)} total', flush=True)
     for k in missing:
-        if size + len(k) > 2500 or len(batch) >= 60:
+        if size + len(k) > 2000 or len(batch) >= 25:
             flush()
         batch.append(k); size += len(k)
     flush()
@@ -263,11 +270,13 @@ def main():
     walk_js(site_js, collect)
     missing = [k for k in need if k not in cache and k not in fix and not pattern(k, lambda x: fix.get(x) or cache.get(x))]
     print(f'pages {len(pages)} · strings {len(need)} · cached {len(need) - len(missing)} · new {len(missing)}', flush=True)
-    token = os.environ.get('GITHUB_TOKEN') or os.environ.get('GH_TOKEN')
-    if missing and token and os.environ.get('EN_MT', '') == '1':   # 자동 번역 서버는 EN_MT=1 일 때만(GitHub Models 는 2026년 서비스 종료로 응답하지 않음)
-        fill(missing, cache, token, int(os.environ.get('EN_BUDGET', '140')))
+    url = os.environ.get('TRANSLATE_URL') or ((site_api().rstrip('/') + '/api/translate') if site_api() else '')
+    if missing and url and os.environ.get('ACTIONS_ID_TOKEN_REQUEST_URL'):   # GitHub Actions 배포 때만 자동 번역
+        print(f'  auto-translate {len(missing)} new strings via {url}', flush=True)
+        fill(missing, cache, url, int(os.environ.get('EN_BUDGET', '60')))
+        if FAILS[0] >= 3: print('  auto-translate stopped (worker not ready?) — untranslated strings stay Korean', flush=True)
     elif missing:
-        print('  no token: untranslated strings stay Korean', flush=True)
+        print('  (local build) untranslated strings stay Korean', flush=True)
     json.dump(cache, open(CACHE, 'w', encoding='utf-8'), ensure_ascii=False, indent=0, sort_keys=True)
 
     def tr(t):
