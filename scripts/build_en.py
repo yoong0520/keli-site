@@ -306,7 +306,7 @@ def main():
         h = open(os.path.join(ROOT, p), encoding='utf-8').read()
         e = walk_html(h, tr)
         e = re.sub(r'(href=")([a-z0-9_-]+\.html)((?:#[^"]*)?")', link, e)   # 영어판끼리 잇기(먼저)
-        e = re.sub(r'<a class="txt" href="en[^"]*" data-lang-switch>ENG</a>', f'<a class="txt" href="{p}" lang="ko">KOR</a>', e)
+        e = re.sub(r'<a class="txt( lang)?"[^>]*data-lang-switch>ENG</a>', lambda m: f'<a class="txt{m.group(1) or ""}" href="{p}" lang="ko" aria-label="한국어">KOR</a>', e)
         e = re.sub(r'<a href="en[^"]*" data-lang-switch>English</a>', f'<a href="{p}" lang="ko">한국어</a>', e)
         e = e.replace('<a href="en.html">English</a>', f'<a href="{p}" lang="ko">한국어</a>')
         e = re.sub(r'("page":\s*")([a-z0-9_-]+\.html)(")', link, e)

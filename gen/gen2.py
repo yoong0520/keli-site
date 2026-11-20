@@ -439,6 +439,8 @@ a.btn.ghost, .util a.btn.ghost { color: var(--fg); }
 html.mnav-lock { overflow: hidden; } body.mnav-on .kchat-fab, body.mnav-on .kchat { display: none !important; }
 
 @media (max-width: 860px) { .nav, .util .txt { display: none; } .burger { display: inline-flex; align-items: center; justify-content: center; } }
+@media (max-width: 860px) { .util .txt.lang { display: inline-flex; align-items: center; height: 32px; padding: 0 11px; border: 1px solid var(--line, #d9dde5); border-radius: 999px; font-size: 13px; font-weight: 700; letter-spacing: .02em; } }
+@media (max-width: 360px) { .util .txt.lang { padding: 0 8px; font-size: 12px; } .util .btn.sm { padding-left: 12px; padding-right: 12px; } }
 /* sections */
 .sec { padding-block: clamp(64px, 9vw, 120px); }
 .sec.alt { background: var(--bg2); }
@@ -534,7 +536,7 @@ details.li .body img, details.li .body iframe { max-width: 100%; border-radius: 
 .step strong { font-size: 19px; }
 .step p { font-size: 15px; color: var(--muted); }
 @media (max-width: 1100px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .steps { grid-template-columns: minmax(0, 1fr); } .step { overflow-wrap: anywhere; } }
 /* tables */
 .tbl-wrap { overflow-x: auto; }
 table.tbl { width: 100%; border-collapse: collapse; font-size: 15px; }
@@ -555,6 +557,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .chk input { width: 18px; height: 18px; margin-top: 4px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .nowrap { white-space: nowrap; letter-spacing: -.02em; font-size: .93em; }
+html[lang=en] .nowrap { white-space: normal; }
 .chipgrps { display: flex; flex-direction: column; gap: 14px; }
 .vid { display: flex; flex-direction: column; gap: 12px; }
 .vid-play { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; padding: 0; border-radius: 18px; overflow: hidden; background: #000; cursor: pointer; }
@@ -1464,7 +1467,7 @@ def header(current):
 <nav class="nav" aria-label="{'Main menu' if en else '주요 메뉴'}">{links}</nav>
 <div class="util">
 <a class="ico txt" href="search.html" aria-label="{'Search' if en else '검색'}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></a>
- {'<a class="txt" href="index.html" lang="ko">KOR</a>' if en else '<a class="txt" href="' + ('en.html' if current == 'index.html' else 'en-' + current) + '" data-lang-switch>ENG</a>'}
+ {'<a class="txt lang" href="index.html" lang="ko" aria-label="한국어">KOR</a>' if en else '<a class="txt lang" aria-label="English" href="' + ('en.html' if current == 'index.html' else 'en-' + current) + '" data-lang-switch>ENG</a>'}
 <a class="btn sm" href="{'#contact' if en else 'join.html#inquiry'}">{'Contact us' if en else '도입 문의'}</a>
 <button class="burger" aria-label="{'Open menu' if en else '메뉴 열기'}" aria-expanded="false" aria-controls="mnav"><svg class="b-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="b-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 </div></div>
