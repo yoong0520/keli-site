@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """KELI 플랫폼 v2 사이트 생성기 — 리플렛 기준 · 메뉴 5 · 페이지 12 · 게시판 6 · Apple/Samsung 톤"""
-import hashlib, os, html, json, re, shutil
+import hashlib, os, html, json, re, shutil, datetime
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # 저장소 루트(gen/의 상위)
 OUT = BASE
@@ -975,7 +975,7 @@ body.noscroll { overflow: hidden; }
 .more::after { display: inline-block; white-space: pre; transition: transform .15s ease; } .more:hover::after { transform: translateX(3px); }
 .util .ico { transition: background .15s ease, transform .15s ease; } .util .ico:hover { transform: scale(1.06); }
 .vid-play .play { transition: transform .2s ease; } .vid-play:hover .play { transform: scale(1.08); }
-.cover { margin: 0 0 28px; } .cover img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 20px; display: block; background: var(--bg2); }
+.cover { margin: 0 0 28px; } .cover-src { margin-top: 8px; font-size: 13px; color: var(--muted); text-align: right; } .cover img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 20px; display: block; background: var(--bg2); }
 .li-thumb { display: block; width: 128px; aspect-ratio: 16 / 10; border-radius: 12px; overflow: hidden; background: var(--bg2); flex: 0 0 auto; } .li-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .li.li-ev { grid-template-columns: auto 1fr auto; }
 .li-thumb-ph { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0B5CFF, #4A8BFF); color: #fff; font-size: 12px; font-weight: 700; text-align: center; padding: 6px; }
@@ -1906,6 +1906,31 @@ for _u in UNN_ITEMS:
     _u['src'] = 'unn'
 PRESS_ALL = sorted(PRESS_ITEMS + UNN_ITEMS, key=dkey, reverse=True)   # 한림대 보도자료 + 한국대학신문, 최신순
 
+# 행사 사진이 없으면(원본 게시판의 기본 마스코트 그림) 같은 행사를 다룬 한림대 보도자료의 대표 사진을 쓴다 (2026-11-24 유은님 지시)
+_EV_STOP = {'KELI', 'MOU', '업무협약', '협약', '체결', '한림대학교', '한림대', '방문', '행사', '개최', '및', '참여', '협의', '추진', '기관', '대학교', '협의체'}
+def _ev_tokens(t):
+    return [w for w in re.findall(r'[가-힣A-Za-z0-9]+', re.sub(r'\(.*?\)', ' ', t or '')) if len(w) >= 3 and w not in _EV_STOP and not w.isdigit()]
+def _ev_day(it):
+    m = re.search(r'(\d{4})[.-](\d{2})[.-](\d{2})', str(it.get('start') or it.get('posted') or it.get('date') or ''))
+    return datetime.date(*map(int, m.groups())) if m else None
+def _press_photo_for(ev):
+    d0, toks = _ev_day(ev), _ev_tokens(ev.get('title'))
+    if not d0 or not toks: return None
+    best = None
+    for p in PRESS_ITEMS:
+        d = _ev_day(p)
+        if not p.get('thumb') or not d or not (-1 <= (d - d0).days <= 30): continue
+        hay = (p.get('title') or '') + ' ' + re.sub(r'<[^>]+>', ' ', p.get('body_html') or '')[:1500]
+        score = sum(1 for w in toks if w in hay)
+        if score and (not best or (score, -abs((d - d0).days)) > best[0]): best = ((score, -abs((d - d0).days)), p)
+    return best and best[1]
+for _ev in FEED.get('items', []):
+    if _ev.get('thumb') and '/mascot/' not in str(_ev.get('thumb_remote') or ''): continue
+    _p = _press_photo_for(_ev)
+    if _p:
+        _ev['thumb'] = _p['thumb']; _ev['thumb_from'] = {'title': _p.get('title', ''), 'href': f'press-{_p["id"]}.html'}
+        print('event photo from press:', _ev['id'], '<-', _p['id'])
+
 def pr_href(it):
     return it['url'] if it.get('src') == 'unn' else f'press-{it["id"]}.html'
 def pr_ext(it):
@@ -2834,7 +2859,7 @@ def page_feed_event(it):
 <div class="chips" style="justify-content:center"><span class="chip">{E(it.get('when') or '')}</span><span class="chip">{E(it.get('place') or '')}</span>{ev_badge(it)}</div>
 </div></section>
 <section class="sec" style="padding-top:16px"><div class="wrap narrow" style="max-width:900px">
-{('<figure class="cover"><img src="' + it["thumb"] + '" alt="' + E(it["title"]) + ' 대표 사진"></figure>') if it.get('thumb') else ''}
+{('<figure class="cover"><img src="' + it["thumb"] + '" alt="' + E(it["title"]) + ' 대표 사진">' + ('<figcaption class="cover-src">사진: 보도자료 <a href="' + it["thumb_from"]["href"] + '">「' + E(it["thumb_from"]["title"]) + '」</a></figcaption>' if it.get('thumb_from') else '') + '</figure>') if it.get('thumb') else ''}
 <dl class="kv"><dt>게시일</dt><dd>{E(posted)}</dd><dt>일시</dt><dd>{E(it.get('when') or '')}</dd><dt>장소</dt><dd>{E(it.get('place') or '')}</dd><dt>출처</dt><dd>AI교육확산센터 소식 · <a href="{it['url']}" target="_blank" rel="noopener">원문 보기</a></dd></dl>
 {body_html}
 {related}
