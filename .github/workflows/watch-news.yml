@@ -1,0 +1,47 @@
+name: Watch news board (hourly)
+# 1시간마다 '소식' 게시판의 바깥 자료를 확인한다:
+#   행사(AI교육확산센터 [KELI] 글) · 보도자료(한림대, 제목에 KELI·켈리) · 언론 보도(한국대학신문) · 영상(유튜브)
+# 사이트에 올라가 있는 것과 내용이 다르면 그때만 사이트 전체 배포(pages.yml)를 바로 실행한다.
+# (공지사항은 관리자 페이지에서 저장하는 즉시 배포된다)
+on:
+  schedule:
+    - cron: '7 * * * *'   # 매시 7분, 1시간마다
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write   # pages.yml 실행(workflow_dispatch)
+concurrency:
+  group: watch-news
+  cancel-in-progress: false
+env:
+  TZ: Asia/Seoul
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch latest news sources
+        run: |
+          python3 scripts/fetch_events.py || true
+          python3 scripts/fetch_press.py || true
+          python3 scripts/fetch_unn.py || true
+          python3 scripts/fetch_videos.py || true
+      - name: Compare with the live site and deploy if changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          changed=0
+          for f in events.live.json press.live.json unn.live.json videos.live.json; do
+            curl -fsS -m 30 "https://keli-aied.org/assets/$f?t=$(date +%s)" -o "/tmp/live-$f" || { echo "$f: live copy unreadable"; continue; }
+            new=$(python3 scripts/news_sig.py "assets/$f" "$f"); old=$(python3 scripts/news_sig.py "/tmp/live-$f" "$f")
+            if [ -z "$new" ]; then echo "$f: fetch returned nothing, skip"; continue; fi
+            if [ "$new" != "$old" ]; then echo "$f changed: $old -> $new"; changed=1; else echo "$f: no change"; fi
+          done
+          if [ "$changed" = 1 ]; then
+            if gh run list --workflow pages.yml --json status -q '.[].status' | grep -qE 'in_progress|queued'; then
+              echo "a deploy is already running — it will pick up the new items"
+            else
+              gh workflow run pages.yml --ref main && echo "deploy started"
+            fi
+          fi
