@@ -219,6 +219,8 @@ PATTERNS = [
     (r'(\d{4}\.\d{2}\.\d{2})\(([월화수목금토일])\)(.*)', lambda m: f'{m.group(1)} ({DOW[m.group(2)]}){m.group(3)}' if not re.search('[가-힣]', m.group(3)) else None),
 ]
 PATTERNS += [
+    (r'대학 (\d+)곳, 에듀테크 기업 (\d+)곳(?:, 협력 기관 (\d+)곳)?이 참여하고 있습니다\.', lambda m: f'{m.group(1)} universities, {m.group(2)} edtech companies' + (f' and {m.group(3)} partner institution' + ('s' if m.group(3) != '1' else '') if m.group(3) else '') + ' are taking part.'),
+
     (r'(\d[\d,]*)개', lambda m: m.group(1)),
     (r'(\d[\d,]*)건', lambda m: f'{m.group(1)} items'),
     (r'기준 (\d+)개\)\.', lambda m: f'— {m.group(1)} in total).'),

@@ -556,6 +556,7 @@ table.tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }
 .chk { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; }
 .chk input { width: 18px; height: 18px; margin-top: 4px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip.mou { display: inline-flex; align-items: center; gap: 6px; color: inherit; } a.chip.mou:hover { text-decoration: none; box-shadow: inset 0 0 0 1px var(--accent); } .mou-tag { display: inline-block; padding: 1px 7px; border-radius: 999px; background: #E8F0FF; color: var(--accent); font-size: 11px; font-weight: 700; line-height: 1.6; vertical-align: 1px; }
 .nowrap { white-space: nowrap; letter-spacing: -.02em; font-size: .93em; }
 html[lang=en] .nowrap { white-space: normal; }
 .chipgrps { display: flex; flex-direction: column; gap: 14px; }
@@ -1875,6 +1876,41 @@ def ev_status(it):
 def ev_href(it):
     return f'event-{it["id"]}.html'
 
+# ------------------------------------------------------------------ 협약 기관: 행사 게시판의 '협약·MOU 체결' 행사(진행·종료)에서 자동으로 뽑아 참여 기관에 더함 (2026-11-24)
+# 손볼 때는 content/partners.json 에 {"add": [{"name": "…", "kind": "대학|기업|기관"}], "skip": ["…"]} 를 적는다.
+def _org_key(n): return re.sub(r'\(.*?\)|[\s·]', '', n or '')
+def _org_kind(n):
+    k = _org_key(n)
+    if re.search(r'(대학교|대학|University)$', k): return '대학'
+    if re.search(r'(원|센터|재단|협회|청|부|공단|연구소|위원회|Centre|Center|Institute|Ministry)$', k): return '기관'
+    return '기업'
+def _mou_orgs(title):
+    t = re.sub(r'^\s*\[[^\]]*\]\s*', '', title or '')
+    if not re.search(r'협약|MOU', t): return []
+    head = re.split(r'\s*(?:KELI|켈리|업무\s*협약|협약|MOU|협의체)', t)[0]
+    head = re.sub(r'^(한림대학교|한림대)\s*[-–·,와과]?\s*', '', head).strip(' -–·,')
+    out = []
+    for n in re.split(r'\s*(?:·|,|/| 및 |&)\s*', head):
+        n = n.strip(' -–')
+        m = re.match(r'(.+?(?:대학교|대학|연구원|교육원|센터|재단|협회|공단|Centre|Center|University)(?:\([^)]*\))?)(?=\s|$)', n)
+        if m: n = m.group(1)   # '춘천교육대학교 에듀테크 허브 구축' → '춘천교육대학교'
+        elif re.search(r'^\d|구축|허브|사업|플랫폼|협력|기반|추진|참여|체결|행사|간담회|방문', n): continue   # 기관 이름이 아닌 말
+        if len(_org_key(n)) >= 2 and _org_key(n) not in ('한림대학교', '한림대'): out.append(n)
+    return out
+_PCONF = _load_json(os.path.join(OUT, 'content', 'partners.json'), {'add': [], 'skip': []})
+def _mou_partners():
+    seen = {_org_key(x) for x in UNIV + CORP} | {_org_key(x) for x in _PCONF.get('skip', [])}
+    out = []
+    for it in sorted(FEED_ITEMS, key=lambda x: x.get('start') or '', reverse=False):
+        if ev_status(it)[0] == 'upcoming': continue   # 협약식이 끝난(또는 진행 중인) 행사만
+        for n in _mou_orgs(it.get('title')):
+            if _org_key(n) in seen: continue
+            seen.add(_org_key(n)); out.append({'name': n, 'kind': _org_kind(n), 'href': ev_href(it), 'date': (it.get('start') or '')[:10]})
+    for a in _PCONF.get('add', []):
+        if a.get('name') and _org_key(a['name']) not in seen:
+            seen.add(_org_key(a['name'])); out.append({'name': a['name'], 'kind': a.get('kind') or _org_kind(a['name']), 'href': a.get('href', ''), 'date': a.get('date', '')})
+    return out
+
 def ev_badge(it):
     k, t = ev_status(it)
     return f'<span class="badge {"live" if k == "upcoming" else ""}" data-ev-status>{t}</span>'
@@ -2533,8 +2569,12 @@ def page_curriculum():
 def page_join():
     # 관심 서비스: 한림 AI 교육 포털의 서비스 목록(분류별)에서 자동 생성 — 통합 플랫폼(KELI·HAI-AI)은 제외
     svc_opts, svc_when = svc_opts_html()
-    univ = ''.join(f'<span class="chip">{E(u)}</span>' for u in UNIV)
-    corp = ''.join(f'<span class="chip">{E(c)}</span>' for c in CORP)
+    MOU = _mou_partners()
+    def _mchip(m): return (f'<a class="chip mou" href="{m["href"]}" title="협약 체결 행사 보기">' if m['href'] else '<span class="chip mou">') + f'{E(m["name"])}<span class="mou-tag">협약</span>' + ('</a>' if m['href'] else '</span>')
+    univ = ''.join(f'<span class="chip">{E(u)}</span>' for u in UNIV) + ''.join(_mchip(m) for m in MOU if m['kind'] == '대학')
+    corp = ''.join(f'<span class="chip">{E(c)}</span>' for c in CORP) + ''.join(_mchip(m) for m in MOU if m['kind'] == '기업')
+    inst = ''.join(_mchip(m) for m in MOU if m['kind'] == '기관')
+    n_u, n_c, n_i = len(UNIV) + sum(m['kind'] == '대학' for m in MOU), len(CORP) + sum(m['kind'] == '기업' for m in MOU), sum(m['kind'] == '기관' for m in MOU)
     body = crumb((None, 'KELI 협의체 참여')) + f'''
 <section class="hero" style="padding-top:48px"><div class="wrap">
 <span class="eyebrow">KELI 협의체 참여</span>
@@ -2571,10 +2611,11 @@ def page_join():
 </div></section>
 
 <section class="sec" id="members"><div class="wrap">
-<div class="head"><h2>함께하는 기관.</h2><p class="lead">대학 {len(UNIV)}곳, 에듀테크 기업 {len(CORP)}곳이 참여하고 있습니다.</p></div>
+<div class="head"><h2>함께하는 기관.</h2><p class="lead">대학 {n_u}곳, 에듀테크 기업 {n_c}곳{f', 협력 기관 {n_i}곳' if n_i else ''}이 참여하고 있습니다.</p></div>
 <h3 style="margin-bottom:12px">대학</h3><div class="chips" style="margin-bottom:28px">{univ}</div>
-<h3 style="margin-bottom:12px">에듀테크 기업</h3><div class="chips">{corp}</div>
-<p class="note" style="margin-top:16px">2026. 10. 기준 KELI 포털 파트너 목록. 가입·탈퇴에 따라 갱신됩니다.</p>
+<h3 style="margin-bottom:12px">에듀테크 기업</h3><div class="chips"{' style="margin-bottom:28px"' if inst else ''}>{corp}</div>
+{f'<h3 style="margin-bottom:12px">협력 기관</h3><div class="chips">{inst}</div>' if inst else ''}
+<p class="note" style="margin-top:16px">2026. 10. 기준 KELI 포털 파트너 목록입니다. <span class="mou-tag">협약</span> 표시는 행사 게시판의 협약 체결 행사에서 자동으로 더한 기관입니다. 가입·탈퇴에 따라 갱신됩니다.</p>
 </div></section>
 
 <section class="sec alt" id="inquiry"><div class="wrap">
