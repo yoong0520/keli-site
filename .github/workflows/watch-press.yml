@@ -1,9 +1,9 @@
 name: Watch press (near real-time)
-# 15분마다 한림대 보도자료(제목에 KELI·켈리)와 한국대학신문 기사를 확인해,
+# 1시간마다 한림대 보도자료(제목에 KELI·켈리)와 한국대학신문 기사를 확인해,
 # 사이트에 올라가 있는 목록과 다르면 그때만 사이트 전체 배포(pages.yml)를 바로 실행한다.
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '7 * * * *'   # 매시 7분, 1시간마다
   workflow_dispatch:
 permissions:
   contents: read
