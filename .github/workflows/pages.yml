@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment2.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - name: Install Pillow (image resizing for imported photos)
@@ -68,4 +68,10 @@ jobs:
         with:
           path: .
       - id: deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true   # GitHub 쪽 일시 오류(아티팩트를 못 찾음)가 가끔 있어 한 번 더 시도
+      - if: steps.deployment.outcome == 'failure'
+        run: sleep 45
+      - id: deployment2
+        if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v4
