@@ -3096,7 +3096,7 @@ def walk_modal_html(only=None):
 <div class="walk-side"><div class="walk-dots"></div><div class="fd-q"><img src="media/mascot/eumi.png" alt="" class="fd-av walk-av"><div class="fd-bubble" aria-live="polite"><span class="fd-who walk-step"></span><p class="walk-h"></p><p class="small walk-t"></p><div class="walk-opts" hidden></div><button type="button" class="walk-hint" hidden>💡 힌트 보기</button></div></div>
 <div class="walk-end" hidden></div>
 <div class="walk-nav"><button type="button" class="btn ghost sm walk-prev">← 이전</button><button type="button" class="btn sm walk-next">다음 →</button></div>
-<p class="try-foot" style="padding:0;margin-top:10px">화면 출처: 서비스 매뉴얼·소개자료(실제 화면을 본뜬 체험용이며 입력한 내용은 저장되거나 전송되지 않아요) <a class="walk-orig" href="#" target="_blank" rel="noopener" hidden>원본 화면 보기 ↗</a></p></div></div>
+<p class="try-foot" style="padding:0;margin-top:10px">화면 출처: 각 서비스의 사용 매뉴얼(매뉴얼 화면과 순서를 그대로 따라 만든 체험용이며 입력한 내용은 저장되거나 전송되지 않아요) <a class="walk-orig" href="#" target="_blank" rel="noopener" hidden>매뉴얼 원본 보기 ↗</a></p></div></div>
 </div></div>
 <script>window.KELI_WALK={json.dumps(walk_data(only), ensure_ascii=False).replace('</', '<\\/')};</script><script>{WALK_JS}</script>"""
 WALK_JS = r"""(function(){

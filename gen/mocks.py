@@ -143,117 +143,216 @@ def _docs():
 
 # ------------------------------------------------------------------ HAI-Tutor (교수용 AI 조교 매뉴얼)
 def _tutor():
+    # AI 조교(HAI-Tutor) 사용자 매뉴얼 Ver 2.0 (01 로그인 ~ 07 마이페이지) 순서대로
     TH = '--mk:#2f6fed;--mk-side:#0b2a66'
-    HIST = ['이번 학기 수업계획서를 생성해 주세요.', '창의적인 프론트엔드 기술에 대해 쉬운…', '메모리 관리에 관해 쉬운 단답식 1문제…', '메모리 관리에 관해 어려운 객관식 3문…']
-    def sd(active):
-        return side('AI 조교 <i>v1.1.4</i>', '', [('', [('new', 'chat', '새로운 대화'), ('src', 'doc', '소스 문서 관리'), ('con', 'edit', '콘텐츠 관리'), ('stu', 'user', '수강생 관리'), ('bank', 'chart', '문제출제 및 시험관리')])], active,
-                    user=('Test003 교수님', '교수'), go={'new': 1, 'bank': 3}, light=True, top='<div class="mk-course"><small>2025학년도 2학기</small><b>창의코딩-모두의웹</b></div>',
-                    mid='<span class="mk-grp">대화내역</span>' + ''.join(f'<span class="mk-hist">{h}</span>' for h in HIST))
+    HIST = ['이번 학기 수업계획서를 생성해 주세요.', '창의적인 프론트엔드 기술에 대해 쉬운…', '메모리 관리에 관해 쉬운 단답식 1문제…']
+    NAV = [('new', 'chat', '새로운 대화'), ('src', 'doc', '소스 문서 관리'), ('con', 'edit', '콘텐츠 관리'), ('stu', 'user', '수강생 관리'), ('exam', 'chart', '문제출제 및 시험관리')]
+    SUB = {'gen': '문제생성', 'bank': '문제은행', 'old': '기출 시험지', 'quiz': '퀴즈 관리', 'grade': '시험지 채점'}
+    def sd(active, sub=None):
+        mid = ''
+        if active == 'exam':
+            mid = ''.join(f'<span class="mk-nav" style="padding-left:30px;{"opacity:1;font-weight:700;background:#e8eefc;color:#1e3a8a" if k == sub else ""}">{t}</span>' for k, t in SUB.items())
+        h = side('AI 조교 <i>v1.1.4</i>', '', [('', NAV)], active, user=('홍길동 교수님', '교수'), light=True,
+                 top='<div class="mk-course"><small>← 나의 강의실 · 2025학년도 2학기</small><b>창의코딩-모두의웹</b></div><div class="mk-tabs mk-pill" style="margin:0 6px 6px"><button type="button" class="on">AI 조교</button><button type="button">코스웨어</button></div>',
+                 mid=mid + '<span class="mk-grp">대화내역</span>' + ''.join(f'<span class="mk-hist">{x}</span>' for x in HIST))
+        return h
     Q = '올린 자료로 쉬운 단답식 3개와 어려운 객관식 2개를 만들어 줘'
     def chat(answered, goal):
         hid = '' if answered else ' hidden'
         hello = '' if answered else ('<div class="mk-hello" data-hello><b>강의 준비에 필요한 <span style="color:var(--mk)">자료를 생성해 보세요</span></b><span>업로드한 강의 자료를 바탕으로 AI가 시험 문제, 수업 자료 등을 만들어 드립니다.</span>'
                                     '<div class="mk-chips"><button type="button" data-show="[data-guide]">' + ic('help', 14) + ' 더 똑똑한 문제 생성 가이드</button><button type="button" data-fill="' + Q + '">예시 요청 넣기</button></div>'
-                                    '<p class="mk-note" data-guide hidden><span>문제의 난이도, 개수, 유형을 함께 알려 주면 더 좋은 문항을 만들 수 있어요. 강의 자료를 먼저 올리면 그 자료를 근거로 만들어요.</span></p></div>')
+                                    '<p class="mk-note" data-guide hidden><span>문제의 형식·난이도·개수를 함께 알려 주면 더 좋은 문항을 만들 수 있어요. 강의 자료를 먼저 첨부하면 그 자료를 근거로 만들어요. 여러 파일과 이미지를 함께 첨부하거나 끌어다 놓아도 돼요.</span></p></div>')
         body = (demo(Q) + '<p><b>[객관식 · 어려움]</b> 다음 설명 중 \'과제별 특성 반영\' 기준에 해당하는 것을 고르세요.</p><p>A. 반복 없이 다양한 표현을 사용했다.<br>B. 서론-본론-결론이 명확하고 연결이 자연스럽다.<br>C. 문법적 오류가 적고 문장이 명확하다.<br>D. 논설문은 설득력, 설명문은 정보의 정확성과 다양성을 평가한다.</p><p><b>정답: D</b></p>'
-                '<p class="mk-ref">안내(요청 사항 확인) 위에 정리해 드린 문항들은 요청하신 쉬운 단답형 3개 + 어려운 객관식 2개 조건을 충족합니다. 원하시면 같은 기준으로 추가 문제도 더 만들어 드리겠습니다.</p>')
-        src = (f'<div class="mk-block" data-a{hid}><div class="mk-row"><span class="mk-lbl">원본 출처</span><span class="mk-pills"><button type="button" data-show="[data-saved]">파일로 저장</button></span></div>'
+                '<p class="mk-ref">요청하신 쉬운 단답형 3개 + 어려운 객관식 2개 조건에 맞춰 만들었습니다. 같은 기준으로 더 만들어 드릴까요?</p>')
+        src = (f'<div class="mk-block" data-a{hid}><div class="mk-row"><span class="mk-lbl">원본 출처</span><span class="mk-pills"><button type="button" data-show="[data-copied]">복사</button><button type="button" data-show="[data-saved]">파일로 저장</button></span></div>'
                f'<div class="mk-rowbtn" style="cursor:default"><span><span class="mk-filechip">{ic("doc", 14)}pro16_영작 평가 기준 안내.pdf</span></span><button type="button" class="mk-btn sm line" data-show="[data-open]"{" data-goal" if goal == "src" else ""}>열기</button></div>'
-               + toast('data-open', '출처 문서가 열렸어요. 답변의 근거가 된 원본 자료를 확인할 수 있어요. (체험판에서는 문서 창이 뜨지 않아요)') + toast('data-saved', '답변을 파일로 저장했어요. (체험판에서는 파일이 만들어지지 않아요)') + '</div>')
+               '<div class="mk-paper" data-open hidden><div class="mk-row"><b>pro16_영작 평가 기준 안내.pdf</b><span class="mk-badge">원본 문서</span></div><div class="mk-sheet"><p><b>영작 평가 기준</b></p><p>1. 과제별 특성 반영 — 논설문은 설득력, 설명문은 정보의 정확성과 다양성을 평가한다.</p><p>2. 구성 — 서론·본론·결론의 연결이 자연스러운지 본다.</p></div><p class="mk-ref">답변의 근거가 된 원본 문서가 오른쪽에 펼쳐져요.</p></div>'
+               + toast('data-copied', '답변을 복사했어요.') + toast('data-saved', '답변을 파일로 저장했어요. (체험판에서는 파일이 만들어지지 않아요)') + '</div>')
         main = (f'<div class="mk-log" id="mklog">{hello}{me(Q if answered else "", "data-qa" + hid)}{dots()}{ai(body, "data-a" + hid)}{src}</div>'
-                + inbar(Q, '메시지를 입력하세요…', goal == 'ask', pre=f'<span class="mk-ghost" title="강의 자료 올리기">{ic("clip", 16)}</span>', post='<span class="mk-chip" style="align-self:center">MODEL GPT 5.2</span>'))
+                + inbar(Q, '메시지를 입력하세요…', goal == 'ask', pre=f'<span class="mk-ghost" title="강의 자료 첨부">{ic("clip", 16)}</span>', post='<span class="mk-chip" style="align-self:center">MODEL GPT 5.2</span>'))
         return frame(TH, sd('new'), ('AI 조교', '새로운 대화'), main)
-    QS = [('단답형', '보통', '웹페이지 개발 시 불필요한 리소스가 과도하게 로드되어 메모리가 낭비되는 상황을 줄이기 위해 꼭 수행해야 할 작업 한 가지를 간단히 쓰시오.', '불필요한 리소스 제거',
-           '웹페이지에는 실제로 사용되지 않는 스크립트나 이미지 파일이 포함될 수 있는데, 이를 그대로 두면 메모리가 불필요하게 점유되고 로드 속도가 저하됩니다. 따라서 필요하지 않은 리소스를 적극적으로 제거하거나 최적화하여 메모리 사용을 효율화해야 합니다.'),
-          ('객관식', '보통', '다음 중 창의적인 프론트엔드 디자인에서 색상, 글꼴, 배치를 담당하는 기술은 무엇입니까?', '② CSS', 'CSS는 웹페이지의 시각적 요소를 꾸미고 배치하는 데 사용됩니다. HTML은 구조, JavaScript는 동적 기능, 데이터베이스는 백엔드와 관련됩니다.')]
-    def qcard(k, t, lv, q, a, ex):
-        return (f'<div class="mk-box" data-qc="{k}"{"" if k == 0 else " hidden"}><div class="mk-row"><span class="mk-pills"><span class="on">{t}</span><span>난이도 {lv}</span></span>'
-                f'<span class="mk-row"><button type="button" class="mk-btn sm" data-show="[data-add{k}]"{" data-goal" if k == 0 else ""}>이 문항만 추가</button><button type="button" class="mk-btn sm line" data-go="4">수정</button></span></div>'
-                f'<span class="mk-lbl">질문</span><p>{q}</p><span class="mk-lbl">정답</span><p><b>{a}</b></p><span class="mk-lbl">해설</span><p>{ex}</p>' + toast(f'data-add{k}', '문제은행에 추가했어요.') + '</div>')
+    def srcdoc():
+        F = [('1주차_웹의 이해.pdf', 'PDF', '2.1 MB', '업로드'), ('2주차_HTML 기초.pptx', 'PPT', '4.8 MB', '업로드'), ('강의영상_3주차.mp4', '영상', '182 MB', '업로드')]
+        main = ('<div class="mk-row"><div class="mk-h"><h3>소스 문서 관리</h3></div><button type="button" class="mk-btn" data-show="[data-up]" data-goal>' + ic('down', 14) + '소스 문서 업로드</button></div>'
+                '<p class="mk-ref">「소스 문서」는 챗봇이 답할 때 참고하는 모든 문서예요. 수업 자료와 강의 영상을 직접 올리고, 스마트리드 자료와 공지사항은 골라서 동기화할 수 있어요(개발 예정).</p>'
+                '<div class="mk-tabs mk-pill"><button type="button" class="on" data-on>직접 업로드</button><button type="button" data-on>스마트리드 자료</button><button type="button" data-on>스마트리드 공지사항</button></div>'
+                '<table class="mk-tbl"><tr><th>파일명</th><th>형식</th><th>크기</th><th>방식</th></tr>' + ''.join(f'<tr><td><b>{n}</b></td><td>{t}</td><td>{z}</td><td>{w}</td></tr>' for n, t, z, w in F)
+                + '<tr data-up hidden><td><b>4주차_CSS 레이아웃.pdf</b></td><td>PDF</td><td>3.2 MB</td><td><span class="mk-st">학습 완료</span></td></tr></table>'
+                + toast('data-up', '「4주차_CSS 레이아웃.pdf」를 올렸어요. 이제 챗봇이 이 자료를 근거로 답해요.'))
+        return frame(TH, sd('src'), ('AI 조교', '소스 문서 관리'), main)
+    QS = [('객관식', '어려움', "JavaScript에서 흔히 사용하는 'Mark-and-Sweep' 방식의 가비지 컬렉션에 대한 설명으로 옳은 것을 고르시오.", '2026.04.14'),
+          ('객관식', '쉬움', 'HTML에서 attribute(속성)에 대한 올바른 설명은 무엇인가?', '2026.04.24'),
+          ('객관식', '쉬움', '다음 중 창의적인 프론트엔드 디자인에서 색상, 글꼴, 배치를 담당하는 기술은 무엇입니까?', '2026.04.14'),
+          ('객관식', '보통', 'HTML, CSS, JavaScript 중 HTML의 주된 역할을 가장 적절하게 설명한 것은 무엇인가?', '2026.04.24')]
+    def gen():
+        main = ('<div class="mk-row"><div class="mk-h"><h3>문제생성</h3></div></div><div class="mk-box"><div class="mk-two"><div class="mk-f">문제 형식<div class="mk-seg" data-ft><button type="button" data-on>객관식</button><button type="button" data-on>OX형</button><button type="button" data-on>단답형</button><button type="button" data-on>서술형</button></div></div>'
+                '<div class="mk-f">난이도<div class="mk-seg" data-dl><button type="button" data-on>쉬움</button><button type="button" data-on>보통</button><button type="button" data-on>어려움</button></div></div></div>'
+                '<div class="mk-two"><label class="mk-f">문항 수<select><option>3개</option><option selected>5개</option><option>10개</option></select></label><label class="mk-f">키워드<input class="mk-in" value="CSS 박스 모델" aria-label="키워드"></label></div>'
+                '<p class="mk-demo" data-need hidden>문제 형식과 난이도를 하나씩 골라 주세요.</p><div class="mk-row end"><button type="button" class="mk-btn" data-allon="[data-ft],[data-dl]" data-wait="[data-gw]" data-show="[data-gq]" data-goal>바로 생성</button></div></div>'
+                '<p class="mk-note" data-gw hidden>' + ic('gear', 15) + '<span>문제를 만들고 있어요…</span></p>'
+                '<div class="mk-box" data-gq hidden><div class="mk-row"><b>생성된 문제 <small>5건</small></b><span class="mk-row"><span class="mk-btn sm line" style="cursor:default">문항 수정</span><span class="mk-btn sm dark" style="cursor:default">미등록 5건 일괄 등록</span></span></div>'
+                '<p><b>Q1.</b> CSS 박스 모델에서 요소의 테두리 바깥쪽 여백을 정하는 속성은?</p><p class="mk-opt on" style="cursor:default">margin</p><p class="mk-ref">한 문항씩 검토하고, 「미등록 문제 일괄 등록」을 누르면 문제은행에 한꺼번에 저장돼요.</p></div>')
+        return frame(TH, sd('exam', 'gen'), ('AI 조교', '문제생성'), main)
     def bank():
-        pager = ('<div class="mk-row"><span class="mk-pills"><button type="button" class="on" data-on data-hide="[data-qc]" data-show="[data-qc=\'0\']">1</button><button type="button" data-on data-hide="[data-qc]" data-show="[data-qc=\'1\']">2</button></span>'
-                 '<button type="button" class="mk-btn sm dark" data-show="[data-all]">미등록 2건 일괄 등록</button></div>')
-        main = ('<div class="mk-modal"><div class="mk-h"><h3>생성 문제</h3><span class="mk-badge">2건</span></div><p class="mk-ref">생성된 문제를 확인 및 수정하고 바로 문제은행에 추가할 수 있습니다.</p>' + pager
-                + ''.join(qcard(k, *x) for k, x in enumerate(QS)) + toast('data-all', '남은 문항을 모두 문제은행에 등록했어요.') + '</div>')
-        return frame(TH, sd('bank'), ('AI 조교', '생성 문제'), main)
-    def edit():
-        opts = ''.join(f'<button type="button" class="mk-opt{" on" if k == 1 else ""}" data-on>{k + 1}　{t}</button>' for k, t in enumerate(['HTML', 'CSS', 'JavaScript', '데이터베이스']))
-        main = ('<div class="mk-modal"><div class="mk-row"><div class="mk-h"><h3>생성 문제</h3><span class="mk-badge">문항 편집</span></div><span class="mk-row"><button type="button" class="mk-btn sm line">원래대로</button><button type="button" class="mk-btn sm dark" data-show="[data-saved]" data-goal>저장</button></span></div>'
-                '<div class="mk-two"><div class="mk-f">문제 유형<div class="mk-pills"><button type="button" class="on" data-on>객관식</button><button type="button" data-on>단답형</button><button type="button" data-on>빈칸 채우기</button><button type="button" data-on>서술형</button></div></div>'
-                '<label class="mk-f">난이도<select><option>쉬움</option><option selected>보통</option><option>어려움</option></select></label></div>'
-                '<label class="mk-f">질문<textarea>다음 중 창의적인 프론트엔드 디자인에서 색상, 글꼴, 배치를 담당하는 기술은 무엇입니까?</textarea></label>'
-                f'<div class="mk-f">선택지 (정답을 눌러 고르세요)<div class="mk-opts">{opts}</div></div>'
-                '<label class="mk-f">해설<textarea>CSS는 웹페이지의 시각적 요소를 꾸미고 배치하는 데 사용됩니다. HTML은 구조, JavaScript는 동적 기능, 데이터베이스는 백엔드와 관련됩니다.</textarea></label>'
-                + toast('data-saved', '수정한 내용을 저장했어요. 해설은 나중에 AI가 시험지를 채점할 때 쓰여요.') + '</div>')
-        return frame(TH, sd('bank'), ('AI 조교', '문항 편집'), main)
+        rows = ''.join(f'<tr data-on><td><span class="mk-cb"></span></td><td>{t}</td><td style="color:{"#dc2626" if d == "어려움" else ("#16a34a" if d == "쉬움" else "#2563eb")}">{d}</td><td>{q}</td><td>{dt}</td></tr>' for t, d, q, dt in QS)
+        main = ('<div class="mk-row"><div class="mk-h"><h3>문제은행 <span style="color:var(--mk)">34개의 문제</span></h3></div><span class="mk-row"><span class="mk-btn sm line" style="cursor:default">문제 불러오기</span><span class="mk-btn sm line" style="cursor:default">직접 생성</span></span></div>'
+                '<div class="mk-bar"><select aria-label="문제유형"><option>문제유형 전체</option></select><select aria-label="난이도"><option>문항 난이도 전체</option></select><label class="mk-search">' + ic('search', 15) + '<input type="search" placeholder="질문/정답/해설 검색" aria-label="검색" autocomplete="off"></label></div>'
+                '<div class="mk-quad3" style="grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)"><table class="mk-tbl" data-pick><tr><th></th><th>유형</th><th>난이도</th><th>문항</th><th>등록일</th></tr>' + rows + '</table>'
+                '<div class="mk-box"><div class="mk-row"><b>시험지 미리보기</b><span class="mk-chip">보관함 3</span></div><label class="mk-f">시험지 제목 *<input class="mk-in" id="mkexam" placeholder="예: 2학기 중간고사" aria-label="시험지 제목"></label>'
+                '<p class="mk-ref">왼쪽에서 문항을 누르면 「시험지에 추가」돼요. 배점은 직접 쓰거나 「균등배점」을 켜면 자동으로 들어가요.</p>'
+                '<div class="mk-row"><span class="mk-row"><span class="mk-tgl"></span><small>균등배점</small></span><b>총점 100점</b></div>'
+                '<p class="mk-demo" data-need hidden>문항을 하나 이상 고르고 시험지 제목을 써 주세요.</p>'
+                '<div class="mk-row end"><span class="mk-btn sm line" style="cursor:default">PDF 시험지 생성</span><button type="button" class="mk-btn sm dark" data-allon="[data-pick]" data-req="#mkexam" data-show="[data-qz]" data-goal>퀴즈 생성</button></div>'
+                + toast('data-qz', '퀴즈를 만들었어요. 「퀴즈 관리」에서 공개 여부와 일정을 정할 수 있어요.') + '</div></div>')
+        return frame(TH, sd('exam', 'bank'), ('AI 조교', '문제은행'), main)
+    def quiz():
+        main = ('<div class="mk-h"><h3>퀴즈 관리</h3></div><table class="mk-tbl"><tr><th>퀴즈명</th><th>문항</th><th>공개</th><th>응시 기간</th></tr>'
+                '<tr><td><b>2학기 중간 퀴즈</b></td><td>4</td><td><button type="button" class="mk-btn sm line" data-set="[data-pub]|공개" data-show="[data-sch]" data-goal><span data-pub>비공개</span></button></td><td><span data-sch hidden>2026.10.20 09:00 ~ 10.22 23:59</span></td></tr>'
+                '<tr><td>1주차 퀴즈</td><td>5</td><td><span class="mk-st">공개</span></td><td>2026.09.03 ~ 09.05</td></tr></table>'
+                '<div class="mk-box" data-sch hidden><b>퀴즈 일정 편집</b><div class="mk-two"><label class="mk-f">시작일<input class="mk-in" value="2026-10-20 09:00" aria-label="시작일"></label><label class="mk-f">종료일<input class="mk-in" value="2026-10-22 23:59" aria-label="종료일"></label></div><p class="mk-ref">정한 시작 일시부터 종료 일시까지 수강생이 퀴즈에 응시할 수 있어요.</p></div>')
+        return frame(TH, sd('exam', 'quiz'), ('AI 조교', '퀴즈 관리'), main)
+    def grade():
+        R = [('창의코딩_1주차 퀴즈(학생 A)', '0.93', '30점'), ('창의코딩_1주차 퀴즈(학생 B)', '0.95', '40점'), ('창의코딩_1주차 퀴즈(학생 C)', '0.89', '50점')]
+        rows = ''.join(f'<tr><td><b>{n}</b></td><td>5</td><td>{o}</td><td>{sc}</td><td><span class="mk-st">채점 완료</span></td><td>' + (f'<button type="button" class="mk-btn sm line" data-show="[data-sheet]" data-goal>시험지 열기</button>' if k == 0 else '<span class="mk-chip">시험지 열기</span>') + '</td></tr>' for k, (n, o, sc) in enumerate(R))
+        main = ('<div class="mk-h"><h3>시험지 채점</h3></div><p class="mk-ref">학생 시험지를 골라 OCR 결과를 검수하고 채점 현황을 빠르게 확인할 수 있어요.</p>'
+                '<div class="mk-stats"><div class="mk-stat"><small>응시자 수</small><b>3명</b></div><div class="mk-stat"><small>평균 점수</small><b>40.00점</b></div><div class="mk-stat"><small>최고 / 최저 점수</small><b>50점 / 30점</b></div></div>'
+                '<div class="mk-row"><small>● 신뢰도 높음 ● 정확도 낮음 — OCR 정확도가 낮으면 재검수·재채점을 권장해요.</small><span class="mk-btn sm dark" style="cursor:default">학생 시험지 업로드 →</span></div>'
+                '<table class="mk-tbl"><tr><th>시험지명(학생명)</th><th>문항수</th><th>OCR 신뢰도</th><th>채점 결과</th><th>상태</th><th></th></tr>' + rows + '</table>'
+                '<div class="mk-two" data-sheet hidden><div class="mk-sheet"><p><b>학생 시험지 (스캔)</b></p><p>1. margin ✔</p><p>2. ② CSS ✔</p><p>3. &lt;head&gt; ✘</p></div><div class="mk-box"><b>문항 상세 · 채점 근거</b><p><b>3번</b> 답안 「&lt;head&gt;」 → 0점</p><p class="mk-ref">근거: 해설에 따라 &lt;body&gt; 태그만 정답으로 인정. OCR 인식이 틀렸다면 여기서 직접 고쳐 다시 채점할 수 있어요.</p></div></div>')
+        return frame(TH, sd('exam', 'grade'), ('AI 조교', '시험지 채점'), main)
+    def stu():
+        main = ('<div class="mk-h"><h3>수강생 관리</h3></div><div class="mk-tabs"><button type="button" class="on" data-on data-hide="[data-qh]" data-show="[data-ph]">학습자 예습 · 복습 이력</button><button type="button" data-on data-hide="[data-ph]" data-show="[data-qh]" data-goal>학습자 퀴즈 이력</button><button type="button" data-on>대시보드</button></div>'
+                '<table class="mk-tbl" data-ph><tr><th>학생</th><th>예습</th><th>복습</th><th>AI 튜터 질문</th></tr><tr><td>학생 A</td><td>5회</td><td>3회</td><td>12회</td></tr><tr><td>학생 B</td><td>2회</td><td>1회</td><td>4회</td></tr></table>'
+                '<table class="mk-tbl" data-qh hidden><tr><th>학생</th><th>1주차 퀴즈</th><th>중간 퀴즈</th><th>제출</th></tr><tr><td>학생 A</td><td>80점</td><td>-</td><td><span class="mk-st">제출</span></td></tr><tr><td>학생 B</td><td>60점</td><td>-</td><td><span class="mk-st ing">미제출</span></td></tr></table>'
+                '<p class="mk-ref">수강생이 AI 튜터로 얼마나 예습·복습하는지, 퀴즈에 참여했는지와 성적까지 한눈에 볼 수 있어요.</p>')
+        return frame(TH, sd('stu'), ('AI 조교', '수강생 관리'), main)
     I = 'media/walk/hai-tutor/'
     return [
-        dict(title='사번으로 로그인해요', text='별도 회원가입 없이 ○○대학교 사번 ID와 비밀번호로 로그인해요. 아이디 저장 기능도 있어요.', do='「통합 로그인」 단추를 눌러 로그인해 보세요.', img=I + '1.jpg',
+        dict(title='사번으로 로그인해요', text='별도 회원가입 없이 ○○대학교 사번 ID와 비밀번호로 로그인해요. 아이디 저장 기능도 있어요. (매뉴얼 01)', do='「통합 로그인」 단추를 눌러 로그인해 보세요.', img=I + 'm1.jpg',
              ui=login(TH, ('UNIVERSITY AI TEACHING ASSISTANT', '교수 활동 지원 시스템', '검색부터 자료 생성까지 모두 가능한 AI 조교와의 대화를 시작해 보세요.', ['AI Chat', 'Lecture Prep', 'Smart Assist']),
                       ('SECURE ACCESS', 'Sign in'), [('아이디', '아이디', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', False, False), ('통합 로그인', True, True)])),
-        dict(title='강의 자료를 올리고 대화를 시작해요', text='입력창 왼쪽 클립 단추로 강의 자료를 올리면, 그 자료를 근거로 더 믿을 수 있는 답을 만들어 줘요. 「더 똑똑한 문제 생성 가이드」로 요청 요령도 볼 수 있어요.',
-             do='입력창에 요청을 쓰고 보내 보세요. 비워 둔 채 보내면 예시 요청이 입력돼요.', ui=chat(False, 'ask'), img=I + '2.jpg'),
-        dict(title='답변의 출처를 확인해요', text='답변 아래에 근거가 된 원본 자료가 표시돼요. 「열기」를 누르면 출처 문서를 바로 열어 볼 수 있고, 답변은 복사하거나 파일로 저장할 수 있어요.',
-             do='답변 아래 원본 출처의 「열기」를 눌러 보세요.', ui=chat(True, 'src'), img=I + '3.jpg'),
-        dict(title='시험 문항을 만들어요', text='대화로 문제 생성을 요청하면 문항이 만들어져요. 문항을 넘겨 보며 검토하고, 마음에 드는 문항을 문제은행에 추가해요.',
-             do='첫 번째 문항에서 「이 문항만 추가」를 눌러 문제은행에 담아 보세요.', ui=bank(), img=I + '4.jpg'),
-        dict(title='문항을 다듬고 저장해요', text='난이도·정답·보기·해설을 직접 고칠 수 있어요. 해설은 나중에 AI가 시험지를 채점할 때 쓰이니 꼼꼼히 확인하고 저장해요.',
-             do='내용을 고쳐 본 뒤 「저장」을 눌러 보세요.', ui=edit(), img=I + '5.jpg'),
+        dict(title='자료를 첨부하고 대화를 시작해요', text='입력창 왼쪽 첨부 단추로 강의 자료·이미지를 여러 개 올리면 그 자료를 근거로 답해요. 「더 똑똑한 문제 생성 가이드」로 요청 요령도 볼 수 있어요. (매뉴얼 02)', do='입력창에 요청을 쓰고 보내 보세요. 비워 둔 채 보내면 예시 요청이 입력돼요.', ui=chat(False, 'ask'), img=I + 'm2.jpg'),
+        dict(title='답변의 출처를 확인해요', text='답변 아래에 근거가 된 원본 자료가 표시돼요. 「열기」를 누르면 출처 문서가 오른쪽에 펼쳐지고, 답변은 복사하거나 파일로 저장할 수 있어요. (매뉴얼 02 · 답변의 출처 표기)', do='원본 출처의 「열기」를 눌러 보세요.', ui=chat(True, 'src'), img=I + 'm3.jpg'),
+        dict(title='소스 문서를 올려요', text='챗봇이 참고할 수업 자료·강의 영상을 「소스 문서 관리」에 올려 두면, 대화할 때마다 그 자료를 근거로 답해요. (매뉴얼 03)', do='「소스 문서 업로드」를 눌러 강의 자료를 올려 보세요.', ui=srcdoc(), img=I + 'm4.jpg'),
+        dict(title='조건을 정해 문제를 생성해요', text='[문제출제 및 시험관리 > 문제생성]에서 형식·난이도·개수와 키워드를 정하고 [바로 생성]을 눌러요. 한 문항씩 검토하고 문제은행에 일괄 등록해요. (매뉴얼 06 · 문제생성)', do='문제 형식과 난이도를 하나씩 고른 뒤 「바로 생성」을 눌러 보세요.', ui=gen(), img=I + 'm5.jpg'),
+        dict(title='문제은행에서 시험지·퀴즈를 만들어요', text='문제은행에서 문항을 골라 「시험지에 추가」하고 시험지 제목과 배점을 정해요. PDF 시험지로 내려받거나 [퀴즈 생성]으로 퀴즈를 만들어요. (매뉴얼 06 · 문제은행)', do='문항을 하나 이상 누르고 시험지 제목을 쓴 뒤 「퀴즈 생성」을 눌러 보세요.', ui=bank(), img=I + 'm6.jpg'),
+        dict(title='퀴즈를 공개하고 일정을 정해요', text='[퀴즈 관리]에서 퀴즈의 공개 여부를 켜고 시작·종료 일시를 정하면, 그 기간 동안 수강생이 응시할 수 있어요. (매뉴얼 06 · 퀴즈 현황)', do='「2학기 중간 퀴즈」의 공개 단추를 눌러 보세요.', ui=quiz(), img=I + 'm7.jpg'),
+        dict(title='종이 시험지를 OCR로 채점해요', text='학생 시험지를 올리면 바로 OCR 채점이 진행돼요. OCR 신뢰도와 점수를 보고, [시험지 열기]로 원본과 채점 근거를 비교하며 직접 고칠 수 있어요. (매뉴얼 06 · 시험지 채점)', do='첫 번째 시험지의 「시험지 열기」를 눌러 보세요.', ui=grade(), img=I + 'm8.jpg'),
+        dict(title='수강생 학습 현황을 봐요', text='[수강생 관리]에서 학생별 AI 튜터 예습·복습 이력과 퀴즈 참여·성적, 활용 빈도 대시보드를 확인해요. (매뉴얼 05)', do='「학습자 퀴즈 이력」 탭을 눌러 보세요.', ui=stu(), img=I + 'm9.jpg'),
     ]
 
 # ------------------------------------------------------------------ HAI-Mate (학생용 매뉴얼)
 def _mate():
-    TH = '--mk:#1e4fd8;--mk-side:#0b2a66'
-    def sd(active, entered=True):
-        return side('HAI-Mate', '', [('', [('chat', 'chat', '챗봇 튜터'), ('mat', 'doc', '학습 자료'), ('pre', 'edit', '예복습 문제'), ('quiz', 'check', '퀴즈')])], active, user=('학생', 'AIED 학생'), light=True,
-                    go=({'chat': 1, 'pre': 2} if entered else {}), top='<div class="mk-course"><small>2026학년도 2학기</small><b>' + ('창의코딩파이썬-1' if entered else '강좌를 선택해주세요') + '</b></div>')
-    def home():
-        main = ('<div class="mk-h"><h3>나의 강좌</h3></div><div class="mk-box"><div class="mk-row"><span><span class="mk-lbl">강좌 조회</span><br><b>2026학년도 2학기</b></span>'
-                '<span class="mk-row"><label class="mk-f">년도<select><option>2026</option><option>2025</option></select></label><label class="mk-f">학기<select><option>2</option><option>1</option></select></label></span></div></div>'
-                '<button type="button" class="mk-rowbtn" data-on data-show="[data-in]" data-goal><span><b>창의코딩파이썬-1</b> <small style="display:inline">AIED 2수 1</small></span><span>›</span></button>'
-                + toast('data-in', '강좌에 들어왔어요. 챗봇 튜터, 학습 자료, 예복습 문제, 퀴즈 메뉴가 열려요.'))
-        return frame(TH, sd('', False), ('HAI-Mate', '나의 강좌'), main)
-    Q = '파이썬에서 주석은 어떻게 작성해?'
-    def chat():
-        hello = '<div class="mk-hello" data-hello><b>무엇을 도와드릴까요?</b><span>창의코딩파이썬-1에 대해 궁금한 것을 튜터에게 자유롭게 물어보세요!</span><div class="mk-chips"><button type="button" data-fill="' + Q + '">예시 질문: ' + Q + '</button></div></div>'
-        body = (demo(Q) + '<p>파이썬에서 주석은 <b># 문자 뒤에</b> 작성해요.</p><p>주석은 주로 소스 코드를 읽는 사람을 위해 남기는 설명이에요. 코드가 무엇을 하는지보다 <b>왜 그렇게 작성했는지</b>를 적어 두면 좋아요.</p>'
-                f'<p class="mk-ref">참고 자료 <span class="mk-filechip">{ic("doc", 13)}byte_of_python_5장.pdf · p.1</span></p>')
-        aside = ('<aside class="mk-aside"><button type="button" class="mk-btn sm soft wide" data-go="1">새로운 대화 시작하기 +</button><b>전체 대화</b><small style="color:#94a3b8">오늘</small><span class="mk-hist">파이썬에서 주석은 어떻게 작성해?</span><small style="color:#94a3b8">지난 30일</small><span class="mk-hist">학습 자료 목록 요청</span></aside>')
-        main = '<div class="mk-h"><h3>챗봇 튜터</h3></div><div class="mk-log" id="mklog">' + hello + me('', 'data-qa hidden') + dots('튜터') + ai(body, 'data-a hidden', '튜터') + '</div>' + inbar(Q, '창의코딩파이썬-1에 대해 궁금한 것을 튜터에게 자유롭게 물어보세요!', True)
-        return frame(TH, sd('chat'), ('HAI-Mate', '챗봇 튜터'), main, aside)
-    def plist():
-        main = ('<div class="mk-h"><h3>문제 풀기</h3></div><table class="mk-tbl"><tr><th>번호</th><th>퀴즈명</th><th>시작 일시</th><th>종료 일시</th><th>상태</th><th>응시</th></tr>'
-                '<tr><td>1</td><td><button type="button" data-show="[data-open]" data-goal>11주차 예습</button></td><td>2026-09-02 10:23</td><td>-</td><td><span class="mk-st ok">응시 가능</span></td><td>›</td></tr></table>'
-                + toast('data-open', '11주차 예습 문제를 열었어요. 「다음」을 눌러 풀어 보세요.'))
-        return frame(TH, sd('pre'), ('HAI-Mate', '예복습 문제'), main)
+    # 2026학년도 2학기 교수자·학생 사용 매뉴얼(창의코딩파이썬-1 기준 화면)을 그대로 따라 만든 화면
+    TH = '--mk:#2563eb;--mk-side:#0b2a66'
+    PRO = [('mat', 'doc', '자료 관리'), ('gen', 'edit', '문제 생성'), ('pre', 'check', '예복습 문제'), ('quiz', 'chart', '퀴즈'), ('stu', 'user', '수강생 관리')]
+    STU = [('chat', 'chat', '챗봇 튜터'), ('lib', 'doc', '학습 자료'), ('pre', 'check', '예복습 문제'), ('quiz', 'chart', '퀴즈')]
+    def sd(active, prof=True, go=None):
+        return side('HAI-Mate', '', [('', PRO if prof else STU)], active, user=('AIED 교수 1' if prof else 'AIED 학생 1', '교수자' if prof else '학생'), light=True, go=go or {},
+                    top='<div class="mk-course"><small>2026학년도 2학기</small><b>창의코딩파이썬-1</b></div>')
+    def lg():
+        return login(TH, ('○○ UNIVERSITY AI TEACHING SYSTEM', '교수 활동 지원 시스템', 'HAI-Mate와 함께 강의 자료 관리부터 문제 생성·배포·학습 결과 확인까지 한곳에서.', ['자료 관리', '문제 생성', '퀴즈', '수강생 관리']),
+                     ('HAI-Mate', 'Sign in'), [('아이디', '아이디', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', False, False), ('○○대 통합 로그인', True, True)],
+                     done='로그인했어요. 학년도·학기를 확인하고 강좌의 [바로가기]를 누르면 「자료 관리」 화면이 열려요.')
+    FILES = [('c9장_배열.pptx', '9주차', 'HAI-Mate', '5.93 MB', 'PPT', False), ('byte_of_python_5장.pdf', '공통', 'HAI-Mate', '2.13 MB', 'PDF', True), ('파이썬_기초문법.pdf', '공통', '스마트리드', '267.95 KB', 'PDF', False)]
+    def mat():
+        rows = ''.join(f'<tr><td><span class="mk-cb"></span></td><td><b>{n}</b></td><td><span class="mk-chip">{w}</span></td><td><span class="mk-chip">{src}</span></td><td>{sz}</td><td><span class="mk-file {t.lower()}">{ic("doc", 14)}</span></td>'
+                       f'<td>{"<span class=mk-st>배포</span>" if on else (chr(60) + "button type=button class=" + chr(34) + "mk-btn sm line" + chr(34) + " data-set=" + chr(34) + "[data-dist]|배포" + chr(34) + " data-hide=[data-undist] data-show=[data-distok] data-goal><span data-dist>비공개</span></button>" if n.startswith("파이썬") else "<span class=mk-chip>비공개</span>")}</td></tr>'
+                       for n, w, src, sz, t, on in FILES)
+        main = ('<div class="mk-h"><h3>자료 관리</h3></div><div class="mk-bar"><label class="mk-search">' + ic('search', 15) + '<input type="search" placeholder="검색어 입력" aria-label="검색어" autocomplete="off"></label>'
+                '<span class="mk-row"><button type="button" class="mk-btn sm line">' + ic('down', 14) + '업로드</button><span class="mk-btn sm soft" style="cursor:default">주차 수정</span><span class="mk-btn sm soft" style="cursor:default">삭제</span><span class="mk-btn sm soft" style="cursor:default">다운로드</span></span></div>'
+                '<table class="mk-tbl"><tr><th></th><th>파일명</th><th>주차</th><th>출처</th><th>크기</th><th>형식</th><th>학생 배포</th></tr>' + rows + '</table>'
+                '<p class="mk-ref">스마트리드에 올린 자료는 자동으로 불러오고, 출처에 [스마트리드]로 표시돼요. 상태가 「완료」인 자료는 문제 생성의 소스 자료로 쓸 수 있어요.</p>'
+                + toast('data-distok', '「파이썬_기초문법.pdf」를 학생에게 공개했어요. 학생 화면의 「학습 자료」에 나타나요.'))
+        return frame(TH, sd('mat'), ('HAI-Mate', '자료 관리'), main)
+    WEEKS = [('9주차', '출제완료', '완료'), ('10주차', '출제완료', '완료'), ('11주차', '미작성', '미완료'), ('12주차', '미작성', '미완료')]
+    LOS = ['파이썬에서 주석을 사용하여 코드의 의도를 설명할 수 있다.', '리터럴 상수와 변수의 차이를 설명하고 이를 사용하여 코드를 작성할 수 있다.', '파이썬의 문자열 포맷팅 기능을 활용하여 다양한 형식의 문자열을 생성할 수 있다.', '다양한 편집기를 사용하여 파이썬 프로그램을 작성하고 실행할 수 있다.']
+    def wk(sel):
+        return ('<div class="mk-box"><b>대상 주차</b><table class="mk-tbl" data-wk><tr><th>주차</th><th>상태</th><th>예습</th><th>복습</th><th>라이브</th></tr>'
+                + ''.join(f'<tr class="{"on" if (sel and w == "11주차") else ""}"{" data-on" if not sel else ""}><td><b>{w}</b></td><td><span class="mk-st{" ing" if st == "미작성" else ""}">{st}</span></td><td><span class="mk-chip">미완료</span></td><td><span class="mk-chip">미완료</span></td><td><span class="mk-st{"" if lv == "완료" else " ing"}">{lv}</span></td></tr>' for w, st, lv in WEEKS) + '</table></div>')
+    def prep():
+        src = ('<div class="mk-box"><div class="mk-row"><b>소스 자료</b><small>스마트리드·HAI-Mate 자료</small></div><div data-srcsel>'
+               '<button type="button" class="mk-rowbtn" data-on><span><span class="mk-cb"></span> <b>byte_of_python_5장.pdf</b> <small style="display:inline">2.1 MB</small></span><span class="mk-st">완료</span></button>'
+               '<button type="button" class="mk-rowbtn" data-on style="margin-top:6px"><span><span class="mk-cb"></span> <b>파이썬_기초문법.pdf</b> <small style="display:inline">268 KB</small></span><span class="mk-st">완료</span></button></div>'
+               '<p class="mk-demo" data-need hidden>먼저 「11주차」 행과 소스 자료를 하나씩 눌러 골라 주세요.</p>'
+               '<div class="mk-row end"><button type="button" class="mk-btn" data-allon="[data-wk],[data-srcsel]" data-show="[data-los]" data-goal>✨ 학습 목표 추출</button></div></div>')
+        los = ('<div class="mk-paper" data-los hidden><div class="mk-row"><b>추출된 학습 목표</b><span class="mk-badge">AI 추출</span></div>'
+               + ''.join(f'<p class="mk-rowbtn" style="cursor:default"><span><span class="mk-cb on"></span> {x}</span></p>' for x in LOS)
+               + '<div class="mk-row end"><span class="mk-btn sm line" style="cursor:default">취소</span><span class="mk-btn sm" style="cursor:default">선택 항목 적용</span></div><p class="mk-ref">사용할 목표를 체크해 적용하면 오른쪽 「학습 목표」에 들어가요. 적용한 뒤에도 직접 고치거나 더할 수 있어요.</p></div>')
+        main = '<div class="mk-row"><div class="mk-h"><h3>문제 생성</h3></div><span class="mk-btn sm line" style="cursor:default">문제 생성하기</span></div>' + wk(False) + src + los
+        return frame(TH, sd('gen'), ('HAI-Mate', '문제 생성'), main)
+    def cond():
+        main = ('<div class="mk-row"><div class="mk-h"><h3>문제 생성</h3><span class="mk-badge">11주차</span></div>'
+                '<button type="button" class="mk-btn" data-allon="[data-use],[data-lv]" data-wait="[data-gening]" data-show="[data-gendone]" data-goal>문제 생성하기</button></div>'
+                '<div class="mk-two"><div class="mk-box"><b>문제 설정</b><div class="mk-f">용도<div class="mk-seg" data-use><button type="button" data-on>예습용</button><button type="button" data-on>복습용</button><button type="button" data-on>퀴즈</button></div></div>'
+                '<div class="mk-f">난이도<div class="mk-seg" data-lv><button type="button" data-on>하</button><button type="button" data-on>중</button><button type="button" data-on>상</button></div></div>'
+                '<div class="mk-two"><div class="mk-f">문제 유형<span class="mk-chip">객관식</span></div><label class="mk-f">문항 수 <b>5문항</b><input type="range" min="1" max="10" value="5" aria-label="문항 수"></label></div>'
+                '<button type="button" class="mk-rowbtn" data-on><span><span class="mk-cb"></span> <b>LLM 오케스트레이션 여부</b><small>여러 AI를 함께 써서 더 꼼꼼히 만들어요. 생성 시간이 조금 더 걸릴 수 있어요.</small></span></button>'
+                '<p class="mk-demo" data-need hidden>용도와 난이도를 하나씩 골라 주세요.</p></div>'
+                '<div class="mk-box"><b>학습 목표</b>' + ''.join(f'<p class="mk-rowbtn" style="cursor:default"><span><span class="mk-chip">AI 추출</span> {x}</span></p>' for x in LOS[:3]) + '</div></div>'
+                '<p class="mk-note" data-gening hidden>' + ic('gear', 15) + '<span>11주차 문제를 생성하고 있어요… 작업을 멈추지 말고 기다려 주세요.</span></p>'
+                '<div class="mk-note" data-gendone hidden>' + ic('check', 15) + '<span>문제 생성이 끝났어요. <b>[검토하기]</b>를 누르면 문항 검토 화면으로 가요. (다음 미션)</span></div>')
+        return frame(TH, sd('gen'), ('HAI-Mate', '문제 생성'), main)
+    QL = ['다음 중 파이썬 주석(comment)에 대한 설명으로 옳은 것은?', "다음 중 파이썬에서 '변수(variable)'의 특징을 올바르게 설명한 것은?", "format() 메소드를 사용한 다음 코드의 결과로 옳은 것은?", "파이썬에서 '물리적 명령행'과 '논리적 명령행'의 관계에 대한…", 'PyCharm에서 예제 파이썬 프로그램을 인수와 함께 실행할 때 올바른 절차는?']
     OPT = ['주석을 작성하려면 세 개의 따옴표로 문자열 블록을 만들어야 한다.', '주석 내용은 실행 시 화면에 출력되므로 배포 전 반드시 삭제해야 한다.', "주석의 주된 목적은 코드가 '무엇'을 하는지를 상세히 기술하는 것이다.", "# 문자 뒤에 작성되며 '왜' 그 코드를 작성했는지를 설명한다."]
-    EXP = "주석은 # 문자 뒤에 오는 문장으로 작성해요. 코드는 '어떻게'를 말해 주고, 주석은 '왜' 그렇게 작성했는지를 설명하는 데 써요."
+    EXP = "정답인 '# 문자 뒤에 작성되며 왜 그 코드를 작성했는지를 설명한다'는 근거 문헌에서 주석은 # 뒤에 오는 문장으로 작성되며, 코드는 '어떻게(how)'를 말하지만 주석은 '왜(why)'를 말해야 한다고 명시하고 있어 정확하다."
+    SRC = '<div class="mk-box"><div class="mk-row"><b>출처</b><span class="mk-chip">byte_of_python_5장.pdf p.1</span></div><div class="mk-sheet"><p><b>5장. 기초</b></p><p><b>5.1 주석</b></p><p>주석은 # 문자 뒤에 따라오는 문장입니다. 주로 소스 코드를 읽는 사람들을 위해 주석을 남기는 용도로 빈번하게 사용됩니다.</p><p class="mk-code" style="min-height:0">print(\'hello world\')  # print는 함수입니다</p></div></div>'
+    def review():
+        lst = ''.join(f'<span class="mk-rowbtn{" on" if k == 0 else ""}" style="cursor:default"><span><b>Q{k + 1}</b> <span class="mk-chip">객관식</span> <span class="mk-chip">보통</span><br><small>{q}</small></span><span class="mk-chip" data-rv{k}>검수 대기</span></span>' for k, q in enumerate(QL))
+        opts = ''.join(f'<p class="mk-opt{" on" if k == 3 else ""}" style="cursor:default">{"<b>정답</b> " if k == 3 else ""}{k + 1}. {t}</p>' for k, t in enumerate(OPT))
+        main = ('<div class="mk-row"><div class="mk-h"><h3>문제 생성</h3><span class="mk-badge">검토</span></div><span class="mk-row"><span class="mk-btn sm line" style="cursor:default">문제 설정</span>'
+                '<button type="button" class="mk-btn" data-set="[data-rv0]|검수 완료" data-show="[data-saved]" data-goal>저장하기</button></span></div>'
+                f'<div class="mk-quad3"><div class="mk-opts">{lst}</div><div class="mk-box"><div class="mk-row"><b>Q1</b><span class="mk-chip">문항 삭제</span></div><span class="mk-lbl">문제</span><p>{QL[0]}</p><span class="mk-lbl">문항 · 정답</span><div class="mk-opts">{opts}</div>'
+                f'<span class="mk-lbl">해설</span><p>{EXP}</p><div class="mk-row"><input class="mk-in" placeholder="✨ AI에게 수정 요청 — 예: 보기 ③을 더 헷갈리게" aria-label="AI 수정 요청"><span class="mk-btn sm line" style="cursor:default">AI 수정</span></div></div>{SRC}</div>'
+                + toast('data-saved', '5개 문항을 저장했어요. 예습·복습 문제는 「예복습 문제」 목록으로, 퀴즈는 「퀴즈 > 문제 관리」로 옮겨져요.'))
+        return frame(TH, sd('gen'), ('HAI-Mate', '문제 검토'), main)
+    def dist():
+        main = ('<div class="mk-row"><div class="mk-h"><h3>문제 배포</h3></div><span class="mk-chip">예복습 문제 › 문제 배포</span></div>'
+                '<div class="mk-box"><div class="mk-two"><label class="mk-f">주차<select><option>11주차</option><option>10주차</option></select></label><div class="mk-f">구분<div class="mk-seg"><button type="button" class="on" data-on>예습</button><button type="button" data-on>복습</button></div></div></div>'
+                '<div class="mk-two"><label class="mk-f">공개 시작<input class="mk-in" type="text" value="2026-11-09 09:00" aria-label="공개 시작"></label><label class="mk-f">공개 종료<input class="mk-in" type="text" value="2026-11-15 23:59" aria-label="공개 종료"></label></div>'
+                '<table class="mk-tbl"><tr><th>배포</th><th>문항</th><th>유형</th><th>난이도</th></tr>' + ''.join(f'<tr><td><span class="mk-cb on"></span></td><td>Q{k + 1}. {q}</td><td>객관식</td><td>보통</td></tr>' for k, q in enumerate(QL[:3])) + '</table>'
+                '<div class="mk-row end"><button type="button" class="mk-btn" data-set="[data-dst]|배포 중" data-show="[data-dok]" data-goal>배포</button></div></div>'
+                '<table class="mk-tbl"><tr><th>주차</th><th>구분</th><th>문항 수</th><th>공개 기간</th><th>상태</th></tr><tr><td>11주차</td><td>예습</td><td>5</td><td>11.09 ~ 11.15</td><td><span class="mk-st ing" data-dst>배포 전</span></td></tr></table>'
+                + toast('data-dok', '11주차 예습이 「배포 중」이 되었어요. 학생의 「예복습 문제」 목록에 바로 나타나요.'))
+        return frame(TH, sd('pre'), ('HAI-Mate', '문제 배포'), main)
     def solve():
         opts = ''.join(f'<button type="button" class="mk-opt" data-on>{k + 1}. {t}</button>' for k, t in enumerate(OPT))
         main = ('<div class="mk-row"><div class="mk-h"><h3>← 11주차 예습</h3></div><span class="mk-row"><small>정답 확인 0/5</small><span class="mk-btn sm soft" style="cursor:default">제출 (0/5)</span></span></div>'
                 '<div class="mk-pills"><span class="on">1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>'
-                f'<div class="mk-two"><div class="mk-box"><span class="mk-chip">문제 1</span><p><b>Q. 다음 중 파이썬 주석(comment)에 대한 설명으로 옳은 것은?</b></p><div class="mk-opts" id="mko">{opts}</div>'
+                f'<div class="mk-two"><div class="mk-box"><span class="mk-chip">문제 1</span><p><b>Q. {QL[0]}</b></p><div class="mk-opts" id="mko">{opts}</div>'
                 '<p class="mk-demo" data-need hidden>먼저 답을 하나 골라 주세요.</p><div class="mk-box tint" data-right hidden><b>정답이에요! (정답 4번)</b><span>' + EXP + '</span></div><div class="mk-box tint" data-wrong hidden><b>아쉬워요. 정답은 4번이에요.</b><span>' + EXP + '</span></div>'
-                '<div class="mk-row end"><button type="button" class="mk-btn" data-check="#mko|3" data-goal>정답확인</button></div></div>'
-                f'<div class="mk-box"><div class="mk-row"><span class="mk-lbl">출처</span><span class="mk-link">byte_of_python_5장.pdf p.1</span></div><div class="mk-sheet"><p><b>5장. 기초</b></p><p><b>5.1 주석</b></p><p>주석은 # 문자 뒤에 따라오는 문장입니다. 주로 소스 코드를 읽는 사람들을 위해 주석을 남기는 용도로 빈번하게 사용됩니다.</p><p class="mk-code" style="min-height:0">print(\'hello world\')  # print는 함수입니다</p></div></div></div>')
-        return frame(TH, sd('pre'), ('HAI-Mate', '문제 풀기'), main)
-    def result():
-        QL = [('다음 중 파이썬 주석(comment)에…', 1), ("다음 중 파이썬에서 '변수(variable)…", 1), ('format() 메소드를 사용한 다음 코…', 1), ("파이썬에서 '물리적 명령행(physica…", 0), ('PyCharm에서 예제 파이썬 프로그…', 1)]
-        lst = ''.join(f'<button type="button" class="mk-rowbtn{" on" if k == 0 else ""}" data-on data-hide="[data-d]" data-show="[data-d={chr(39)}{0 if k == 0 else 9}{chr(39)}]"{" data-goal" if k == 0 else ""}><span>{k + 1}　{t}</span><span class="mk-st {"ok" if ok else "ing"}">{"정답" if ok else "오답"}</span></button>' for k, (t, ok) in enumerate(QL))
-        det = ('<div class="mk-box" data-d="0" hidden><div class="mk-row"><span class="mk-chip">문제 1</span><span class="mk-st ok">정답</span></div><p><b>Q. 다음 중 파이썬 주석(comment)에 대한 설명으로 옳은 것은?</b></p>'
-               + ''.join(f'<span class="mk-opt{" on" if k == 3 else ""}" style="cursor:default">{k + 1}. {t}</span>' for k, t in enumerate(OPT)) + '<div class="mk-box tint"><b>A. 4</b><span>' + EXP + '</span><span class="mk-ref">출처: byte_of_python_5장.pdf p.1</span></div></div>'
-               '<div class="mk-box" data-d="9" hidden><p class="mk-demo">체험판에는 1번 문항의 정답과 해설만 들어 있어요. 실제 서비스에서는 모든 문항의 정답·오답과 해설을 다시 볼 수 있어요.</p></div>'
-               '<div class="mk-box" data-d="x"><p class="mk-ref">왼쪽 목록에서 문항을 누르면 내 답안과 정답, 해설이 여기에 보여요.</p></div>')
-        main = ('<div class="mk-row"><div class="mk-h"><h3>← 11주차 예습</h3></div><span class="mk-row"><span class="mk-st ok">제출 완료</span><small>정답 4 / 오답 1</small></span></div>'
-                f'<div class="mk-two"><div class="mk-opts">{lst}</div><div>{det}</div></div>')
-        return frame(TH, sd('pre'), ('HAI-Mate', '결과 확인'), main)
+                '<div class="mk-row end"><button type="button" class="mk-btn" data-check="#mko|3" data-goal>정답 확인</button></div></div>' + SRC + '</div>'
+                '<p class="mk-ref">문항 번호를 눌러 남은 문제도 같은 방식으로 풀고, 정답 확인 수가 전체 문항 수와 같아지면 [제출]이 열려요.</p>')
+        return frame(TH, sd('pre', False), ('HAI-Mate', '예습·복습 문제 풀이'), main)
+    def live():
+        ST = [('aied_st1', 'AIED 학생 1', '제출'), ('aied_st2', 'AIED 학생 2', '제출'), ('aied_st3', 'AIED 학생 3', '미제출')]
+        main = ('<div class="mk-row"><div class="mk-h"><h3>퀴즈 배포</h3><span class="mk-badge">11주차 · 5문항 선별됨</span></div><span class="mk-st ing" data-qst>배포전</span></div>'
+                '<div class="mk-box"><div class="mk-f">배포 방식<div class="mk-seg"><button type="button" class="on" data-on>라이브 배포</button><button type="button" data-on>예약 배포</button></div></div>'
+                '<div class="mk-row end"><button type="button" class="mk-btn" data-set="[data-qst]|진행 중" data-show="[data-live]" data-goal>▶ 라이브 시작</button></div></div>'
+                '<div class="mk-box" data-live hidden><div class="mk-row"><b>참여 현황 <small>참여 3명 · 제출 2명</small></b><div class="mk-tabs"><button type="button" class="on" data-filter="all" data-on>전체</button><button type="button" data-filter="제출" data-on>제출</button><button type="button" data-filter="미제출" data-on>미제출</button></div></div>'
+                '<table class="mk-tbl"><tr><th>학번</th><th>이름</th><th>제출 여부</th></tr>' + ''.join(f'<tr data-cat="{st}"><td>{i}</td><td>{n}</td><td><span class="mk-st{"" if st == "제출" else " ing"}">{st}</span></td></tr>' for i, n, st in ST) + '</table>'
+                '<p class="mk-ref">학생은 「퀴즈」에서 진행 중인 퀴즈에 들어가 답을 고르고 [제출]해요. 종료하면 상태가 「종료」로 바뀌고, 그 뒤에도 학생별 제출 여부를 볼 수 있어요.</p></div>')
+        return frame(TH, sd('quiz'), ('HAI-Mate', '퀴즈 배포'), main)
+    def grade():
+        OX = [('aied_st3', 'AIED 학생 3', '-----'), ('aied_st1', 'AIED 학생 1', 'OOXOO'), ('aied_st2', 'AIED 학생 2', 'OOOOO')]
+        cell = lambda s: '<span class="mk-ox">' + ''.join(f'<i><small>{k + 1}</small>{c}</i>' for k, c in enumerate(s)) + '</span>'
+        main = ('<div class="mk-h"><h3>수강생 관리</h3></div><div class="mk-bar"><label class="mk-search">' + ic('search', 15) + '<input type="search" placeholder="학번 또는 이름 검색" aria-label="학번 또는 이름" autocomplete="off"></label>'
+                '<select aria-label="주차"><option>11주차</option><option>10주차</option></select><select aria-label="위험도"><option>위험도: 전체</option><option>위험</option><option>주의</option></select>'
+                '<button type="button" class="mk-btn sm line" data-show="[data-xl]" data-goal>' + ic('down', 14) + '엑셀 다운로드</button></div>'
+                '<table class="mk-tbl"><tr><th>No</th><th>학번</th><th>이름</th><th>주차</th><th>예습</th><th>복습</th></tr>' + ''.join(f'<tr><td>{k + 1}</td><td>{i}</td><td>{n}</td><td>11주차</td><td>{cell(o)}</td><td><span class="mk-chip">배포 없음</span></td></tr>' for k, (i, n, o) in enumerate(OX)) + '</table>'
+                '<p class="mk-ref">정답은 O, 오답은 X로 표시돼요. 아직 풀지 않은 문항은 - 로 보여요.</p>' + toast('data-xl', '정오표를 엑셀 파일로 받았어요. (체험판이라 파일은 만들어지지 않아요)'))
+        return frame(TH, sd('stu'), ('HAI-Mate', '수강생 관리'), main)
     I = 'media/walk/hai-mate/'
     return [
-        dict(title='강좌를 골라요', text='로그인한 뒤 학년도·학기를 확인하고 「나의 강좌」에서 학습할 강좌를 선택해요. 챗봇 튜터, 학습 자료, 예복습 문제, 퀴즈 메뉴가 열려요.', do='「나의 강좌」에서 「창의코딩파이썬-1」 강좌를 눌러 보세요.', ui=home(), img=I + '1.jpg'),
-        dict(title='챗봇 튜터에게 물어봐요', text='「챗봇 튜터」에서 새 대화를 시작하고 궁금한 점을 입력해요. 강좌 자료를 근거로 답하고 참고 자료도 보여 줘요.', do='입력창에 궁금한 점을 쓰고 보내 보세요. 비워 둔 채 보내면 예시 질문이 입력돼요.', ui=chat(), img=I + '2.jpg'),
-        dict(title='예습·복습 문제를 골라요', text='「예복습 문제」에서 주차와 예습·복습 구분을 확인하고, 공개 기간 안에 있는 문제를 선택해요.', do='목록에서 「11주차 예습」을 눌러 문제를 열어 보세요.', ui=plist(), img=I + '3.jpg'),
-        dict(title='문제를 풀고 정답을 확인해요', text='답을 고른 뒤 「정답확인」을 누르면 정오와 해설, 출처를 바로 볼 수 있어요. 모든 문항을 확인하면 제출해요.', do='보기 가운데 답을 하나 고르고 「정답확인」을 눌러 보세요.', ui=solve(), img=I + '4.jpg'),
-        dict(title='결과를 다시 살펴봐요', text='제출 후에도 문항별 정답·오답과 해설을 다시 볼 수 있어요. 결과는 교수님 화면에도 반영돼요.', do='왼쪽 목록에서 1번 문항을 눌러 정답과 해설을 다시 확인해 보세요.', ui=result(), img=I + '5.jpg'),
+        dict(title='로그인하고 강좌로 들어가요', text='아이디·비밀번호 또는 학교 통합 로그인으로 들어가요. 학년도·학기를 확인하고 강좌의 [바로가기]를 누르면 그 강좌의 「자료 관리」 화면과 왼쪽 메뉴가 열려요. (교수자 매뉴얼 1)', do='「○○대 통합 로그인」을 눌러 보세요.', ui=lg(), img=I + 'm1.jpg'),
+        dict(title='학습 자료를 관리해요', text='문제 생성과 학생 학습에 쓸 PDF·PPT 자료를 올리고, 주차와 출처, 학생 배포 상태를 관리해요. 「학생 배포」 단추로 학생 공개 여부를 바꿔요. (교수자 매뉴얼 2)', do='「파이썬_기초문법.pdf」의 학생 배포 단추를 눌러 학생에게 공개해 보세요.', ui=mat(), img=I + 'm2.jpg'),
+        dict(title='대상 주차와 소스 자료로 학습 목표를 뽑아요', text='[문제 생성]에서 대상 주차를 고르고 소스 자료를 체크한 뒤 [학습 목표 추출]을 누르면 AI가 자료에서 학습 목표를 뽑아 줘요. 쓸 목표를 골라 적용해요. (교수자 매뉴얼 3)', do='대상 주차에서 「11주차」, 소스 자료에서 PDF 하나를 누른 뒤 「학습 목표 추출」을 눌러 보세요.', ui=prep(), img=I + 'm3.jpg'),
+        dict(title='문제 조건을 정하고 AI로 생성해요', text='용도(예습용·복습용·퀴즈), 난이도, 문항 수를 정하고 필요하면 「LLM 오케스트레이션」을 켠 뒤 [문제 생성하기]를 눌러요. 생성이 끝나면 [검토하기]가 나타나요. (교수자 매뉴얼 4·5)', do='용도 「예습용」과 난이도를 하나씩 고른 뒤 「문제 생성하기」를 눌러 보세요.', ui=cond(), img=I + 'm4.jpg'),
+        dict(title='생성된 문항을 검토하고 저장해요', text='문항·보기·정답·해설을 오른쪽 출처 PDF와 함께 검토해요. 직접 고치거나 「AI에게 수정 요청」을 쓴 뒤, 검수가 끝나면 [저장하기]를 눌러요. (교수자 매뉴얼 6)', do='문항과 출처를 살펴본 뒤 「저장하기」를 눌러 보세요.', ui=review(), img=I + 'm5.jpg'),
+        dict(title='예습 문제를 배포해요', text='[예복습 문제] > [문제 배포]에서 주차와 예습·복습을 고르고, 배포할 문항과 공개 기간을 정해 배포해요. 상태가 「배포 중」이면 학생 목록에 나타나요. (교수자 매뉴얼 7)', do='공개 기간을 확인하고 「배포」를 눌러 보세요.', ui=dist(), img=I + 'm6.jpg'),
+        dict(title='학생은 풀고 바로 정답을 확인해요', text='학생은 [예복습 문제]에서 공개된 문제를 골라 답을 고르고 [정답 확인]으로 정오·해설·출처를 바로 봐요. 모든 문항을 확인하면 제출해요. (학생 매뉴얼 4·5)', do='보기 가운데 답을 하나 고르고 「정답 확인」을 눌러 보세요.', ui=solve(), img=I + 'm7.jpg'),
+        dict(title='퀴즈를 라이브로 진행해요', text='고른 퀴즈 문항은 [퀴즈 배포]에서 라이브로 바로 시작하거나 예약해 공개해요. 진행 중에는 참여 인원과 학생별 제출 여부를 실시간으로 봐요. (교수자 매뉴얼 8·9)', do='「라이브 시작」을 눌러 퀴즈를 시작해 보세요.', ui=live(), img=I + 'm8.jpg'),
+        dict(title='수강생 학습 결과를 확인해요', text='[수강생 관리]에서 주차와 위험도를 골라 학생별 예습·복습 제출과 문항별 정오표(O/X)를 봐요. 학번·이름으로 찾거나 엑셀로 내려받을 수 있어요. (교수자 매뉴얼 10)', do='「엑셀 다운로드」를 눌러 정오표를 받아 보세요.', ui=grade(), img=I + 'm9.jpg'),
     ]
 
 EG = '<span class="mk-eg">체험용 예시 답변</span>'
@@ -929,6 +1028,14 @@ MOCKS = {'hai-docs': _docs(), 'hai-tutor': _tutor(), 'hai-mate': _mate(), 'hai-g
          'hai-bdpi': _bdpi(), 'hai-check': _check(), 'hai-lrs': _lrs(), 'hai-sync': _sync(), 'hai-security': _security(), 'hai-pbl': _pbl(), 'hai-epilearn': _epilearn(), 'hai-medlearn-x': _medlearn()}
 
 MK_CSS = r"""
+/* 매뉴얼 기반 재구성용 보조 */
+.mk-opt b { white-space: nowrap; }
+.mk-tgl { display: inline-block; width: 30px; height: 17px; border-radius: 999px; background: #cbd5e1; position: relative; } .mk-tgl::after { content: ""; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; } .mk-tgl.on { background: var(--mk); } .mk-tgl.on::after { left: 15px; }
+.mk-cb { display: inline-block; width: 15px; height: 15px; border: 2px solid #cbd5e1; border-radius: 4px; vertical-align: -3px; background: #fff; } .mk-cb.on, .on > span > .mk-cb, .on > .mk-cb, tr.on .mk-cb { border-color: var(--mk); background: var(--mk) url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27white%27 stroke-width=%273.5%27%3E%3Cpath d=%27M5 12l5 5 9-10%27/%3E%3C/svg%3E") center/11px no-repeat; }
+.mk-ox { display: inline-grid; grid-auto-flow: column; gap: 6px; padding: 4px 8px; border: 1px solid #e5e9f2; border-radius: 8px; font-weight: 700; } .mk-ox i { display: flex; flex-direction: column; align-items: center; font-style: normal; } .mk-ox small { font-size: 9px; color: #94a3b8; font-weight: 400; }
+.mk-quad3 { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.2fr) minmax(0, 1fr); gap: 10px; } @container (max-width: 760px) { .mk-quad3 { grid-template-columns: 1fr; } }
+.mk-in { width: 100%; min-width: 0; height: 34px; padding: 0 10px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; } .mk select { height: 34px; padding: 0 8px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; }
+.mk-tbl tr[data-on] { cursor: pointer; } .mk-tbl tr[data-on]:hover td { background: #f8fafc; }
 /* 체험용 화면(목업) 공통 */
 .walk-ui { display: none; flex: 1; min-width: 0; container-type: inline-size; } .walk-shot.ui > img { display: none; } .walk-shot.ui .walk-ui { display: flex; } .walk-shot.ui { padding: 12px; }
 .mk { --mk: #1d4ed8; --mk-side: #0b2a5b; flex: 1; min-width: 0; display: flex; align-items: stretch; min-height: min(600px, calc(100vh - 170px)); background: #f4f6fb; color: #1f2937; font-size: 13px; line-height: 1.5; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 18px rgba(0,0,0,.12); text-align: left; }
