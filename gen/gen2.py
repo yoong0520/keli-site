@@ -3122,6 +3122,9 @@ WALK_JS = r"""(function(){
     if(done){ hot.hidden=true; shot.classList.remove('play','solved','hinted','ui'); main.classList.remove('uimode'); ui.innerHTML=''; var ms=0, ok=0, stars=0; w.steps.forEach(function(s,k){ if(kind(s)!=='view'){ ms++; if(S[k]&&S[k].ok){ ok++; if(S[k].star) stars++; } } });
       av.src='media/mascot/irumi.png'; sn.textContent='이루미 · 완료!'; h.textContent=w.name+' 체험을 마쳤어요!'; var EN=document.documentElement.lang==='en'; t.textContent=(ms?((EN?(ok+' of '+ms+' missions done'+(stars?' · '+stars+' without hints '+new Array(stars+1).join('★'):'')):('미션 '+ms+'개 중 '+ok+'개 성공'+(stars?' · 힌트 없이 '+stars+'개 '+new Array(stars+1).join('★'):'')))+'\n'):'')+'이제 직접 써 볼 차례예요.'; next.hidden=true;
       end.innerHTML=(w.trial?'<a class="btn sm" href="'+esc(w.trial)+'" target="_blank" rel="noopener">실제 서비스 체험 ↗</a>':'')+(w.ai?'<button type="button" class="btn sm" data-try="'+w.ai+'">AI 미니 체험</button>':'')+(w.video?'<button type="button" class="btn ghost sm" data-vmodal="'+esc(w.video)+'" data-vtitle="'+esc(w.name)+' · 영상'+'"'+'>'+'▶ 영상 보기'+'</button>':'')+(w.demo?'<a class="btn sm btn-demo" href="'+w.demo+'">데모 신청</a>':'')+(w.manual?'<a class="btn ghost sm" href="'+esc(w.manual)+'" target="_blank" rel="noopener">매뉴얼(PDF)</a>':'')+'<a class="btn ghost sm" href="'+w.page+'">서비스 소개</a><button type="button" class="btn ghost sm walk-again">처음부터</button>';
+      var L=EN?{h:'What you tried',ok:'Done',sk:'Skipped',re:'Revisit',nx:'Next step',nt:'Start small: 1 course × 1 service × 1 semester. Watch the video or read the manual, then request a demo.',m:'missions',st:'without hints'}:{h:'오늘 해 본 것',ok:'성공',sk:'건너뜀',re:'다시 보기',nx:'다음 단계',nt:'첫걸음은 1개 교과목 × 1개 서비스 × 1개 학기예요. 영상과 매뉴얼로 더 살펴본 뒤 데모를 신청해 보세요.',m:'미션',st:'힌트 없이'};
+      ui.innerHTML='<div class="walk-recap"><div class="wr-head"><div><small>'+esc(w.name)+'</small><b>'+L.h+'</b></div><div class="wr-score"><span><b>'+ok+'</b>/'+ms+' '+L.m+'</span>'+(stars?'<span>'+(EN?'★ '+stars+' '+L.st:L.st+' ★'+stars)+'</span>':'')+'</div></div><ol class="wr-list">'+w.steps.map(function(s,k){ var z=S[k]||{}, v=(kind(s)==='view'); return '<li class="'+(z.ok||v?'ok':'')+'"><span class="wr-n">'+(z.ok||v?'✓':(k+1))+'</span><span class="wr-t">'+esc(s.title)+(z.star?' <i>★</i>':'')+(!z.ok&&!v?' <em>'+L.sk+'</em>':'')+'</span><button type="button" class="wr-go walk-goto" data-k="'+k+'">'+L.re+'</button></li>'; }).join('')+'</ol><div class="wr-next"><b>'+L.nx+'</b><span>'+L.nt+'</span></div></div>';
+      shot.classList.add('ui'); main.classList.add('uimode');
       end.hidden=false; prev.disabled=false; return; }
     var s=w.steps[i], z=S[i]||(S[i]={}), k=kind(s), open=(k==='view'||z.ok), isUi=(k==='ui');
     shot.classList.toggle('ui',isUi); main.classList.toggle('uimode',isUi); if(s.img) big.href=s.img; if(isUi&&s.img){ orig.href=s.img; orig.hidden=false; }
@@ -3181,6 +3184,7 @@ WALK_JS = r"""(function(){
   img.addEventListener('load', place); window.addEventListener('resize', function(){ if(!m.hidden) place(); });
   document.addEventListener('click', function(e){ var b=e.target.closest('[data-walk]'); if(b){ e.preventDefault(); open(b.getAttribute('data-walk'), b); return; }
     if(m.hidden) return; if(e.target.closest('[data-wclose]')){ close(); return; }
+    var gt=e.target.closest('.walk-goto'); if(gt&&!busy){ i=+gt.getAttribute('data-k'); render(); return; }
     if(ui.contains(e.target)){ uiClick(e); return; }
     if(e.target.closest('.walk-hot')){ solve(); return; }
     if(e.target===img&&shot.classList.contains('play')&&!busy){ missed(e); return; }
