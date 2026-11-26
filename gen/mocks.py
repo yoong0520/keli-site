@@ -19,6 +19,7 @@ from html import escape as E
 def ic(name, s=16):
     P = {
         'home': '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',
+        'qr': '<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h2v2h-2zM18 18h2v2h-2zM14 18h2M18 14h2"/>',
         'chat': '<path d="M4 5h16v11H9l-5 4z"/>',
         'doc': '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 17h6"/>',
         'edit': '<path d="M5 4h9l5 5v11H5z"/><path d="M9 15l5-5 2 2-5 5H9z"/>',
@@ -669,13 +670,51 @@ def _fist():
                 '<div class="mk-stats"><div class="mk-stat"><small>팟캐스트 시청 인원</small><b>13명</b></div><div class="mk-stat"><small>시청 완료율</small><b>50%</b></div><div class="mk-stat"><small>사전문항 평균</small><b>66.7</b></div><div class="mk-stat"><small>사후문항 평균</small><b>40</b></div></div>'
                 f'<div class="mk-box"><div class="mk-row"><b>학습성과 요약</b><span class="mk-eg">체험용 예시 수치</span></div><div class="mk-bars">{bars}</div></div>' + toast('data-dl', '분석 보고서를 내려받았어요. (체험판에서는 파일이 만들어지지 않아요)'))
         return frame(TH, sd('ana'), ('FIST', '학습 분석'), main)
+    def quiz():
+        main = ('<div class="mk-h"><h3>사전 퀴즈 생성</h3><span class="mk-badge">1주차 1차시</span></div><p class="mk-ref">수업 전 학습 수준을 확인하는 사전 퀴즈예요. 공채 기출문제를 반영하면 문제 난이도가 올라갈 수 있어요.</p>'
+                '<div class="mk-box"><div class="mk-f">공채 기출문제 반영<div class="mk-seg" data-gc><button type="button" data-on>반영</button><button type="button" data-on>반영 안 함</button></div></div>'
+                '<div class="mk-f">문항 수<div class="mk-seg" data-qn><button type="button" data-on>5문항</button><button type="button" data-on>10문항</button><button type="button" data-on>15문항</button></div></div>'
+                '<div class="mk-f">난이도<div class="mk-seg" data-qd><button type="button" data-on>쉬움</button><button type="button" data-on>보통</button><button type="button" data-on>어려움</button></div></div>'
+                '<p class="mk-demo" data-need hidden>세 가지 조건을 모두 골라 주세요.</p><div class="mk-row end"><button type="button" class="mk-btn dark" data-allon="[data-gc],[data-qn],[data-qd]" data-wait="[data-qw]" data-show="[data-qok]" data-goal>사전 퀴즈 생성</button></div></div>'
+                '<div class="mk-box" data-qw hidden><b>AI 수업 자료 생성 중</b><div class="mk-bars"><div class="mk-bar2"><span>강의록</span><i style="--v:100%"></i><b>완료</b></div><div class="mk-bar2"><span>강의장표</span><i style="--v:100%"></i><b>완료</b></div><div class="mk-bar2"><span>사전 퀴즈</span><i style="--v:60%"></i><b>60%</b></div></div></div>'
+                + toast('data-qok', '사전 퀴즈가 만들어졌어요. 이제 「수업 자료 편집」에서 검토해요.'))
+        return frame(TH, sd('make'), ('FIST', '사전 퀴즈 생성'), main)
+    def deploy():
+        Q = ['형사절차의 3단계 순서', '수사의 개시 요건', '임의수사와 강제수사의 구분', '영장주의의 예외', '사법경찰관의 권한']
+        rows = ''.join(f'<button type="button" class="mk-rowbtn" data-tg><span><span class="mk-cb"></span> Q{k + 1}. {q}</span><small>객관식</small></button>' for k, q in enumerate(Q))
+        main = ('<div class="mk-h"><h3>배포 설정</h3><span class="mk-badge">1주차 1차시</span></div>'
+                '<div class="mk-box"><div class="mk-two"><label class="mk-f">배포 시작일<input class="mk-in" value="2026-03-03 09:00" aria-label="배포 시작일"></label><label class="mk-f">배포 종료일<input class="mk-in" value="2026-03-09 23:59" aria-label="배포 종료일"></label></div>'
+                '<div class="mk-row"><span class="mk-row"><span class="mk-tgl on"></span><small>업로드 자료 공개</small></span><span class="mk-chip">강의록 · 강의장표 · 팟캐스트</span></div></div>'
+                f'<div class="mk-box"><b>사전 퀴즈 문항별 배포 <small>(눌러서 배포할 문항 고르기)</small></b>{rows}</div>'
+                '<div class="mk-row end"><button type="button" class="mk-btn dark" data-show="[data-dp]" data-goal>배포하기</button></div>' + toast('data-dp', '설정한 기간에 학생에게 자료와 고른 퀴즈 문항이 공개돼요.'))
+        return frame(TH, sd('edit'), ('FIST', '배포 설정'), main)
+    def cls():
+        main = ('<div class="mk-row"><div class="mk-h"><h3>수업 진행 · 사전 퀴즈</h3><span class="mk-st ing">진행 중</span></div><span class="mk-chip">' + ic('qr', 14) + '수업 QR</span></div>'
+                '<div class="mk-stats"><div class="mk-stat"><small>풀이 완료</small><b>21 / 26명</b></div><div class="mk-stat"><small>평균 정답률</small><b>64%</b></div></div>'
+                '<div class="mk-box"><div class="mk-pills"><span>1</span><span class="on">2</span><span>3</span><span>4</span><span>5</span></div><p><b>Q2.</b> 수사가 시작되는 요건으로 옳은 것은?</p>'
+                '<div class="mk-bars"><div class="mk-bar2"><span>① 고소·고발</span><i style="--v:24%"></i><b>5명</b></div><div class="mk-bar2"><span>② 범죄 혐의 인지</span><i style="--v:62%"></i><b>13명</b></div><div class="mk-bar2"><span>③ 피의자 출석</span><i style="--v:14%"></i><b>3명</b></div></div>'
+                '<div class="mk-row end"><button type="button" class="mk-btn dark" data-show="[data-ans]" data-goal>정답 보기</button></div>'
+                '<div class="mk-box tint" data-ans hidden><b>정답 ② 범죄 혐의 인지</b><span>수사는 수사기관이 범죄의 혐의가 있다고 생각할 때 시작돼요. 고소·고발은 수사의 단서 중 하나예요.</span><span class="mk-eg">체험용 예시 문항</span></div></div>')
+        return frame(TH, sd('dash'), ('FIST', '수업 진행'), main)
+    def rep():
+        bars = ''.join(f'<div class="mk-bar2"><span>{l}</span><i style="--v:{v}%"></i><b>{v}%</b></div>' for l, v in [('수사의 기본원칙', 85), ('수사기관의 권한', 72), ('강제수사와 영장', 45)])
+        main = ('<div class="mk-h"><h3>나의 학습 리포트</h3><span class="mk-badge">학생 화면</span></div>'
+                '<div class="mk-stats"><div class="mk-stat"><small>학습 진도</small><b>4 / 15주차</b></div><div class="mk-stat"><small>퀴즈 평균</small><b>78점</b></div><div class="mk-stat"><small>Q&A 참여</small><b>3회</b></div></div>'
+                f'<div class="mk-box"><b>단원별 이해도</b><div class="mk-bars">{bars}</div></div>'
+                '<div class="mk-row end"><button type="button" class="mk-btn dark" data-show="[data-wk]" data-goal>약점 피드백 보기</button></div>'
+                '<div class="mk-box tint" data-wk hidden><b>보완이 필요한 영역: 강제수사와 영장</b><span>영장주의의 예외(긴급체포·현행범 체포) 문항에서 자주 틀렸어요. 3주차 강의록 「영장주의」 부분을 다시 보고 사후 퀴즈로 확인해 보세요.</span><span class="mk-eg">체험용 예시</span></div>')
+        return frame(TH, sd('ana'), ('FIST', '학생 학습 리포트'), main)
     I = 'media/walk/hai-fist/'
     return [
-        dict(title='강의 대시보드에서 시작해요', text='담당 강의를 고르면 진행 중인 주차, 예정 수업, 공지를 한 화면에서 보고 강의계획서·자료 생성·시험 설정으로 이동해요.', do='「강의계획서를 생성해주세요」 알림의 「이어서 작성」을 눌러 보세요.', ui=dash(), img=I + '1.jpg'),
-        dict(title='AI가 교재로 강의계획서를 만들어요', text='교재를 올리면 AI가 분석해 강의계획서 초안을 만들어요. 주차·차시별 수업 구성과 교재 범위를 학사 일정에 맞게 조정해요.', do='주차 구성을 확인했다면 「다음: 학습 목표 생성」을 눌러 보세요.', ui=plan(), img=I + '2.jpg'),
-        dict(title='수업 자료를 생성해요', text='차시마다 강의록, 강의장표, 팟캐스트, 마인드맵, 퀴즈 등 필요한 자료 유형을 골라 AI로 만들어요.', do='만들 자료 유형을 눌러 고른 뒤 「자료 생성 시작」을 눌러 보세요.', ui=make(), img=I + '3.jpg'),
-        dict(title='만든 자료를 AI와 함께 다듬어요', text='강의장표를 미리 보며 고칠 장표를 고르고, 수정 방향을 AI에게 요청해 내용을 보완해요.', do='「콘텐츠 편집」을 눌러 AI 수정 요청 칸을 열어 보세요.', ui=edit(), img=I + '4.jpg'),
-        dict(title='학습성과를 분석해요', text='학생 참여도, 평가 결과, Q&A 활동, AI 활용 이력으로 학습성과를 확인하고 분석 보고서를 내려받아요.', do='「리포트 다운로드」를 눌러 분석 보고서를 받아 보세요.', ui=ana(), img=I + '5.jpg'),
+        dict(title='강의 대시보드에서 시작해요', text='담당 강의를 고르면 진행 중인 주차, 예정 수업, 공지, 전체 강의 일정을 한 화면에서 보고 강의계획서·자료 생성·시험 설정으로 이어서 이동해요. (3.1)', do='「강의계획서를 생성해주세요」 알림의 「이어서 작성」을 눌러 보세요.', ui=dash(), img=I + 'm1.jpg'),
+        dict(title='AI가 교재로 강의계획서를 만들어요', text='교재를 올리면 AI가 분석해 강의계획서 초안을 만들어요. 주차·차시별 수업 구성과 교재 범위를 학사 일정에 맞게 조정한 뒤 학습 목표, 평가 방식을 차례로 정해요. (강의계획서 생성)', do='주차 구성을 확인했다면 「다음: 학습 목표 생성」을 눌러 보세요.', ui=plan(), img=I + 'm2.jpg'),
+        dict(title='만들 수업 자료를 골라요', text='차시마다 강의록, 강의장표, 팟캐스트, 마인드맵, 퀴즈 등 만들 자료 유형과 사용할 업로드 파일을 골라요. (3.7 자료 생성)', do='만들 자료 유형을 눌러 고른 뒤 「자료 생성 시작」을 눌러 보세요.', ui=make(), img=I + 'm3.jpg'),
+        dict(title='사전 퀴즈 조건을 정해요', text='사전·사후 퀴즈는 공채 기출문제 반영 여부, 문항 수, 난이도를 정해 만들어요. 기출을 반영하면 난이도가 올라갈 수 있어요. 생성 진행률은 자료별로 보여요. (3.7)', do='기출 반영, 문항 수, 난이도를 하나씩 고르고 「사전 퀴즈 생성」을 눌러 보세요.', ui=quiz(), img=I + 'm4.jpg'),
+        dict(title='만든 자료를 AI와 함께 다듬어요', text='강의장표를 미리 보며 고칠 장표를 고르고, 수정 방향을 AI에게 요청해 내용을 보완해요. 강의록·팟캐스트·마인드맵·케이스도 같은 방식으로 검토해요. (3.8 자료 편집)', do='「콘텐츠 편집」을 눌러 AI 수정 요청 칸을 열어 보세요.', ui=edit(), img=I + 'm5.jpg'),
+        dict(title='배포 기간과 문항을 정해요', text='자료명, 배포 시작일·종료일, 업로드 자료 공개 여부를 확인하고, 사전·사후 퀴즈는 문제별로 배포 여부를 정해요. (3.8 배포 설정)', do='배포할 문항을 골라 본 뒤 「배포하기」를 눌러 보세요.', ui=deploy(), img=I + 'm6.jpg'),
+        dict(title='수업 중 퀴즈 결과를 함께 봐요', text='수업 중 퀴즈를 풀린 뒤 풀이 완료 인원과 문항별 응답 분포를 보고, 정답 보기로 해설을 바로 설명해요. 출석은 수업 QR로 확인해요. (3.9 수업 진행)', do='「정답 보기」를 눌러 해설을 열어 보세요.', ui=cls(), img=I + 'm7.jpg'),
+        dict(title='학습성과를 분석해요', text='주차를 골라 학생 참여도, 평가 결과, Q&A 활동, AI 활용 이력으로 학습성과를 확인하고 분석 보고서를 내려받아요. (3.11)', do='「리포트 다운로드」를 눌러 분석 보고서를 받아 보세요.', ui=ana(), img=I + 'm8.jpg'),
+        dict(title='학생은 학습 리포트로 약점을 확인해요', text='학생은 학습 활동, 퀴즈 결과, 참여 이력을 바탕으로 개인화된 피드백을 받고 다음 학습 계획을 세워요. (4.4 학생 학습 리포트)', do='「약점 피드백 보기」를 눌러 보세요.', ui=rep(), img=I + 'm9.jpg'),
     ]
 
 # ------------------------------------------------------------------ HAI-Lens (사용자 매뉴얼)
@@ -717,13 +756,47 @@ def _lens():
                 '<button type="button" class="mk-btn" style="border-radius:999px" data-hide="[data-pl0]" data-show="[data-pl]" data-goal>▶ 재생</button><small data-pl0>슬라이드 · 영상 · 음성을 함께 볼 수 있어요</small><small data-pl hidden>재생 중 · 구간 1 (체험판에는 영상이 들어 있지 않아요)</small></div>'
                 f'<div class="mk-opts">{segs}</div></div>{obs}')
         return frame(TH, sd(0), ('HAILENS', '타임라인'), main)
+    def prep():
+        main = ('<div class="mk-h"><h3>강의 시작 준비</h3><span class="mk-badge">HAI-LENS 시연</span></div><p class="mk-ref">네 가지가 모두 초록불이 되면 「강의 시작」이 켜져요.</p>'
+                '<div class="mk-box"><div class="mk-f">강의 자료<div class="mk-seg" data-pdf><button type="button" data-on>운영체제_파일시스템.pdf</button><button type="button" data-on>운영체제_프로세스.pdf</button></div></div>'
+                '<div class="mk-f">마이크<div class="mk-seg" data-mic><button type="button" data-on>노트북 내장 마이크</button><button type="button" data-on>무선 핀 마이크</button></div></div>'
+                '<div class="mk-row"><span>서버 연결</span><span class="mk-st ok">● 자동 확인됨</span></div>'
+                '<div class="mk-f">카메라<div class="mk-seg" data-cam><button type="button" data-on>강의실</button><button type="button" data-on>PC</button><button type="button" data-on>없음</button></div></div>'
+                '<p class="mk-ref">카메라 없이 하면 시선·몸짓처럼 영상이 필요한 항목은 리포트에서 「영상 제외」로 표시돼요.</p>'
+                '<p class="mk-demo" data-need hidden>강의 자료, 마이크, 카메라를 모두 골라 주세요.</p><div class="mk-row end"><button type="button" class="mk-btn" data-allon="[data-pdf],[data-mic],[data-cam]" data-show="[data-go]" data-goal>▶ 강의 시작</button></div></div>'
+                + toast('data-go', '점검이 끝나 발표 화면으로 넘어가요.'))
+        return frame(TH, sd(0), ('HAILENS', '강의 시작 준비'), main)
+    def live():
+        main = ('<div class="mk-box" style="background:#0b1020;color:#fff;border:0"><div class="mk-row"><b>발표 화면</b><span class="mk-st ing">● 녹화 중 12:40</span></div><div class="mk-center" style="padding:22px 0"><b style="font-size:16px">파일 시스템의 구조</b><small>슬라이드 <span data-pg>7</span> / 24</small></div>'
+                '<div class="mk-row"><span class="mk-pills"><button type="button" data-set="[data-pg]|6">◀</button><button type="button" data-set="[data-pg]|8">▶</button><span>V 커서</span><span>L 레이저</span><span>P 펜</span><span>E 지우개</span></span>'
+                '<span class="mk-row"><span class="mk-btn sm line" style="cursor:default;color:#fff">일시정지</span><button type="button" class="mk-btn sm" data-show="[data-end]" data-goal>강의 종료</button></span></div>'
+                + toast('data-end', '녹화를 마치고 분석을 시작했어요. 몇 분 걸리며 화면을 닫아도 분석은 계속돼요.').replace('mk-ok"', 'mk-ok" style="color:#86efac"') + '</div>'
+                '<p class="mk-ref">슬라이드를 넘긴 시점이 기록돼 리포트 타임라인과 연결돼요. 일시정지 후 20분 안에 돌아오지 않으면 그때까지의 녹화가 자동 저장돼요. 「강의 취소」는 녹화 데이터를 지우며 되돌릴 수 없어요.</p>')
+        return frame(TH, sd(0), ('HAILENS', '강의 진행'), main)
+    def detail():
+        IT = [('강점', '학습 목표 제시', 4.5, '도입 2분 안에 오늘의 학습 목표 세 가지를 슬라이드와 말로 함께 제시함'), ('강점', '핵심 개념 반복', 4.2, '「i-node」를 세 번에 걸쳐 다른 예시로 다시 설명함'), ('개선', '학습자 질문 유도', 2.1, '27분 동안 학생에게 던진 질문이 1회뿐임'), ('개선', '마무리 요약', 2.3, '마지막 1분에 다음 차시 예고만 하고 핵심 정리가 없었음'), ('참고', '시선 처리', 0, '카메라 없이 진행해 「영상 제외」 항목이에요')]
+        tabs = ''.join(f'<button type="button" class="{"on" if k == "all" else ""}" data-filter="{k}" data-on{" data-goal" if k == "개선" else ""}>{t}</button>' for k, t in [('all', '전체 34'), ('강점', '강점'), ('개선', '개선 우선'), ('참고', '분석 참고사항')])
+        rows = ''.join(f'<div class="mk-box" data-cat="{c}"><div class="mk-row"><b>{n}</b><span class="mk-st{"" if c == "강점" else " ing"}">{("영상 제외" if v == 0 else f"{v} / 5")}</span></div><span class="mk-ref">판단 근거: {g}</span></div>' for c, n, v, g in IT)
+        main = f'<div class="mk-row"><div class="mk-h"><h3>상세 분석</h3><span class="mk-badge">평가 항목 34개</span></div><div class="mk-tabs">{tabs}</div></div>{rows}<span class="mk-eg">체험용 예시 · 근거는 실제 강의 발화와 슬라이드에서 가져와요</span>'
+        return frame(TH, sd(0), ('HAILENS', '리포트 상세'), main)
+    def perf():
+        bars = ''.join(f'<div class="mk-bar2"><span>{l}</span><i style="--v:{v * 20}%"></i><b>{v}</b></div>' for l, v in [('1회차', 2.9), ('2회차', 3.1), ('3회차', 3.3), ('4회차', 3.6)])
+        main = ('<div class="mk-h"><h3>교육성과</h3><span class="mk-badge">2026-2학기</span></div><div class="mk-stats"><div class="mk-stat"><small>분석한 강의</small><b>4회</b></div><div class="mk-stat"><small>평균 종합점수</small><b>3.2</b></div><div class="mk-stat"><small>첫 회차 대비</small><b>+0.7</b></div></div>'
+                f'<div class="mk-box"><div class="mk-row"><b>종합점수 추이</b><div class="mk-seg"><button type="button" class="on" data-on>선</button><button type="button" data-on>막대</button><button type="button" data-on data-show="[data-tb]" data-goal>데이터 표</button></div></div><div class="mk-bars">{bars}</div>'
+                '<div class="mk-box tint" data-tb hidden><b>데이터 표</b><span>1회차 2.9 · 2회차 3.1 · 3회차 3.3 · 4회차 3.6</span></div><span class="mk-eg">체험용 예시 수치</span></div>')
+        return frame(TH, sd(0), ('HAILENS', '교육성과'), main)
     I = 'media/walk/hai-lens/'
     return [
-        dict(title='과목을 골라요', text='로그인하면 담당 과목이 보여요. 과목을 누르면 강의 시작, 강의 자료, 지난 강의로 들어가요.', do='과목 목록에서 「HAI-LENS 시연」을 눌러 보세요.', ui=pick(), img=I + '1.jpg'),
-        dict(title='강의 자료(PDF)를 올려요', text='수업에 쓸 PDF 슬라이드를 올려요. 리포트에서 어느 슬라이드에서 무슨 말을 했는지 함께 보여 줘요.', do='「클릭하거나 드래그」 영역을 눌러 PDF 슬라이드를 올려 보세요.', ui=upload(), img=I + '2.jpg'),
-        dict(title='강의를 진행해요', text='강의를 시작하면 발표 화면으로 바뀌어요. 슬라이드를 넘긴 시점이 기록되고, 필기 도구도 쓸 수 있어요. 마치면 「강의 종료」로 분석을 시작해요.', do='「강의 시작」을 눌러 발표 화면으로 들어가 보세요.', ui=start(), img=I + '3.jpg'),
-        dict(title='리포트 요약을 확인해요', text='종합 점수와 강의 총평, 8개 영역별 점수와 진단, 먼저 고칠 점과 잘하고 있는 점을 한눈에 봐요.', do='「강의 흐름 탐색」을 눌러 타임라인으로 가 보세요.', ui=report(), img=I + '4.jpg'),
-        dict(title='강의 흐름을 구간별로 돌아봐요', text='타임라인에서 구간별 점수 흐름을 보고, 원하는 구간의 슬라이드·영상·음성과 관찰 내용을 함께 확인해요.', do='「재생」을 눌러 이 구간의 강의를 다시 봐요. 오른쪽 구간도 눌러 보세요.', ui=timeline(), img=I + '5.jpg'),
+        dict(title='학교 통합인증으로 로그인해요', text='학교 SSO가 기본 방법이고, SSO 장애에 대비해 학번/교번과 비밀번호로 들어오는 계정 로그인도 있어요. 처음이면 SSO로 한 번 로그인하면 계정이 만들어져요. (1-1)', do='「○○대 SSO로 로그인」을 눌러 보세요.',
+             ui=login(TH, ('HAI-LENS', 'AI 기반 오프라인 강의 분석', '강의를 녹화하면 AI가 리포트로 돌아봐 드려요'), ('HAILENS', '로그인'), [('학번/교번', '학번 또는 교번', 'text'), ('비밀번호', '비밀번호', 'password')], [('○○대 SSO로 로그인', True, True), ('계정 로그인', False, False)], foot='비밀번호를 5회 연속 틀리면 15분간 잠겨요.'), img=I + 'm1.jpg'),
+        dict(title='과목을 골라요', text='로그인하면 담당 과목이 보여요. 과목을 누르면 강의 시작, 강의 자료, 지난 강의로 들어가요. 과목은 「내 계정」에서 만들거나 학사 시스템에서 가져와요. (1-2)', do='과목 목록에서 「HAI-LENS 시연」을 눌러 보세요.', ui=pick(), img=I + 'm2.jpg'),
+        dict(title='강의 자료(PDF)를 올려요', text='수업에 쓸 PDF 슬라이드를 여러 개 한 번에 올려요. 같은 파일명으로 다시 올리면 새 버전이 되고 이전 버전은 보관돼요. (1-3)', do='「클릭하거나 드래그」 영역을 눌러 PDF 슬라이드를 올려 보세요.', ui=upload(), img=I + 'm3.jpg'),
+        dict(title='강의 시작 전 네 가지를 점검해요', text='강의 자료, 마이크, 서버 연결, 카메라(강의실·PC·없음)를 확인해 모두 초록불이 되면 「강의 시작」이 켜져요. (1-4)', do='강의 자료, 마이크, 카메라를 하나씩 고른 뒤 「강의 시작」을 눌러 보세요.', ui=prep(), img=I + 'm4.jpg'),
+        dict(title='발표 화면으로 강의해요', text='슬라이드는 방향키로 넘기고, 커서·레이저·펜·지우개 도구를 써요. 마이크 입력이 30초 넘게 없으면 알려 줘요. 마치면 「강의 종료」로 분석을 시작해요. (1-5)', do='「강의 종료」를 눌러 녹화를 마쳐 보세요.', ui=live(), img=I + 'm5.jpg'),
+        dict(title='리포트 요약을 확인해요', text='분석이 끝나면 「지난 강의」에 초록 체크가 떠요. 리포트 요약에서 종합 점수와 총평, 구간 점수 형상, 8개 영역별 진단을 한눈에 봐요. (1-6·1-7)', do='「강의 흐름 탐색」을 눌러 보세요.', ui=report(), img=I + 'm6.jpg'),
+        dict(title='상세 분석으로 항목별 근거를 봐요', text='34개 평가 항목을 강점, 개선 우선, 분석 참고사항으로 걸러 보고, 항목마다 점수와 판단 근거, 권고사항을 확인해요. (1-8)', do='「개선 우선」 탭을 눌러 먼저 고칠 항목만 보세요.', ui=detail(), img=I + 'm7.jpg'),
+        dict(title='강의 흐름을 구간별로 돌아봐요', text='타임라인에서 구간별 점수 흐름을 보고, 원하는 구간의 슬라이드·영상·음성과 관찰 내용을 함께 확인해요. (1-9)', do='「재생」을 눌러 이 구간의 강의를 다시 봐요. 오른쪽 구간도 눌러 보세요.', ui=timeline(), img=I + 'm8.jpg'),
+        dict(title='누적된 교육성과를 봐요', text='여러 강의를 모아 분석한 강의 수, 평균 종합점수, 첫 회차 대비 추이와 영역별 평균, 학기별 성과를 봐요. (1-10)', do='종합점수 추이에서 「데이터 표」를 눌러 보세요.', ui=perf(), img=I + 'm9.jpg'),
     ]
 
 # ------------------------------------------------------------------ HAI-Way (학생용 매뉴얼)
@@ -731,8 +804,8 @@ def _way():
     TH = '--mk:#6d4fe0;--mk-side:#3b2a8f'
     def sd(active, goal=''):
         h = side('HAI-Way', '', [('', [('dash', 'home', '대시보드'), ('cur', 'doc', '커리큘럼 추천'), ('job', 'user', '직무 매칭'), ('dbl', 'edit', '복수전공 추천'), ('pf', 'mark', '포트폴리오'), ('rec', 'search', '채용공고 추천')])], active,
-                 go={'dash': 1, 'cur': 2, 'job': 3}, top='<div class="mk-course" style="background:rgba(255,255,255,.12);border:0;color:#fff"><b>학생</b><small>데이터사이언스학부 데이터테크전공<br>선택 직무: 시스템소프트웨어개발자<br>진로 설계 진행률 20%</small></div>')
-        return h.replace('data-go="2">', 'data-on data-goal data-hide="[data-c0]" data-show="[data-c1]">') if goal == 'cur' else h
+                 go={'dash': 2, 'cur': 3, 'job': 4, 'dbl': 6, 'pf': 7, 'rec': 8}, top='<div class="mk-course" style="background:rgba(255,255,255,.12);border:0;color:#fff"><b>학생</b><small>데이터사이언스학부 데이터테크전공<br>선택 직무: 시스템소프트웨어개발자<br>진로 설계 진행률 20%</small></div>')
+        return h.replace('data-go="3">', 'data-on data-goal data-hide="[data-c0]" data-show="[data-c1]">') if goal == 'cur' else h
     def dash():
         sk = ''.join(f'<span>{x}</span>' for x in ['자료구조', '알고리즘', '데이터베이스', '운영체제', '통계', '파이썬'])
         bars = ''.join(f'<div class="mk-bar2"><span>{l}</span><i style="--v:{v * 3}%"></i><b>{v}%</b></div>' for l, v in [('응용 능력', 28), ('개발적 사고력', 25), ('이론 설명 능력', 22), ('논리적 분석력', 18), ('기초이론 이해', 6)])
@@ -758,14 +831,44 @@ def _way():
               '<div class="mk-box"><div class="mk-row"><b>STRONG 검사 결과</b><span class="mk-eg">체험용 예시 결과</span></div><div class="mk-bars">' + ''.join(f'<div class="mk-bar2"><span>{l}</span><i style="--v:{v}%"></i><b>{v}</b></div>' for l, v in [('탐구형(I)', 82), ('현실형(R)', 64), ('관습형(C)', 51), ('예술형(A)', 38)]) + '</div><span>탐구형이 가장 높아요. 분석하고 문제를 푸는 일을 좋아하는 성향이라 개발·데이터 분석 직무와 잘 맞아요.</span></div></div>')
         p2 = '<div class="mk-box" data-jt="2"><b>선택한 희망 직무</b><span>시스템소프트웨어개발자</span><span class="mk-ref">위 탭을 눌러 다른 기준으로 나에게 맞는 직무를 찾아볼 수 있어요.</span></div>'
         return frame(TH, sd('job'), ('HAI-Way', '직무 매칭'), '<div class="mk-h"><h3>직무 매칭</h3></div><div class="mk-tabs">' + tabs + '</div>' + p0 + p1 + p2)
+    CQ = '시스템소프트웨어개발자가 되려면 다음 학기에 뭘 들어야 해?'
+    def chat():
+        body = (demo(CQ) + '<p>학과 로드맵과 수강 과목별 스킬셋을 보면, 지금은 <b>C프로그래밍·자료구조</b>로 기초를 다진 상태예요.</p><p>다음 학기에는 <b>운영체제</b>(3학년)와 <b>시스템프로그래밍</b>을 추천해요. 두 과목이 직무에 필요한 「저수준 시스템 이해」 스킬을 채워 줘요.</p>')
+        main = ('<div class="mk-box tint"><div class="mk-row"><b>알림</b><span class="mk-st ing">1</span></div><span>STRONG(직무성향 검사) 결과가 아직 없어요. 검사를 마치면 성향 기반 직무 매칭을 받을 수 있어요.</span></div>'
+                '<div class="mk-box"><b>HAI-Way 챗봇</b><div class="mk-log" id="mklog"><div class="mk-hello" data-hello><span>직무와 커리큘럼에 대해 물어보세요. 학과 로드맵과 과목별 스킬셋 데이터베이스를 바탕으로 답해요.</span></div>'
+                + me('', 'data-qa hidden') + dots('AI') + ai(body, 'data-a hidden') + '</div>' + inbar(CQ, '직무·커리큘럼에 대해 물어보세요', True) + '</div>')
+        return frame(TH, sd('dash'), ('HAI-Way', '챗봇'), main)
+    def dbl():
+        R = [('학부 시너지 기반', '경영학', '데이터테크전공과 함께 들으면 데이터 기반 의사결정 역량이 넓어져요.'), ('수강 과목 스킬셋 기반', '통계학', '이미 들은 「확률과 통계」 「데이터분석」과 겹치는 과목이 많아 부담이 적어요.')]
+        cards = ''.join(f'<button type="button" class="mk-card" data-on data-show="[data-why{k}]"{" data-goal" if k == 1 else ""}><span class="mk-lbl">{t}</span><strong>{m}</strong></button>' for k, (t, m, w) in enumerate(R))
+        why = ''.join(f'<div class="mk-box tint" data-why{k} hidden><b>{m} 추천 근거</b><span>{w}</span><span class="mk-eg">체험용 예시</span></div>' for k, (t, m, w) in enumerate(R))
+        main = f'<div class="mk-h"><h3>복수전공 추천</h3></div><p class="mk-ref">소속 학부와 수강 과목 스킬셋을 바탕으로 복수전공을 추천하고 근거를 알려 줘요.</p><div class="mk-grid two">{cards}</div>{why}'
+        return frame(TH, sd('dbl'), ('HAI-Way', '복수전공 추천'), main)
+    def pf():
+        bars = ''.join(f'<div class="mk-bar2"><span>{l}</span><i style="--v:{v}%"></i><b>{v}</b></div>' for l, v in [('프로그래밍', 78), ('데이터 처리', 64), ('협업·소통', 52)])
+        main = ('<div class="mk-h"><h3>포트폴리오</h3><span class="mk-badge">시스템소프트웨어개발자 기준</span></div>'
+                f'<div class="mk-two"><div class="mk-box"><b>수강과목 기반 역량 분포</b><div class="mk-bars">{bars}</div></div><div class="mk-box"><b>비교과 활동</b><span>· SW 경진대회 참가 (2025)</span><span>· 오픈소스 컨트리뷰톤 (2026)</span></div></div>'
+                '<div class="mk-row end"><button type="button" class="mk-btn" data-wait="[data-pw]" data-show="[data-cv]" data-goal>자기소개서 초안 만들기</button></div><p class="mk-note" data-pw hidden><span>수강 과목과 스킬셋으로 초안을 쓰고 있어요…</span></p>'
+                '<div class="mk-box tint" data-cv hidden><b>자기소개서 초안</b><span>C프로그래밍과 자료구조를 들으며 메모리를 직접 다루는 일에 흥미를 느꼈고, 오픈소스 컨트리뷰톤에서 운영체제 드라이버 버그를 고치며 시스템 소프트웨어 개발자의 꿈을 키웠습니다…</span><span class="mk-eg">체험용 예시</span></div>')
+        return frame(TH, sd('pf'), ('HAI-Way', '포트폴리오'), main)
+    def rec():
+        J = [('워크넷', '임베디드 리눅스 시스템 개발자 (신입)', '○○전자 · 마감 D-12'), ('링커리어', '시스템 SW 인턴', '○○소프트 · 마감 D-5')]
+        rows = ''.join(f'<button type="button" class="mk-rowbtn" data-on data-show="[data-an]"{" data-goal" if k == 0 else ""}><span><small>{src}</small><b>{t}</b><small>{c}</small></span><span>분석 →</span></button>' for k, (src, t, c) in enumerate(J))
+        main = (f'<div class="mk-h"><h3>채용공고 추천</h3><span class="mk-badge">시스템소프트웨어개발자</span></div>{rows}'
+                '<div class="mk-box tint" data-an hidden><b>포트폴리오 기반 분석</b><span>요구 역량 5개 중 4개를 갖췄어요. 「리눅스 커널」 경험이 부족하니 시스템프로그래밍 수강이나 관련 프로젝트를 추천해요.</span><span class="mk-eg">체험용 예시 공고</span></div>')
+        return frame(TH, sd('rec'), ('HAI-Way', '채용공고 추천'), main)
     I = 'media/walk/hai-way/'
     return [
-        dict(title='통합 SSO로 로그인해요', text='○○대학교 계정(SSO)으로 바로 로그인해요.', do='「로그인」을 눌러 통합 SSO로 들어가 보세요.', img=I + '1.jpg',
+        dict(title='통합 SSO로 로그인해요', text='○○대학교 계정(SSO)으로 바로 로그인해요. 로그인하면 소속 학과, 희망 직무, 알림이 사용자 정보 창에 보여요.', do='「로그인」을 눌러 통합 SSO로 들어가 보세요.', img=I + 'm1.jpg',
              ui=login(TH, ('○○ UNIVERSITY', 'Think Beyond,<br>Together Grow', '○○대학교 통합 로그인'), ('한국어 · English', '로그인'), [('ID', 'ID', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True)], foot='비밀번호 초기화 · 도움말')),
-        dict(title='나의 대시보드를 봐요', text='전공 로드맵과 지금까지 들은 과목의 스킬셋 분석, 추천 직무를 대시보드로 확인해요.', do='「핵심 역량」 영역을 눌러 나의 스킬셋 분석을 확인해 보세요.', ui=dash(), img=I + '2.jpg'),
-        dict(title='희망 직무에 맞는 커리큘럼을 받아요', text='희망 직무를 고르면 그 직무에 필요한 스킬셋을 기준으로 들어야 할 과목 로드맵을 만들어 줘요.', do='왼쪽 메뉴에서 「커리큘럼 추천」을 눌러 보세요.', ui=cur(), img=I + '3.jpg'),
-        dict(title='나와 가까운 직무를 찾아요', text='내가 들은 과목의 스킬셋을 바탕으로 나와 가장 가까운 직무와 그 직무를 위한 로드맵을 추천해요.', do='「커리큘럼 기반 매칭」 탭을 눌러 나와 가까운 직무를 확인해 보세요.', ui=job(0), img=I + '4.jpg'),
-        dict(title='성향검사로 직무를 매칭해요', text='STRONG 직무 성향검사 결과를 바탕으로 나에게 맞는 직무를 추천하고 설명해 줘요.', do='「성향검사 기반 매칭」 탭을 눌러 보세요.', ui=job(1), img=I + '5.jpg'),
+        dict(title='알림을 보고 챗봇에 물어봐요', text='STRONG 검사 결과가 없으면 검사 요청 알림이 떠요. 챗봇은 학과 로드맵과 과목별 스킬셋 데이터베이스를 바탕으로 직무·커리큘럼 질문에 답해요.', do='챗봇에 질문을 써서 보내 보세요. 비워 둔 채 보내면 예시 질문이 입력돼요.', ui=chat(), img=I + 'm2.jpg'),
+        dict(title='나의 대시보드를 봐요', text='전공 설명과 추천 직무, 과목 기반 스킬 통계, 챗봇 질문 기록 통계를 대시보드로 확인해요.', do='「핵심 역량」 영역을 눌러 나의 스킬셋 분석을 확인해 보세요.', ui=dash(), img=I + 'm3.jpg'),
+        dict(title='희망 직무에 맞는 커리큘럼을 받아요', text='희망 직무에 필요한 스킬셋을 기준으로 과목 로드맵을 만들고, 다음 학기 개설 과목과 난이도별 단계 커리큘럼으로 정리해 줘요.', do='왼쪽 메뉴에서 「커리큘럼 추천」을 눌러 보세요.', ui=cur(), img=I + 'm4.jpg'),
+        dict(title='나와 가까운 직무를 찾아요', text='수강 과목의 스킬셋을 바탕으로 나와 가장 가까운 직무 3개와 각 직무를 위한 학습 단계를 추천해요.', do='「커리큘럼 기반 매칭」 탭을 눌러 나와 가까운 직무를 확인해 보세요.', ui=job(0), img=I + 'm5.jpg'),
+        dict(title='성향검사로 직무를 매칭해요', text='STRONG 직무 성향검사 결과로 직무를 추천하고, 고른 직무의 상세 정보와 추천 자격증을 보여 줘요.', do='「성향검사 기반 매칭」 탭을 눌러 보세요.', ui=job(1), img=I + 'm6.jpg'),
+        dict(title='복수전공을 추천받아요', text='소속 학부와의 시너지, 수강 과목 스킬셋을 기준으로 복수전공을 추천하고 근거를 알려 줘요.', do='「수강 과목 스킬셋 기반」 추천 카드를 눌러 근거를 확인해 보세요.', ui=dbl(), img=I + 'm7.jpg'),
+        dict(title='포트폴리오와 자기소개서를 만들어요', text='수강 과목, 보유 스킬셋, 비교과 활동을 모아 직무 기준 종합 평가와 역량 분포도를 보여 주고 자기소개서 초안도 써 줘요.', do='「자기소개서 초안 만들기」를 눌러 보세요.', ui=pf(), img=I + 'm8.jpg'),
+        dict(title='채용공고를 추천받아요', text='선택한 직무와 관련된 워크넷·링커리어 등의 채용공고를 요약해 주고, 내 포트폴리오와 비교한 분석도 보여 줘요.', do='첫 번째 공고를 눌러 포트폴리오 기반 분석을 확인해 보세요.', ui=rec(), img=I + 'm9.jpg'),
     ]
 
 # ------------------------------------------------------------------ HAI-Research (일반 사용자 매뉴얼)
@@ -847,7 +950,7 @@ def _bdpi():
 def _check():
     TH = '--mk:#1e40af;--mk-side:#1e3a6e'
     def sd(active):
-        return side('LIVECAT', '', [('', [('test', 'edit', 'TEST 등록'), ('pool', 'doc', '문항 pool'), ('res', 'chart', '결과 관리'), ('bank', 'mark', '문항은행'), ('org', 'user', '조직 권한 관리')])], active, go={'bank': 1, 'pool': 2, 'test': 3, 'res': 4})
+        return side('LIVECAT', '', [('', [('test', 'edit', 'TEST 등록'), ('pool', 'doc', '문항 pool'), ('res', 'chart', '결과 관리'), ('bank', 'mark', '문항은행'), ('org', 'user', '조직 권한 관리')])], active, go={'bank': 3, 'pool': 5, 'test': 7, 'res': 8})
     def flow():
         F = [('문항 등록', '문항의 분류·등급 등 기본 정보를 정하고 문항은행에 문항을 등록해요.'), ('문항Pool 생성', '이번 시험에 쓸 문항을 골라 시험지(문항Pool)를 만들어요.'), ('시험 생성', '문항Pool을 골라 시험(Test)을 만들고 응시자와 안내 문구를 설정해요.'), ('URL 배포', '시험마다 만들어지는 URL을 응시자에게 알려요.'), ('응시', '응시자는 URL로 접속해 웹에서 시험을 봐요.'), ('결과 확인', '응시 결과를 확인하고 엑셀 결과표로 내려받아요.')]
         fl = '<i>→</i>'.join(f'<button type="button" data-on data-hide="[data-fd]" data-show="[data-fd={chr(39)}{k}{chr(39)}]"{" data-goal" if k == 0 else ""}>{t}</button>' for k, (t, d) in enumerate(F))
@@ -868,20 +971,52 @@ def _check():
         return frame(TH, sd('pool'), ('LIVECAT', '문항 pool'), main)
     def test():
         main = table('등록중인 TEST 목록', ['조직명', '시험명', '진행', '등록자', '상태'], [['○○대학교', '중간고사', 'step3단계', '홍길동', '<span class="mk-st ok">완료</span>'], ['○○대학교', 'CAT 테스트', 'step3단계', '홍길동', '<span class="mk-st ok">완료</span>']], '새 TEST 등록',
-                     '<label class="mk-f">TEST 명<input type="text" id="mknm" placeholder="예: 기말고사"></label><label class="mk-f">문항Pool<select><option>CBT 2</option><option>CAT 2</option></select></label><label class="mk-f">응시자 안내 문구<textarea placeholder="응시자에게 보일 안내 문구"></textarea></label>', '새 시험을 만들었어요. 시험마다 응시용 URL이 만들어져요.')
+                     '<label class="mk-f">TEST 명 (응시자에게 공개)<input type="text" id="mknm" placeholder="예: 기말고사"></label><div class="mk-two"><label class="mk-f">접속가능기간<input class="mk-in" value="12-10 14:00 ~ 12-10 17:00" aria-label="접속가능기간"></label><label class="mk-f">응시가능기간<input class="mk-in" value="12-10 15:00 ~ 12-10 16:00" aria-label="응시가능기간"></label></div><div class="mk-f">대상자 정보<div class="mk-seg"><button type="button" class="on" data-on>학생정보연동형</button><button type="button" data-on>단일시행형(엑셀)</button></div></div><label class="mk-f">2단계 · 문항Pool<select><option>CBT 2</option><option>CAT 2</option></select></label><label class="mk-f">응시자 안내 문구<textarea placeholder="응시자에게 보일 안내 문구"></textarea></label>', '새 시험을 만들었어요. 시험마다 응시용 URL이 만들어져요.')
         return frame(TH, sd('test'), ('LIVECAT', 'TEST 등록'), main)
     def res():
         main = ('<div class="mk-h"><h3>결과관리</h3></div><table class="mk-tbl"><tr><th>조직명</th><th>테스트명</th><th>응시인원</th><th>진행일</th></tr><tr class="on"><td>○○대학교</td><td><button type="button" data-show="[data-pv]">중간고사</button></td><td>0/22</td><td>2026-08-18 ~ 2026-08-18</td></tr><tr><td>○○대학교</td><td>CAT 테스트</td><td>0/22</td><td>2026-08-18 ~ 2026-08-18</td></tr></table>'
                 '<div class="mk-modal" data-pv><b>미리보기</b><span class="mk-lbl">TEST 기본정보</span><span>TEST 명　중간고사<br>대상자 정보　지속관리형 · 22명<br>TEST url　https://…/takerlogin (응시용 주소)</span><span class="mk-lbl">결과관리</span>'
                 '<div class="mk-row"><span>결과표</span><button type="button" class="mk-btn sm" style="background:#15803d" data-show="[data-dl]" data-goal>' + ic('down', 14) + '다운로드</button></div>' + toast('data-dl', '응시 결과를 엑셀 결과표로 내려받았어요. (체험판에서는 파일이 만들어지지 않아요)') + '</div>')
         return frame(TH, sd('res'), ('LIVECAT', '결과 관리'), main)
+    def code():
+        main = ('<div class="mk-row"><div class="mk-h"><h3>문항 관리</h3><span class="mk-badge">문항은행</span></div><span class="mk-chip">문항 코드 등록</span></div>'
+                '<p class="mk-ref">문항코드를 먼저 등록해야 문항을 등록할 수 있어요. 예) 대분류 영어토익 · 중분류 듣기 · 소분류 대화</p>'
+                '<div class="mk-box"><label class="mk-f">대분류명<select><option>-추가 등록-</option><option>범죄수사학</option></select></label>'
+                '<div class="mk-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))"><label class="mk-f">대분류<input class="mk-in" id="mkcd" placeholder="예: 형사법" aria-label="대분류"></label><label class="mk-f">중분류<input class="mk-in" placeholder="예: 수사절차" aria-label="중분류"></label><label class="mk-f">소분류<input class="mk-in" placeholder="예: 영장주의" aria-label="소분류"></label></div>'
+                '<p class="mk-demo" data-need hidden>대분류 이름을 먼저 써 주세요.</p><div class="mk-row end"><button type="button" class="mk-btn" data-req="#mkcd" data-show="[data-cd]" data-goal>등록</button></div>'
+                + toast('data-cd', '문항코드를 등록했어요. 같은 분류명·코드는 중복 등록할 수 없어요.') + '</div>')
+        return frame(TH, sd('bank'), ('LIVECAT', '문항코드 등록'), main)
+    def answer():
+        O = ['지갑을 그대로 두고 자리를 떠난다.', '지갑 속 연락처로 주인에게 연락한다.', '지갑을 들고 파출소에 찾아가 분실 신고를 한다.', '지갑을 주운 곳 근처 상점에 맡긴다.']
+        opts = ''.join(f'<button type="button" class="mk-rowbtn" data-on><span><span class="mk-cb"></span> {k + 1}　{o}</span></button>' for k, o in enumerate(O))
+        main = ('<div class="mk-h"><h3>문항 등록</h3><span class="mk-badge">구성 · 선택지 · 해설</span></div>'
+                '<div class="mk-box"><span class="mk-lbl">문제</span><span>길에서 지갑을 주웠을 때 가장 적절한 행동은?</span></div>'
+                f'<div class="mk-box"><b>선택지 <small>(정답을 눌러 지정 · 번호는 입력하지 않아요)</small></b><div data-ans>{opts}</div>'
+                '<label class="mk-f">해설 (선택)<textarea placeholder="정답 해설을 입력하세요">습득한 유실물은 경찰서(파출소)에 신고해 주인에게 돌려줘야 해요.</textarea></label>'
+                '<p class="mk-demo" data-need hidden>정답 선택지를 먼저 눌러 지정해 주세요.</p><div class="mk-row end"><span class="mk-ref">미리보기 Alt + Q</span><button type="button" class="mk-btn" data-allon="[data-ans]" data-show="[data-sv]" data-goal>등록</button></div>'
+                + toast('data-sv', '문항을 문항은행에 등록했어요. 미리보기로 응시자 화면을 확인할 수 있어요.') + '</div>')
+        return frame(TH, sd('bank'), ('LIVECAT', '문항 등록'), main)
+    def use():
+        rows = ''.join(f'<tr{" data-on" if k == 0 else ""}><td><span class="mk-cb"></span></td><td>{n}</td><td>인지검사</td><td>{m}</td><td>{"<span data-yn>N</span>" if k == 0 else "Y"}</td></tr>' for k, (n, m) in enumerate([('중간고사 시험지', 'CBT-시험지형'), ('CBT 2', 'CBT-시험지형'), ('CAT 2', 'CAT-Rasch')]))
+        main = ('<div class="mk-row"><div class="mk-h"><h3>문항Pool 사용여부 설정</h3></div><button type="button" class="mk-btn sm" data-allon="[data-pu]" data-show="[data-cf]" data-goal>문항Pool 사용여부 변경</button></div>'
+                '<p class="mk-ref">사용여부가 Y인 문항Pool만 TEST를 만들 때 보여요. N으로 바꾸면 TEST 생성 화면에서 사라져요.</p>'
+                f'<table class="mk-tbl" data-pu><tr><th></th><th>문항Pool명</th><th>영역</th><th>Model</th><th>사용여부</th></tr>{rows}</table>'
+                '<p class="mk-demo" data-need hidden>바꿀 문항Pool의 체크박스를 먼저 눌러 주세요.</p>'
+                '<div class="mk-modal" data-cf hidden><b>사용여부를 변경할까요?</b><span>「중간고사 시험지」 N → Y</span><div class="mk-row end"><button type="button" class="mk-btn sm" data-hide="[data-cf]" data-set="[data-yn]|Y" data-show="[data-yd]">확인</button></div></div>'
+                + toast('data-yd', '사용여부가 Y로 바뀌어 TEST 등록에서 이 문항Pool을 고를 수 있어요.'))
+        return frame(TH, sd('pool'), ('LIVECAT', '문항Pool 사용여부'), main)
     I = 'media/walk/hai-check/'
     return [
-        dict(title='전체 흐름을 먼저 봐요', text='문항 등록 → 문항Pool 생성 → 시험 생성 → URL 배포 → 응시 → 결과 확인 순서로 진행해요. CBT와 맞춤형 CAT 모두 웹에서 운영해요.', do='흐름의 첫 단계 「문항 등록」을 눌러 설명을 확인해 보세요.', ui=flow(), img=I + '1.jpg'),
-        dict(title='문항을 등록해요', text='문항의 분류와 등급 등 기본 정보를 정하고 문항을 등록해요.', do='기본 정보에서 「② 영역」을 「인지검사」로 골라 보세요.', ui=item(), img=I + '2.jpg'),
-        dict(title='문항Pool(시험지)을 구성해요', text='문항Pool은 시험지와 같아요. 「문항Pool구성」 → 「새 문항Pool 등록」에서 이번 시험에 쓸 문항을 골라 담아요.', do='「새 문항Pool 등록」을 눌러 등록 창을 열어 보세요.', ui=pool(), img=I + '3.jpg'),
-        dict(title='시험(Test)을 만들어요', text='「Test 등록」에서 「새 Test 등록」을 눌러 시험을 만들고 응시자와 안내 문구를 설정해요.', do='「새 TEST 등록」을 눌러 등록 창을 열어 보세요.', ui=test(), img=I + '4.jpg'),
-        dict(title='결과를 확인하고 내려받아요', text='「결과 관리」에서 검사를 고르고 「다운로드」를 누르면 응시 결과를 엑셀 결과표로 받을 수 있어요.', do='미리보기 아래 결과표의 「다운로드」를 눌러 보세요.', ui=res(), img=I + '5.jpg'),
+        dict(title='사번으로 로그인해요', text='사번과 비밀번호로 로그인해요. 처음이면 조직명(대학/학과)을 넣어 계정 생성을 요청해요. (PART 0)', do='「로그인」을 눌러 보세요.', img=I + 'm1.jpg',
+             ui=login(TH, ('THE CAT KOREA', 'LIVECAT', 'CBT·CAT 통합검사 웹 플랫폼'), ('HAI-CHECK', '로그인'), [('사번', '사번', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True), ('계정 생성 요청', False, False)])),
+        dict(title='전체 흐름을 먼저 봐요', text='문항 등록 → 문항Pool 생성 → 시험 생성 → URL 배포 → 응시 → 결과 확인 순서로 진행해요. CBT와 맞춤형 CAT 모두 웹에서 운영해요. (LIVECAT 소개)', do='흐름의 첫 단계 「문항 등록」을 눌러 설명을 확인해 보세요.', ui=flow(), img=I + 'm2.jpg'),
+        dict(title='문항코드를 먼저 등록해요', text='[문항은행] > [문항 관리] > [문항 코드 등록]에서 대분류·중분류·소분류를 정해요. 문항코드가 없으면 문항을 등록할 수 없어요. (1-2)', do='대분류 이름을 쓰고 「등록」을 눌러 보세요.', ui=code(), img=I + 'm3.jpg'),
+        dict(title='문항의 기본정보를 정해요', text='[문항은행] > [문항등록]의 기본정보에서 영역, 문항구성유형, 분류, 문항등급, 응답유형을 정해요. (1-3)', do='기본 정보에서 「② 영역」을 「인지검사」로 골라 보세요.', ui=item(), img=I + 'm4.jpg'),
+        dict(title='선택지와 정답, 해설을 넣어요', text='선택지는 번호 없이 내용만 입력하고, 정답 칸을 눌러 정답을 지정해요. 해설은 넣지 않아도 되고, 미리보기(Alt+Q)로 확인한 뒤 등록해요. (1-3)', do='정답 선택지를 눌러 지정하고 「등록」을 눌러 보세요.', ui=answer(), img=I + 'm5.jpg'),
+        dict(title='문항Pool(시험지)을 구성해요', text='문항Pool은 시험지와 같아요. 이름과 표지를 정하고, 문항 분류에서 이번 시험에 쓸 문항을 골라 담아요. 엑셀로 한 번에 등록할 수도 있어요. (PART 2)', do='「새 문항Pool 등록」을 눌러 등록 창을 열어 보세요.', ui=pool(), img=I + 'm6.jpg'),
+        dict(title='문항Pool 사용여부를 켜요', text='사용여부가 Y인 문항Pool만 TEST를 만들 때 보여요. 체크박스를 고르고 [문항Pool 사용여부 변경] → [확인]을 눌러요. (2-3)', do='「문항Pool 사용여부 변경」을 누르고 창에서 「확인」을 눌러 보세요.', ui=use(), img=I + 'm7.jpg'),
+        dict(title='시험(Test)을 만들어요', text='TEST명, 접속가능기간·응시가능기간, 대상자 정보(학생정보연동형·단일시행형)를 정하고, 2단계에서 문항Pool, 3단계에서 시작·종료 페이지를 설정해요. (PART 3)', do='「새 TEST 등록」을 눌러 등록 창을 열어 보세요.', ui=test(), img=I + 'm8.jpg'),
+        dict(title='결과를 확인하고 내려받아요', text='[결과 관리]에서 검사를 고르고 결과표를 내려받아요. 엑셀 결과표는 응시자 정보·총점, 정오표(response), 풀이 시간(time), 고른 답(answer) 시트로 나뉘어요. (PART 4)', do='미리보기 아래 결과표의 「다운로드」를 눌러 보세요.', ui=res(), img=I + 'm9.jpg'),
     ]
 
 # ------------------------------------------------------------------ HAI-LRS (학생 대시보드 안내)
