@@ -60,6 +60,10 @@ def login(theme, hero, panel, fields, btns, done='로그인되었어요. 「다�
     return (f'<div class="mk mk-login" style="{theme}"><div class="mk-hero"><small>{hero[0]}</small><b>{hero[1]}</b><span>{hero[2]}</span><div class="mk-hchips">{chips}</div></div>'
             f'<div class="mk-lg"><small>{panel[0]}</small><h3>{panel[1]}</h3>{f}{extra}{b}<p class="mk-ok" data-done hidden>{ic("check", 15)}{done}</p>{("<p class=mk-ref>" + foot + "</p>") if foot else ""}</div></div>')
 
+def figimg(path, alt, w=300):
+    """매뉴얼에 실린 그림을 체험 화면 안에 넣기"""
+    return f'<img src="media/walk/{path}" alt="{alt}" loading="lazy" style="display:block;width:100%;max-width:{w}px;height:auto;border-radius:8px;border:1px solid #e5e7eb;background:#fff">'
+
 def me(text='', attrs=''): return f'<div class="mk-msg me" {attrs}><div class="mk-bub" data-q>{text}</div></div>'
 def ai(html, attrs='', av='AI'): return f'<div class="mk-msg ai" {attrs}><span class="mk-av">{av}</span><div class="mk-bub">{html}</div></div>'
 def dots(av='AI'): return f'<div class="mk-msg ai" data-dots hidden><span class="mk-av">{av}</span><div class="mk-bub mk-dots"><i></i><i></i><i></i></div></div>'
@@ -428,7 +432,7 @@ def _math():
     def result():
         main = (tools() + GUIDE + '<div class="mk-modal"><div class="mk-row"><b>결과</b><span class="mk-st ing">오답</span></div><div class="mk-box"><span class="mk-lbl">내 답안</span><b>27</b></div>'
                 '<button type="button" class="mk-rowbtn" data-show="[data-sol]" data-goal><b>정답 및 해설 보기</b><span>›</span></button><button type="button" class="mk-rowbtn" data-show="[data-fr]"><b>친구 풀이 보기</b><span>›</span></button>'
-                '<div class="mk-box tint" data-sol hidden><b>정답: 1/e</b><span>스털링 근사 n! ≈ √(2πn)(n/e)<sup>n</sup>을 쓰면 <sup>n</sup>√(n!)은 n이 커질수록 n/e에 가까워져요. 따라서 n으로 나눈 값은 1/e로 수렴해요.</span><span class="mk-eg">체험용 예시 해설</span></div>'
+                '<div class="mk-box tint" data-sol hidden><b>정답: 1/e</b><span>스털링 근사 n! ≈ √(2πn)(n/e)<sup>n</sup>을 쓰면 <sup>n</sup>√(n!)은 n이 커질수록 n/e에 가까워져요. 따라서 n으로 나눈 값은 1/e로 수렴해요.</span><span class="mk-eg">체험용 예시 해설</span><span class="mk-lbl">매뉴얼 화면 속 해설 예시(다른 문제)</span>' + figimg('hai-mathtutor/fig-sol.jpg', '해설 화면: 스털링 공식으로 극한을 단계별로 푸는 수식 풀이', 620) + '</div>'
                 '<p class="mk-demo" data-fr hidden>체험판에는 친구 풀이가 들어 있지 않아요. 실제 서비스에서는 다른 학생의 풀이를 볼 수 있어요.</p></div>')
         return frame(TH, sd('tut'), ('HAI-MathTutor', '채점 결과'), main)
     Q = '극한이 뭐예요?'
@@ -688,6 +692,7 @@ def _fist():
         th = ''.join(f'<button type="button" class="mk-rowbtn{" on" if k == 0 else ""}" data-on data-set="[data-sn]|{k + 1}"><span>{k + 1}　{t}</span></button>' for k, t in enumerate(['표지', '학습 목표', '형사절차의 흐름', '수사기관 비교']))
         main = ('<div class="mk-h"><h3>수업 자료 편집</h3><span class="mk-badge">강의장표</span></div><div class="mk-two" style="grid-template-columns:150px 1fr"><div class="mk-opts">' + th + '</div>'
                 '<div class="mk-box" style="background:linear-gradient(135deg,#1e3a8a,#0ea5e9);color:#fff;border:0;min-height:170px;justify-content:center;align-items:center;text-align:center"><b style="font-size:18px">범죄수사절차법 개요(상)</b><span>수사기관의 권한과 형사사법 체계의 이해</span><small>1주차 강의 · 장표 <span data-sn>1</span> / 30</small></div></div>'
+                '<div class="mk-box"><div class="mk-row"><b>마인드맵</b><span class="mk-chip">SVG · PNG · PDF 다운로드</span></div>' + figimg('hai-fist/fig-mindmap.jpg', '마인드맵 그림: 형사소송법 기초이론을 가운데 두고 수사기관·사법제도·형사절차로 뻗은 개념 지도', 900) + '<span class="mk-eg">매뉴얼 화면에 실린 마인드맵</span></div>'
                 '<div class="mk-row"><button type="button" class="mk-btn dark" data-show="[data-ai]" data-goal>콘텐츠 편집</button><button type="button" class="mk-btn line">배포 설정</button></div>'
                 '<div class="mk-box" data-ai hidden><b>AI 수정 요청</b><textarea id="mkfx" placeholder="예: 3번 장표에 실제 사례를 하나 추가해 줘"></textarea><p class="mk-demo" data-need hidden>수정 방향을 먼저 써 주세요.</p><div class="mk-row end"><button type="button" class="mk-btn sm" data-req="#mkfx" data-show="[data-fxd]">AI에게 수정 요청</button></div>'
                 + toast('data-fxd', '수정 방향을 AI에게 전달했어요. 고친 장표를 다시 검토할 수 있어요. (체험판에서는 장표가 바뀌지 않아요)') + '</div>')
@@ -847,7 +852,7 @@ def _way():
         C = [('511644', 'C프로그래밍', '3학년', '3', '90%'), ('506203', '컴퓨터프로그래밍', '4학년', '3', '85%'), ('511702', '자료구조', '2학년', '3', '82%')]
         tb = '<table class="mk-tbl"><tr><th>과목번호</th><th>과목명</th><th>학년(수준)</th><th>학점</th><th>매칭도</th></tr>' + ''.join(f'<tr><td>{a}</td><td>{b}</td><td>{c}</td><td>{d}</td><td><span class="mk-st ok">{e}</span></td></tr>' for a, b, c, d, e in C) + '</table>'
         main = ('<div class="mk-h"><h3>커리큘럼 추천</h3></div><div class="mk-box" data-c0><span class="mk-ref">왼쪽 메뉴에서 「커리큘럼 추천」을 누르면 희망 직무에 맞는 과목 로드맵을 만들어 줘요.</span></div>'
-                '<div data-c1 hidden style="display:flex;flex-direction:column;gap:12px"><div class="mk-box"><b>시스템소프트웨어개발자 학습 로드맵</b><div class="mk-pills"><span class="on">기초</span><span>C프로그래밍</span><span>자료구조</span><span class="on">응용</span><span>운영체제</span><span>시스템프로그래밍</span><span class="on">심화</span><span>임베디드시스템</span></div></div>'
+                '<div data-c1 hidden style="display:flex;flex-direction:column;gap:12px"><div class="mk-box"><b>시스템소프트웨어개발자 학습 로드맵</b>' + figimg('hai-way/fig-roadmap.jpg', '학습 로드맵 그림: 직무에서 개발계획 수립을 거쳐 스킬과 교과목으로 이어지는 연결도', 820) + '<span class="mk-ref">직무 → 능력단위 → 스킬 → 교과목 순서로 이어지는 그래프예요.</span></div>'
                 f'<div class="mk-box"><div class="mk-row"><b>2026-1학기 추천 커리큘럼</b><span class="mk-eg">체험용 예시 과목</span></div><span class="mk-ref">시스템소프트웨어개발자를 위한 맞춤 추천이에요. 기초부터 차근차근 들을 수 있게 순서를 잡아 줘요.</span>{tb}</div></div>')
         return frame(TH, sd('dash', 'cur'), ('HAI-Way', '커리큘럼 추천'), main)
     def job(tab):
@@ -856,7 +861,7 @@ def _way():
         p0 = ('<div data-jt="0" hidden style="display:flex;flex-direction:column;gap:12px"><div class="mk-box tint"><b>직무 학습 로드맵</b><span>내가 들은 과목의 스킬셋을 기준으로 나와 가장 가까운 직무와, 그 직무에 필요한 과목 로드맵을 추천해요.</span></div>'
               f'<div class="mk-box"><b>학습 단계별 적합도</b><div class="mk-bars">{bars}</div></div><div class="mk-grid"><div class="mk-card"><strong>VFX아티스트(일반)</strong><span class="mk-ref">영상 특수효과 제작</span></div><div class="mk-card"><strong>VFX디자이너</strong><span class="mk-ref">시각효과 디자인</span></div><div class="mk-card on"><strong>시스템소프트웨어개발자</strong><span class="mk-ref">운영체제·시스템 개발</span></div></div></div>')
         p1 = ('<div data-jt="1" hidden style="display:flex;flex-direction:column;gap:12px"><div class="mk-box tint"><b>직업성향검사 기반 직무 매칭</b><span>STRONG 직무 성향검사 결과를 바탕으로 나에게 맞는 직무를 추천하고, 왜 맞는지 설명해 줘요.</span></div>'
-              '<div class="mk-box"><div class="mk-row"><b>STRONG 검사 결과</b><span class="mk-eg">체험용 예시 결과</span></div><div class="mk-bars">' + ''.join(f'<div class="mk-bar2"><span>{l}</span><i style="--v:{v}%"></i><b>{v}</b></div>' for l, v in [('탐구형(I)', 82), ('현실형(R)', 64), ('관습형(C)', 51), ('예술형(A)', 38)]) + '</div><span>탐구형이 가장 높아요. 분석하고 문제를 푸는 일을 좋아하는 성향이라 개발·데이터 분석 직무와 잘 맞아요.</span></div></div>')
+              '<div class="mk-box"><div class="mk-row"><b>STRONG 검사 결과</b><span class="mk-eg">체험용 예시 결과</span></div>' + figimg('hai-way/fig-strong.jpg', 'STRONG 검사 결과 육각형 그래프: 현실형·탐구형·예술형·사회형·진취형·관습형', 300) + '<div class="mk-bars">' + ''.join(f'<div class="mk-bar2"><span>{l}</span><i style="--v:{v}%"></i><b>{v}</b></div>' for l, v in [('탐구형(I)', 82), ('현실형(R)', 64), ('관습형(C)', 51), ('예술형(A)', 38)]) + '</div><span>탐구형이 가장 높아요. 분석하고 문제를 푸는 일을 좋아하는 성향이라 개발·데이터 분석 직무와 잘 맞아요.</span></div></div>')
         p2 = '<div class="mk-box" data-jt="2"><b>선택한 희망 직무</b><span>시스템소프트웨어개발자</span><span class="mk-ref">위 탭을 눌러 다른 기준으로 나에게 맞는 직무를 찾아볼 수 있어요.</span></div>'
         return frame(TH, sd('job'), ('HAI-Way', '직무 매칭'), '<div class="mk-h"><h3>직무 매칭</h3></div><div class="mk-tabs">' + tabs + '</div>' + p0 + p1 + p2)
     CQ = '시스템소프트웨어개발자가 되려면 다음 학기에 뭘 들어야 해?'
@@ -1315,6 +1320,13 @@ def _epilearn():
                 + '<p class="mk-demo" data-need hidden>두 문항 모두 평점을 먼저 매겨 주세요.</p><div class="mk-row end"><button type="button" class="mk-btn" data-allon="[data-rt0],[data-rt1]" data-show="[data-ex]" data-goal>시험지 만들기</button></div>'
                 + toast('data-ex', '2문항 선택됨 · 시험지를 만들어 내려받았어요. (체험판에서는 파일이 만들어지지 않아요)'))
         return frame(TH, '', ('EpiLearn Studio', 'QuizBank'), main)
+    _rv, _lv = review, live
+    PF = lambda w: figimg('hai-epilearn/fig-podcast.jpg', '팟캐스트 영상 장면: 예방접종, 선별검사, 만성질환 관리 같은 예방의학 그림', w)
+    def review():
+        h = _rv(); k = h.index('<div class="mk-stats">', h.index('data-rv="0"'))
+        return h[:k] + PF(380) + h[k:]
+    def live():
+        return _lv().replace('<div class="mk-box" data-lv="0"><b>수업 스포일러</b>', '<div class="mk-box" data-lv="0"><b>수업 스포일러</b>' + PF(420), 1)
     I = 'media/walk/hai-epilearn/'
     return [
         dict(title='EPI-Learn Studio에 로그인해요', text='브라우저에서 EPI-Learn Studio에 접속해 교수자 또는 학생 계정으로 로그인해요. 수업 전·중·후 전 과정을 한 곳에서 지원해요. (II. 로그인)', do='아이디와 비밀번호 칸을 확인하고 「로그인」을 눌러 보세요.', img=I + 'm1.jpg',
