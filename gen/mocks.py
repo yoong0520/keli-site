@@ -1350,6 +1350,33 @@ def _medlearn():
                 '<div class="mk-row end"><button type="button" class="mk-btn" data-wait="[data-vw]" data-show="[data-vd]" data-goal>영상 생성</button></div><p class="mk-note" data-vw hidden><span>영상 생성 중… 42%</span></p>'
                 + toast('data-vd', '영상이 만들어졌어요. 오디오·영상을 재생해 확인할 수 있어요.') + '</div>')
         return frame(TH, '', ('MedLearn-X', '영상 생성'), main)
+    def fig(n, alt, w=260):
+        return f'<img src="media/walk/hai-medlearn-x/fig-{n}.jpg" alt="{alt}" loading="lazy" style="display:block;width:100%;max-width:{w}px;height:auto;border-radius:8px;border:1px solid #e5e7eb;background:#fffdf7">'
+    _rv, _vd, _lv, _st = review, video, live, stu
+    def review():
+        h = _rv()
+        i = h.index('<div class="mk-box" data-rv="2" hidden>'); j = h.index('</div>', i) + 6
+        q = ('<div class="mk-box" data-rv="2" hidden><div class="mk-row"><b>사전 퀴즈 검토 및 편집</b><span class="mk-chip">편집</span></div>'
+             '<p><b>1.</b> 소뇌 기능을 확인하려고 아래 두 검사를 했어요. 두 검사에서 모두 이상이 보이면 가장 먼저 의심할 부위는?</p>'
+             + fig('cereb', '소뇌 기능 검사 그림: 손가락-코-손가락 검사와 발뒤꿈치-정강이 검사', 240)
+             + '<div class="mk-opts"><span class="mk-opt">A. 대뇌 운동피질</span><span class="mk-opt on">B. 소뇌</span><span class="mk-opt">C. 말초신경</span><span class="mk-opt">D. 척수 후각</span></div>'
+             '<span class="mk-lbl">해설 · 정답 B</span><span>두 검사는 협조운동을 보는 대표적인 소뇌 검사예요. 해설에도 그림을 넣을 수 있어요.</span>'
+             + fig('symptom', '증상 지도 예시 그림: 오른쪽 얼굴 마비, 오른쪽 반신 마비, 실어증과 관련 부위', 230)
+             + '<span class="mk-eg">그림은 매뉴얼 화면에 실린 생성 이미지예요</span></div>')
+        return h[:i] + q + h[j:]
+    def video():
+        h = _vd()
+        T = [('00:00', 'ns', '중추·말초신경계 그림'), ('00:20', None, ''), ('00:45', 'clinic', '진료 장면 그림'), ('01:10', None, '')]
+        tl = ('<div class="mk-grid" style="grid-template-columns:repeat(4,minmax(0,1fr))">' + ''.join(f'<div class="mk-box" style="padding:6px;gap:4px;align-items:center"><small>{t}</small>' + (fig(n, al, 140) if n else '<span class="mk-ref" style="min-height:60px;display:flex;align-items:center">+ 이미지 업로드</span>') + '</div>' for t, n, al in T) + '</div>')
+        i = h.index('<div class="mk-grid" style="grid-template-columns:repeat(4,minmax(0,1fr))">'); j = h.index('</div>', h.index('01:10', i)) + 6
+        return h[:i] + tl + h[j:]
+    def live():
+        h = _lv()
+        return h.replace('<div class="mk-box" data-lv="0"><b>수업 스포일러</b>', '<div class="mk-box" data-lv="0"><b>수업 스포일러</b>' + fig('ns', '팟캐스트 영상 장면: 중추신경계와 말초신경계 그림', 420), 1)
+    def stu():
+        h = _st()
+        k = h.index('<div class="mk-opts" data-pq>')
+        return h[:k] + fig('clinic', '진료 장면 그림: 떨림 증상을 상담하는 고령 환자와 의사', 260) + h[k:]
     I = 'media/walk/hai-medlearn-x/'
     return [
         dict(title='수업 전·중·후를 하나로', text='콘텐츠 생성 → 검수 → 배포 → 학습 → 분석 → 재생성의 흐름으로 의학교육 수업 전 과정을 지원해요. Flipped Learning과 TBL을 함께 적용해요. (I-3)', do='흐름의 첫 단계 「콘텐츠 생성」을 눌러 설명을 확인해 보세요.', ui=flow(), img=I + 'm1.jpg'),
