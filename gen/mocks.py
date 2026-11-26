@@ -406,7 +406,7 @@ def _math():
     TH = '--mk:#4f46e5;--mk-side:#1e1b4b'
     PROB = '극한 lim<sub>n→∞</sub> <sup>n</sup>√(n!) / n 의 값은?'
     def sd(active):
-        return side('HAI-MathTutor', '', [('', [('home', 'home', '홈'), ('tut', 'user', '내 튜터'), ('hw', 'edit', '내 과제')])], active, user=('학생', '수학 튜터'), light=True, go={'home': 0})
+        return side('HAI-MathTutor', '', [('', [('home', 'home', '홈'), ('tut', 'user', '내 튜터'), ('hw', 'edit', '내 과제')])], active, user=('학생', '수학 튜터'), light=True, go={'home': 1})
     def home():
         T = [('2026년 1학기 선형대수 튜터', 4, 3), ('중간고사 대비 튜터', 4, 3), ('중간고사 대비 수학튜터', 2, 3), ('2027년 1학기 중간고사 튜터', 2, 3)]
         rows = ''.join(f'<div class="mk-rowbtn" style="cursor:default"><span><b>{n}</b> <span style="color:var(--mk)">0%</span></span><small>자율학습 {a}문제 중 0풀이 · 과제 {b}문제 중 0풀이</small></div>' for n, a, b in T)
@@ -416,7 +416,7 @@ def _math():
         return frame(TH, sd('home').replace('<span class="mk-nav">' + ic('user') + '내 튜터</span>', '<button type="button" class="mk-nav" data-on data-show="[data-list]" data-goal>' + ic('user') + '내 튜터</button>'), ('HAI-MathTutor', '홈'), main)
     def tools(guide_goal=False):
         return ('<div class="mk-topbar"><div class="mk-h"><h3>함수의 극한</h3><span class="mk-badge">MATH</span></div><span class="mk-row"><button type="button" class="mk-btn sm line" data-show="[data-guide]"' + (' data-goal' if guide_goal else '') + '>' + ic('doc', 14) + '가이드</button>'
-                '<button type="button" class="mk-btn sm line" data-go="4">' + ic('chat', 14) + 'AI 튜터</button></span></div><div class="mk-box"><span class="mk-chip">문제</span><p style="font-size:15px"><b>' + PROB + '</b></p></div>')
+                '<button type="button" class="mk-btn sm line" data-go="5">' + ic('chat', 14) + 'AI 튜터</button></span></div><div class="mk-box"><span class="mk-chip">문제</span><p style="font-size:15px"><b>' + PROB + '</b></p></div>')
     GUIDE = ('<div class="mk-modal" data-guide hidden><div class="mk-row"><b>가이드 · 함수의 극한</b><button type="button" class="mk-btn sm line" data-hide="[data-guide]">닫기</button></div><span class="mk-lbl">필요한 개념</span>'
              '<p>1. 극한(limits): 수열이나 함수의 값이 무한히 가까워지는 값을 평가하는 개념입니다.<br>2. 계승(factorial): n!은 1부터 n까지의 모든 자연수의 곱입니다.<br>3. 멱(power): a<sup>n</sup>은 a가 n번 곱해진 것입니다.</p>'
              '<span class="mk-lbl">관련 공식·정리</span><p>1. 스털링 근사(Stirling\'s Approximation): n! ≈ √(2πn) (n/e)<sup>n</sup><br>2. (1 + 1/n)<sup>n</sup> 형태의 극한은 e로 수렴합니다.</p></div>')
@@ -438,16 +438,44 @@ def _math():
                  + '<div class="mk-chips" data-hello><button type="button" data-fill="' + Q + '">' + Q + '</button></div>' + me('', 'data-qa hidden') + dots('T') + ai(body, 'data-a hidden', 'T') + '</div>' + inbar(Q, '질문을 입력하세요…', True) + '</aside>')
         main = tools() + GUIDE + '<div class="mk-f">최종 답안을 작성해주세요<div class="mk-drawwrap"><canvas data-draw id="mkans" aria-label="답안 손글씨 칸"></canvas><span data-drawhint>손글씨 답안 칸</span></div></div>'
         return frame(TH, sd('tut'), ('HAI-MathTutor', 'AI 튜터'), main, aside).replace('class="mk-aside" style', 'class="mk-aside mk-keep" style')
+    def psd(active):
+        return side('HAI-MathTutor', '', [('', [('home', 'home', '홈'), ('tut', 'user', '튜터 관리'), ('sub', 'doc', '과목 관리')])], active, user=('교수자', '○○대학교'), light=True, go={})
+    def newtutor():
+        U = ['벡터의 연산', '함수의 극한', '선형변환', '적분연산']
+        main = ('<div class="mk-row"><div class="mk-h"><h3>튜터 관리</h3></div><span class="mk-chip">+ 새 튜터</span></div><div class="mk-box"><b>새 튜터 만들기 <small>새로운 튜터의 정보를 입력하세요</small></b>'
+                '<label class="mk-f">튜터 이름 *<input class="mk-in" id="mktn" placeholder="예: 1학기 중간고사 대비 튜터" aria-label="튜터 이름"></label><label class="mk-f">튜터 설명<input class="mk-in" placeholder="튜터 설명을 입력하세요" aria-label="튜터 설명"></label>'
+                '<div class="mk-f">학습 단원 <small>(눌러서 넣기)</small><div class="mk-pills">' + ''.join(f'<button type="button" data-tg>{u}</button>' for u in U) + '</div></div>'
+                '<p class="mk-demo" data-need hidden>튜터 이름을 먼저 써 주세요.</p><div class="mk-row end"><button type="button" class="mk-btn" data-req="#mktn" data-show="[data-tk]" data-goal>생성</button></div>'
+                + toast('data-tk', '튜터를 만들었어요. 「수강생 추가」에서 이메일·이름·학번으로 학생을 넣을 수 있어요.') + '</div>')
+        return frame(TH, psd('tut'), ('HAI-MathTutor', '튜터 관리'), main)
+    def newq():
+        main = ('<div class="mk-row"><div class="mk-h"><h3>문제 생성</h3><span class="mk-badge">문제은행</span></div></div><div class="mk-two"><div class="mk-box"><label class="mk-f">문제 제목<input class="mk-in" value="함수의 극한" aria-label="문제 제목"></label>'
+                '<div class="mk-f">난이도<div class="mk-seg"><button type="button" class="on" data-on>쉬움</button><button type="button" data-on>보통</button><button type="button" data-on>어려움</button></div></div>'
+                '<label class="mk-f">문제 내용 (LaTeX)<textarea>극한 $\\lim_{n\\to\\infty} \\frac{\\sqrt[n]{n!}}{n}$ 의 값은?</textarea></label><span class="mk-chip">이미지에서 수식 추출(VLM)</span>'
+                '<label class="mk-f">정답 입력<input class="mk-in" value="1/e" aria-label="정답"></label></div>'
+                '<div class="mk-box"><div class="mk-row"><b>미리보기</b><button type="button" class="mk-btn sm" data-show="[data-pv]" data-goal>미리보기</button></div><p class="mk-ref" data-pv hidden style="font-size:15px;color:inherit">극한 lim<sub>n→∞</sub> <sup>n</sup>√(n!) / n 의 값은?<br><small>정답 1/e</small></p></div></div>')
+        return frame(TH, psd('tut'), ('HAI-MathTutor', '문제 생성'), main)
+    def hw():
+        main = ('<div class="mk-h"><h3>과제 만들기</h3><span class="mk-badge">중간고사 대비 수학튜터</span></div><div class="mk-box"><label class="mk-f">과제 이름 *<input class="mk-in" id="mkhw" placeholder="예: 1주차 과제" aria-label="과제 이름"></label>'
+                '<div class="mk-two"><label class="mk-f">과제 시작 시간<input class="mk-in" placeholder="비워두면 생성 직후부터 제출 가능" aria-label="시작 시간"></label><label class="mk-f">제출 기한 *<input class="mk-in" value="2026-04-16 23:59" aria-label="제출 기한"></label></div>'
+                '<div class="mk-f">문제 고르기<div class="mk-pills"><button type="button" class="on" data-tg>함수의 극한</button><button type="button" data-tg>벡터의 연산</button><button type="button" data-tg>가우스 소거법</button></div></div>'
+                '<p class="mk-demo" data-need hidden>과제 이름을 먼저 써 주세요.</p><div class="mk-row end"><button type="button" class="mk-btn" data-req="#mkhw" data-show="[data-hd]" data-goal>과제 생성</button></div>'
+                + toast('data-hd', '과제를 만들었어요. 학생 화면의 「내 과제」에 보이고, 제출 현황은 과제 통계에서 봐요.') + '</div>')
+        return frame(TH, psd('tut'), ('HAI-MathTutor', '과제 만들기'), main)
     I = 'media/walk/hai-mathtutor/'
     return [
-        dict(title='나의 학습 현황을 봐요', text='홈에서 배정된 튜터별 진도와 정답률, 풀이 기록을 한눈에 봐요. 「내 튜터」를 누르면 나에게 배정된 튜터 목록이 나와요.', do='왼쪽 메뉴에서 「내 튜터」를 눌러 배정된 튜터 목록을 열어 보세요.', ui=home(), img=I + '1.jpg'),
-        dict(title='답을 손글씨로 써요', text='문제를 보고 최종 답안과 풀이 과정을 손글씨로 자유롭게 써요. 이미지로 올려 제출할 수도 있어요.', do='「최종 답안」 칸에 손가락이나 마우스로 답을 써 보세요.', ui=write('draw'), img=I + '2.jpg'),
-        dict(title='막히면 가이드를 열어요', text='「가이드」를 누르면 문제에 필요한 개념과 관련 공식을 정리해 보여 줘요.', do='「가이드」를 눌러 문제에 필요한 개념을 확인해 보세요.', ui=write('guide'), img=I + '3.jpg'),
-        dict(title='바로 채점 결과를 확인해요', text='답안을 제출하면 자동으로 채점돼 정답인지 바로 알 수 있어요. 정답과 해설, 친구 풀이도 볼 수 있어요.', do='「정답 및 해설 보기」를 눌러 풀이를 확인해 보세요.', ui=result(), img=I + '4.jpg'),
-        dict(title='AI 튜터에게 물어봐요', text='「AI 튜터」 창에서 개념을 물으면 예시와 함께 차근차근 설명해 줘요.', do='AI 튜터 입력칸에 궁금한 개념을 써서 보내 보세요.', ui=tutor(), img=I + '5.jpg'),
+        dict(title='학교 계정으로 로그인해요', text='소속 학교를 고르고 아이디와 비밀번호로 로그인해요. 처음 로그인하면 안전한 새 비밀번호를 설정해요. (로그인)', do='「로그인」을 눌러 보세요.', img=I + 'm1.jpg',
+             ui=login(TH, ('HAI-MATH', 'HAI-MathTutor', '학생별 수준에 맞춘 문제 추천, 실시간 피드백이 있는 수학 학습'), ('○○대학교', '로그인'), [('아이디', '아이디', 'text'), ('비밀번호', '비밀번호', 'password')], [('로그인', True, True)], foot='서비스 이용을 위해 로그인해주세요')),
+        dict(title='나의 학습 현황을 봐요', text='홈에서 배정된 튜터별 진도와 정답률, AI 질문 횟수, 연속 학습일을 한눈에 봐요. 「내 튜터」를 누르면 나에게 배정된 튜터가 보여요. (학생 · 홈)', do='왼쪽 메뉴에서 「내 튜터」를 눌러 보세요.', ui=home(), img=I + 'm2.jpg'),
+        dict(title='답을 손글씨로 써요', text='문제를 보고 최종 답안과 풀이 과정을 손글씨로 써요. 쓴 글씨는 수식으로 인식되고, 잘못 읽히면 「재인식」해요. (학생 · 문제 풀이)', do='「최종 답안」 칸에 손가락이나 마우스로 답을 써 보세요.', ui=write('draw'), img=I + 'm3.jpg'),
+        dict(title='막히면 가이드를 열어요', text='「가이드」를 누르면 문제에 필요한 개념과 관련 공식·정리를 정리해 보여 줘요. (학생 · 가이드)', do='「가이드」를 눌러 문제에 필요한 개념을 확인해 보세요.', ui=write('guide'), img=I + 'm4.jpg'),
+        dict(title='바로 채점 결과를 확인해요', text='답안을 제출하면 자동으로 채점돼요. 정답과 해설, 친구 풀이도 볼 수 있어요. 과제는 교수님 설정에 따라 정답이 공개되지 않을 수 있어요. (학생 · 결과)', do='「정답 및 해설 보기」를 눌러 보세요.', ui=result(), img=I + 'm5.jpg'),
+        dict(title='AI 튜터에게 물어봐요', text='「AI 튜터」 창에서 개념을 물으면 예시와 함께 차근차근 설명해 줘요. (학생 · AI 튜터)', do='AI 튜터 입력칸에 궁금한 개념을 써서 보내 보세요. 비워 둔 채 보내면 예시 질문이 입력돼요.', ui=tutor(), img=I + 'm6.jpg'),
+        dict(title='교수는 튜터를 만들어요', text='「튜터 관리」에서 튜터 이름과 설명, 학습 단원을 정해 새 튜터를 만들고 수강생을 추가해요. (교수자 · 튜터 관리)', do='튜터 이름을 쓰고 「생성」을 눌러 보세요.', ui=newtutor(), img=I + 'm7.jpg'),
+        dict(title='문제은행에 문제를 만들어요', text='문제 제목, 난이도, 문제 내용(LaTeX), 정답, 해설을 넣고 미리보기로 확인해요. 이미지에서 수식을 추출할 수도 있어요. (교수자 · 문제 생성)', do='「미리보기」를 눌러 수식이 어떻게 보이는지 확인해 보세요.', ui=newq(), img=I + 'm8.jpg'),
+        dict(title='과제를 내요', text='과제 이름과 시작 시간, 제출 기한을 정하고 문제를 골라 과제를 만들어요. 시작 시간을 비워 두면 바로 제출할 수 있어요. (교수자 · 과제)', do='과제 이름을 쓰고 「과제 생성」을 눌러 보세요.', ui=hw(), img=I + 'm9.jpg'),
     ]
 
-# ------------------------------------------------------------------ LXP (학습자 매뉴얼)
 def _lxp():
     TH = '--mk:#2563eb;--mk-side:#1447b8'
     WEEKS = ['1주차 8월 04일 - 8월 10일', '2주차 8월 11일 - 8월 17일', '3주차 8월 18일 - 8월 24일', '4주차 8월 25일 - 8월 31일', '5주차 9월 01일 - 9월 07일']
@@ -1048,13 +1076,48 @@ def _lrs():
         return frame(TH, '', ('HAI-LRS', '선배 수강 경험'), HEAD + '<div class="mk-box"><b>선배 수강 경험 <small>과목별 학습 부담과 진로 도움 비교</small></b><span class="mk-ref">선배 후기 1,639과목 · 부담 × 진로 도움 사분면</span><div class="mk-quad">'
                      + ''.join(f'<button type="button" data-on data-hide="[data-bd]" data-show="[data-bd={chr(39)}{k}{chr(39)}]"{" data-goal" if k == 1 else ""}><span>{l}</span><b>{v}</b></button>' for k, (l, v) in enumerate(Q)) + '</div>'
                      + ''.join(f'<p class="mk-note" data-bd="{k}" hidden><span>선배들이 <b>{l}</b>으로 평가한 과목이 {v}개예요. 상세에서 과목별 한 줄 평가를 볼 수 있어요.</span></p>' for k, (l, v) in enumerate(Q)) + '<span class="mk-ref">내가 들은 42과목의 부담 중앙값 68.1 (전체 72.2)</span></div>')
+    def head(role, who):
+        return HEAD.replace('<span class="on">학생</span>', '<span>학생</span>').replace(f'<span>{role}</span>', f'<span class="on">{role}</span>').replace('학생　사회학과 4학년 (이름과 학번은 가렸어요)', who)
+    def review():
+        W = [('5주차 확률분포', 60, 22), ('3주차 표본추출', 45, 41), ('7주차 가설검정', 30, 18), ('2주차 기술통계', 10, 8)]
+        rows = ''.join(f'<button type="button" class="mk-bar2" data-on data-hide="[data-bd]" data-show="[data-bd={chr(39)}{k}{chr(39)}]"{" data-goal" if k == 0 else ""} style="grid-template-columns:110px 1fr 90px"><span>{l}</span><i style="--v:{v}%"></i><b>나 {v}% · 반 {c}%</b></button>' for k, (l, v, c) in enumerate(W))
+        notes = ''.join(f'<p class="mk-note" data-bd="{k}" hidden><span><b>{l}</b>에서 내가 틀린 문항만 아래 표로 걸러졌어요.{" 반 오답률도 높아 수업에서 어려웠던 지점이에요." if c > 35 else ""}</span></p>' for k, (l, v, c) in enumerate(W))
+        main = (HEAD + '<div class="mk-box"><div class="mk-row"><b>다시 볼 단원 <small>틀린 문제를 주차별로 모아 복습 순서 정하기</small></b><select aria-label="과목"><option>사회통계</option><option>조사방법론</option></select></div>'
+                '<div class="mk-stats"><div class="mk-stat"><small>응답 문항</small><b>40</b></div><div class="mk-stat"><small>틀린 문항</small><b>11 (28%)</b></div><div class="mk-stat"><small>다시 볼 1순위</small><b>5주차</b></div><div class="mk-stat"><small>반도 함께 틀림</small><b>3</b></div></div>'
+                f'<span class="mk-ref">막대: 내 오답률 · 반 오답률 (LMS 퀴즈 첫 시도 기준)</span><div class="mk-bars">{rows}</div>{notes}</div>')
+        return frame(TH, '', ('HAI-LRS', '다시 볼 단원'), main)
+    def extra_():
+        P = [('데이터 리터러시 캠프', '4.0% (100%)', '12/1 ~ 12/12 · 정원 30', '내가 이수한 「SPSS 기초」와 같은 과정 · 지금 모집 중'), ('사회조사 분석사 특강', '3.1% (92%)', '12/3 ~ 12/20 · 정원 40', '학부에서 많이 신청 · 지금 모집 중')]
+        rows = ''.join(f'<button type="button" class="mk-rowbtn" data-on data-show="[data-rs{k}]"{" data-goal" if k == 0 else ""}><span><b>{n}</b><small>{d}</small></span><span class="mk-chip">학부 신청 {r}</span></button><div class="mk-box tint" data-rs{k} hidden><b>추천 이유</b><span>{why}</span></div>' for k, (n, r, d, why) in enumerate(P))
+        main = (HEAD + f'<div class="mk-box"><b>맞춤 비교과 추천 <small>학부 신청 실적 × 내 이수 이력</small></b><span class="mk-ref">막대는 학부 신청 비중, 괄호는 이수율이에요.</span>{rows}'
+                '<span class="mk-ref">정직 표기: 많이 신청됐다는 것은 접근성이 좋았다는 뜻일 수도 있어요. 해마다 열리는 프로그램 일정은 추정이에요.</span></div>')
+        return frame(TH, '', ('HAI-LRS', '맞춤 비교과 추천'), main)
+    def alert():
+        S = [('2026****21', '리듬붕괴', '내 수업 · 출석 하락', '62%'), ('2026****07', '연속잠적', '전 과목 · 3주 결석', '41%'), ('2026****33', '조용한위기', '내 수업 · 동영상 하락', '78%')]
+        tr = ''.join(f'<tr data-on data-show="[data-st]"{" data-goal" if k == 0 else ""}><td>{h}</td><td><span class="mk-st ing">{sig}</span></td><td>{t}</td><td>{at}</td></tr>' for k, (h, sig, t, at) in enumerate(S))
+        main = (head('교수', '교수　사회통계 01분반 (학생 이름과 학번은 가렸어요)') + '<div class="mk-box"><b>학습 위기 경보 <small>출결·LMS·학사 데이터를 합친 규칙 기반 신호</small></b>'
+                '<p class="mk-note"><span>경보는 판정이 아니라 확인 요청이에요. 학생 평가나 징계의 근거가 아니에요.</span></p>'
+                f'<table class="mk-tbl"><tr><th>학번</th><th>신호</th><th>경보</th><th>출석률</th></tr>{tr}</table>'
+                '<div class="mk-box tint" data-st hidden><b>주간 신호 상세</b><span>6주차부터 출석이 꺾였고 과제 제출도 함께 줄었어요. 이번 주 먼저 연락해 볼 후보예요.</span><span class="mk-eg">체험용 예시 학생</span></div></div>')
+        return frame(TH, '', ('HAI-LRS', '학습 위기 경보'), main)
+    def care():
+        main = (head('운영자', '운영자　교수학습지원센터') + '<div class="mk-box"><b>학습 케어 관제 <small>경보 후 상담이 닿지 않은 학생 관리</small></b>'
+                '<div class="mk-stats"><div class="mk-stat"><small>관제 대상</small><b>836명</b></div><div class="mk-stat"><small>상담 없음</small><b>454명</b></div><div class="mk-stat"><small>상담 연결 (60일 내)</small><b>212명</b></div></div>'
+                '<div class="mk-tabs"><button type="button" class="on" data-filter="all" data-on>전체</button><button type="button" data-filter="없음" data-on data-goal>상담 없음</button><button type="button" data-filter="예전" data-on>예전 상담만</button><button type="button" data-filter="연결" data-on>상담 연결</button></div>'
+                + ''.join(f'<div class="mk-rowbtn" data-cat="{c}" style="cursor:default"><span><b>{h}</b><small>{d} · 마지막 신호 {sg}</small></span><span class="mk-st{" ing" if c != "연결" else " ok"}">{lab}</span></div>' for h, d, sg, c, lab in [('2026****21', '사회학과', '리듬붕괴', '없음', '상담 없음'), ('2025****48', '경영학과', '연결끊김', '예전', '예전 상담만'), ('2024****12', '간호학과', '연속잠적', '연결', '상담 연결'), ('2026****07', '심리학과', '연속잠적', '없음', '상담 없음')])
+                + '<span class="mk-eg">체험용 예시 · 관제 숫자는 매뉴얼 예시</span></div>')
+        return frame(TH, '', ('HAI-LRS', '학습 케어 관제'), main)
     I = 'media/walk/hai-lrs/'
     return [
-        dict(title='나의 학습 대시보드를 열어요', text='학생 대시보드에서는 진로 경험, 역량 프로필, 마이크로디그리 진행, 선배 수강 경험을 카드로 한눈에 봐요.', do='대시보드에서 「진로 경험 레이더」 카드를 눌러 보세요.', ui=home(), img=I + '1.jpg'),
-        dict(title='진로 경험 레이더를 봐요', text='수강·성취·비교과·상담·어학·수상 다섯 축에서 동기들과 비교한 나의 위치(백분위)를 확인해요.', do='다섯 축 가운데 값이 가장 높은 「비교과」 막대를 눌러 보세요.', ui=radar(), img=I + '2.jpg'),
-        dict(title='나의 역량 프로필을 확인해요', text='지금까지 들은 과목이 어떤 역량을 얼마나 쌓아 주었는지 비율로 보여 줘요.', do='가장 두터운 역량인 「탐구」 막대를 눌러 보세요.', ui=comp(), img=I + '3.jpg'),
-        dict(title='마이크로디그리에 얼마나 가까운지 봐요', text='이미 들은 과목이 어느 마이크로디그리 트랙 요건과 겹치는지, 몇 과목이 남았는지 확인해요.', do='가장 가까운 과정 「일반사회학전공트랙」을 눌러 보세요.', ui=micro(), img=I + '4.jpg'),
-        dict(title='선배들의 수강 경험을 참고해요', text='선배 후기를 바탕으로 과목의 학습 부담과 진로 도움 정도를 네 영역으로 나눠 보여 줘요.', do='「힘들지만 남는 수업」 칸을 눌러 보세요.', ui=senior(), img=I + '5.jpg'),
+        dict(title='나의 학습 대시보드를 열어요', text='맨 위 탭에서 학생·교수·운영자를 바꾸고, 카드에서 요약을 본 뒤 카드를 눌러 상세를 열어요. 학생 화면에는 분석 7개가 있어요. (공통 사용법)', do='대시보드에서 「진로 경험 레이더」 카드를 눌러 보세요.', ui=home(), img=I + 'm1.jpg'),
+        dict(title='진로 경험 레이더를 봐요', text='같은 해 입학한 동기와 비교해 수강·성취·비교과·상담·어학·수상 축에서 나의 위치(백분위)를 확인해요. (학생 분석 1)', do='값이 가장 높은 「비교과」 막대를 눌러 보세요.', ui=radar(), img=I + 'm2.jpg'),
+        dict(title='나의 역량 프로필을 확인해요', text='지금까지 들은 과목이 어떤 역량을 얼마나 쌓아 주었는지 비율로 보여 줘요. (학생 분석 2)', do='가장 두터운 역량인 「탐구」 막대를 눌러 보세요.', ui=comp(), img=I + 'm3.jpg'),
+        dict(title='마이크로디그리에 얼마나 가까운지 봐요', text='이미 들은 과목이 어느 마이크로디그리 트랙 요건과 겹치는지, 몇 과목이 남았는지 확인해요. (학생 분석 3)', do='가장 가까운 과정 「일반사회학전공트랙」을 눌러 보세요.', ui=micro(), img=I + 'm4.jpg'),
+        dict(title='선배들의 수강 경험을 참고해요', text='선배들의 강의평가로 과목의 학습 부담과 진로 도움을 네 영역 지도로 보여 줘요. (학생 분석 4)', do='「힘들지만 남는 수업」 칸을 눌러 보세요.', ui=senior(), img=I + 'm5.jpg'),
+        dict(title='다시 볼 단원을 정해요', text='LMS 퀴즈에서 틀린 문제를 주차별로 모아 내 오답률과 반 오답률을 함께 보여 줘요. 막대를 누르면 그 주차에서 틀린 문항만 걸러져요. (학생 분석 6)', do='다시 볼 1순위 「5주차 확률분포」 막대를 눌러 보세요.', ui=review(), img=I + 'm6.jpg'),
+        dict(title='맞춤 비교과를 추천받아요', text='학부 신청 실적과 내 이수 이력으로 지금 신청할 수 있는 비교과를 추천하고, 추천 이유와 한계를 함께 적어 줘요. (학생 분석 7)', do='첫 번째 추천 프로그램을 눌러 추천 이유를 확인해 보세요.', ui=extra_(), img=I + 'm7.jpg'),
+        dict(title='교수는 학습 위기 경보를 봐요', text='담당 분반에서 지금 확인이 필요한 학생을 리듬붕괴·연속잠적 같은 신호와 함께 보여 줘요. 경보는 판정이 아니라 확인 요청이에요. (교수 분석 1)', do='명단 첫 줄의 학생을 눌러 주간 신호 상세를 열어 보세요.', ui=alert(), img=I + 'm8.jpg'),
+        dict(title='운영자는 학습 케어를 관제해요', text='경보가 뜬 학생 가운데 아직 상담이 닿지 않은 학생을 명단으로 관리해요. 상담 상태는 상담 없음·예전 상담만·상담 연결 세 가지예요. (운영자 분석 1)', do='「상담 없음」 탭을 눌러 먼저 연락할 대상만 보세요.', ui=care(), img=I + 'm9.jpg'),
     ]
 
 # ------------------------------------------------------------------ HAI-Sync (소개자료)
@@ -1205,6 +1268,32 @@ def _studio(slug, brand, course, los, book, extras, pod, T):
         return frame(TH, '', (brand, '콘텐츠 확인'), main)
     return TH, BAR, dash, make, review
 
+def _studio2(TH, BAR, brand, LT, ST, q):
+    """자료 편집 · 수업 진행 · 학생 사후퀴즈 (EPI-Learn·MedLearn-X 매뉴얼 공통)"""
+    def edit():
+        main = (BAR('수업 자료 편집') + '<div class="mk-two" style="grid-template-columns:150px minmax(0,1fr)"><div class="mk-opts"><span class="mk-lbl">생성 일자별 목록</span><button type="button" class="mk-rowbtn on" style="cursor:default"><span>11-24 세션 <small>확정</small></span></button><button type="button" class="mk-rowbtn" style="cursor:default"><span>11-20 세션 <small>초안</small></span></button></div>'
+                f'<div class="mk-box"><div class="mk-row"><b>사후퀴즈 3번</b><span class="mk-row"><span class="mk-chip">편집 중</span><button type="button" class="mk-btn sm" data-show="[data-sv]" data-goal>완료</button></span></div>'
+                f'<label class="mk-f">문제<textarea>{q[0]}</textarea></label><label class="mk-f">해설<textarea>{q[1]}</textarea></label><span class="mk-chip">+ 해설 이미지 파일 선택</span>'
+                '<p class="mk-ref">고친 뒤 「완료」를 누르지 않으면 저장되지 않아요.</p>' + toast('data-sv', '저장되었습니다. 이 세션을 「확정」하면 수업 진행에 쓰여요.') + '</div></div>')
+        return frame(TH, '', (brand, '수업 자료 편집'), main)
+    def live():
+        tabs = ''.join(f'<button type="button" class="mk-rowbtn{" on" if k == 0 else ""}" data-on data-hide="[data-lv]" data-show="[data-lv={chr(39)}{1 if "예열" in t else 0}{chr(39)}]"{" data-goal" if "예열" in t else ""}><span>{k + 1}　{t}</span></button>' for k, t in enumerate(LT))
+        bars = ''.join(f'<div class="mk-bar2"><span>{l}</span><i style="--v:{v}%"></i><b>{v}%</b></div>' for l, v in [('1번', 84), ('2번', 52), ('3번', 71)])
+        main = ('<div class="mk-topbar"><div class="mk-h"><h3>수업 진행</h3></div><span class="mk-row"><span class="mk-chip">자료 수정</span><span class="mk-chip">' + ic('qr', 14) + '수업 QR</span></span></div>'
+                f'<div class="mk-two" style="grid-template-columns:170px minmax(0,1fr)"><div class="mk-opts">{tabs}</div><div>'
+                '<div class="mk-box" data-lv="0"><b>수업 스포일러</b><span class="mk-ref">팟캐스트 영상·오디오와 키워드, 요약을 함께 보여 줘요. 가장 최근 확정된 세션이 자동으로 불려 와요.</span></div>'
+                f'<div class="mk-box" data-lv="1" hidden><div class="mk-row"><b>지식 예열하기 · 사전퀴즈</b><span class="mk-st ok">배포 중 · 응답 27/30</span></div><div class="mk-bars">{bars}</div><span class="mk-ref">정답률이 낮은 2번부터 짚고 강의를 시작해요.</span><span class="mk-eg">체험용 예시 수치</span></div></div></div>')
+        return frame(TH, '', (brand, '수업 진행'), main)
+    def stu():
+        tabs = ''.join(f'<span class="{"on" if t == "사후퀴즈" else ""}">{t}</span>' for t in ST)
+        opts = ''.join(f'<button type="button" class="mk-opt" data-on><b>{chr(65 + k)}</b> {o}</button>' for k, o in enumerate(q[2]))
+        main = (f'<div class="mk-topbar"><div class="mk-h"><h3>학습 화면</h3></div><span class="mk-chip">로그아웃</span></div><div class="mk-pills">{tabs}</div>'
+                f'<div class="mk-box"><div class="mk-row"><b>사후퀴즈 <small>학습 내용을 점검해보세요</small></b><span class="mk-chip">문제 3 / 3</span></div><p>{q[0]}</p><div class="mk-opts" data-pq>{opts}</div>'
+                '<p class="mk-demo" data-need hidden>보기를 하나 먼저 골라 주세요.</p><div class="mk-row"><span class="mk-btn sm line" style="cursor:default">이전 문제</span><button type="button" class="mk-btn" data-allon="[data-pq]" data-show="[data-rs]" data-goal>제출하기</button></div>'
+                f'<div class="mk-box tint" data-rs hidden><b>점수 2 / 3</b><span>정답 {q[3]} · {q[1]}</span><span class="mk-ref">퀴즈는 한 번 제출하면 수정할 수 없어요.</span></div></div>')
+        return frame(TH, '', (brand, '학습 화면'), main)
+    return edit, live, stu
+
 def _epilearn():
     los = ['역학의 개념을 설명할 수 있다.', '역학의 쓰임새를 열거할 수 있다.', '역학이 거둔 역사적 성과를 설명할 수 있다.']
     TH, BAR, dash, make, review = _studio('hai-epilearn', 'EpiLearn Studio', '1주차', los, 'Basic epidemiology_1주차', [], ('예방의학 핵심 정리 90초 세션', '예방 단계, 선별검사, 민감도와 특이도를 요약한 음성 콘텐츠', '02:00', '733자', ['1차예방', '선별검사', '2차예방', '민감도', '공중보건']), ['팟캐스트', '강의록', '사전퀴즈', '케이스', '사후퀴즈'])
@@ -1215,14 +1304,29 @@ def _epilearn():
         main = (BAR('학습성과') + '<p class="mk-ref">학습목표(LO) 달성 현황과 퀴즈 오답 분포를 확인합니다.</p><div class="mk-stats"><div class="mk-stat"><small>수강생</small><b>30명</b></div><div class="mk-stat"><small>문항 수</small><b>12개</b></div><div class="mk-stat"><small>전체 정답률</small><b>65%</b></div></div>'
                 f'<b>학습목표(LO) 달성 현황</b><div class="mk-grid">{cards}</div>{det}')
         return frame(TH, '', ('EpiLearn Studio', '학습 분석'), main)
+    edit, live, stu = _studio2(TH, BAR, 'EpiLearn Studio', ['수업 스포일러', '강의록', '지식 예열하기', '케이스 파일 열기', '다시 보는 하이라이트', '유튜브 참고자료', '수업 종료'], ['학습 자료', '케이스', '강의록', '팟캐스트', '사전퀴즈', '사후퀴즈'],
+                               ('유병률이 10%인 질환에 민감도 90%, 특이도 90%인 선별검사를 했을 때 양성예측도는?', '양성예측도는 참양성 ÷ 전체 양성이라 유병률이 낮을수록 떨어져요.', ['약 10%', '약 50%', '약 90%', '약 99%'], 'B'))
+    def bank():
+        Q = [('Q12', '코호트 연구에서 상대위험도를 구할 때 분모가 되는 집단은?', '역학 · 연구설계'), ('Q13', '2차 예방에 해당하는 활동은?', '역학 · 예방의학')]
+        cards = ''.join(f'<div class="mk-box"><div class="mk-row"><b>{n}. {t}</b><span class="mk-chip">{c}</span></div><div class="mk-row"><span class="mk-seg" data-rt{k}>' + ''.join(f'<button type="button" data-on>{x}</button>' for x in range(1, 6)) + f'</span><span class="mk-row"><span class="mk-cb"></span><small>문제 사용</small></span></div></div>' for k, (n, t, c) in enumerate(Q))
+        main = ('<div class="mk-topbar"><div class="mk-h"><h3>QuizBank</h3></div><span class="mk-chip">전체 조회 결과 124문항</span></div>'
+                '<div class="mk-row"><select aria-label="대분류"><option>역학</option></select><select aria-label="중분류"><option>연구설계</option></select><input class="mk-in" placeholder="키워드 검색" aria-label="키워드"></div>'
+                '<p class="mk-ref">문항마다 적절성을 1~5점으로 평가해요(1~2 적절하지 않음 · 3 보통 · 4~5 적절). 평점을 매긴 문항만 「문제 사용」을 고를 수 있어요.</p>' + cards
+                + '<p class="mk-demo" data-need hidden>두 문항 모두 평점을 먼저 매겨 주세요.</p><div class="mk-row end"><button type="button" class="mk-btn" data-allon="[data-rt0],[data-rt1]" data-show="[data-ex]" data-goal>시험지 만들기</button></div>'
+                + toast('data-ex', '2문항 선택됨 · 시험지를 만들어 내려받았어요. (체험판에서는 파일이 만들어지지 않아요)'))
+        return frame(TH, '', ('EpiLearn Studio', 'QuizBank'), main)
     I = 'media/walk/hai-epilearn/'
     return [
-        dict(title='EPI-Learn Studio에 로그인해요', text='브라우저에서 EPI-Learn Studio에 접속해 로그인해요. 수업 전·중·후 전 과정을 한 곳에서 지원해요.', do='아이디와 비밀번호 칸을 확인하고 「로그인」을 눌러 보세요.', img=I + '1.jpg',
+        dict(title='EPI-Learn Studio에 로그인해요', text='브라우저에서 EPI-Learn Studio에 접속해 교수자 또는 학생 계정으로 로그인해요. 수업 전·중·후 전 과정을 한 곳에서 지원해요. (II. 로그인)', do='아이디와 비밀번호 칸을 확인하고 「로그인」을 눌러 보세요.', img=I + 'm1.jpg',
              ui=login(TH, ('COLLEGE OF MEDICINE', 'EpiLearn Studio', '사회의학 수업을 위한 AI 코스웨어'), ('EpiLearn', 'Studio'), [('아이디', '아이디를 입력하세요', 'text'), ('비밀번호', '비밀번호를 입력하세요', 'password')], [('로그인', True, True)], foot='교수자 또는 학생 계정으로 로그인하세요')),
-        dict(title='교수자 대시보드에서 기능을 골라요', text='코스를 선택하면 수업 자료 생성, 수업 자료 편집, 수업 진행, 학습 분석 네 가지 기능 타일이 보여요.', do='네 가지 기능 가운데 「수업 자료 생성」을 눌러 보세요.', ui=dash(), img=I + '2.jpg'),
-        dict(title='자료를 고르고 AI 생성을 시작해요', text='학습 목표와 교재를 고르면 AI가 팟캐스트, 강의노트, 퀴즈, 사례를 한 번에 만들어요.', do='교재를 눌러 고른 뒤 「AI 콘텐츠 생성 시작」을 눌러 보세요.', ui=make(), img=I + '3.jpg'),
-        dict(title='생성된 콘텐츠를 검토해요', text='팟캐스트, 강의록, 사전퀴즈, 케이스, 사후퀴즈를 탭별로 검토하고 필요한 부분을 고쳐요.', do='「사전퀴즈」 탭을 눌러 생성된 퀴즈를 검토해 보세요.', ui=review(), img=I + '4.jpg'),
-        dict(title='학습 성과를 분석해요', text='수업이 끝나면 학습목표(LO) 달성 현황과 퀴즈 오답 분포를 확인해 다음 수업 설계에 반영해요.', do='첫 번째 학습목표(LO1) 카드를 눌러 달성 현황을 살펴보세요.', ui=ana(), img=I + '5.jpg'),
+        dict(title='교수자 대시보드에서 기능을 골라요', text='코스를 선택하면 수업 자료 생성, 수업 자료 편집, 수업 진행, 학습 분석 네 가지 기능 타일이 보여요. (III-2)', do='네 가지 기능 가운데 「수업 자료 생성」을 눌러 보세요.', ui=dash(), img=I + 'm2.jpg'),
+        dict(title='자료를 고르고 AI 생성을 시작해요', text='1단계 「자료 선택」에서 학습 목표와 교재를 고르면 AI가 팟캐스트, 강의록, 퀴즈, 케이스를 한 번에 만들어요. (III-3)', do='교재를 눌러 고른 뒤 「AI 콘텐츠 생성 시작」을 눌러 보세요.', ui=make(), img=I + 'm3.jpg'),
+        dict(title='생성된 콘텐츠를 검토해요', text='2단계 「콘텐츠 확인」에서 팟캐스트, 강의록, 사전퀴즈, 케이스, 사후퀴즈를 탭별로 검토해요. (III-3)', do='「사전퀴즈」 탭을 눌러 생성된 퀴즈를 검토해 보세요.', ui=review(), img=I + 'm4.jpg'),
+        dict(title='자료를 고치고 저장해요', text='생성 일자별 세션을 골라 내용을 바로 고치고 「완료」로 저장해요. 세션을 확정하면 수업 진행에 쓰여요. (III-4 자료 편집)', do='「완료」를 눌러 고친 내용을 저장해 보세요.', ui=edit(), img=I + 'm5.jpg'),
+        dict(title='수업을 진행해요', text='수업 스포일러 → 강의록 → 지식 예열하기 → 케이스 → 다시 보는 하이라이트 순서로 탭을 넘기며 수업해요. 수업 QR로 학생을 접속시켜요. (III-5)', do='왼쪽 「지식 예열하기」 탭을 눌러 사전퀴즈 결과를 보세요.', ui=live(), img=I + 'm6.jpg'),
+        dict(title='학생은 학습 화면에서 퀴즈를 풀어요', text='학생 화면은 학습 자료, 케이스, 강의록, 팟캐스트, 사전퀴즈, 사후퀴즈 탭으로 이뤄져요. 퀴즈는 한 번 제출하면 수정할 수 없어요. (IV)', do='보기를 하나 고르고 「제출하기」를 눌러 보세요.', ui=stu(), img=I + 'm7.jpg'),
+        dict(title='QuizBank로 문항을 평가해요', text='분류·키워드로 문항을 찾아 적절성을 1~5점으로 평가하고, 쓸 문항을 골라 시험지를 만들어요. (QuizBank)', do='두 문항에 평점을 매긴 뒤 「시험지 만들기」를 눌러 보세요.', ui=bank(), img=I + 'm8.jpg'),
+        dict(title='학습 성과를 분석해요', text='학습목표(LO) 달성 현황과 퀴즈 오답 분포를 확인해 다음 수업 설계에 반영해요. (III-6 학습 분석)', do='첫 번째 학습목표(LO1) 카드를 눌러 달성 현황을 살펴보세요.', ui=ana(), img=I + 'm9.jpg'),
     ]
 
 def _medlearn():
@@ -1238,13 +1342,25 @@ def _medlearn():
                 '<div class="mk-box"><b>MedLearn-X Studio</b><label class="mk-f">아이디<input type="text" id="mkid" placeholder="아이디를 입력하세요" autocomplete="off" name="mk-qr-id" data-lpignore="true" data-1p-ignore readonly data-ro></label><p class="mk-demo" data-need hidden>아이디를 먼저 입력해 주세요.</p>'
                 '<button type="button" class="mk-btn wide" data-req="#mkid" data-show="[data-in]" data-goal>로그인</button>' + toast('data-in', '수업에 접속했어요. 학생은 아이디만 입력하면 들어올 수 있어요.') + '</div></div>')
         return frame(TH, '', ('MedLearn-X', '학생 접속'), main)
+    edit, live, stu = _studio2(TH, BAR, 'MedLearn-X Studio', ['수업 스포일러', '지식 예열하기', '케이스 파일 열기', '다시 보는 하이라이트', '유튜브 참고자료', '수업 종료'], ['학습 자료', '팟캐스트', '사전퀴즈', '사후퀴즈'],
+                               ('안정 시 떨림이 있고 서동증·강직이 함께 보이는 70세 환자에게 가장 먼저 의심할 질환은?', '안정 시 떨림에 서동증·강직이 더해지면 파킨슨병을 먼저 생각해요.', ['본태떨림', '파킨슨병', '갑상샘항진증', '약물유발떨림'], 'B'))
+    def video():
+        main = (BAR('팟캐스트 검토 · 영상 생성') + '<div class="mk-box"><b>자율신경계와 연령·질환의 관계</b><span class="mk-ref">팟캐스트를 바탕으로 수업용 영상을 만들 수 있어요. 타임라인 위치마다 이미지를 넣어요.</span>'
+                '<div class="mk-grid" style="grid-template-columns:repeat(4,minmax(0,1fr))">' + ''.join(f'<span class="mk-chip" style="justify-content:center">{t}<br>{"이미지 ✓" if k < 2 else "+ 이미지"}</span>' for k, t in enumerate(['00:00', '00:20', '00:45', '01:10'])) + '</div>'
+                '<div class="mk-row end"><button type="button" class="mk-btn" data-wait="[data-vw]" data-show="[data-vd]" data-goal>영상 생성</button></div><p class="mk-note" data-vw hidden><span>영상 생성 중… 42%</span></p>'
+                + toast('data-vd', '영상이 만들어졌어요. 오디오·영상을 재생해 확인할 수 있어요.') + '</div>')
+        return frame(TH, '', ('MedLearn-X', '영상 생성'), main)
     I = 'media/walk/hai-medlearn-x/'
     return [
-        dict(title='수업 전·중·후를 하나로', text='콘텐츠 생성 → 검수 → 배포 → 학습 → 분석 → 재생성의 흐름으로 의학교육 수업 전 과정을 지원해요.', do='흐름의 첫 단계 「콘텐츠 생성」을 눌러 설명을 확인해 보세요.', ui=flow(), img=I + '1.jpg'),
-        dict(title='학생은 QR로 바로 들어와요', text='교수님이 수업 QR을 띄우면 학생은 스마트폰으로 스캔해 아이디만 입력하고 접속해요.', do='아이디 칸에 아무 아이디나 쓰고 「로그인」을 눌러 보세요.', ui=qr(), img=I + '2.jpg'),
-        dict(title='교수자 대시보드에서 시작해요', text='수업 자료 생성, 자료 편집, 수업 진행, 학습 분석 네 가지 기능을 타일로 골라요.', do='네 가지 기능 가운데 「수업 자료 생성」을 눌러 보세요.', ui=dash(), img=I + '3.jpg'),
-        dict(title='AI로 수업 자료를 만들어요', text='학습 목표와 교재(PDF)를 고르면 AI가 팟캐스트, 강의노트, 퀴즈, 임상 증례를 자동으로 만들어요.', do='교재를 눌러 고른 뒤 「AI 콘텐츠 생성 시작」을 눌러 보세요.', ui=make(), img=I + '4.jpg'),
-        dict(title='만든 콘텐츠를 확인해요', text='팟캐스트, 사전퀴즈, 케이스, 사후퀴즈를 탭별로 검토·수정하고 수업용 영상도 추가해요.', do='「사전퀴즈 검토」 탭을 눌러 생성된 퀴즈를 검토해 보세요.', ui=review(), img=I + '5.jpg'),
+        dict(title='수업 전·중·후를 하나로', text='콘텐츠 생성 → 검수 → 배포 → 학습 → 분석 → 재생성의 흐름으로 의학교육 수업 전 과정을 지원해요. Flipped Learning과 TBL을 함께 적용해요. (I-3)', do='흐름의 첫 단계 「콘텐츠 생성」을 눌러 설명을 확인해 보세요.', ui=flow(), img=I + 'm1.jpg'),
+        dict(title='학생은 QR로 바로 들어와요', text='교수님이 수업 QR을 띄우면 학생은 스마트폰으로 스캔해 로그인하고 수업에 들어와요. (II-1 QR 로그인)', do='아이디 칸에 아무 아이디나 쓰고 「로그인」을 눌러 보세요.', ui=qr(), img=I + 'm2.jpg'),
+        dict(title='교수자 대시보드에서 시작해요', text='코스를 고르면 수업 자료 생성, 자료 편집, 수업 진행, 학습 분석 네 가지 기능을 타일로 골라요. (III-2)', do='네 가지 기능 가운데 「수업 자료 생성」을 눌러 보세요.', ui=dash(), img=I + 'm3.jpg'),
+        dict(title='AI로 수업 자료를 만들어요', text='학습 목표와 교재(PDF)를 고르면 AI가 팟캐스트, 강의노트, 퀴즈, 임상 증례를 자동으로 만들어요. (III-3 1단계)', do='교재를 눌러 고른 뒤 「AI 콘텐츠 생성 시작」을 눌러 보세요.', ui=make(), img=I + 'm4.jpg'),
+        dict(title='만든 콘텐츠를 확인해요', text='팟캐스트, 사전퀴즈, 케이스, 사후퀴즈를 탭별로 검토해요. 「편집」으로 고친 뒤 「완료」를 눌러야 저장돼요. (III-3 2단계)', do='「사전퀴즈 검토」 탭을 눌러 생성된 퀴즈를 검토해 보세요.', ui=review(), img=I + 'm5.jpg'),
+        dict(title='팟캐스트로 영상을 만들어요', text='필요하면 팟캐스트를 바탕으로 수업용 영상을 만들어요. 타임라인 위치마다 이미지를 넣고 「영상 생성」을 눌러요. (III-3)', do='「영상 생성」을 눌러 보세요.', ui=video(), img=I + 'm6.jpg'),
+        dict(title='자료를 고치고 저장해요', text='이미 만든 자료를 세션별로 고르고 바로 수정해요. 「완료」를 누르지 않으면 저장되지 않아요. (III-4)', do='「완료」를 눌러 고친 내용을 저장해 보세요.', ui=edit(), img=I + 'm7.jpg'),
+        dict(title='수업을 진행해요', text='사전학습 확인 → 강의 → 사전 평가 → TBL 토론 → 사후 평가 순서로 탭을 넘기며 수업해요. (III-5)', do='왼쪽 「지식 예열하기」 탭을 눌러 사전퀴즈 결과를 보세요.', ui=live(), img=I + 'm8.jpg'),
+        dict(title='학생은 사후퀴즈로 이해도를 점검해요', text='학생 화면은 학습 자료, 팟캐스트, 사전퀴즈, 사후퀴즈 탭이에요. 사후퀴즈는 한 문항씩 풀고 마지막에 제출하면 점수와 해설이 나와요. (IV)', do='보기를 하나 고르고 「제출하기」를 눌러 보세요.', ui=stu(), img=I + 'm9.jpg'),
     ]
 
 MOCKS = {'hai-docs': _docs(), 'hai-tutor': _tutor(), 'hai-mate': _mate(), 'hai-gpt': _gpt(), 'hai-mathtutor': _math(), 'lxp': _lxp(), 'hai-forum': _forum(), 'hai-fist': _fist(), 'hai-lens': _lens(), 'hai-way': _way(), 'hai-research': _research(),
