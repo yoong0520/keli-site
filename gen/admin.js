@@ -13,7 +13,7 @@
   var qs = function (s, r) { return (r || document).querySelector(s); };
   var qsa = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
-  var token = null, user = null, state = { notices: null, archive: null, hidden: null, stats: null, site: null, cats: null, bot: null, feeds: {}, sha: {} };
+  var token = null, user = null, state = { notices: null, archive: null, insight: null, hidden: null, stats: null, site: null, cats: null, bot: null, feeds: {}, sha: {} };
   var dirty = false;   // 편집 중 저장 안 한 변경이 있는가
 
   // ---------------------------------------------------------------- 공통 UI
@@ -136,6 +136,7 @@
   function ensure(kind) {
     if (kind === 'notices' && !state.notices) return loadJson('content/notices.json', { items: [] }).then(function (j) { state.notices = j; });
     if (kind === 'archive' && !state.archive) return loadJson('content/archive.json', { items: [] }).then(function (j) { state.archive = j; });
+    if (kind === 'insight' && !state.insight) return loadJson('content/insight.json', { series: [], posts: [] }).then(function (j) { state.insight = j; j.series = j.series || []; j.posts = j.posts || []; });
     if (kind === 'hidden' && !state.hidden) return loadJson('content/hidden.json', { events: [], press: [], videos: [], unn: [], services: [] }).then(function (j) { state.hidden = j; ['events', 'press', 'videos', 'unn', 'services'].forEach(function (k) { state.hidden[k] = (state.hidden[k] || []).map(String); }); });
     if (kind === 'stats' && !state.stats) return loadJson('assets/stats.json', { services: null, universities: 23, companies: 31, courses: null, basis: '' }).then(function (j) { state.stats = j; });
     if (kind === 'cats' && !state.cats) return loadJson('content/categories.json', {}).then(function (j) { state.cats = j; if (!(j.notices || []).length) j.notices = CATS_DEFAULT.notices.slice(); if (!(j.archive || []).length) j.archive = CATS_DEFAULT.archive.slice(); });
@@ -144,7 +145,7 @@
     return Promise.resolve();
   }
   function counts() {
-    var map = { notices: state.notices && (state.notices.items || []).length, archive: state.archive && (state.archive.items || []).length };
+    var map = { notices: state.notices && (state.notices.items || []).length, archive: state.archive && (state.archive.items || []).length, insight: state.insight && (state.insight.posts || []).length };
     ['services', 'events', 'press', 'videos'].forEach(function (k) { var f = state.feeds[k]; if (f) map[k] = (f.items || []).length + (k === 'press' && state.feeds.unn ? (state.feeds.unn.items || []).length : 0); });
     qsa('[data-cnt]').forEach(function (e) { var v = map[e.getAttribute('data-cnt')]; e.textContent = v == null ? '' : v; });
   }
@@ -162,12 +163,13 @@
 
   // ---------------------------------------------------------------- 라우터
   var view = qs('#view');
-  var TITLES = { home: '대시보드', site: '홈 화면', notices: '소식·공지', archive: '아카이브', services: '서비스', events: '행사', press: '보도·언론', videos: '영상', bot: '챗봇', stats: '방문 통계', inbox: '문의함', history: '게시 기록', settings: '사이트 설정' };
+  var TITLES = { home: '대시보드', site: '홈 화면', notices: '소식·공지', archive: '아카이브', insight: '인사이트', services: '서비스', events: '행사', press: '보도·언론', videos: '영상', bot: '챗봇', stats: '방문 통계', inbox: '문의함', history: '게시 기록', settings: '사이트 설정' };
   function buildSubnav() {   // 메뉴 아래에 분류를 세로로: 소식·공지(분류) · 아카이브(분류) · 서비스(포털 분류) · 보도·언론(출처)
     function sub(view, items) { var a = qs('.cms-nav a[data-view="' + view + '"]'); if (!a) return; var old = a.nextElementSibling; if (old && old.classList.contains('sub')) old.remove(); if (!items.length) return; var d = document.createElement('div'); d.className = 'sub'; d.innerHTML = items.map(function (it) { return '<a href="#' + view + '/c/' + encodeURIComponent(it[0]) + '" data-sub="' + esc(it[0]) + '">' + esc(it[1]) + (it[2] != null ? '<span class="cnt">' + it[2] + '</span>' : '') + '</a>'; }).join(''); a.insertAdjacentElement('afterend', d); }
     var nc = {}, ac = {}; ((state.notices || {}).items || []).forEach(function (n) { nc[n.cat] = (nc[n.cat] || 0) + 1; }); ((state.archive || {}).items || []).forEach(function (x) { ac[x.cat] = (ac[x.cat] || 0) + 1; });
     sub('notices', cats('notices').map(function (c) { return [c.label, c.label, nc[c.label] || 0]; }));
     sub('archive', cats('archive').map(function (c) { return [c.key, c.label, ac[c.key] || 0]; }));
+    if (state.insight) sub('insight', (state.insight.series || []).map(function (s) { return [s.id, s.short || s.name, (state.insight.posts || []).filter(function (x) { return x.series === s.id; }).length]; }));
     var sv = state.feeds.services; if (sv) sub('services', (sv.categories || []).map(function (c) { return [c, c, (sv.items || []).filter(function (i) { return i.category === c; }).length]; }));
     var pr = state.feeds.press, un = state.feeds.unn; if (pr || un) sub('press', [['press', '한림대 보도자료', pr ? (pr.items || []).length : 0], ['unn', '한국대학신문', un ? (un.items || []).length : 0]]);
   }
@@ -180,7 +182,7 @@
     var subKey = (h[1] === 'c' && h[2]) ? decodeURIComponent(h[2]) : ''; markSub(v, subKey);
     qs('#top-title').textContent = TITLES[v] || '대시보드'; qs('#top-actions').innerHTML = '';
     view.innerHTML = '<p class="muted">불러오는 중…</p>';
-    var fn = { home: vHome, site: vSite, notices: vNotices, archive: vArchive, services: vServices, events: vEvents, press: vPress, videos: vVideos, bot: vBot, stats: vStats, inbox: vInbox, history: vHistory, settings: vSettings }[v] || vHome;
+    var fn = { home: vHome, site: vSite, notices: vNotices, archive: vArchive, insight: vInsight, services: vServices, events: vEvents, press: vPress, videos: vVideos, bot: vBot, stats: vStats, inbox: vInbox, history: vHistory, settings: vSettings }[v] || vHome;
     Promise.resolve(fn(h.slice(1))).then(function () { counts(); buildSubnav(); }).catch(function (e) { view.innerHTML = '<div class="panel"><p>불러오지 못했습니다: ' + esc(e.message) + '</p><p class="small muted">토큰 권한(Contents: Read and write)과 저장소 이름을 확인해 주세요.</p></div>'; });
   }
   window.addEventListener('hashchange', route);
@@ -468,6 +470,78 @@
     if (!isNew) qs('#a-del').addEventListener('click', function () { confirmBox('이 자료를 삭제할까요?', '"' + it.title + '" 이(가) 아카이브에서 사라집니다.', '삭제', true).then(function (ok) { if (!ok) return; state.archive.items = (state.archive.items || []).filter(function (x) { return x.id !== it.id; }); saveJson('content/archive.json', state.archive, '아카이브 삭제: ' + it.title).then(function () { afterSave('삭제했습니다'); location.hash = '#archive'; route(); }).catch(fail); }); });
   }
 
+
+  // ---------------------------------------------------------------- 인사이트(연구회·칼럼 연재): 목록 + 편집 2단 · PDF 한 개를 올리면 배포 때 그림으로 펼쳐 보여 준다
+  function insOpen(x) { return CFG.site + 'insight-' + x.id + '.html'; }
+  function vInsight(args) {
+    return ensure('insight').then(function () {
+      var I = state.insight, items = I.posts || [], SER = I.series || [];
+      items.sort(function (x, y) { return dk(y) - dk(x); });
+      var cur = null, isNew = false, chip = 'all';
+      if (args[0] === 'new') isNew = true;
+      else if (args[0] === 'c' && args[1]) { chip = decodeURIComponent(args[1]); cur = items.filter(function (x) { return x.series === chip; })[0] || null; }
+      else if (args[0]) cur = items.filter(function (x) { return x.id === args[0]; })[0];
+      if (!cur && !isNew && chip === 'all' && items.length) { location.replace('#insight/' + items[0].id); return; }
+      var sname = function (k) { var s = SER.filter(function (x) { return x.id === k; })[0]; return s ? (s.short || s.name) : k; };
+      var list = listPanel({ title: '전체 글', count: items.length, addHref: '#insight/new', addLabel: '글 올리기', searchPh: '글 검색', chips: [['all', '전체']].concat(SER.map(function (s) { return [s.id, s.short || s.name]; })),
+        items: items.map(function (x) { return { id: x.id, href: '#insight/' + x.id, on: cur && cur.id === x.id, off: x.published === false, cat: sname(x.series) + ' · ' + (x.cat || ''), chip: x.series, title: x.title, date: x.date, extra: x.pdf && x.pdf.name ? 'PDF ' + (x.pdf.size || '') : '' }; }) });
+      view.innerHTML = head('Hallym University / Website CMS', '인사이트', '연구회·교수 칼럼 연재를 올립니다. 카드뉴스·월례보고서·서평 PDF 한 개를 올리면, 배포할 때 사이트에서 그림으로 펼쳐 읽을 수 있게 만들어집니다.', '<a class="btn ghost xs" href="' + esc(CFG.site + 'insight.html') + '" target="_blank" rel="noopener">인사이트 열기</a>') +
+        '<div class="cms-split">' + list + '<div class="panel cms-editor" id="editor"></div></div>';
+      wireList(chip);
+      if (isNew || cur) editInsight(cur, isNew && chip !== 'all' ? chip : ''); else qs('#editor').innerHTML = '<div class="empty">' + (chip !== 'all' ? '이 연재에는 아직 글이 없습니다. "글 올리기"를 눌러 올려 보세요.' : '아직 글이 없습니다.') + '</div>';
+    });
+  }
+  function editInsight(it, preSeries) {
+    var I = state.insight, SER = I.series || [];
+    var isNew = !it; it = it || { id: newId('i'), series: preSeries || (SER[0] || {}).id || '', cat: '', date: today(), title: '', lead: '', links: [], cover: '', pdf: null, pages: [], published: true };
+    var catsAll = []; SER.forEach(function (s) { (s.cats || []).forEach(function (c) { if (catsAll.indexOf(c) < 0) catsAll.push(c); }); }); (I.posts || []).forEach(function (p) { if (p.cat && catsAll.indexOf(p.cat) < 0) catsAll.push(p.cat); });
+    var linksTxt = (it.links || []).map(function (l) { return l.label + ' | ' + l.url; }).join('\n');
+    var box = qs('#editor');
+    box.innerHTML = '<div class="ph"><div><h3>' + (isNew ? '글 올리기' : '글 편집') + '</h3><p>제목, 연재, 본문 PDF는 꼭 넣어 주세요.</p></div>' + (isNew ? '' : '<span style="display:flex;gap:12px;align-items:center"><a class="btn ghost xs" href="' + esc(insOpen(it)) + '" target="_blank" rel="noopener">열기</a><button class="danger-link" type="button" id="i-del">🗑 삭제</button></span>') + '</div>' +
+      '<form class="form" id="if" novalidate>' +
+      '<div class="field"><label for="i-title">제목<span class="req">*</span></label><input id="i-title" value="' + esc(it.title) + '"><span class="msg" id="i-title-msg" style="display:none">제목을 입력해 주세요</span></div>' +
+      '<div class="grid g2" style="gap:16px">' +
+      '<div class="field"><label for="i-series">연재<span class="req">*</span></label><select id="i-series">' + SER.map(function (s) { return '<option value="' + esc(s.id) + '"' + (s.id === it.series ? ' selected' : '') + '>' + esc(s.name) + '</option>'; }).join('') + '<option value="__new">＋ 새 연재 만들기</option></select></div>' +
+      '<div class="field"><label for="i-cat">분류</label><input id="i-cat" list="i-cat-list" value="' + esc(it.cat || '') + '" placeholder="카드뉴스 · 월례보고서 · 서평 · 칼럼"><datalist id="i-cat-list">' + catsAll.map(function (c) { return '<option value="' + esc(c) + '">'; }).join('') + '</datalist></div>' +
+      '<div class="field"><label for="i-date">날짜</label><input id="i-date" value="' + esc(it.date || '') + '" placeholder="2026.11.27"></div>' +
+      '<div class="field"><label>공개</label><label class="chk"><input type="checkbox" id="i-pub"' + (it.published !== false ? ' checked' : '') + '><span>홈페이지에 표시</span></label></div></div>' +
+      '<div id="i-newser" style="display:none;border:1px dashed var(--line);border-radius:12px;padding:14px;margin:4px 0"><strong class="small">새 연재</strong>' +
+      '<div class="grid g2" style="gap:12px;margin-top:8px"><div class="field"><label for="ns-name">연재 이름<span class="req">*</span></label><input id="ns-name" placeholder="예: AI 교수법 연구회"></div><div class="field"><label for="ns-org">소속</label><input id="ns-org" placeholder="예: ○○대학교 교수학습센터"></div></div>' +
+      '<div class="field" style="margin-top:8px"><label for="ns-lead">한 줄 소개</label><textarea id="ns-lead" rows="2" placeholder="이 연재가 무엇을 다루는지 한두 문장"></textarea></div></div>' +
+      '<div class="field"><label for="i-lead">요약(목록과 글 머리에 보입니다)</label><textarea id="i-lead" rows="3">' + esc(it.lead || '') + '</textarea></div>' +
+      '<div class="field"><label>본문 PDF<span class="req">*</span> (한 개)</label>' + filesHtml('i-pdf', '카드뉴스·보고서 PDF. 배포할 때 쪽마다 그림으로 바뀌어 휴대폰에서도 읽기 쉽게 보입니다') + '<span class="msg" id="i-pdf-msg" style="display:none">본문 PDF를 올려 주세요</span></div>' +
+      '<div class="field"><label>표지 그림(선택)</label>' + filesHtml('i-cover', 'PNG·JPG 한 장. 비워 두면 PDF 첫 화면을 잘라 표지로 씁니다') + '</div>' +
+      '<div class="field"><label for="i-links">관련 링크(선택)</label><textarea id="i-links" rows="2" placeholder="강연 영상 다시 보기 | https://youtu.be/…">' + esc(linksTxt) + '</textarea><span class="hint">한 줄에 하나씩 「이름 | 주소」</span></div>' +
+      '</form>';
+    qs('#top-actions').innerHTML = '<span id="edit-status" class="small"><span class="saved">● ' + (isNew ? '새 글' : '저장됨') + '</span></span><button class="btn ghost sm" type="button" id="i-draft">비공개로 저장</button><button class="btn dark sm" type="button" id="i-save">게시하기</button>';
+    var pdfM = mountFiles('i-pdf', it.pdf && it.pdf.url ? [it.pdf] : [], function (fs, added) { setDirty(true); if (fs.length > 1) { fs.splice(0, fs.length - 1); pdfM.render(); } if (added && !qs('#i-title').value.trim()) qs('#i-title').value = added.name.replace(/\.[^.]+$/, ''); }), pdfs = pdfM.files;
+    var covM = mountFiles('i-cover', it.cover && !/\/cover\.jpg$/.test(it.cover) ? [{ name: it.cover.split('/').pop(), url: it.cover }] : [], function (fs) { setDirty(true); if (fs.length > 1) { fs.splice(0, fs.length - 1); covM.render(); } }), covers = covM.files;
+    function syncSer() { qs('#i-newser').style.display = qs('#i-series').value === '__new' ? 'block' : 'none'; }
+    qs('#i-series').addEventListener('change', syncSer); syncSer();
+    qsa('input,select,textarea', box).forEach(function (i) { i.addEventListener('input', function () { setDirty(true); }); });
+    function save(publish) {
+      var t = qs('#i-title').value.trim(), ser = qs('#i-series').value, pdf = pdfs[pdfs.length - 1];
+      qs('#i-title-msg').style.display = t ? 'none' : 'block'; qs('#i-pdf-msg').style.display = pdf ? 'none' : 'block';
+      if (ser === '__new' && !qs('#ns-name').value.trim()) { toast('새 연재 이름을 입력해 주세요'); return; }
+      if (!t || !pdf) return;
+      if (ser === '__new') { var nm = qs('#ns-name').value.trim(); var sid = 's' + Date.now().toString(36); I.series = (I.series || []).concat([{ id: sid, name: nm, short: nm, lead: qs('#ns-lead').value.trim(), org: qs('#ns-org').value.trim(), cats: [] }]); ser = sid; }
+      var btn = qs('#i-save'); btn.disabled = true; btn.textContent = '저장 중…';
+      var oldPdf = it.pdf && it.pdf.url;
+      it.title = t; it.series = ser; it.cat = qs('#i-cat').value.trim(); it.date = qs('#i-date').value.trim(); it.lead = qs('#i-lead').value.trim();
+      it.links = qs('#i-links').value.split('\n').map(function (l) { var p = l.split('|'); return p.length > 1 ? { label: p[0].trim(), url: p.slice(1).join('|').trim() } : null; }).filter(function (l) { return l && /^https?:\/\//.test(l.url); });
+      it.pdf = { name: pdf.name, url: pdf.url, size: pdf.size || '' };
+      if (oldPdf !== pdf.url) it.pages = [];   // 새 PDF → 배포 때 다시 그림으로 펼친다
+      var cv = covers[covers.length - 1]; if (cv) it.cover = cv.url; else if (oldPdf !== pdf.url || !it.cover) it.cover = '';
+      it.published = publish == null ? qs('#i-pub').checked : publish;
+      var s = (I.series || []).filter(function (x) { return x.id === ser; })[0]; if (s && it.cat && (s.cats || []).indexOf(it.cat) < 0) s.cats = (s.cats || []).concat([it.cat]);
+      if (isNew) I.posts = (I.posts || []).concat([it]);
+      saveJson('content/insight.json', I, (isNew ? '인사이트 올림: ' : '인사이트 수정: ') + t).then(function () { afterSave(it.published ? '게시했습니다' : '비공개로 저장했습니다'); isNew = false; location.hash = '#insight/' + it.id; route(); }).catch(function (e2) { fail(e2); btn.disabled = false; btn.textContent = '게시하기'; });
+    }
+    qs('#i-save').addEventListener('click', function () { save(true); }); qs('#i-draft').addEventListener('click', function () { save(false); });
+    qs('#if').addEventListener('submit', function (e) { e.preventDefault(); save(null); });
+    if (!isNew) qs('#i-del').addEventListener('click', function () { confirmBox('이 글을 삭제할까요?', '"' + it.title + '" 이(가) 인사이트에서 사라집니다.', '삭제', true).then(function (ok) { if (!ok) return; I.posts = (I.posts || []).filter(function (x) { return x.id !== it.id; }); saveJson('content/insight.json', I, '인사이트 삭제: ' + it.title).then(function () { afterSave('삭제했습니다'); location.hash = '#insight'; route(); }).catch(fail); }); });
+  }
+
   // ---------------------------------------------------------------- 자동 연동(서비스 · 행사 · 보도·언론 · 영상): 보기/숨기기
   function feedView(opt) {   // {eyebrow,title,desc,sections:[{key,label,note,feed,thumb:fn,meta:fn}]}
     return ensure('hidden').then(function () { return Promise.all(opt.sections.map(function (sc) { return liveFeed(sc.feed); })); }).then(function (feeds) {
@@ -714,10 +788,10 @@
       qs('#adm-login').hidden = true; qs('#adm-app').hidden = false; qs('#adm-logout').hidden = false;
       qs('#u-name').textContent = user.name || user.login; qs('#u-avatar').textContent = String(user.name || user.login).slice(0, 1).toUpperCase();
       checkDeploy(false); route();
-      Promise.all([liveFeed('services'), liveFeed('events'), liveFeed('press'), liveFeed('unn'), liveFeed('videos'), ensure('notices'), ensure('archive')]).then(counts).catch(function () {});
+      Promise.all([liveFeed('services'), liveFeed('events'), liveFeed('press'), liveFeed('unn'), liveFeed('videos'), ensure('notices'), ensure('archive'), ensure('insight')]).then(counts).catch(function () {});
     });
   }
-  function logout() { clearToken(); token = null; user = null; state = { notices: null, archive: null, hidden: null, stats: null, site: null, cats: null, bot: null, feeds: {}, sha: {} }; showLogin(''); location.hash = ''; }
+  function logout() { clearToken(); token = null; user = null; state = { notices: null, archive: null, insight: null, hidden: null, stats: null, site: null, cats: null, bot: null, feeds: {}, sha: {} }; showLogin(''); location.hash = ''; }
   qs('#adm-logout').addEventListener('click', logout);
   qs('#login-form').addEventListener('submit', function (e) {
     e.preventDefault(); var m = qs('#tok-msg'); m.style.display = 'none'; var btn = qs('#tok-go'); var keep = qs('#tok-keep').checked;

@@ -2248,6 +2248,7 @@ def page_admin():
 <a href="#site" data-view="site"><i>⌂</i>홈 화면</a>
 <a href="#notices" data-view="notices"><i>✎</i>소식·공지<span class="cnt" data-cnt="notices"></span></a>
 <a href="#archive" data-view="archive"><i>▤</i>아카이브<span class="cnt" data-cnt="archive"></span></a>
+<a href="#insight" data-view="insight"><i>✦</i>인사이트<span class="cnt" data-cnt="insight"></span></a>
 <a href="#services" data-view="services"><i>◈</i>서비스<span class="cnt" data-cnt="services"></span></a>
 <a href="#events" data-view="events"><i>◷</i>행사<span class="cnt" data-cnt="events"></span></a>
 <a href="#press" data-view="press"><i>▣</i>보도·언론<span class="cnt" data-cnt="press"></span></a>
@@ -3283,7 +3284,44 @@ TRY_JS = r"""(function(){
 # ------------------------------------------------------------------ 인사이트(연구회·칼럼 연재) — 옛 플랫폼 칼럼 게시판 이관(2026-11-27)
 INSIGHT = _load_json(os.path.join(OUT, 'content', 'insight.json'), {'series': [], 'posts': []})
 INS_SERIES = {s['id']: s for s in INSIGHT.get('series', [])}
-INS_POSTS = sorted(INSIGHT.get('posts', []), key=lambda x: x.get('date', ''), reverse=True)
+def _ins_prepare(x):
+    """관리자 화면에서 PDF만 올린 글: 배포할 때 쪽마다 그림(pNN.jpg)으로 펼치고, 표지가 없으면 첫 화면을 잘라 cover.jpg 로 쓴다."""
+    if x.get('pages') or not (x.get('pdf') or {}).get('url'):
+        return x
+    import subprocess, tempfile, urllib.request
+    try:
+        from PIL import Image
+        Image.MAX_IMAGE_PIXELS = None
+        url = x['pdf']['url']; d_rel = f'content/files/insight/{x["id"]}'; d = os.path.join(OUT, d_rel); os.makedirs(d, exist_ok=True)
+        tmp = tempfile.mkdtemp()
+        src = os.path.join(tmp, 'in.pdf')
+        if url.startswith('http'):
+            urllib.request.urlretrieve(url, src)
+        else:
+            shutil.copy(os.path.join(OUT, url), src)
+        info = subprocess.run(['pdfinfo', src], capture_output=True, text=True, timeout=60).stdout
+        w, h = [float(v) for v in info.split('Page size:')[1].split('pts')[0].split(' x ')]
+        width = 1100 if h > w else 1400
+        subprocess.run(['pdftoppm', '-r', f'{width / w * 72:.2f}', '-png', src, os.path.join(tmp, 'pg')], check=True, timeout=600)
+        pages = []; k = 0
+        for f in sorted(os.listdir(tmp)):
+            if not f.startswith('pg'): continue
+            im = Image.open(os.path.join(tmp, f)).convert('RGB')
+            if not x.get('cover') and not pages:
+                cv = im.crop((0, 0, im.width, min(im.height, im.width))); cv.thumbnail((800, 800)); cv.save(os.path.join(d, 'cover.jpg'), quality=84)
+                x['cover'] = f'{d_rel}/cover.jpg'
+            for y in range(0, im.height, 2000):
+                k += 1; c = im.crop((0, y, im.width, min(im.height, y + 2000))); fn = f'p{k:02d}.jpg'
+                c.save(os.path.join(d, fn), quality=82, optimize=True, progressive=True); pages.append({'src': f'{d_rel}/{fn}', 'w': c.width, 'h': c.height})
+        x['pages'] = pages
+        shutil.rmtree(tmp, ignore_errors=True)
+        print('insight: rendered', x['id'], len(pages), 'images')
+    except Exception as e:
+        print('insight: render failed', x.get('id'), e)
+    return x
+INS_POSTS = sorted([_ins_prepare(x) for x in INSIGHT.get('posts', []) if x.get('published', True) is not False], key=lambda x: (x.get('date', '').replace('-', '.')), reverse=True)
+INSIGHT['series'] = [s for s in INSIGHT.get('series', []) if any(p['series'] == s['id'] for p in INS_POSTS)]
+for _s in INSIGHT['series']: _s.setdefault('short', _s['name']); _s.setdefault('lead', ''); _s.setdefault('org', ''); _s.setdefault('cats', [])
 CSS = CSS + r"""
 .ins-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 22px; }
 .ins-card { display: flex; flex-direction: column; gap: 10px; color: inherit; }
@@ -3306,8 +3344,8 @@ CSS = CSS + r"""
 """
 def ins_card(x):
     ser = INS_SERIES.get(x['series'], {})
-    return (f'<a class="ins-card" href="insight-{x["id"]}.html" data-key="{E(x["cat"])}"><span class="ic"><img src="{E(x["cover"])}" alt="" loading="lazy"></span>'
-            f'<span class="m"><span class="badge" style="margin-right:6px">{E(x["cat"])}</span>{E(ser.get("short", ""))}</span><span class="t">{E(x["title"])}</span><span class="m">{E(x["date"])}</span></a>')
+    return (f'<a class="ins-card" href="insight-{x["id"]}.html" data-key="{E(x.get("cat", ""))}"><span class="ic"><img src="{E(x.get("cover", ""))}" alt="" loading="lazy"></span>'
+            f'<span class="m"><span class="badge" style="margin-right:6px">{E(x.get("cat", ""))}</span>{E(ser.get("short", ""))}</span><span class="t">{E(x["title"])}</span><span class="m">{E(x["date"])}</span></a>')
 
 INS_CONTACT = '참여 대학의 연구회·교수 칼럼 연재를 기다립니다. 기고 문의: KELI 사무국 +82 033-248-3246, 3242, 3044 / contact@keliedu.org'
 
@@ -3315,7 +3353,7 @@ def page_insight():
     sers = ''.join(f'<a href="insight-{s["id"]}.html"><small>연재 · {sum(1 for x in INS_POSTS if x["series"] == s["id"])}편</small><b>{E(s["name"])}</b><span class="muted">{E(s["lead"])}</span><small>{E(s["org"])}</small></a>' for s in INSIGHT.get('series', []))
     cats = []
     for x in INS_POSTS:
-        if x['cat'] not in cats: cats.append(x['cat'])
+        if x.get('cat') and x['cat'] not in cats: cats.append(x['cat'])
     body = crumb(('news.html', '소식'), (None, '인사이트')) + f'''
 <section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap"><span class="eyebrow">인사이트</span><h1>인사이트.</h1>
 <p class="lead">KELI 참여 대학 교수진의 연구회·칼럼 연재입니다. AI 시대 대학교육을 묻는 초청 세미나, 좌담, 실증 연구, 서평을 카드뉴스와 보고서로 나눕니다.</p></div></section>
@@ -3348,24 +3386,24 @@ def page_insight_post(x):
     i = same.index(x)
     prv = same[i + 1] if i + 1 < len(same) else None
     nxt = same[i - 1] if i > 0 else None
-    wide = any(p['w'] > p['h'] for p in x['pages'])
-    imgs = ''.join(f'<img src="{E(p["src"])}" width="{p["w"]}" height="{p["h"]}" alt="{E(x["title"])} ({k + 1}/{len(x["pages"])})" loading="{"eager" if k == 0 else "lazy"}">' for k, p in enumerate(x['pages']))
+    wide = any(p['w'] > p['h'] for p in x.get('pages') or [])
+    imgs = ''.join(f'<img src="{E(p["src"])}" width="{p["w"]}" height="{p["h"]}" alt="{E(x["title"])} ({k + 1}/{len(x.get("pages") or [])})" loading="{"eager" if k == 0 else "lazy"}">' for k, p in enumerate(x.get('pages') or []))
     links = ''.join(f'<a class="btn ghost sm" href="{E(l["url"])}" target="_blank" rel="noopener">{E(l["label"])}</a>' for l in x.get('links', []))
     nav = (f'<a href="insight-{prv["id"]}.html"><small>이전 글</small>{E(prv["title"])}</a>' if prv else '<span></span>') + (f'<a class="nx" href="insight-{nxt["id"]}.html"><small>다음 글</small>{E(nxt["title"])}</a>' if nxt else '<span></span>')
     body = crumb(('news.html', '소식'), ('insight.html', '인사이트'), (f'insight-{x["series"]}.html', ser.get('short', '')), (None, x['title'])) + f'''
 <section class="hero" style="padding-top:48px;padding-bottom:24px"><div class="wrap narrow" style="max-width:900px">
-<span class="eyebrow">{E(ser.get("name", ""))} · {E(x["cat"])}</span><h1 style="font-size:clamp(26px,4vw,38px);text-wrap:balance">{E(x["title"])}</h1>
-<p class="lead" style="margin-top:4px">{E(x["lead"])}</p><p class="muted">{E(x["date"])} · {E(ser.get("org", ""))}</p>
+<span class="eyebrow">{E(ser.get("name", ""))} · {E(x.get("cat", ""))}</span><h1 style="font-size:clamp(26px,4vw,38px);text-wrap:balance">{E(x["title"])}</h1>
+<p class="lead" style="margin-top:4px">{E(x.get("lead", ""))}</p><p class="muted">{E(x["date"])} · {E(ser.get("org", ""))}</p>
 <div class="ins-acts"><a class="btn sm" href="{E(x["pdf"]["url"])}" target="_blank" rel="noopener">PDF 원본 보기</a><a class="btn ghost sm" href="{E(x["pdf"]["url"])}" download="{E(x["pdf"]["name"])}">내려받기 ({E(x["pdf"]["size"])})</a>{links}</div>
 </div></section>
 <section class="sec" style="padding-top:8px"><div class="wrap">
-<div class="ins-read{" wide" if wide else ""}">{imgs}</div>
+{f'<div class="ins-read{" wide" if wide else ""}">{imgs}</div>' if imgs else '<iframe class="pdf-frame" src="' + E(x['pdf']['url']) + '#view=FitH" title="' + E(x['title']) + '" loading="lazy"></iframe>'}
 <p class="note" style="max-width:900px;margin:0 auto">글자가 작게 보이면 「PDF 원본 보기」로 크게 볼 수 있습니다. 인용할 때는 출처({E(ser.get("name", ""))})를 밝혀 주세요.</p>
 </div></section>
 <section class="sec alt"><div class="wrap narrow" style="max-width:900px"><div class="ins-nav">{nav}</div>
 <p style="margin-top:16px"><a class="more" href="insight-{x["series"]}.html">{E(ser.get("name", ""))} 전체 보기</a></p></div></section>
 '''
-    write(f'insight-{x["id"]}.html', f'{x["title"]} · KELI 인사이트', body, desc=x['lead'][:150])
+    write(f'insight-{x["id"]}.html', f'{x["title"]} · KELI 인사이트', body, desc=(x.get('lead') or x['title'])[:150])
 
 def page_videos():
     keli = ''.join(vid_card(v) for v in VIDEOS_KELI) or '<div class="empty">아직 KELI 영상이 없습니다.</div>'
