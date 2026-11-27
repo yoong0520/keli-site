@@ -2726,7 +2726,7 @@ def page_archive_detail(a):
     elif files:
         acts += f'<a class="btn" href="{E(files[0]["url"])}" target="_blank" rel="noopener" download>내려받기</a>'
     if a.get('url'):
-        acts += f'<a class="btn ghost" href="{E(a["url"])}" target="_blank" rel="noopener">원문 · 외부 주소</a>'
+        acts += f'<a class="btn{" ghost" if acts else ""}" href="{E(a["url"])}" target="_blank" rel="noopener">{E(a.get("url_label") or "원문 · 외부 주소")}</a>'
     cover = ''   # 사무국 결정(2026-11-03): 아카이브에 표지 그림을 쓰지 않음
     viewer = ''
     if pdfs:
