@@ -1,0 +1,674 @@
+{
+ "_안내": "인사이트(연구회·칼럼 연재). 옛 플랫폼 칼럼 게시판에서 2026. 11. 27. 이관. series: 연재, posts: 글. 그림은 content/files/insight/<id>/",
+ "series": [
+  {
+   "id": "khigh",
+   "name": "K고등교육모델연구회",
+   "short": "K고등교육모델연구회",
+   "lead": "AI 시대 대학교육의 원리를 묻는 한림대학교 교수 연구회입니다. 2기(2026)는 인문학·심리학·경영학·인공지능·광고홍보 등 여러 전공 교수 6인이 「인지외주화 시대 고등교육에서 진정한 배움을 위한 교수·학습 원리 및 AI의 비계 역할 가능성 연구」를 수행하며, 초청 세미나와 좌담, 실증 연구를 카드뉴스와 월례보고서로 나눕니다.",
+   "org": "한림대학교 AI에듀테크센터 · 글로컬대학30 후원",
+   "cats": [
+    "카드뉴스",
+    "월례보고서"
+   ]
+  },
+  {
+   "id": "humanities",
+   "name": "AI와 인문교육의 지평과 가능성",
+   "short": "AI와 인문교육",
+   "lead": "AI 시대의 인문교육을 함께 읽고 토론하는 연구팀의 서평 연재입니다. AI와 정보, 지능을 다룬 책을 골라 논지와 발견, 쟁점을 한 장으로 정리합니다.",
+   "org": "한림대학교 AI에듀테크센터 · AI와 인문교육의 지평과 가능성 연구팀",
+   "cats": [
+    "서평"
+   ]
+  }
+ ],
+ "posts": [
+  {
+   "id": "k124",
+   "series": "khigh",
+   "cat": "카드뉴스",
+   "date": "2026.10.31",
+   "title": "반복 업무는 AI에 맡기고, 교수는 가치 있는 일에 집중한다",
+   "lead": "고민환 교수(동국대학교 WISE캠퍼스) 초청 강연 「교수의 하루를 다시 설계하다」. 교수 한 사람이 직접 만들어 운영하는 AI 업무 자동화 사례와 질의응답을 정리했습니다.",
+   "links": [
+    {
+     "label": "강연 영상 다시 보기(YouTube)",
+     "url": "https://youtu.be/K_atjqCV0Bs"
+    }
+   ],
+   "cover": "content/files/insight/k124/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k124/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k124/p02.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k124/p03.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k124/p04.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k124/p05.jpg",
+     "w": 1100,
+     "h": 1659
+    }
+   ],
+   "pdf": {
+    "name": "KELI 카드뉴스(10월 31일) - 고민환교수 강연(완성)_v4.pdf",
+    "url": "content/files/insight/k124/original.pdf",
+    "size": "1.9 MB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 124)"
+  },
+  {
+   "id": "k123",
+   "series": "khigh",
+   "cat": "월례보고서",
+   "date": "2026.10.31",
+   "title": "[2026년 10월 월례보고서] KELI 쇼츠 5편을 공개하고, 고민환 교수 초청 세미나를 개최했다",
+   "lead": "연구회 좌담을 바탕으로 만든 KELI 쇼츠 5편을 공개하고, 10월 16일 여섯 번째 정기회의와 고민환 교수 초청 세미나를 열었습니다.",
+   "links": [
+    {
+     "label": "고민환 교수 강연 영상(YouTube)",
+     "url": "https://youtu.be/K_atjqCV0Bs"
+    }
+   ],
+   "cover": "content/files/insight/k123/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k123/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k123/p02.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k123/p03.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k123/p04.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k123/p05.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k123/p06.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k123/p07.jpg",
+     "w": 1100,
+     "h": 1882
+    }
+   ],
+   "pdf": {
+    "name": "K고등교육모델연구회_2026년_10월_월례보고서(완성).pdf",
+    "url": "content/files/insight/k123/original.pdf",
+    "size": "1.9 MB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 123)"
+  },
+  {
+   "id": "k109",
+   "series": "khigh",
+   "cat": "월례보고서",
+   "date": "2026.09.30",
+   "title": "[2026년 9월 월례보고서] 학생 제작팀과 쇼츠 제작에 착수하고, 서경원 교수 초청 세미나를 개최했다",
+   "lead": "광고홍보학과 학생 제작팀과 쇼츠 기획을 확정하고, 9월 18일 다섯 번째 정기회의와 서경원 교수 초청 세미나를 열었습니다.",
+   "links": [
+    {
+     "label": "서경원 교수 강연 영상(YouTube)",
+     "url": "https://youtu.be/tUfMDivjZbY"
+    }
+   ],
+   "cover": "content/files/insight/k109/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k109/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k109/p02.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k109/p03.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k109/p04.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k109/p05.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k109/p06.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k109/p07.jpg",
+     "w": 1100,
+     "h": 681
+    }
+   ],
+   "pdf": {
+    "name": "K고등교육모델연구회_2026년_9월_월례보고서(완성).pdf",
+    "url": "content/files/insight/k109/original.pdf",
+    "size": "1.5 MB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 109)"
+  },
+  {
+   "id": "k108",
+   "series": "khigh",
+   "cat": "카드뉴스",
+   "date": "2026.09.30",
+   "title": "교사가 AI 분석을 활용하자, 학생의 상담 신뢰도가 높아졌다",
+   "lead": "서경원 교수(서울과학기술대학교) 초청 강연 「맞춤형 진로·진학 상담 지원을 위한 에이전틱 AI 적용 방안 연구」. 4계층 멀티에이전트 프로토타입을 전국 17개 고등학교에서 검증한 과정과 대학 적용 토론을 정리했습니다.",
+   "links": [
+    {
+     "label": "강연 영상 다시 보기(YouTube)",
+     "url": "https://youtu.be/tUfMDivjZbY"
+    }
+   ],
+   "cover": "content/files/insight/k108/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k108/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k108/p02.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k108/p03.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k108/p04.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k108/p05.jpg",
+     "w": 1100,
+     "h": 1173
+    }
+   ],
+   "pdf": {
+    "name": "KELI 카드뉴스(9월 30일) - 서경원교수 강연(완성).pdf",
+    "url": "content/files/insight/k108/original.pdf",
+    "size": "1.8 MB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 108)"
+  },
+  {
+   "id": "k105",
+   "series": "khigh",
+   "cat": "카드뉴스",
+   "date": "2026.08.24",
+   "title": "인공지능 시대의 서술형 평가, AI 에이전트에게 채점을 맡겨보았다",
+   "lead": "유미나 교수(춘천교육대학교) 초청 강연. 직접 개발한 서술형 평가 AI 에이전트의 시도와 성과, 한계를 공유한 두 시간을 정리했습니다.",
+   "links": [],
+   "cover": "content/files/insight/k105/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k105/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k105/p02.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k105/p03.jpg",
+     "w": 1100,
+     "h": 395
+    }
+   ],
+   "pdf": {
+    "name": "KELI 카드뉴스(8월 24일) - 유미나교수 강연.pdf",
+    "url": "content/files/insight/k105/original.pdf",
+    "size": "973 KB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 105)"
+  },
+  {
+   "id": "k103",
+   "series": "khigh",
+   "cat": "월례보고서",
+   "date": "2026.08.30",
+   "title": "[2026년 8월 월례보고서] 정기회의와 중간결과 발표로 준비한 2학기 실행",
+   "lead": "8월 19일 네 번째 정기회의에서 교수별 후속 과제를 구체화하고, 8월 25일 AI에듀테크센터 중간발표에서 성과와 계획을 공유했습니다.",
+   "links": [],
+   "cover": "content/files/insight/k103/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k103/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k103/p02.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k103/p03.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k103/p04.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k103/p05.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k103/p06.jpg",
+     "w": 1100,
+     "h": 1606
+    }
+   ],
+   "pdf": {
+    "name": "K고등교육모델연구회_2026년_8월_월례보고서.pdf",
+    "url": "content/files/insight/k103/original.pdf",
+    "size": "1.3 MB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 103)"
+  },
+  {
+   "id": "k104",
+   "series": "khigh",
+   "cat": "카드뉴스",
+   "date": "2026.08.10",
+   "title": "AI시대, 대학교육이 필요한가?",
+   "lead": "연구회 좌담 「세 개의 물음」 첫 번째. AI가 설명을 대신하는 시대에 교수의 역할, 전문가가 길러지는 방식, 배움의 의미를 묻습니다.",
+   "links": [],
+   "cover": "content/files/insight/k104/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k104/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k104/p02.jpg",
+     "w": 1100,
+     "h": 1777
+    }
+   ],
+   "pdf": {
+    "name": "KELI 카드뉴스(8월 10일) - AI시대 대학교육이 필요한가.pdf",
+    "url": "content/files/insight/k104/original.pdf",
+    "size": "717 KB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 104)"
+  },
+  {
+   "id": "k82",
+   "series": "khigh",
+   "cat": "카드뉴스",
+   "date": "2026.07.20",
+   "title": "교육용 철학 AI편 — 정답을 주는 AI를 넘어, 함께 읽는 AI를 만든다면",
+   "lead": "이청호 교수(상명대학교)가 노코딩으로 만든 '철학 토론 파트너'. 철학 텍스트를 개념 지도와 논증 구조, 철학자와의 대화로 펼쳐 보이려 한 교육용 AI의 첫 시도입니다.",
+   "links": [],
+   "cover": "content/files/insight/k82/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k82/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k82/p02.jpg",
+     "w": 1100,
+     "h": 1554
+    }
+   ],
+   "pdf": {
+    "name": "(7월 20일) K고등교육모델연구회_카드뉴스_교육용철학AI편.pdf",
+    "url": "content/files/insight/k82/original.pdf",
+    "size": "766 KB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 82)"
+  },
+  {
+   "id": "k80",
+   "series": "khigh",
+   "cat": "월례보고서",
+   "date": "2026.07.31",
+   "title": "[2026년 7월 월례보고서] 방학 중에도 이어진 유미나 교수 특강과 세 번째 정기회의",
+   "lead": "7월 20일 유미나 교수 특강과 세 번째 정기회의에서 2학기 강연 일정, 학생 쇼츠 기획, 8월 오프라인 모임을 정했습니다.",
+   "links": [],
+   "cover": "content/files/insight/k80/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k80/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k80/p02.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k80/p03.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k80/p04.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k80/p05.jpg",
+     "w": 1100,
+     "h": 1237
+    }
+   ],
+   "pdf": {
+    "name": "(7월 월례보고서) K고등교육모델연구회.pdf",
+    "url": "content/files/insight/k80/original.pdf",
+    "size": "1.3 MB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 80)"
+  },
+  {
+   "id": "k81",
+   "series": "khigh",
+   "cat": "카드뉴스",
+   "date": "2026.07.06",
+   "title": "비판적 사고 실증 연구편 — 틀렸을 때도, AI는 확신에 차 있었다",
+   "lead": "PSAT 강화·약화 문항 20개를 세 AI 모델에 10회씩 물은 실험. 정답률 뒤에 숨은 '확신에 찬 오답'이 무엇을 뜻하는지 짚었습니다.",
+   "links": [],
+   "cover": "content/files/insight/k81/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k81/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k81/p02.jpg",
+     "w": 1100,
+     "h": 1370
+    }
+   ],
+   "pdf": {
+    "name": "(7월 6일) K고등교육모델연구회_카드뉴스_비판적사고실증 연구편.pdf",
+    "url": "content/files/insight/k81/original.pdf",
+    "size": "937 KB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 81)"
+  },
+  {
+   "id": "k76",
+   "series": "khigh",
+   "cat": "카드뉴스",
+   "date": "2026.06.22",
+   "title": "AI가 다 해주는 시대, 우리는 왜 배우고, 왜 대학에 남아 있는가",
+   "lead": "인지외주화 연구의 배경과 문제의식. AI가 대신 설명해 준 것을 이해했다고 착각하는 '능숙함의 환상'을 다룬 연구노트입니다.",
+   "links": [],
+   "cover": "content/files/insight/k76/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k76/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k76/p02.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k76/p03.jpg",
+     "w": 1100,
+     "h": 1219
+    }
+   ],
+   "pdf": {
+    "name": "K고등교육모델연구회_카드뉴스_0622_연구배경편.pdf",
+    "url": "content/files/insight/k76/original.pdf",
+    "size": "1.0 MB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 76)"
+  },
+  {
+   "id": "k70",
+   "series": "khigh",
+   "cat": "월례보고서",
+   "date": "2026.06.30",
+   "title": "[2026년 6월 월례보고서] 외부 강연자 3인 섭외, 첫 초청 세미나 진행",
+   "lead": "6월 1일 정기회의에서 외부 강연자 섭외와 세미나 일정을 확정하고, 이청호 교수(상명대학교)를 초청해 첫 세미나를 열었습니다.",
+   "links": [],
+   "cover": "content/files/insight/k70/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k70/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k70/p02.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k70/p03.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k70/p04.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k70/p05.jpg",
+     "w": 1100,
+     "h": 949
+    }
+   ],
+   "pdf": {
+    "name": "K고등교육모델연구회_2026년_6월_월례보고서.pdf",
+    "url": "content/files/insight/k70/original.pdf",
+    "size": "1.3 MB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 70)"
+  },
+  {
+   "id": "k69",
+   "series": "khigh",
+   "cat": "카드뉴스",
+   "date": "2026.06.01",
+   "title": "K고등교육모델연구회 2기, 6인 체제로 출범",
+   "lead": "박주형·신철규·송영아 교수의 합류로 6인 체제가 된 2기 연구진과 9개월간의 연구과제를 소개합니다.",
+   "links": [],
+   "cover": "content/files/insight/k69/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k69/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k69/p02.jpg",
+     "w": 1100,
+     "h": 1562
+    }
+   ],
+   "pdf": {
+    "name": "6월 8일_KELI_카드뉴스.pdf",
+    "url": "content/files/insight/k69/original.pdf",
+    "size": "840 KB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 69)"
+  },
+  {
+   "id": "k60",
+   "series": "khigh",
+   "cat": "월례보고서",
+   "date": "2026.05.25",
+   "title": "[2026년 5월 월례보고서] 2026년 5월, K고등교육모델연구회의 한 달",
+   "lead": "AI에듀테크센터 2026년도 연구과제에 선정되어 5월부터 시작한 연구 활동과 첫 오프라인 정기회의를 정리했습니다.",
+   "links": [],
+   "cover": "content/files/insight/k60/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k60/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k60/p02.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k60/p03.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k60/p04.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k60/p05.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k60/p06.jpg",
+     "w": 1100,
+     "h": 550
+    }
+   ],
+   "pdf": {
+    "name": "K고등교육모델연구회_5월_KELI_월례보고서(최종)_.pdf",
+    "url": "content/files/insight/k60/original.pdf",
+    "size": "1.3 MB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 60)"
+  },
+  {
+   "id": "k59",
+   "series": "khigh",
+   "cat": "카드뉴스",
+   "date": "2026.05.25",
+   "title": "K고등교육모델연구회 1기, 2년의 결실 한 권의 책으로 응답하다",
+   "lead": "2024년 첫발을 뗀 1기 연구회가 2026년 2월 공저 『AI 시대, 대학교육을 리디자인하라』로 결실을 맺기까지의 발자취입니다.",
+   "links": [],
+   "cover": "content/files/insight/k59/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/k59/p01.jpg",
+     "w": 1100,
+     "h": 2000
+    },
+    {
+     "src": "content/files/insight/k59/p02.jpg",
+     "w": 1100,
+     "h": 1582
+    }
+   ],
+   "pdf": {
+    "name": "K고등교육모델연구회_5월_KELI_카드뉴스(최종).pdf",
+    "url": "content/files/insight/k59/original.pdf",
+    "size": "1.0 MB"
+   },
+   "source": "https://keliedu.org/keli/board/column/K-highedu (이관 seq 59)"
+  },
+  {
+   "id": "h111",
+   "series": "humanities",
+   "cat": "서평",
+   "date": "2026.10.07",
+   "title": "[서평] 『넥서스』: 정보 네트워크로 보는 인류 역사",
+   "lead": "유발 하라리의 『넥서스』를 바탕으로 정보 네트워크의 역사와 AI 시대의 위험, 민주적 정보 네트워크의 자정 장치가 갖는 의미를 살펴봅니다.",
+   "links": [],
+   "cover": "content/files/insight/h111/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/h111/p01.jpg",
+     "w": 1401,
+     "h": 788
+    }
+   ],
+   "pdf": {
+    "name": "2026_KELI_서평_넥서스_양태근_202609.pdf",
+    "url": "content/files/insight/h111/original.pdf",
+    "size": "136 KB"
+   },
+   "source": "https://keliedu.org/keli/board/column/humanities (이관 seq 111)"
+  },
+  {
+   "id": "h79",
+   "series": "humanities",
+   "cat": "서평",
+   "date": "2026.07.29",
+   "title": "[서평] 이선 몰릭의 『듀얼 브레인』(원제 Co-Intelligence)",
+   "lead": "AI를 대체재가 아닌 '공동지능'으로 보는 몰릭의 관점과 네 가지 원칙, 격차 완화와 인문학의 재발견을 정리한 독서모임 기고입니다.",
+   "links": [],
+   "cover": "content/files/insight/h79/cover.jpg",
+   "pages": [
+    {
+     "src": "content/files/insight/h79/p01.jpg",
+     "w": 1400,
+     "h": 990
+    }
+   ],
+   "pdf": {
+    "name": "2026KELI_202607_v01_1.pdf",
+    "url": "content/files/insight/h79/original.pdf",
+    "size": "271 KB"
+   },
+   "source": "https://keliedu.org/keli/board/column/humanities (이관 seq 79)"
+  }
+ ]
+}

@@ -1357,7 +1357,7 @@ JS = r"""
 
 # ------------------------------------------------------------------ 공통 조각
 NAV = [('about.html', 'KELI 소개'), ('services.html', 'HAI Ecosystems'), ('join.html', 'KELI 협의체 참여'), ('archive.html', '아카이브'), ('news.html', '소식')]
-NEWS_PAGES = {'news.html', 'notice.html', 'events.html', 'newsletter.html', 'videos.html'}
+NEWS_PAGES = {'news.html', 'notice.html', 'events.html', 'newsletter.html', 'videos.html', 'insight.html'}
 # 상단 메뉴를 누르거나 올리면 펼쳐지는 전체 메뉴(메가 메뉴). 각 메뉴 아래 게시판·섹션 바로가기
 # ---- 서비스 목록(포털 피드 기준)과 수업 6단계 배치: 메뉴(MEGA)보다 먼저 계산
 MANUAL_STAGES_FIXED = {   # 매뉴얼 data.js steps 항목 → 이 사이트 slug (2026. 10. 21. 판, 매뉴얼 사이트를 못 읽을 때의 예비값)
@@ -1407,19 +1407,19 @@ MEGA = [
     ('services.html', 'HAI Ecosystems', [('services.html', 'HAI Ecosystems', [(f'services.html#{k}', lb) for k, lb, _ in AREAS] + [('demos.html', '전체 데모 영상')]), ('experience.html', 'HAI 체험관'), (OLD_MARKET, 'Marketplace')]),
     ('join.html', 'KELI 협의체 참여', [('join.html', '참여 방법 · 절차'), ('join.html#members', '참여 기관'), ('join.html#inquiry', '도입 문의')]),
     ('archive.html', '아카이브', [(f'archive-{k}.html', l.replace('·', ' · ')) for k, l in ARCH_CATS]),
-    ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('newsletter.html', '뉴스레터 · 보도자료')]),
+    ('news.html', '소식', [('notice.html', '공지사항'), ('events.html', '행사'), ('videos.html', '영상'), ('insight.html', '인사이트'), ('newsletter.html', '뉴스레터 · 보도자료')]),
 ]
 
 MENU_EN = {'KELI 소개': 'About KELI', 'KELI 협의체 참여': 'Join the Consortium', '아카이브': 'Archive', '소식': 'News', '비전': 'Vision', 'KELI 협의체': 'KELI Consortium', '조직도': 'Organization',
            'AI 학습 지원': 'AI Learning Support', 'AI 교수 지원': 'AI Teaching Support', 'AI 연구 지원': 'AI Research Support', 'AI 진로·취업': 'AI Career & Jobs', 'AI 플랫폼': 'AI Platforms',
            'AI 의료교육': 'AI Medical Education', 'AI 행정 지원': 'AI Administration', 'AI 운영 지원': 'AI Operations', '전체 데모 영상': 'All demo videos', 'HAI 체험관': 'HAI Experience Center',
            '참여 방법 · 절차': 'How to join', '참여 기관': 'Member institutions', '도입 문의': 'Contact us', '매뉴얼 · 소개자료': 'Manuals & brochures', '기술 동향 · 연구': 'Tech trends & research',
-           '실증 사례집': 'Case studies', '공지사항': 'Notices', '행사': 'Events', '영상': 'Videos', '뉴스레터 · 보도자료': 'Newsletter & press'}
+           '실증 사례집': 'Case studies', '공지사항': 'Notices', '행사': 'Events', '영상': 'Videos', '뉴스레터 · 보도자료': 'Newsletter & press', '인사이트': 'Insights'}
 def header(current):
     en = current == 'en.html'
     L = (lambda t: MENU_EN.get(t, t)) if en else (lambda t: t)
     def on(h):
-        if h == 'news.html' and current in NEWS_PAGES: return ' class="on"'
+        if h == 'news.html' and (current in NEWS_PAGES or current.startswith('insight')): return ' class="on"'
         if h == 'services.html' and (current.startswith('service') or current == 'curriculum.html'): return ' class="on"'
         return ' class="on"' if h == current else ''
     links = ''.join(f'<a href="{h}"{on(h)} data-menu="{h}">{L(t)}</a>' for h, t in NAV)
@@ -2777,6 +2777,10 @@ def page_news_hub():
 <div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">행사</h2><a class="more" href="events.html">전체 보기</a></div><div class="list" data-events="rows" data-pages="{FEED_IDS}">{ev}</div>
 </div></section>
 <section class="sec" style="padding-top:0"><div class="wrap narrow" style="max-width:900px">
+<div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">인사이트</h2><a class="more" href="insight.html">전체 보기</a></div>
+<div class="ins-grid">{''.join(ins_card(x) for x in INS_POSTS[:3])}</div>
+</div></section>
+<section class="sec" style="padding-top:0"><div class="wrap narrow" style="max-width:900px">
 <div class="row" style="margin-bottom:16px"><h2 style="font-size:28px">영상</h2><a class="more" href="videos.html">전체 보기</a></div>
 <div class="grid g2 vids" data-videos="hub">{''.join(vid_card(v) for v in (VIDEOS_KELI + VIDEOS_REL)[:2])}</div>
 <p class="note" style="margin-top:12px">썸네일을 누르면 이 자리에서 바로 재생됩니다. 출처: 한림대학교 유튜브(@HALLYMNEWS).</p>
@@ -3275,6 +3279,94 @@ TRY_JS = r"""(function(){
   ta.addEventListener('keydown', function(e){ if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){ e.preventDefault(); send(ta.value); } });
 })();"""
 
+
+# ------------------------------------------------------------------ 인사이트(연구회·칼럼 연재) — 옛 플랫폼 칼럼 게시판 이관(2026-11-27)
+INSIGHT = _load_json(os.path.join(OUT, 'content', 'insight.json'), {'series': [], 'posts': []})
+INS_SERIES = {s['id']: s for s in INSIGHT.get('series', [])}
+INS_POSTS = sorted(INSIGHT.get('posts', []), key=lambda x: x.get('date', ''), reverse=True)
+CSS = CSS + r"""
+.ins-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 22px; }
+.ins-card { display: flex; flex-direction: column; gap: 10px; color: inherit; }
+.ins-card:hover { text-decoration: none; }
+.ins-card .ic { aspect-ratio: 1 / 1; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: var(--bg2); box-shadow: 0 6px 20px rgba(0,0,0,.08); transition: transform .25s, box-shadow .25s; }
+.ins-card:hover .ic { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(0,0,0,.16); }
+.ins-card .ic img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.ins-card .t { font-weight: 700; line-height: 1.4; }
+.ins-card .m { font-size: 13px; color: var(--muted); }
+.ins-ser { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 18px; }
+.ins-ser a { display: flex; flex-direction: column; gap: 8px; padding: 24px; border: 1px solid var(--line); border-radius: 18px; color: inherit; background: var(--bg); }
+.ins-ser a:hover { text-decoration: none; border-color: #0a5bd8; }
+.ins-ser b { font-size: 20px; } .ins-ser small { color: var(--muted); }
+.ins-read { display: flex; flex-direction: column; align-items: center; margin: 8px 0 24px; }
+.ins-read img { display: block; width: 100%; max-width: 820px; height: auto; }
+.ins-read.wide img { max-width: 1000px; }
+.ins-acts { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; justify-content: center; }
+.ins-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .ins-nav a { padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; color: inherit; font-size: 14px; } .ins-nav a small { display: block; color: var(--muted); } .ins-nav .nx { text-align: right; }
+@media (max-width: 600px) { .ins-nav { grid-template-columns: 1fr; } .ins-nav .nx { text-align: left; } }
+"""
+def ins_card(x):
+    ser = INS_SERIES.get(x['series'], {})
+    return (f'<a class="ins-card" href="insight-{x["id"]}.html" data-key="{E(x["cat"])}"><span class="ic"><img src="{E(x["cover"])}" alt="" loading="lazy"></span>'
+            f'<span class="m"><span class="badge" style="margin-right:6px">{E(x["cat"])}</span>{E(ser.get("short", ""))}</span><span class="t">{E(x["title"])}</span><span class="m">{E(x["date"])}</span></a>')
+
+INS_CONTACT = '참여 대학의 연구회·교수 칼럼 연재를 기다립니다. 기고 문의: KELI 사무국 +82 033-248-3246, 3242, 3044 / contact@keliedu.org'
+
+def page_insight():
+    sers = ''.join(f'<a href="insight-{s["id"]}.html"><small>연재 · {sum(1 for x in INS_POSTS if x["series"] == s["id"])}편</small><b>{E(s["name"])}</b><span class="muted">{E(s["lead"])}</span><small>{E(s["org"])}</small></a>' for s in INSIGHT.get('series', []))
+    cats = []
+    for x in INS_POSTS:
+        if x['cat'] not in cats: cats.append(x['cat'])
+    body = crumb(('news.html', '소식'), (None, '인사이트')) + f'''
+<section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap"><span class="eyebrow">인사이트</span><h1>인사이트.</h1>
+<p class="lead">KELI 참여 대학 교수진의 연구회·칼럼 연재입니다. AI 시대 대학교육을 묻는 초청 세미나, 좌담, 실증 연구, 서평을 카드뉴스와 보고서로 나눕니다.</p></div></section>
+<section class="sec" style="padding-top:0"><div class="wrap"><h2 style="font-size:24px;margin-bottom:16px">연재</h2><div class="ins-ser">{sers}</div></div></section>
+<section class="sec" style="padding-top:0"><div class="wrap">
+<div class="row" style="margin-bottom:20px"><h2 style="font-size:24px">최신 글</h2>{tabs('ins', [(c, c) for c in cats])}</div>
+<div class="ins-grid" data-items="ins">{''.join(ins_card(x) for x in INS_POSTS)}</div>
+<p class="note" style="margin-top:24px">{INS_CONTACT}</p>
+</div></section>
+'''
+    write('insight.html', '인사이트 · KELI', body, desc='KELI 참여 대학 교수진의 연구회·칼럼 연재 — 초청 세미나, 좌담, 실증 연구, 서평')
+    for s in INSIGHT.get('series', []):
+        items = [x for x in INS_POSTS if x['series'] == s['id']]
+        tb = tabs('ins', [(c, c) for c in s.get('cats', [])]) if len(s.get('cats', [])) > 1 else ''
+        others = ' · '.join(f'<a href="insight-{o["id"]}.html">{E(o["name"])}</a>' for o in INSIGHT.get('series', []) if o['id'] != s['id'])
+        body = crumb(('news.html', '소식'), ('insight.html', '인사이트'), (None, s['name'])) + f'''
+<section class="hero" style="padding-top:48px;padding-bottom:40px"><div class="wrap"><span class="eyebrow">인사이트 · 연재</span><h1>{E(s["name"])}.</h1><p class="lead">{E(s["lead"])}</p><p class="muted">{E(s["org"])}</p></div></section>
+<section class="sec" style="padding-top:0"><div class="wrap">
+<div class="row" style="margin-bottom:20px"><h2 style="font-size:24px">글 {len(items)}편</h2>{tb}</div>
+<div class="ins-grid" data-items="ins">{''.join(ins_card(x) for x in items)}</div>
+<p class="note" style="margin-top:24px">다른 연재: {others} · <a href="insight.html">인사이트 전체</a></p>
+</div></section>
+'''
+        write(f'insight-{s["id"]}.html', f'{s["name"]} · KELI 인사이트', body, desc=s['lead'][:150])
+    for x in INS_POSTS: page_insight_post(x)
+
+def page_insight_post(x):
+    ser = INS_SERIES.get(x['series'], {})
+    same = [o for o in INS_POSTS if o['series'] == x['series']]
+    i = same.index(x)
+    prv = same[i + 1] if i + 1 < len(same) else None
+    nxt = same[i - 1] if i > 0 else None
+    wide = any(p['w'] > p['h'] for p in x['pages'])
+    imgs = ''.join(f'<img src="{E(p["src"])}" width="{p["w"]}" height="{p["h"]}" alt="{E(x["title"])} ({k + 1}/{len(x["pages"])})" loading="{"eager" if k == 0 else "lazy"}">' for k, p in enumerate(x['pages']))
+    links = ''.join(f'<a class="btn ghost sm" href="{E(l["url"])}" target="_blank" rel="noopener">{E(l["label"])}</a>' for l in x.get('links', []))
+    nav = (f'<a href="insight-{prv["id"]}.html"><small>이전 글</small>{E(prv["title"])}</a>' if prv else '<span></span>') + (f'<a class="nx" href="insight-{nxt["id"]}.html"><small>다음 글</small>{E(nxt["title"])}</a>' if nxt else '<span></span>')
+    body = crumb(('news.html', '소식'), ('insight.html', '인사이트'), (f'insight-{x["series"]}.html', ser.get('short', '')), (None, x['title'])) + f'''
+<section class="hero" style="padding-top:48px;padding-bottom:24px"><div class="wrap narrow" style="max-width:900px">
+<span class="eyebrow">{E(ser.get("name", ""))} · {E(x["cat"])}</span><h1 style="font-size:clamp(26px,4vw,38px);text-wrap:balance">{E(x["title"])}</h1>
+<p class="lead" style="margin-top:4px">{E(x["lead"])}</p><p class="muted">{E(x["date"])} · {E(ser.get("org", ""))}</p>
+<div class="ins-acts"><a class="btn sm" href="{E(x["pdf"]["url"])}" target="_blank" rel="noopener">PDF 원본 보기</a><a class="btn ghost sm" href="{E(x["pdf"]["url"])}" download="{E(x["pdf"]["name"])}">내려받기 ({E(x["pdf"]["size"])})</a>{links}</div>
+</div></section>
+<section class="sec" style="padding-top:8px"><div class="wrap">
+<div class="ins-read{" wide" if wide else ""}">{imgs}</div>
+<p class="note" style="max-width:900px;margin:0 auto">글자가 작게 보이면 「PDF 원본 보기」로 크게 볼 수 있습니다. 인용할 때는 출처({E(ser.get("name", ""))})를 밝혀 주세요.</p>
+</div></section>
+<section class="sec alt"><div class="wrap narrow" style="max-width:900px"><div class="ins-nav">{nav}</div>
+<p style="margin-top:16px"><a class="more" href="insight-{x["series"]}.html">{E(ser.get("name", ""))} 전체 보기</a></p></div></section>
+'''
+    write(f'insight-{x["id"]}.html', f'{x["title"]} · KELI 인사이트', body, desc=x['lead'][:150])
+
 def page_videos():
     keli = ''.join(vid_card(v) for v in VIDEOS_KELI) or '<div class="empty">아직 KELI 영상이 없습니다.</div>'
     rel = ''.join(vid_card(v) for v in VIDEOS_REL)
@@ -3530,7 +3622,7 @@ def main():
     page_curriculum(); page_join(); page_archive(); page_news_hub(); page_notice(); page_events()
     for it in FEED_ITEMS: page_feed_event(it)
     for it in PRESS_ITEMS: page_press(it)
-    page_videos(); page_demos(); page_experience()   # 구 플랫폼 백업(old-keli)은 사이트에 싣지 않고 별도 보관(2026-11-12 유은님 지시)
+    page_videos(); page_insight(); page_demos(); page_experience()   # 구 플랫폼 백업(old-keli)은 사이트에 싣지 않고 별도 보관(2026-11-12 유은님 지시)
     page_newsletter(); page_search(); page_en(); build_kb()
     page_privacy()
     page_admin()
